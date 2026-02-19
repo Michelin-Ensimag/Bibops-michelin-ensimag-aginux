@@ -1,0 +1,10 @@
+# Fichiers Mac
+.DS_Store
+
+# Fichiers IDE (PyCharm, VS Code)
+.idea/
+.vscode/
+
+# Fichiers de cache Python et Pytest
+__pycache__/
+.pytest_cache/
