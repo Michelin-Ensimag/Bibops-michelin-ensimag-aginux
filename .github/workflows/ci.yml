@@ -30,5 +30,7 @@ jobs:
 
       # 4. Lance la suite de tests
       - name: Exécution des tests avec Pytest
+        env:
+          PYTHONPATH: .
         run: |
           pytest tests/
