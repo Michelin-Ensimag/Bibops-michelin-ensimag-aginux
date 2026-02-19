@@ -1,4 +1,4 @@
-# Fichier : src/agents/it_tools.py
+# On met les outils ici (chercher_ticket_similaire ... )
 
 def verifier_statut_serveur(nom_serveur: str) -> str:
     """
@@ -15,5 +15,3 @@ def verifier_statut_serveur(nom_serveur: str) -> str:
         return f"ALERTE : Le service {nom_serveur} est actuellement HORS LIGNE (Incident #4042 en cours)."
 
     return f"OK : Le service {nom_serveur} est EN LIGNE et fonctionne normalement."
-
-# Tu pourras ajouter d'autres outils ici plus tard (ex: reset_password, chercher_ticket_similaire, etc.)

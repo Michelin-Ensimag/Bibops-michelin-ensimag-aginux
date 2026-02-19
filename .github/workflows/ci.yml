@@ -1,6 +1,6 @@
 name: Pipeline CI/CD BibOps
 
-# Déclencheur : s'active à chaque push ou pull request sur la branche main
+# S'active à chaque push ou pull request sur la branche main
 on:
   push:
     branches: [ "main" ]
@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Récupère le code de ton dépôt
+      # 1. Récupère le code
       - name: Checkout du code
         uses: actions/checkout@v4
 
@@ -28,7 +28,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # 4. Lance la suite de tests
+      # 4. Lance les tests
       - name: Exécution des tests avec Pytest
         env:
           PYTHONPATH: .
