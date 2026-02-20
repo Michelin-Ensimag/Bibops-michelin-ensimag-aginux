@@ -5,3 +5,4 @@ def test_vpn_en_panne():
 
 def test_imprimante_ok():
     assert "EN LIGNE" in verifier_statut_serveur("Imprimante")
+

@@ -1,3 +1,4 @@
+# CHATGPT
 import sys
 import os
 sys.path.append(os.getcwd()) 
@@ -20,3 +21,5 @@ def test_ia_outlook():
 if __name__ == "__main__":
     test_ia_vpn()
     test_ia_outlook()
+
+#CHATGPT
