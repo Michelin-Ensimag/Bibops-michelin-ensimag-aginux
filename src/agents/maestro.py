@@ -30,8 +30,9 @@ def lancer_agent(ticket_utilisateur, modele="llama3.2:1b"):
 
     # ÉTAPE B : L'agent a-t-il appelé l'outil ?
     if not reponse['message'].get('tool_calls'):
-        print(f"Agent (Direct) : {reponse['message']['content']}")
-        return
+        contenu_direct = reponse['message']['content']
+        print(f"Agent (Direct) : {contenu_direct}")
+        return contenu_direct
 
     # ÉTAPE C : Exécution de l'outil
     for tool in reponse['message']['tool_calls']:
@@ -51,7 +52,10 @@ def lancer_agent(ticket_utilisateur, modele="llama3.2:1b"):
 
     # ÉTAPE D : Réponse finale après analyse de l'outil
     reponse_finale = ollama.chat(model=modele, messages=messages)
-    print(f"Agent (Post-Outil) : {reponse_finale['message']['content']}")
+    contenu = reponse_finale['message']['content']
+    print(f"Agent (Post-Outil) : {contenu}")
+
+    return contenu
 
 
 # --- ZONE DE TEST DIRECT ---
