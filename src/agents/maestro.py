@@ -1,3 +1,4 @@
+# CHATGPT
 import ollama
 from outils import verifier_statut_serveur
 
@@ -69,3 +70,4 @@ if __name__ == "__main__":
         contexte_systeme=contexte_it,
         outils_disponibles=[verifier_statut_serveur]
     )
+# CHATGPT

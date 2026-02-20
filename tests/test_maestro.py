@@ -1,9 +1,4 @@
-
 # CHATGPT
-import sys
-import os
-sys.path.append(os.getcwd()) 
-
 from src.agents.maestro import lancer_agent
 
 def test_ia_vpn():
@@ -23,4 +18,4 @@ if __name__ == "__main__":
     test_ia_vpn()
     test_ia_outlook()
 
-#CHATGPT
+# CHATGPT
