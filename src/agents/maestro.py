@@ -7,7 +7,7 @@ from outils import verifier_statut_serveur
 # qui concerne juste la requete actuelle
 
 contexte_entreprise = "L'entreprise est Michelin. Le VPN principal est Cisco."
-system_prompt = f"""
+contexte_generale = f"""
 Tu es l'agent IA de support informatique (BibOps). 
 Contexte actuel : {contexte_entreprise}
 
@@ -20,7 +20,7 @@ def lancer_agent(ticket_utilisateur, contexte_systeme, outils_disponibles, model
     print(f"\nUtilisateur : {ticket_utilisateur}")
 
     messages = [
-        {'role': 'system', 'content': system_prompt},
+        {'role': 'system', 'content': contexte_generale},
         {'role': 'user', 'content': ticket_utilisateur}
     ]
 
@@ -56,8 +56,6 @@ def lancer_agent(ticket_utilisateur, contexte_systeme, outils_disponibles, model
     reponse_finale = ollama.chat(model=modele, messages=messages)
     print(f"Agent (Post-Outil) : {reponse_finale['message']['content']}")
 
-
-# --- ZONE DE TEST DIRECT ---
 if __name__ == "__main__":
     print("AGENT BIBOPS")
     contexte_it = "Tu es l'agent IA de support informatique Michelin. Utilise tes outils."

@@ -1,3 +1,4 @@
+# CHATGPT
 # On met les outils ici (chercher_ticket_similaire ... )
 
 def verifier_statut_serveur(nom_serveur: str) -> str:
@@ -25,3 +26,4 @@ def verifier_solde_conges(id_employe: str) -> str:
     """
     print(f"\n[ACTION OUTIL] -> Interrogation du logiciel RH pour {id_employe}...")
     return f"L'employé {id_employe} possède 12 jours de congés payés restants."
+# CHATGPT
