@@ -4,6 +4,7 @@ sys.path.append(os.getcwd())
 
 from src.agents.maestro import lancer_agent
 
+# CHATGPT
 def test_ia_vpn():
     print("Test VPN en cours...")
     reponse = lancer_agent("Mon VPN Cisco est mort")
@@ -17,6 +18,9 @@ def test_ia_outlook():
     assert "outlook" in reponse.lower() or "mail" in reponse.lower()
     print("✅ Test Outlook OK")
 
+# CHATGPT
+
 if __name__ == "__main__":
     test_ia_vpn()
+
     test_ia_outlook()
