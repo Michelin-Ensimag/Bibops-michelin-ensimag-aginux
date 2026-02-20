@@ -1,6 +1,6 @@
 # CHATGPT
 import ollama
-from outils import verifier_statut_serveur
+from src.agents.outils import verifier_statut_serveur
 
 # Je pense que ca serait mieux de creer un autre fichier l appeler
 # peut etre memoire_long  pour y mettre le contexte generale
