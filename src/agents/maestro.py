@@ -1,11 +1,19 @@
 # CHATGPT
+
+
+
+import sys
+import os
+
+# On s'assure que le projet est dans le path pour les imports
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
+
 import ollama
 from src.agents.outils import verifier_statut_serveur
+from src.agents.rca_engine import RCAEngine
 
-# Je pense que ca serait mieux de creer un autre fichier l appeler
-# peut etre memoire_long  pour y mettre le contexte generale
-# et un autre memoire_court_terme pour mettre le contexte
-# qui concerne juste la requete actuelle
+# Initialisation du moteur RCA
+rca = RCAEngine()
 
 contexte_entreprise = "L'entreprise est Michelin. Le VPN principal est Cisco."
 contexte_generale = f"""
@@ -20,12 +28,20 @@ Règles :
 def lancer_agent(ticket_utilisateur, contexte_systeme, outils_disponibles, modele="llama3.2:1b"):
     print(f"\nUtilisateur : {ticket_utilisateur}")
 
+    # A : L'agent réfléchit avec son outil
+    # --- ON AJOUTE LE RCA ICI ---
+    print(f"[RCA] Analyse technique du ticket...")
+    diagnostic = rca.analyser_cause_racine(ticket_utilisateur)
+    print(f"[RCA] Diagnostic : {diagnostic}")
+    
+    contexte_avec_rca = f"{contexte_generale}\n\nDiagnostic RCA : {diagnostic}"
+    # ----------------------------
+
     messages = [
-        {'role': 'system', 'content': contexte_generale},
+        {'role': 'system', 'content': contexte_avec_rca},
         {'role': 'user', 'content': ticket_utilisateur}
     ]
 
-    # A : L'agent réfléchit avec son outil
     reponse = ollama.chat(
         model=modele,
         messages=messages,
@@ -40,11 +56,12 @@ def lancer_agent(ticket_utilisateur, contexte_systeme, outils_disponibles, model
         print(f"Agent (Direct) : {contenu_direct}")
         return contenu_direct
 
-    # C : Exécution de l'outil ( on doit l ajuster pour s adapter a dautres roles ... )
+    # C : Exécution de l'outil (Version originale conservée)
     for tool in reponse['message']['tool_calls']:
         nom_outil = tool['function']['name']
 
         if nom_outil == 'verifier_statut_serveur':
+            # On récupère l'argument comme dans ton code initial
             nom_service = tool['function']['arguments'].get('nom_serveur', 'Inconnu')
             resultat = verifier_statut_serveur(nom_service)
 
@@ -70,4 +87,7 @@ if __name__ == "__main__":
         contexte_systeme=contexte_it,
         outils_disponibles=[verifier_statut_serveur]
     )
+
+
+
 # CHATGPT
