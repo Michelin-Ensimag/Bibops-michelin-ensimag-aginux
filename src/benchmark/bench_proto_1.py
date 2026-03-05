@@ -2,7 +2,7 @@
 import requests
 import time
 
-def tester_support_it(ticket_client, model="llama3.2:1b"):
+def tester_support_it(ticket_client, model="mistral:latest"):
     url = "http://localhost:11434/api/generate"
     
     contexte = { # Ce format est un dictionnaire Python qui sera converti en JSON pour l'API REST d'Ollama via requests.post(url, json=contexte)

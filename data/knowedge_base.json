@@ -1,0 +1,270 @@
+{
+  "version": "1.0",
+  "derniere_mise_a_jour": "2026-02-20",
+  "knowledge_base": [
+    {
+      "id": "KB-001",
+      "categorie": "Réseau",
+      "probleme": "Connexion VPN impossible",
+      "mots_cles": [
+        "vpn",
+        "connexion",
+        "cisco",
+        "anyconnect",
+        "réseau",
+        "vpn ne marche pas"
+      ],
+      "solution": {
+        "diagnostic": [
+          "Vérifier que le client Cisco AnyConnect est installé (version 4.9+)",
+          "Vérifier les identifiants (utiliser ceux de la session Windows)",
+          "Tester la connexion internet : ping google.com",
+          "Vérifier que le pare-feu Windows autorise Cisco AnyConnect"
+        ],
+        "resolution": [
+          "Redémarrer le service Cisco AnyConnect : services.msc -> Cisco AnyConnect -> Redémarrer",
+          "Vider le cache DNS : ouvrir CMD en admin -> ipconfig /flushdns",
+          "Essayer le serveur backup : vpn-backup.michelin.com au lieu de vpn.michelin.com",
+          "Désinstaller complètement AnyConnect, redémarrer PC, réinstaller depuis le portail intranet",
+          "Vérifier que l'antivirus ne bloque pas la connexion VPN"
+        ],
+        "escalade": "Si échec : ticket niveau 2 (équipe réseau infrastructure)",
+        "documentation": "https://intranet.michelin.com/it/vpn-guide"
+      },
+      "priorite": "haute",
+      "temps_resolution_moyen": "10-15 minutes",
+      "taux_resolution": "85%"
+    },
+    {
+      "id": "KB-002",
+      "categorie": "Messagerie",
+      "probleme": "Outlook ne démarre pas ou crash",
+      "mots_cles": [
+        "outlook",
+        "crash",
+        "ne démarre pas",
+        "email",
+        "messagerie",
+        "exchange"
+      ],
+      "solution": {
+        "diagnostic": [
+          "Vérifier si d'autres applications Office fonctionnent (Word, Excel)",
+          "Consulter l'observateur d'événements Windows pour les erreurs Outlook",
+          "Vérifier l'espace disque disponible (minimum 2 GB requis)"
+        ],
+        "resolution": [
+          "Démarrer Outlook en mode sans échec : Win+R -> outlook.exe /safe",
+          "Désactiver les compléments : Fichier -> Options -> Compléments -> Gérer (Compléments COM) -> Désactiver tous",
+          "Réparer Office : Panneau de configuration -> Programmes -> Microsoft Office -> Modifier -> Réparation rapide",
+          "Si échec : Réparation en ligne (plus longue, environ 20 min)",
+          "Recréer le profil Outlook : Panneau de configuration -> Courrier -> Profils -> Supprimer profil -> Créer nouveau",
+          "Vider le cache Outlook : %localappdata%\\Microsoft\\Outlook -> Supprimer fichiers .ost"
+        ],
+        "escalade": "Si crash persiste : ticket niveau 2 (équipe messagerie)",
+        "documentation": "https://intranet.michelin.com/it/outlook-troubleshooting"
+      },
+      "priorite": "moyenne",
+      "temps_resolution_moyen": "15-20 minutes",
+      "taux_resolution": "90%"
+    },
+    {
+      "id": "KB-003",
+      "categorie": "Authentification",
+      "probleme": "Mot de passe oublié ou compte verrouillé",
+      "mots_cles": [
+        "mot de passe",
+        "password",
+        "oublié",
+        "reset",
+        "compte verrouillé",
+        "locked"
+      ],
+      "solution": {
+        "diagnostic": [
+          "Vérifier si le compte est verrouillé (3 tentatives échouées = verrouillage 30 min)",
+          "Confirmer que l'utilisateur utilise le bon domaine (MICHELIN\\username)"
+        ],
+        "resolution": [
+          "Réinitialisation self-service : https://password.michelin.com",
+          "Cliquer sur 'Mot de passe oublié'",
+          "Entrer l'adresse email professionnelle (prenom.nom@michelin.com)",
+          "Répondre aux questions de sécurité OU utiliser code SMS (si configuré)",
+          "Créer un nouveau mot de passe respectant la politique : 12 caractères min, majuscules, minuscules, chiffres, caractères spéciaux",
+          "Si compte verrouillé : attendre 30 minutes OU contacter le helpdesk pour déverrouillage manuel"
+        ],
+        "escalade": "Si problème avec le portail self-service : ticket niveau 1 (helpdesk)",
+        "documentation": "https://password.michelin.com/help"
+      },
+      "priorite": "haute",
+      "temps_resolution_moyen": "5 minutes",
+      "taux_resolution": "95%"
+    },
+    {
+      "id": "KB-004",
+      "categorie": "Matériel",
+      "probleme": "Écran reste vert ou affichage anormal",
+      "mots_cles": [
+        "écran",
+        "vert",
+        "affichage",
+        "moniteur",
+        "display",
+        "graphique"
+      ],
+      "solution": {
+        "diagnostic": [
+          "Tester avec un autre câble vidéo (HDMI/DisplayPort/VGA)",
+          "Connecter l'écran à un autre ordinateur pour isoler le problème",
+          "Vérifier les paramètres de résolution et fréquence"
+        ],
+        "resolution": [
+          "Débrancher et rebrancher fermement le câble vidéo",
+          "Mettre à jour les pilotes graphiques : Gestionnaire de périphériques -> Cartes graphiques -> Mettre à jour",
+          "Ajuster la résolution : Clic droit Bureau -> Paramètres d'affichage -> Résolution recommandée",
+          "Tester un autre port vidéo si disponible (exemple : HDMI au lieu de DisplayPort)",
+          "Réinitialiser les paramètres de l'écran (bouton Menu sur l'écran -> Factory Reset)",
+          "Si GPU intégré + dédié : forcer l'utilisation du GPU dédié dans le BIOS"
+        ],
+        "escalade": "Si problème matériel confirmé : ticket niveau 1 (remplacement matériel)",
+        "documentation": "https://intranet.michelin.com/it/hardware-support"
+      },
+      "priorite": "moyenne",
+      "temps_resolution_moyen": "10 minutes",
+      "taux_resolution": "70%"
+    },
+    {
+      "id": "KB-005",
+      "categorie": "Partage de fichiers",
+      "probleme": "Impossible d'accéder au dossier partagé",
+      "mots_cles": [
+        "dossier partagé",
+        "ressources_humaines",
+        "partage réseau",
+        "accès refusé",
+        "network share"
+      ],
+      "solution": {
+        "diagnostic": [
+          "Vérifier que le VPN est connecté (si télétravail)",
+          "Confirmer le chemin exact : \\\\server\\share\\folder",
+          "Vérifier les permissions utilisateur dans Active Directory"
+        ],
+        "resolution": [
+          "Tester l'accès avec le chemin complet : \\\\fs-michelin-01\\Ressources_Humaines",
+          "Vérifier la connectivité au serveur : ping fs-michelin-01",
+          "Vider le cache des identifiants : Panneau de configuration -> Gestionnaire d'identifications -> Windows -> Supprimer",
+          "Se reconnecter manuellement : Win+R -> \\\\fs-michelin-01\\Ressources_Humaines -> Entrer identifiants",
+          "Mapper le lecteur réseau : Clic droit Ce PC -> Connecter un lecteur réseau",
+          "Redémarrer le service Workstation : services.msc -> Workstation -> Redémarrer"
+        ],
+        "escalade": "Si accès refusé persiste : ticket niveau 2 (gestion des droits AD)",
+        "documentation": "https://intranet.michelin.com/it/file-sharing"
+      },
+      "priorite": "moyenne",
+      "temps_resolution_moyen": "10 minutes",
+      "taux_resolution": "80%"
+    },
+    {
+      "id": "KB-006",
+      "categorie": "Matériel",
+      "probleme": "Imprimante ne fonctionne pas",
+      "mots_cles": [
+        "imprimante",
+        "impression",
+        "printer",
+        "imprimer",
+        "ne fonctionne pas"
+      ],
+      "solution": {
+        "diagnostic": [
+          "Vérifier que l'imprimante est allumée et connectée",
+          "Vérifier s'il y a des voyants d'erreur sur l'imprimante",
+          "Tester avec un autre document pour isoler le problème"
+        ],
+        "resolution": [
+          "Vérifier la file d'attente : Paramètres -> Imprimantes -> Afficher la file -> Annuler tous les travaux bloqués",
+          "Redémarrer le spouleur d'impression : services.msc -> Spouleur d'impression -> Redémarrer",
+          "Définir comme imprimante par défaut : Paramètres -> Imprimantes -> Clic droit -> Définir par défaut",
+          "Supprimer et réinstaller l'imprimante : Supprimer -> Ajouter -> Sélectionner sur le réseau",
+          "Mettre à jour les pilotes : Site du fabricant -> Télécharger pilote pour votre modèle",
+          "Vérifier la connexion réseau de l'imprimante (ping adresse IP de l'imprimante)"
+        ],
+        "escalade": "Si problème matériel : ticket niveau 1 (maintenance imprimante)",
+        "documentation": "https://intranet.michelin.com/it/printer-support"
+      },
+      "priorite": "basse",
+      "temps_resolution_moyen": "8 minutes",
+      "taux_resolution": "85%"
+    },
+    {
+      "id": "KB-007",
+      "categorie": "Performance",
+      "probleme": "Ordinateur très lent",
+      "mots_cles": [
+        "lent",
+        "ralenti",
+        "performance",
+        "slow",
+        "pc lent",
+        "lag"
+      ],
+      "solution": {
+        "diagnostic": [
+          "Ouvrir le Gestionnaire des tâches (Ctrl+Shift+Esc) pour identifier le processus consommant le plus de ressources",
+          "Vérifier l'espace disque disponible (minimum 15% libre requis)",
+          "Vérifier l'utilisation CPU, RAM, Disque"
+        ],
+        "resolution": [
+          "Fermer les applications inutilisées",
+          "Désactiver les programmes au démarrage : Ctrl+Shift+Esc -> Démarrage -> Désactiver applications inutiles",
+          "Nettoyer les fichiers temporaires : Win+R -> cleanmgr -> Sélectionner C: -> Nettoyer fichiers système",
+          "Défragmenter le disque (si HDD) : Optimiser les lecteurs -> C: -> Optimiser",
+          "Vérifier les mises à jour Windows et les installer",
+          "Scanner les malwares avec Windows Defender : Sécurité Windows -> Analyse rapide",
+          "Augmenter la mémoire virtuelle : Système -> Paramètres système avancés -> Performances -> Modifier"
+        ],
+        "escalade": "Si lenteur persiste : ticket niveau 1 (diagnostic matériel / upgrade RAM)",
+        "documentation": "https://intranet.michelin.com/it/performance-optimization"
+      },
+      "priorite": "basse",
+      "temps_resolution_moyen": "20 minutes",
+      "taux_resolution": "75%"
+    },
+    {
+      "id": "KB-008",
+      "categorie": "Réseau",
+      "probleme": "Pas de connexion Internet",
+      "mots_cles": [
+        "internet",
+        "wifi",
+        "réseau",
+        "connexion",
+        "no internet",
+        "offline"
+      ],
+      "solution": {
+        "diagnostic": [
+          "Vérifier si d'autres appareils ont Internet sur le même réseau",
+          "Vérifier l'icône réseau dans la barre des tâches (WiFi ou Ethernet)",
+          "Tester : ping 8.8.8.8 (Google DNS) pour vérifier connectivité"
+        ],
+        "resolution": [
+          "Débrancher et rebrancher le câble Ethernet OU se reconnecter au WiFi",
+          "Redémarrer la box/routeur : débrancher 30 secondes, rebrancher",
+          "Oublier le réseau WiFi et se reconnecter : Paramètres -> Réseau -> WiFi -> Gérer -> Oublier",
+          "Réinitialiser la pile TCP/IP : CMD admin -> netsh int ip reset",
+          "Réinitialiser Winsock : CMD admin -> netsh winsock reset",
+          "Vider le cache DNS : CMD admin -> ipconfig /flushdns",
+          "Renouveler l'adresse IP : CMD admin -> ipconfig /release puis ipconfig /renew",
+          "Désactiver/réactiver la carte réseau : Gestionnaire de périphériques -> Cartes réseau -> Désactiver puis réactiver"
+        ],
+        "escalade": "Si problème réseau local : ticket niveau 2 (infrastructure réseau)",
+        "documentation": "https://intranet.michelin.com/it/network-troubleshooting"
+      },
+      "priorite": "haute",
+      "temps_resolution_moyen": "10 minutes",
+      "taux_resolution": "90%"
+    }
+  ]
+}

@@ -4,7 +4,7 @@
 import ollama
 
 class RCAEngine:
-    def __init__(self, model="mistral:7b"):
+    def __init__(self, model="phi3:latest"):
         self.model = model
 
     def analyser_cause_racine(self, ticket):
