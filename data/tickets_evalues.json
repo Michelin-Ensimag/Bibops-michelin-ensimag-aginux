@@ -4,31 +4,31 @@
         "contexte": "Tu es un technicien support IT chez Michelin. Résous ce problème brièvement.",
         "ticket": "Mon VPN Cisco ne marche plus.",
         "modele": "llama3.2:1b",
-        "reponse": "Je comprends que vous avez des problèmes avec votre VPN (Virtual Private Network) Cisco.\n\nVoici quelques étapes que vous pouvez suivre pour résoudre le problème :\n\n1. **Vérifiez la configuration** : Assurez-vous de bien avoir configuré correctement votre VPN Cisco, y compris la clé de chiffrement, les paramètres d'autorisation et les autorisations des utilisateurs.\n2. **Nettoyez votre appareil** : Nettoyez votre appareil Cisco pour éliminer toute déchets ou malfunctions potentiels.\n3. **Vérifiez l'interface réseau** : Assurez-vous que l'interface réseau de votre appareil Cisco est configurée correctement et qu'elle n'est pas bloquée par une autre restriction réseau.\n4. **Vérifiez les informations de connexion** : Vérifiez si vous avez accès à l'adresse IP et aux informations de connexion nécessaires pour la réinitialisation du VPN Cisco.\n5. **Essayez une alternative** : Essayez d'utiliser un autre VPN sur votre appareil ou sur un autre appareil que vous utilisez pour voir si le problème est lié au VPN Cisco spécifique.\n\nSi vous avez encore des problèmes après ces étapes, il peut être nécessaire de contacter l'assistance technique de Michelin ou du fournisseur de services Cisco pour obtenir plus d'aide.\n\nIl est également possible que le problème soit lié à un problème sous-jacent avec votre infrastructure réseau ou votre connexion Internet.",
-        "temps_reponse (s)": 14.86
+        "reponse": "ERREUR",
+        "temps_reponse (s)": 0.0
     },
     {
         "id_ticket": "2",
         "contexte": "Tu es un expert en Ressources Humaines chez Michelin.",
         "ticket": "Combien de jours de congés me reste-t-il ?",
         "modele": "llama3.2:1b",
-        "reponse": "Je suis désolé, mais je n'ai pas accès à des informations spécifiques sur vos horaires de travail ou votre calendrier personnel. Cependant, je peux vous suggérer quelques options pour trouver la réponse à votre question :\n\n1. **Vérifiez votre contrat d'emploi** : Si vous avez un contrat d'emploi avec Michelin, il est possible que le contrat contienne des informations sur les jours de congés et vos heures de travail.\n2. **Contactez votre directeur commercial ou votre supérieur dirigeant** : Vous pouvez essayer de parler à votre directeur commercial ou à votre supérieur dirigeant pour obtenir des informations sur vos jours de congés restants.\n3. **Vérifiez la politique de congés du service** : Si vous travaillez dans un service spécifique, il est possible que le service ait une politique de congés qui indique les jours de congés autorisés et les restrictions.\n4. **Consultez votre calendrier personnel** : Vous pouvez également vérifier votre calendrier personnel pour voir si vous avez déjà pris des congés ou si vous avez des jours de congés restants.\n\nJ'espère que ces suggestions vous aideront à trouver la réponse à votre question !",
-        "temps_reponse (s)": 7.61
+        "reponse": "ERREUR",
+        "temps_reponse (s)": 0.0
     },
     {
         "id_ticket": "3",
         "contexte": "Tu es un technicien support IT chez Michelin.",
         "ticket": "Mon imprimante affiche erreur 404.",
         "modele": "llama3.2:1b",
-        "reponse": "Quel problème drastique ! L'erreur 404 est une indication que le serveur ne trouve pas l'URL spécifiée pour accéder à un ressource. En tant que technicien support IT chez Michelin, voici quelques étapes à suivre pour résoudre ce problème :\n\n1. **Vérifiez la URL** : assurez-vous de que l'URL corrigée soit correcte et complète. Vous pouvez utiliser le navigateur Internet de votre ordinateur pour vérifier l'adresse URL.\n2. **Vérifiez la configuration réseau** : assurez-vous que vous avez accès à Internet et que les paramètres de configuration réseau sont corrects (par exemple, le protocole DNS est configuré correctement).\n3. **Vérifiez la connexion internet** : assurez-vous qu'il n'y a pas de problème avec votre connexion internet, telles que des problèmes de trafic, d'une réserve de connexion ou d'un problème avec le serveur de base de données.\n4. **Vérifiez les configurations système** : vérifiez si l'imprimante est configurée correctement pour accéder à Internet et aux ressources du réseau. Vous pouvez consulter la documentation système pour obtenir plus d'informations.\n5. **Vérifiez le log de l'imprimante** : assurez-vous que vous avez pris des notes ou un journal de l'imprimante avant les erreurs 404. Cela peut aider à identifier les causes sous-jacentes du problème.\n\nSi vous n'êtes pas sûr de ce qui est incorrect, veuillez fournir plus d'informations sur votre configuration réseau et vos interactions avec la imprimante avant que je ne puisse vous donner des conseils plus spécifiques.",
-        "temps_reponse (s)": 10.84
+        "reponse": "ERREUR",
+        "temps_reponse (s)": 0.0
     },
     {
         "id_ticket": "4",
         "contexte": "Tu es un juriste d'entreprise. Réponds de manière formelle.",
         "ticket": "Est-ce que je peux cumuler deux emplois ?",
         "modele": "llama3.2:1b",
-        "reponse": "Oui, il est possible de cumuler deux emplois dans la mesure où les conditions en vigueur dans votre pays et votre région ne vous interdisent pas explicitement à l'égard des deux emplois.\n\nVoici quelques points à prendre en compte :\n\n1.  **Consommation** : Lorsque vous avez plusieurs emplois, il est essentiel de consommer efficacement vos ressources. Vous pouvez envisager d'éviter les tâches ménagères ou la gestion des finances pour économiser du temps et augmenter votre productivité.\n2.  **Priorisation** : Il est crucial de prioriser entre ces deux emplois, en tenant compte de vos responsabilités personnelles et professionnelles. Vous pouvez choisir celui qui correspond mieux à vos objectifs à court terme ou développer des compétences supplémentaires pour prendre en charge les deux.\n3.  **Répartition du temps** : Une fois que vous avez déterminé les tâches à accomplir, essayez d'organiser votre temps de manière efficace. Vous pouvez utiliser des outils comme des calendriers ou des applications mobiles pour planifier et organiser vos tâches.\n4.  **Communication** : Il est essentiel de communiquer avec les deux employeurs pour discuter de la situation, d'éviter tout conflit et d'arriver à une solution mutuellement acceptable.\n\nEn suivant ces conseils, vous devriez être en mesure de cumuler plusieurs emplois sans avoir du mal à les gérer.",
-        "temps_reponse (s)": 9.12
+        "reponse": "ERREUR",
+        "temps_reponse (s)": 0.0
     }
 ]
