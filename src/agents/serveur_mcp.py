@@ -29,7 +29,6 @@ def chercher_documentation_technique(mot_cle: str) -> str:
     try:
         client = chromadb.PersistentClient(path=CHROMA_PATH)
         collection = client.get_collection(name="doc_michelin")
-
         resultats = collection.query(query_texts=[mot_cle], n_results=1)
         doc_trouve = resultats['documents'][0][0]
         return f"Documentation trouvée : {doc_trouve}"

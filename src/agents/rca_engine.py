@@ -4,7 +4,7 @@
 import ollama
 
 class RCAEngine:
-    def __init__(self, model="llama3.2:1b"):
+    def __init__(self, model="mistral:7b"):
         self.model = model
 
     def analyser_cause_racine(self, ticket):
@@ -30,19 +30,19 @@ class RCAEngine:
         CAUSE : <Deduction logique>
         MOT-CLÉ : <Nom du service sélectionné uniquement>
         """
-        
+
         try:
             response = ollama.chat(model=self.model, messages=[
                 {'role': 'system', 'content': 'Tu es un module de Root Cause Analysis.'},
                 {'role': 'user', 'content': prompt}
             ])
             full_content = response['message']['content']
-            
+
             # --- PETIT NETTOYAGE (Post-processing) ---
             # On ne garde que les lignes qui contiennent CAUSE ou MOT-CLÉ
             lines = [l for l in full_content.split('\n') if "CAUSE" in l.upper() or "MOT-CLÉ" in l.upper() or "MOT-CLE" in l.upper()]
             clean_diag = "\n".join(lines)
-            
+
             return clean_diag if clean_diag else full_content
         except Exception as e:
             return f"Erreur diagnostic : {str(e)}"
