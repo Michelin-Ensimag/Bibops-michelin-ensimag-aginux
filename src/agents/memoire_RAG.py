@@ -1,15 +1,14 @@
 import chromadb
 import os
 
-# Chemins d'accès
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
-CHROMA_PATH = os.path.join(BASE_DIR, 'data', 'vectordb')
-KB_DIR = os.path.join(BASE_DIR, 'data', 'IN - EUX Service Line')
-DOC_MD_DIR = os.path.join(BASE_DIR, 'data', 'doc_md')
+CHROMA_PATH = os.path.join(BASE_DIR, 'data', 'databases', 'vectordb')
+KB_DIR = os.path.join(BASE_DIR, 'data', 'knowledge_base', 'articles')
+DOC_MD_DIR = os.path.join(BASE_DIR, 'data', 'knowledge_base', 'doc_md')
 
 
 def initialiser_documentation():
-    print("📚 Initialisation de la Vector DB avec la Vraie Knowledge Base Michelin...")
+    print("Initialisation de la Vector DB avec la Knowledge Base Michelin...")
 
     client = chromadb.PersistentClient(path=CHROMA_PATH)
 
@@ -35,7 +34,7 @@ def initialiser_documentation():
                     content = f.read()
                     documents.append(content)
                     ids.append(kb_id)
-                    print(f"   📄 Ajout de l'article : {kb_id}")
+                    print(f"[Ajout de l'article] : {kb_id}")
 
     # 2. Parcours des documentations techniques (doc_md/)
     if os.path.isdir(DOC_MD_DIR):
@@ -48,14 +47,14 @@ def initialiser_documentation():
                     content = f.read()
                     documents.append(content)
                     ids.append(doc_id)
-                    print(f"   📄 Ajout de la doc technique : {doc_id}")
+                    print(f"[Ajout de la doc technique] : {doc_id}")
 
     # Injection dans la base de données
     if documents:
         collection.add(documents=documents, ids=ids)
-        print(f"\n✅ {len(documents)} articles vectorisés avec succès dans : {CHROMA_PATH}")
+        print(f"\n[Vector DB] : {len(documents)} articles vectorisés avec succès dans : {CHROMA_PATH}")
     else:
-        print("\n⚠️ Aucun article trouvé. Vérifie le chemin du dossier KB.")
+        print("\n[Vector DB] : Aucun article trouvé.")
 
 if __name__ == "__main__":
     initialiser_documentation()

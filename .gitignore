@@ -8,3 +8,6 @@
 # Fichiers de cache
 __pycache__/
 .pytest_cache/
+
+# Bases de données générées (reconstruites par baseSQL.py et memoire_RAG.py)
+data/databases/

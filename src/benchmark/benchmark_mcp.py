@@ -7,7 +7,7 @@ BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
 from src.agents.maestro import lancer_agent
 from src.agents.outils import verifier_statut_serveur
 
-DB_PATH = os.path.join(BASE_DIR, 'data', 'bibops.db')
+DB_PATH = os.path.join(BASE_DIR, 'data', 'databases', 'bibops.db')
 
 def run_benchmark_agent(model_name="phi3:latest"):
     print(f"🚀 Démarrage du Benchmark de l'Agent BibOps sur le modèle : {model_name}\n")

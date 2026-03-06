@@ -20,12 +20,14 @@ def lancer_agent(contexte,ticket_utilisateur, outils_disponibles, modele="phi3:l
     Contexte actuel : {contexte}
     
     Règles STRICTES :
-    1. Pense étape par étape (Chain of Thought).
+    1. Pense étape par étape ( Chain of thought ) 
     2. Si tu as besoin d'une information, utilise UNIQUEMENT un des outils listés ci-dessous.
-    3. Pour utiliser un outil, écris EXACTEMENT et UNIQUEMENT sur une ligne : ACTION: nom_de_l_outil("argument")
-    4. Tu ne dois JAMAIS inventer ou utiliser un outil qui n'est pas dans la liste suivante : {noms_outils}
-    5. Si un outil retourne une erreur, essaie un AUTRE outil de la liste ci-dessus.
-    6. Une fois que tu as le résultat de l'outil, formule ta réponse finale de manière concise et professionnelle.
+    3. FORMAT OBLIGATOIRE pour appeler un outil, sur UNE SEULE LIGNE et RIEN D'AUTRE :
+       ACTION: nom_de_l_outil("argument")
+    4. INTERDIT : écrire du texte avant ou après la ligne ACTION.
+    5. INTERDIT : appeler le même outil deux fois avec la même question.
+    6. INTERDIT : utiliser un outil qui n'est pas dans la liste : {noms_outils}
+    7. Dès que tu as un résultat d'outil, rédige ta réponse finale sans appeler d'outil supplémentaire.
     """
 
 
@@ -49,18 +51,21 @@ def lancer_agent(contexte,ticket_utilisateur, outils_disponibles, modele="phi3:l
 
     messages_a_envoyer = [{'role': 'system', 'content': system_prompt}] + memoire.get_messages()
 
-    # 2. La Boucle de Réflexion (ReAct : Reason + Act) Max 5 itérations
+    # Suivi des appels déjà effectués pour éviter les doublons
+    appels_deja_faits = set()
+
+    # La Boucle de Réflexion (ReAct : Reason + Act) Max 5 itérations
     max_iterations = 5
     for etape in range(max_iterations):
 
         reponse = ollama.chat(model=modele, messages=messages_a_envoyer)
         contenu = reponse['message']['content']
 
-        # Cherche si l'IA veut utiliser un outil
-        match = re.search(r'ACTION:\s*([a-zA-Z_]+)\("([^"]*)"\)', contenu)
+        # Cherche si l'IA veut utiliser un outil (insensible à la casse : ACTION, Action, action...)
+        match = re.search(r'(?i)action:\s*([a-zA-Z_]+)\("([^"]*)"', contenu)
         # Fallback pour guillemets simples
         if not match:
-            match = re.search(r"ACTION:\s*([a-zA-Z_]+)\('([^']*)'\)", contenu)
+            match = re.search(r"(?i)action:\s*([a-zA-Z_]+)\('([^']*)'", contenu)
 
         # Si pas d'outil demandé, c'est la réponse finale ! On sort de la boucle.
         if not match:
@@ -73,6 +78,15 @@ def lancer_agent(contexte,ticket_utilisateur, outils_disponibles, modele="phi3:l
         argument = match.group(2)
 
         print(f" [LLM veut utiliser l'outil] : {nom_outil_demande}('{argument}')")
+
+        # Déduplication : éviter de rappeler le même outil avec le même argument
+        cle_appel = (nom_outil_demande, argument.lower().strip())
+        if cle_appel in appels_deja_faits:
+            dedup_msg = f"Tu as déjà utilisé '{nom_outil_demande}' avec cet argument. Utilise le résultat précédent pour formuler ta réponse finale."
+            messages_a_envoyer.append({'role': 'assistant', 'content': contenu})
+            messages_a_envoyer.append({'role': 'user', 'content': dedup_msg})
+            continue
+        appels_deja_faits.add(cle_appel)
 
         noms_valides = [o.__name__ for o in outils_disponibles]
         resultat_outil = f"Erreur : L'outil '{nom_outil_demande}' n'existe pas. Les seuls outils disponibles sont : {noms_valides}. Utilise UNIQUEMENT un de ces outils."

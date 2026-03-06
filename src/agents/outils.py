@@ -4,10 +4,10 @@ import os
 import chromadb
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
-DB_PATH = os.path.join(BASE_DIR, 'data', 'bibops.db')
-CHROMA_PATH = os.path.join(BASE_DIR, 'data', 'vectordb')
+DB_PATH = os.path.join(BASE_DIR, 'data', 'databases', 'bibops.db')
+CHROMA_PATH = os.path.join(BASE_DIR, 'data', 'databases', 'vectordb')
 
-# Singleton ChromaDB : initialisé une seule fois au niveau du module
+# Initialisé une seule fois au niveau du module
 _chroma_client = None
 def _get_chroma_collection():
     global _chroma_client
@@ -25,9 +25,9 @@ def verifier_statut_serveur(nom_serveur: str) -> str:
             cursor.execute("SELECT nom, statut FROM serveurs_it WHERE nom = ?", (nom_serveur.upper(),))
             resultat = cursor.fetchone()
 
-            # Si pas de match exact, recherche partielle (ex: "Cisco VPN" -> trouve "VPN" et "CISCO")
+            # Si pas de match exact, recherche partielle (ex: "Cisco VPN" ou "Cisco_VPN" -> trouve "VPN" et "CISCO")
             if not resultat:
-                mots = nom_serveur.upper().split()
+                mots = nom_serveur.upper().replace('_', ' ').split()
                 placeholders = " OR ".join(["nom = ?" for _ in mots])
                 cursor.execute(f"SELECT nom, statut FROM serveurs_it WHERE {placeholders}", mots)
                 resultats = cursor.fetchall()
@@ -46,7 +46,7 @@ def chercher_dans_kb(requete: str) -> str:
         Utilise CET outil pour chercher des solutions basiques (mots clés) dans la base de connaissances classique (JSON).
         """
     print(f"\n[ACTION OUTIL] -> Recherche dans la KB pour : '{requete}'...")
-    kb_path = os.path.join(BASE_DIR, 'data', 'knowledge_base.json')
+    kb_path = os.path.join(BASE_DIR, 'data', 'knowledge_base', 'knowledge_base.json')
     try:
         with open(kb_path, "r", encoding="utf-8") as f:
             kb = json.load(f)["knowledge_base"]
@@ -107,9 +107,9 @@ def chercher_documentation_technique(mot_cle: str) -> str:
         if not resultats['documents'] or not resultats['documents'][0]:
             return f"Aucune documentation trouvée pour : {mot_cle}"
 
-        # Filtrage par pertinence : rejeter les résultats trop éloignés (distance cosine > 1.5)
+        # Filtrage par pertinence : rejeter les résultats trop éloignés (distance cosine >= 1.2)
         distance = resultats['distances'][0][0]
-        if distance > 1.5:
+        if distance >= 1.2:
             return f"Aucune documentation pertinente trouvée pour : {mot_cle} (meilleur résultat trop éloigné)."
 
         doc_trouve = resultats['documents'][0][0]

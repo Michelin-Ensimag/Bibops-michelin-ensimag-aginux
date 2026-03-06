@@ -6,11 +6,11 @@ import ollama
 
 # CHATGPT
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
-INPUT_CSV = os.path.join(BASE_DIR, 'data', 'tickets_scenario_1.csv')
-OUTPUT_JSON = os.path.join(BASE_DIR, 'data', 'tickets_evalues.json')
+INPUT_CSV = os.path.join(BASE_DIR, 'data', 'benchmark', 'tickets_scenario_1.csv')
+OUTPUT_JSON = os.path.join(BASE_DIR, 'data', 'benchmark', 'tickets_evalues.json')
 # CHATGPT
 
-def run_benchmark(model_name="llama3.2:1b"):
+def run_benchmark(model_name="phi3:latest"):
     print(f"Benchmark BibOps sur le modèle : {model_name}\n")
 
     resultats = []
@@ -74,7 +74,7 @@ def run_benchmark(model_name="llama3.2:1b"):
 
 if __name__ == "__main__":
     # On doit mettre d autres models que celui la pour comparer ( ou les mixer peut etre ... )
-    run_benchmark(model_name="llama3.2:1b")
+    run_benchmark(model_name="phi3:latest")
 
 # Le "Cold Start" (Démarrage à froid). Lors de la première question, Ollama doit charger le modèle d'un giga-octet
 # depuis le disque dur vers la mémoire vive (RAM/VRAM)

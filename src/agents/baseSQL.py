@@ -3,7 +3,7 @@ import os
 
 # On recule de deux dossiers : src/agents/ -> src/ -> racine/
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
-DB_PATH = os.path.join(BASE_DIR, 'data', 'bibops.db')
+DB_PATH = os.path.join(BASE_DIR, 'data', 'databases', 'bibops.db')
 
 def initialiser_base_de_donnees():
     print("Création de la base de données BibOps (SQLite)...")
