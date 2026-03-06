@@ -17,17 +17,19 @@ def initialiser_base_de_donnees():
     # Ajout de la colonne justification_juge pour llm_professor plus tard
     cursor.execute('''CREATE TABLE IF NOT EXISTS evaluations (id INTEGER PRIMARY KEY AUTOINCREMENT, ticket_id INTEGER, modele TEXT, reponse_ia TEXT, temps_reponse_s REAL, note_juge INTEGER, justification_juge TEXT, FOREIGN KEY(ticket_id) REFERENCES tickets(id))''')
 
+    # Upsert serveurs : on remplace uniquement les données de référence
     cursor.execute('DELETE FROM serveurs_it')
-    cursor.execute('DELETE FROM tickets')
-
     serveurs = [('VPN', 'HORS LIGNE (Incident 4042)', '2026-02-26'), ('CISCO', 'EN LIGNE', '2026-02-26'), ('OUTLOOK', 'EN LIGNE', '2026-02-26')]
     cursor.executemany('INSERT INTO serveurs_it VALUES (?, ?, ?)', serveurs)
 
-    tickets = [
-        ("Tu es un technicien support IT Michelin.", "Mon VPN Cisco ne marche plus."),
-        ("Tu es un expert RH chez Michelin.", "Combien de jours de congés me reste-t-il ?")
-    ]
-    cursor.executemany('INSERT INTO tickets (contexte, texte_utilisateur) VALUES (?, ?)', tickets)
+    # On insère les tickets de test seulement si la table est vide (pour ne pas perdre les évaluations liées)
+    cursor.execute('SELECT COUNT(*) FROM tickets')
+    if cursor.fetchone()[0] == 0:
+        tickets = [
+            ("Tu es un technicien support IT Michelin.", "Mon VPN Cisco ne marche plus."),
+            ("Tu es un expert RH chez Michelin.", "Combien de jours de congés me reste-t-il ?")
+        ]
+        cursor.executemany('INSERT INTO tickets (contexte, texte_utilisateur) VALUES (?, ?)', tickets)
 
     conn.commit()
     conn.close()

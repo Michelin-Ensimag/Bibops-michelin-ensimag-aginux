@@ -1,12 +1,3 @@
-# CHATGPT
-
-
-
-
-import sys
-import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
 from src.agents.maestro import lancer_agent
 from src.agents.outils import verifier_statut_serveur
 

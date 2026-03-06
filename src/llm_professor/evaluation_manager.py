@@ -18,7 +18,8 @@ def sauvegarder_evaluation(ticket, diagnostic, reponse, note):
         with open(file_name, "r", encoding="utf-8") as f:
             try:
                 data = json.load(f)
-            except: data = []
+            except (json.JSONDecodeError, ValueError):
+                data = []
 
     data.append(entry)
     with open(file_name, "w", encoding="utf-8") as f:

@@ -1,10 +1,3 @@
-import sys
-import os
-
-# 1. On force Python à reconnaître la racine du projet pour trouver "src"
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
-
-# 2. Maintenant on peut faire nos imports
 from mcp.server.fastmcp import FastMCP
 from src.agents.outils import verifier_statut_serveur, chercher_documentation_technique, chercher_dans_kb
 

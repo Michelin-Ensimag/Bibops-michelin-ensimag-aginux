@@ -1,0 +1,11 @@
+[project]
+name = "bibops"
+version = "0.1.0"
+description = "BibOps - Agent IA de support IT Michelin"
+requires-python = ">=3.10"
+
+[tool.setuptools.packages.find]
+where = ["."]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,13 +1,9 @@
 import sqlite3
 import time
 import os
-import sys
 
-# Permet d'importer correctement les modules de src/
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
-sys.path.insert(0, BASE_DIR)
 
-# On importe ton agent et tes outils !
 from src.agents.maestro import lancer_agent
 from src.agents.outils import verifier_statut_serveur
 
@@ -23,12 +19,12 @@ def run_benchmark_agent(model_name="phi3:latest"):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
-    # Lecture des tickets depuis SQL
-    cursor.execute("SELECT id, texte_utilisateur FROM tickets")
+    # Lecture des tickets depuis SQL (contexte + texte)
+    cursor.execute("SELECT id, contexte, texte_utilisateur FROM tickets")
     tickets = cursor.fetchall()
 
     for ticket in tickets:
-        ticket_id, ticket_texte = ticket
+        ticket_id, contexte_ticket, ticket_texte = ticket
         print(f"\n" + "="*50)
         print(f"⏳ ÉVALUATION DU TICKET #{ticket_id}...")
         print("="*50)
@@ -38,6 +34,7 @@ def run_benchmark_agent(model_name="phi3:latest"):
 
             # 🌟 LA MAGIE EST ICI : On évalue toute la pipeline de l'Agent (RCA + Tools + LLM)
             texte_ia = lancer_agent(
+                contexte=contexte_ticket,
                 ticket_utilisateur=ticket_texte,
                 outils_disponibles=[verifier_statut_serveur],
                 modele=model_name

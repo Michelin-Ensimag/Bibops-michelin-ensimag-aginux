@@ -1,32 +1,31 @@
-import sys
-import os
 import re
 import ollama
 
-# Permet d'importer correctement les autres fichiers du dossier
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
-
 from src.agents.memoire_courte import MemoCourTerme
-from src.agents.serveur_mcp import verifier_statut_serveur, chercher_documentation_technique, chercher_dans_kb
+from src.agents.outils import verifier_statut_serveur, chercher_documentation_technique, chercher_dans_kb
 
 # = RCA =
 # from src.llm_professor.rca_engine import RCAEngine
 # rca = RCAEngine()
 
-memoire = MemoCourTerme(max_messages=50) # on a pas encore fait un analyse pour savoir la meilleur valeur du hyperparametre max_messages
-
 def lancer_agent(contexte,ticket_utilisateur, outils_disponibles, modele="phi3:latest"):
 
+    memoire = MemoCourTerme(max_messages=50) # on a pas encore fait un analyse pour savoir la meilleur valeur du hyperparametre max_messages
+
+
     # systeme_prompt
+    noms_outils = [outil.__name__ for outil in outils_disponibles]
     systeme_prompt = f"""
     Tu es l'agent IA de support informatique (BibOps). 
     Contexte actuel : {contexte}
     
-    Règles :
+    Règles STRICTES :
     1. Pense étape par étape (Chain of Thought).
-    2. Si tu as besoin d'une information, utilise un des outils qui te sont fournis ci-dessous.
+    2. Si tu as besoin d'une information, utilise UNIQUEMENT un des outils listés ci-dessous.
     3. Pour utiliser un outil, écris EXACTEMENT et UNIQUEMENT sur une ligne : ACTION: nom_de_l_outil("argument")
-    4. Une fois que tu as le résultat de l'outil, formule ta réponse finale de manière concise et professionnelle.
+    4. Tu ne dois JAMAIS inventer ou utiliser un outil qui n'est pas dans la liste suivante : {noms_outils}
+    5. Si un outil retourne une erreur, essaie un AUTRE outil de la liste ci-dessus.
+    6. Une fois que tu as le résultat de l'outil, formule ta réponse finale de manière concise et professionnelle.
     """
 
 
@@ -58,7 +57,10 @@ def lancer_agent(contexte,ticket_utilisateur, outils_disponibles, modele="phi3:l
         contenu = reponse['message']['content']
 
         # Cherche si l'IA veut utiliser un outil
-        match = re.search(r'ACTION:\s*([a-zA-Z_]+)\(["\']?([^"\'\)]+)["\']?\)', contenu)
+        match = re.search(r'ACTION:\s*([a-zA-Z_]+)\("([^"]*)"\)', contenu)
+        # Fallback pour guillemets simples
+        if not match:
+            match = re.search(r"ACTION:\s*([a-zA-Z_]+)\('([^']*)'\)", contenu)
 
         # Si pas d'outil demandé, c'est la réponse finale ! On sort de la boucle.
         if not match:
@@ -72,7 +74,8 @@ def lancer_agent(contexte,ticket_utilisateur, outils_disponibles, modele="phi3:l
 
         print(f" [LLM veut utiliser l'outil] : {nom_outil_demande}('{argument}')")
 
-        resultat_outil = f"Erreur : L'outil '{nom_outil_demande}' n'existe pas."
+        noms_valides = [o.__name__ for o in outils_disponibles]
+        resultat_outil = f"Erreur : L'outil '{nom_outil_demande}' n'existe pas. Les seuls outils disponibles sont : {noms_valides}. Utilise UNIQUEMENT un de ces outils."
 
         # Exécution de l'outil
         for outil in outils_disponibles:

@@ -7,31 +7,46 @@ BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
 DB_PATH = os.path.join(BASE_DIR, 'data', 'bibops.db')
 CHROMA_PATH = os.path.join(BASE_DIR, 'data', 'vectordb')
 
+# Singleton ChromaDB : initialisé une seule fois au niveau du module
+_chroma_client = None
+def _get_chroma_collection():
+    global _chroma_client
+    if _chroma_client is None:
+        _chroma_client = chromadb.PersistentClient(path=CHROMA_PATH)
+    return _chroma_client.get_collection(name="doc_michelin")
+
 
 def verifier_statut_serveur(nom_serveur: str) -> str:
     """Vérifie l'état d'un serveur dans la base de données SQLite."""
     try:
-        conn = sqlite3.connect(DB_PATH)
-        cursor = conn.cursor()
-        cursor.execute("SELECT statut FROM serveurs_it WHERE nom = ?", (nom_serveur.upper(),))
-        resultat = cursor.fetchone()
-        conn.close()
+        with sqlite3.connect(DB_PATH) as conn:
+            cursor = conn.cursor()
+            # Recherche exacte d'abord
+            cursor.execute("SELECT nom, statut FROM serveurs_it WHERE nom = ?", (nom_serveur.upper(),))
+            resultat = cursor.fetchone()
 
-        if resultat:
-            return f"Statut : Le service {nom_serveur} est {resultat[0]}."
-        return f"Service inconnu : Aucun serveur nommé {nom_serveur}."
+            # Si pas de match exact, recherche partielle (ex: "Cisco VPN" -> trouve "VPN" et "CISCO")
+            if not resultat:
+                mots = nom_serveur.upper().split()
+                placeholders = " OR ".join(["nom = ?" for _ in mots])
+                cursor.execute(f"SELECT nom, statut FROM serveurs_it WHERE {placeholders}", mots)
+                resultats = cursor.fetchall()
+                if resultats:
+                    lignes = [f"- {nom} : {statut}" for nom, statut in resultats]
+                    return f"Services correspondants :\n" + "\n".join(lignes)
+                return f"Service inconnu : Aucun serveur nommé {nom_serveur}."
+
+        return f"Statut : Le service {resultat[0]} est {resultat[1]}."
     except Exception as e:
         return f"Erreur SQL : {e}"
 
 
 def chercher_dans_kb(requete: str) -> str:
     """
-    Recherche des solutions dans la Knowledge Base pour un problème IT.
-    Args:
-        requete: Description du problème à rechercher (ex: 'vpn ne marche pas', 'outlook crash').
-    """
+        Utilise CET outil pour chercher des solutions basiques (mots clés) dans la base de connaissances classique (JSON).
+        """
     print(f"\n[ACTION OUTIL] -> Recherche dans la KB pour : '{requete}'...")
-    kb_path = os.path.join(BASE_DIR, 'data', 'knowedge_base.json')
+    kb_path = os.path.join(BASE_DIR, 'data', 'knowledge_base.json')
     try:
         with open(kb_path, "r", encoding="utf-8") as f:
             kb = json.load(f)["knowledge_base"]
@@ -80,20 +95,26 @@ def chercher_dans_kb(requete: str) -> str:
 
 
 def chercher_documentation_technique(mot_cle: str) -> str:
-    """Cherche dans la documentation technique vectorielle de Michelin une procédure de résolution."""
+    """
+    Utilise CET outil pour chercher des procédures techniques longues ou des tutoriels détaillés (Bitlocker, VPN) dans les articles officiels Michelin (Vector DB).
+    """
     try:
-        client = chromadb.PersistentClient(path=CHROMA_PATH)
-        collection = client.get_collection(name="doc_michelin")
+        collection = _get_chroma_collection()
 
-        resultats = collection.query(query_texts=[mot_cle], n_results=1)
+        resultats = collection.query(query_texts=[mot_cle], n_results=1, include=["documents", "distances"])
 
         # Vérifier si on a vraiment trouvé quelque chose
         if not resultats['documents'] or not resultats['documents'][0]:
             return f"Aucune documentation trouvée pour : {mot_cle}"
 
+        # Filtrage par pertinence : rejeter les résultats trop éloignés (distance cosine > 1.5)
+        distance = resultats['distances'][0][0]
+        if distance > 1.5:
+            return f"Aucune documentation pertinente trouvée pour : {mot_cle} (meilleur résultat trop éloigné)."
+
         doc_trouve = resultats['documents'][0][0]
         kb_id = resultats['ids'][0][0]
 
-        return f"Documentation trouvée (Source: {kb_id}) :\n{doc_trouve}"
+        return f"Documentation trouvée (Source: {kb_id}, pertinence: {distance:.2f}) :\n{doc_trouve}"
     except Exception as e:
         return f"Aucune documentation trouvée. Erreur: {e}"
