@@ -49,10 +49,3 @@ if __name__ == "__main__":
     print("Voici l'analyse du ticket :")
     print(engine.analyser_cause_racine(test_ticket))
 
-
-
-
-
-
-
-# CHATGPT

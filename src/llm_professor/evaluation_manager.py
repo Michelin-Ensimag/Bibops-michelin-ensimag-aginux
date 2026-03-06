@@ -1,7 +1,3 @@
-# CHATGPT
-
-
-
 import json
 import os
 from datetime import datetime
@@ -29,6 +25,3 @@ def sauvegarder_evaluation(ticket, diagnostic, reponse, note):
         json.dump(data, f, indent=4, ensure_ascii=False)
     print(f"\n[SYSTÈME] Feedback enregistré dans {file_name}")
 
-
-
-#CHATGPT

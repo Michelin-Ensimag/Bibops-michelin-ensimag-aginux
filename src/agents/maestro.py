@@ -7,7 +7,7 @@ import ollama
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
 from src.agents.memoire_courte import MemoCourTerme
-from src.agents.serveur_mcp import verifier_statut_serveur, chercher_documentation_technique
+from src.agents.serveur_mcp import verifier_statut_serveur, chercher_documentation_technique, chercher_dans_kb
 
 # = RCA =
 # from src.llm_professor.rca_engine import RCAEngine
@@ -50,50 +50,52 @@ def lancer_agent(contexte,ticket_utilisateur, outils_disponibles, modele="phi3:l
 
     messages_a_envoyer = [{'role': 'system', 'content': system_prompt}] + memoire.get_messages()
 
-    # 3. Premier Appel à Ollama (L'IA réfléchit et choisit un outil)
-    reponse = ollama.chat(model=modele, messages=messages_a_envoyer)
-    contenu = reponse['message']['content']
+    # 2. La Boucle de Réflexion (ReAct : Reason + Act) Max 5 itérations
+    max_iterations = 5
+    for etape in range(max_iterations):
 
-    # 4. Capture de l'outil demandé via Regex
-    match = re.search(r'ACTION:\s*([a-zA-Z_]+)\(["\']?([^"\'\)]+)["\']?\)', contenu)
+        reponse = ollama.chat(model=modele, messages=messages_a_envoyer)
+        contenu = reponse['message']['content']
 
-    # Si l'IA ne demande pas d'outil, c'est qu'elle a sa réponse directe
-    if not match:
-        print(f"[Agent (content)] : {contenu}")
-        memoire.add_message("assistant", contenu)
-        return contenu
+        # Cherche si l'IA veut utiliser un outil
+        match = re.search(r'ACTION:\s*([a-zA-Z_]+)\(["\']?([^"\'\)]+)["\']?\)', contenu)
 
-    # 5. Exécution de l'outil
-    nom_outil_demande = match.group(1)
-    argument = match.group(2)
+        # Si pas d'outil demandé, c'est la réponse finale ! On sort de la boucle.
+        if not match:
+            print(f"\n[Agent (Réponse Finale)] : \n{contenu}")
+            memoire.add_message("assistant", contenu)
+            return contenu
 
-    print(f"[LLM veut utiliser] : {nom_outil_demande}('{argument}')")
-    resultat_outil = f"Erreur : L'outil '{nom_outil_demande}' n'existe pas."
+        # Si l'IA veut utiliser un outil
+        nom_outil_demande = match.group(1)
+        argument = match.group(2)
 
-    for outil in outils_disponibles:
-        if outil.__name__ == nom_outil_demande:
-            resultat_outil = outil(argument)
-            break
+        print(f" [LLM veut utiliser l'outil] : {nom_outil_demande}('{argument}')")
 
-    print(f"   -> Résultat : {resultat_outil[:100]}...")
+        resultat_outil = f"Erreur : L'outil '{nom_outil_demande}' n'existe pas."
 
-    # 6. On injecte le résultat dans la conversation
-    messages_a_envoyer.append({'role': 'assistant', 'content': contenu})
-    messages_a_envoyer.append({'role': 'user', 'content': f"Résultat de l'outil : {resultat_outil}"})
+        # Exécution de l'outil
+        for outil in outils_disponibles:
+            if outil.__name__ == nom_outil_demande:
+                resultat_outil = outil(argument)
+                break
 
-    # 7. Appel final pour formuler la réponse à l'utilisateur
-    reponse_finale = ollama.chat(model=modele, messages=messages_a_envoyer)
-    contenu_final = reponse_finale['message']['content']
+        print(f"   -> Résultat : {str(resultat_outil)[:150]}...")
 
-    print(f"\n[Agent (outil)]: \n{contenu_final}")
-    memoire.add_message("assistant", contenu_final)
+        # 3. On ajoute la pensée de l'IA et le résultat de l'outil dans l'historique
+        # pour relancer la boucle et qu'elle analyse le résultat
+        messages_a_envoyer.append({'role': 'assistant', 'content': contenu})
+        messages_a_envoyer.append({'role': 'user', 'content': f"Résultat de l'outil : {resultat_outil}"})
 
-    return contenu_final
+    # Si on dépasse les 5 itérations
+    reponse_secours = "Je n'ai pas pu résoudre le problème dans le temps imparti. Merci de contacter le support de niveau 2."
+    print(f"\n[Agent (Timeout)] : {reponse_secours}")
+    return reponse_secours
 
 if __name__ == "__main__":
     print("[ AGENT BIBOPS ]")
 
-    mes_outils = [verifier_statut_serveur, chercher_documentation_technique]
+    mes_outils = [verifier_statut_serveur, chercher_documentation_technique,chercher_dans_kb]
 
     lancer_agent("L'entreprise est Michelin. Le VPN principal est Cisco.","Impossible de me connecter au VPN ce matin.", outils_disponibles=mes_outils)
     print("\n" + "="*50)

@@ -1,9 +1,12 @@
 import json
 import sqlite3
 import os
+import chromadb
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
 DB_PATH = os.path.join(BASE_DIR, 'data', 'bibops.db')
+CHROMA_PATH = os.path.join(BASE_DIR, 'data', 'vectordb')
+
 
 def verifier_statut_serveur(nom_serveur: str) -> str:
     """Vérifie l'état d'un serveur dans la base de données SQLite."""
@@ -28,66 +31,69 @@ def chercher_dans_kb(requete: str) -> str:
         requete: Description du problème à rechercher (ex: 'vpn ne marche pas', 'outlook crash').
     """
     print(f"\n[ACTION OUTIL] -> Recherche dans la KB pour : '{requete}'...")
-
-    # 1. Charger la KB
+    kb_path = os.path.join(BASE_DIR, 'data', 'knowedge_base.json')
     try:
-        with open("data/knowledge_base.json", "r", encoding="utf-8") as f:
+        with open(kb_path, "r", encoding="utf-8") as f:
             kb = json.load(f)["knowledge_base"]
     except FileNotFoundError:
         return "ERREUR : Knowledge Base introuvable."
     except json.JSONDecodeError:
         return "ERREUR : Knowledge Base corrompue."
 
-    # 2. Scorer chaque entrée
     requete_lower = requete.lower()
     resultats = []
 
     for entry in kb:
         score = 0
-
-        # +2 par mot-clé trouvé dans la requête
         for mot in entry["mots_cles"]:
             if mot.lower() in requete_lower:
                 score += 2
-
-        # +1 si un mot de la requête est dans le titre
         for mot in requete_lower.split():
             if mot in entry["probleme"].lower():
                 score += 1
                 break
-
         if score > 0:
             resultats.append((score, entry))
 
-    # 3. Trier et garder les 3 meilleurs
     resultats.sort(key=lambda x: x[0], reverse=True)
     resultats = resultats[:3]
 
-    # 4. Aucun résultat
     if not resultats:
         return f"Aucune solution trouvée pour '{requete}'. Recommandation : créer un ticket support."
 
-    # 5. Formater la réponse
     reponse = f"{len(resultats)} solution(s) trouvée(s) :\n\n"
-
     for idx, (score, entry) in enumerate(resultats, 1):
-        reponse += f"--- SOLUTION {idx} ---\n"
-        reponse += f"Problème : {entry['probleme']}\n"
-        reponse += f"Catégorie : {entry['categorie']}\n"
-        reponse += f"Priorité : {entry['priorite']}\n\n"
-
+        reponse += f"--- SOLUTION {idx} ---\nProblème : {entry['probleme']}\nCatégorie : {entry['categorie']}\nPriorité : {entry['priorite']}\n\n"
         if entry["solution"].get("diagnostic"):
             reponse += "DIAGNOSTIC :\n"
             for step in entry["solution"]["diagnostic"]:
                 reponse += f"  - {step}\n"
             reponse += "\n"
-
         reponse += "RÉSOLUTION :\n"
         for i, step in enumerate(entry["solution"]["resolution"], 1):
             reponse += f"  {i}. {step}\n"
         reponse += "\n"
-
         if entry["solution"].get("escalade"):
             reponse += f"ESCALADE : {entry['solution']['escalade']}\n\n"
 
     return reponse
+
+
+def chercher_documentation_technique(mot_cle: str) -> str:
+    """Cherche dans la documentation technique vectorielle de Michelin une procédure de résolution."""
+    try:
+        client = chromadb.PersistentClient(path=CHROMA_PATH)
+        collection = client.get_collection(name="doc_michelin")
+
+        resultats = collection.query(query_texts=[mot_cle], n_results=1)
+
+        # Vérifier si on a vraiment trouvé quelque chose
+        if not resultats['documents'] or not resultats['documents'][0]:
+            return f"Aucune documentation trouvée pour : {mot_cle}"
+
+        doc_trouve = resultats['documents'][0][0]
+        kb_id = resultats['ids'][0][0]
+
+        return f"Documentation trouvée (Source: {kb_id}) :\n{doc_trouve}"
+    except Exception as e:
+        return f"Aucune documentation trouvée. Erreur: {e}"
