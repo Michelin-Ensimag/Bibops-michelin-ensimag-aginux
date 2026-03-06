@@ -1,6 +1,3 @@
-# CHATGPT
-
-
 import ollama
 
 class RCAEngine:
@@ -38,8 +35,7 @@ class RCAEngine:
             ])
             full_content = response['message']['content']
 
-            # --- PETIT NETTOYAGE (Post-processing) ---
-            # On ne garde que les lignes qui contiennent CAUSE ou MOT-CLÉ
+            # On ne garde que les lignes qui contiennent CAUSE ou MOT-CLÉ (Post-processing)
             lines = [l for l in full_content.split('\n') if "CAUSE" in l.upper() or "MOT-CLÉ" in l.upper() or "MOT-CLE" in l.upper()]
             clean_diag = "\n".join(lines)
 

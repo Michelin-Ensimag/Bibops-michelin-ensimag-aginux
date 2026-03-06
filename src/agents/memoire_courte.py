@@ -1,4 +1,4 @@
-class ShortTermMemory:
+class MemoCourTerme:
     """Conserve l'historique récent de la conversation pour donner du contexte à l'IA."""
     def __init__(self, max_messages=10):
         self.conversation_history = []

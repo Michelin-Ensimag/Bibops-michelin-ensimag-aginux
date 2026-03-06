@@ -1,3 +1,4 @@
+import json
 import sqlite3
 import os
 
@@ -18,17 +19,6 @@ def verifier_statut_serveur(nom_serveur: str) -> str:
         return f"Service inconnu : Aucun serveur nommé {nom_serveur}."
     except Exception as e:
         return f"Erreur SQL : {e}"
-
-def verifier_solde_conges(id_employe: str) -> str:
-    """
-    Vérifie le nombre de jours de congés restants pour un employé.
-    Args:
-        id_employe: Le matricule de l'employé (ex: 'EMP123').
-    """
-    print(f"\n[ACTION OUTIL] -> Interrogation du logiciel RH pour {id_employe}...")
-    return f"L'employé {id_employe} possède 12 jours de congés payés restants."
-# CHATGPT
-
 
 
 def chercher_dans_kb(requete: str) -> str:
