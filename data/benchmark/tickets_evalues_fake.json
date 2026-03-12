@@ -1,0 +1,134 @@
+[
+    {
+        "id_ticket": "1",
+        "contexte": "Tu es un technicien support IT chez Michelin. Résous ce problème brièvement.",
+        "ticket": "Mon VPN Cisco ne marche plus.",
+        "modele": "llama3.2:1b",
+        "dateheure": "2026-03-10 09:15:32",
+        "reponse": "Essayez de redémarrer le client Cisco AnyConnect. Si cela ne fonctionne pas, vérifiez votre connexion Internet et contactez le support IT au 1234.",
+        "feedback_utilisateur": "Utile",
+        "temps_reponse (s)": 2.3,
+        "nombre_tokens": 45
+    },
+    {
+        "id_ticket": "2",
+        "contexte": "Tu es un expert en Ressources Humaines chez Michelin.",
+        "ticket": "Combien de jours de congés me reste-t-il ?",
+        "modele": "llama3.2:1b",
+        "dateheure": "2026-03-10 09:45:18",
+        "reponse": "ERREUR",
+        "feedback_utilisateur": "Inutile",
+        "temps_reponse (s)": 0.0,
+        "nombre_tokens": 0
+    },
+    {
+        "id_ticket": "3",
+        "contexte": "Tu es un technicien support IT chez Michelin.",
+        "ticket": "Mon imprimante affiche erreur 404.",
+        "modele": "llama3.2:1b",
+        "dateheure": "2026-03-10 10:12:05",
+        "reponse": "L'erreur 404 sur une imprimante n'est pas standard. Vérifiez l'URL configurée ou redémarrez l'appareil.",
+        "feedback_utilisateur": "Partiellement utile",
+        "temps_reponse (s)": 1.8,
+        "nombre_tokens": 38
+    },
+    {
+        "id_ticket": "4",
+        "contexte": "Tu es un juriste d'entreprise. Réponds de manière formelle.",
+        "ticket": "Est-ce que je peux cumuler deux emplois ?",
+        "modele": "llama3.2:1b",
+        "dateheure": "2026-03-10 10:33:42",
+        "reponse": "Selon le droit du travail français, le cumul d'emplois est autorisé s'il ne viole pas la clause d'exclusivité du contrat principal. Consultez vos contrats.",
+        "feedback_utilisateur": "Utile",
+        "temps_reponse (s)": 3.1,
+        "nombre_tokens": 52
+    },
+    {
+        "id_ticket": "5",
+        "contexte": "Tu es un technicien support IT chez Michelin. Résous ce problème brièvement.",
+        "ticket": "Mon VPN Cisco ne marche plus.",
+        "modele": "gpt-3.5-turbo",
+        "dateheure": "2026-03-10 11:02:17",
+        "reponse": "Voici les étapes de dépannage pour votre problème VPN Cisco: 1) Vérifiez votre connexion réseau 2) Redémarrez l'application AnyConnect 3) Vérifiez vos identifiants 4) Contactez support@michelin.local",
+        "feedback_utilisateur": "Utile",
+        "temps_reponse (s)": 1.2,
+        "nombre_tokens": 78
+    },
+    {
+        "id_ticket": "6",
+        "contexte": "Tu es un expert en Ressources Humaines chez Michelin.",
+        "ticket": "Combien de jours de congés me reste-t-il ?",
+        "modele": "gpt-3.5-turbo",
+        "dateheure": "2026-03-10 11:28:44",
+        "reponse": "Je n'ai pas accès à votre dossier RH personnel. Veuillez consulter le portail RH ou contacter le service RH directement pour connaître votre solde de congés.",
+        "feedback_utilisateur": "Partiellement utile",
+        "temps_reponse (s)": 0.9,
+        "nombre_tokens": 42
+    },
+    {
+        "id_ticket": "7",
+        "contexte": "Tu es un technicien support IT chez Michelin.",
+        "ticket": "Mon imprimante affiche erreur 404.",
+        "modele": "gpt-3.5-turbo",
+        "dateheure": "2026-03-10 12:01:33",
+        "reponse": "L'erreur 404 indique généralement que la ressource n'est pas trouvée. Pour une imprimante: 1) Vérifiez l'IP de l'imprimante 2) Vérifiez le firmware 3) Réinitialisez l'appareil 4) Consultez le manuel.",
+        "feedback_utilisateur": "Utile",
+        "temps_reponse (s)": 1.5,
+        "nombre_tokens": 85
+    },
+    {
+        "id_ticket": "8",
+        "contexte": "Tu es un juriste d'entreprise. Réponds de manière formelle.",
+        "ticket": "Est-ce que je peux cumuler deux emplois ?",
+        "modele": "gpt-3.5-turbo",
+        "dateheure": "2026-03-10 12:45:21",
+        "reponse": "Le cumul d'emplois est légalement admissible en France, à condition de respecter les dispositions de vos contrats de travail respectifs et les limitations légales applicables au secteur d'activité.",
+        "feedback_utilisateur": "Utile",
+        "temps_reponse (s)": 0.8,
+        "nombre_tokens": 68
+    },
+    {
+        "id_ticket": "9",
+        "contexte": "Tu es un technicien support IT chez Michelin. Résous ce problème brièvement.",
+        "ticket": "Mon VPN Cisco ne marche plus.",
+        "modele": "mistral-7b",
+        "dateheure": "2026-03-10 13:15:08",
+        "reponse": "ERREUR",
+        "feedback_utilisateur": "Inutile",
+        "temps_reponse (s)": 0.0,
+        "nombre_tokens": 0
+    },
+    {
+        "id_ticket": "10",
+        "contexte": "Tu es un expert en Ressources Humaines chez Michelin.",
+        "ticket": "Combien de jours de congés me reste-t-il ?",
+        "modele": "mistral-7b",
+        "dateheure": "2026-03-10 13:42:56",
+        "reponse": "Accédez à votre espace RH personnel pour vérifier votre solde de congés payés et autres droits. Le services RH est disponible par email ou téléphone.",
+        "feedback_utilisateur": "Partiellement utile",
+        "temps_reponse (s)": 2.1,
+        "nombre_tokens": 38
+    },
+    {
+        "id_ticket": "11",
+        "contexte": "Tu es un technicien support IT chez Michelin.",
+        "ticket": "Mon imprimante affiche erreur 404.",
+        "modele": "mistral-7b",
+        "dateheure": "2026-03-10 14:09:12",
+        "reponse": "Une erreur 404 sur une imprimante suggère un problème de connectivité ou de configuration réseau. Redémarrez l'imprimante et vérifiez sa configuration réseau.",
+        "feedback_utilisateur": "Utile",
+        "temps_reponse (s)": 2.9,
+        "nombre_tokens": 42
+    },
+    {
+        "id_ticket": "12",
+        "contexte": "Tu es un juriste d'entreprise. Réponds de manière formelle.",
+        "ticket": "Est-ce que je peux cumuler deux emplois ?",
+        "modele": "mistral-7b",
+        "dateheure": "2026-03-10 14:33:45",
+        "reponse": "Oui, le cumul d'emplois est possible selon les conditions contractuelles et légales. Il est recommandé de vérifier clauses de non-concurrence et d'exclusivité.",
+        "feedback_utilisateur": "Utile",
+        "temps_reponse (s)": 3.5,
+        "nombre_tokens": 48
+    }
+]
