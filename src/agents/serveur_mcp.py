@@ -19,6 +19,9 @@ def mcp_chercher_dans_kb(requete: str) -> str:
     """Recherche des solutions dans la Knowledge Base JSON pour un problème IT."""
     return chercher_dans_kb(requete)
 
+# if __name__ == "__main__":
+#     print("Démarrage du Serveur MCP Michelin...")
+#     mcp.run_stdio_async()
+
 if __name__ == "__main__":
-    print("Démarrage du Serveur MCP Michelin...")
-    mcp.run_stdio_async()
+    mcp.run(transport="stdio")
