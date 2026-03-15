@@ -1,7 +1,7 @@
 import json
 import sqlite3
 import os
-import chromadb
+import contextlib
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
 DB_PATH = os.path.join(BASE_DIR, 'data', 'databases', 'bibops.db')
@@ -9,10 +9,29 @@ CHROMA_PATH = os.path.join(BASE_DIR, 'data', 'databases', 'vectordb')
 
 # Initialisé une seule fois au niveau du module
 _chroma_client = None
+
+
+@contextlib.contextmanager
+def _silence_native_stderr():
+    """Silence low-level stderr (fd=2) to hide noisy native library warnings."""
+    saved_stderr_fd = os.dup(2)
+    try:
+        with open(os.devnull, "w") as devnull:
+            os.dup2(devnull.fileno(), 2)
+            yield
+    finally:
+        os.dup2(saved_stderr_fd, 2)
+        os.close(saved_stderr_fd)
+
+
 def _get_chroma_collection():
     global _chroma_client
     if _chroma_client is None:
-        _chroma_client = chromadb.PersistentClient(path=CHROMA_PATH)
+        # Some grpc/absl dependencies used by vector backends can print noisy
+        # startup warnings to stderr; keep CLI output focused on agent logs.
+        with _silence_native_stderr():
+            import chromadb
+            _chroma_client = chromadb.PersistentClient(path=CHROMA_PATH)
     return _chroma_client.get_collection(name="doc_michelin")
 
 
@@ -99,16 +118,19 @@ def chercher_documentation_technique(mot_cle: str) -> str:
     Utilise CET outil pour chercher des procédures techniques longues ou des tutoriels détaillés (Bitlocker, VPN) dans les articles officiels Michelin (Vector DB).
     """
     try:
-        collection = _get_chroma_collection()
-
-        resultats = collection.query(query_texts=[mot_cle], n_results=1, include=["documents", "distances"])
+        with _silence_native_stderr():
+            collection = _get_chroma_collection()
+            resultats = collection.query(query_texts=[mot_cle], n_results=1, include=["documents", "distances"])
 
         # Vérifier si on a vraiment trouvé quelque chose
         if not resultats['documents'] or not resultats['documents'][0]:
             return f"Aucune documentation trouvée pour : {mot_cle}"
 
         # Filtrage par pertinence : rejeter les résultats trop éloignés (distance cosine >= 1.2)
-        distance = resultats['distances'][0][0]
+        distances = resultats.get('distances')
+        if not distances or not distances[0]:
+            return f"Aucune documentation pertinente trouvée pour : {mot_cle} (distance indisponible)."
+        distance = distances[0][0]
         if distance >= 1.2:
             return f"Aucune documentation pertinente trouvée pour : {mot_cle} (meilleur résultat trop éloigné)."
 
