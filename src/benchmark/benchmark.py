@@ -2,6 +2,7 @@ import csv
 import json
 import time
 import os
+from datetime import datetime
 import ollama
 
 # CHATGPT
@@ -9,6 +10,32 @@ BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
 INPUT_CSV = os.path.join(BASE_DIR, 'data', 'benchmark', 'tickets_scenario_1.csv')
 OUTPUT_JSON = os.path.join(BASE_DIR, 'data', 'benchmark', 'tickets_evalues.json')
 # CHATGPT
+
+FEEDBACK_OPTIONS = {
+    "1": "Utile",
+    "2": "Partiellement utile",
+    "3": "Inutile",
+}
+
+
+def demander_feedback_utilisateur():
+    """Demande un feedback utilisateur standardise pour chaque reponse."""
+    while True:
+        print("\nAvez-vous trouve cette reponse utile ?")
+        print("  1. Utile")
+        print("  2. Partiellement utile")
+        print("  3. Inutile")
+        choix = input("Votre choix (1/2/3) : ").strip()
+
+        if choix in FEEDBACK_OPTIONS:
+            return FEEDBACK_OPTIONS[choix]
+
+        print("Choix invalide. Merci de saisir 1, 2 ou 3.")
+
+
+def extraire_compteurs_tokens(_reponse_ollama, texte_reponse):
+    """Approximation simple des tokens (1 token ~= 4 caracteres)."""
+    return len(texte_reponse) // 4
 
 def run_benchmark(model_name="phi3:latest"):
     print(f"Benchmark BibOps sur le modèle : {model_name}\n")
@@ -36,6 +63,7 @@ def run_benchmark(model_name="phi3:latest"):
             try:
                 #START
                 start_time = time.time()
+                dateheure_capture = datetime.now().isoformat()
 
                 # Appel à Ollama
                 reponse = ollama.chat(
@@ -46,13 +74,20 @@ def run_benchmark(model_name="phi3:latest"):
                 # STOP
                 latency = time.time() - start_time
                 texte_ia = reponse['message']['content']
+                nombre_tokens = extraire_compteurs_tokens(reponse, texte_ia)
 
-                print(f"Fait en {latency:.2f} secondes.")
+                print(f"Fait en {latency:.2f} secondes. Tokens total: {nombre_tokens}.")
 
             except Exception as e:
                 print(f"Erreur sur le ticket {ticket_id}: {e}")
                 texte_ia = "ERREUR"
                 latency = 0.0
+                dateheure_capture = datetime.now().isoformat()
+                nombre_tokens = 0
+
+            print("\nRéponse du modèle :")
+            print(texte_ia)
+            feedback_utilisateur = demander_feedback_utilisateur()
 
 
             # 3. Stockage des métriques
@@ -62,7 +97,10 @@ def run_benchmark(model_name="phi3:latest"):
                 "ticket": ticket_texte,
                 "modele": model_name,
                 "reponse": texte_ia,
-                "temps_reponse (s)": round(latency, 2)
+                "temps_reponse (s)": round(latency, 2),
+                "nombre_tokens": nombre_tokens,
+                "dateheure": dateheure_capture,
+                "feedback_utilisateur": feedback_utilisateur
             })
 
     # On met les resultats dans un fichier json pour les analyser apres dans le fichier analyse_du_projet.ipynb

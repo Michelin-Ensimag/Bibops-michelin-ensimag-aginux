@@ -43,20 +43,20 @@ class LLMProfessor:
 
 
             # Invocation de la chaîne
-            resultat = self.chain.invoke({
+        resultat = self.chain.invoke({
                 "ticket": ticket_texte,
                 "reponse_agent": reponse_agent,
                 "format_instructions": self.parser.get_format_instructions()
             })
 
-            note = resultat.get("note")
-            justification = resultat.get("justification")
+        note = resultat.get("note")
+        justification = resultat.get("justification")
 
-            print(f" -> Note : {note}/5")
-            print(f" -> Justification : {justification}")
+        print(f" -> Note : {note}/5")
+        print(f" -> Justification : {justification}")
 
-            self._sauvegarder_en_base(ticket_id, modele_agent, reponse_agent, temps_reponse, note, justification)
-            return resultat
+        self._sauvegarder_en_base(ticket_id, modele_agent, reponse_agent, temps_reponse, note, justification)
+        return resultat
 
 
 

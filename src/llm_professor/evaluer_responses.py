@@ -1,16 +1,8 @@
 """
-Module d'évaluation des réponses des modèles LLM basé sur plusieurs critères.
-
-Ce module score chaque réponse sur 10 en fonction de :
-- Absence d'erreur (ERREUR vs réponse valide)
-- Feedback utilisateur (Utile/Partiellement utile/Inutile)
-- Temps de réponse (rapidité)
-- Efficacité en tokens (consommation de ressources)
-
-Les scores sont sauvegardés dans un fichier séparé avec structure permettant (éventuellement)
-le filtrage et la comparaison entre modèles.
+Module d'évaluation des réponses des modèles LLM sur 10 basé sur plusieurs critères.
+Critères et poids décris dans config_evaluation.py
 """
-
+# CHATGPT
 import json
 import os
 from pathlib import Path
@@ -41,10 +33,9 @@ except ImportError:
 
 
 class EvaluationEngine:
-    """Moteur d'évaluation des réponses LLM"""
+    # Moteur d'évaluation des réponses LLM
 
     def __init__(self):
-        """Initialise le moteur d'évaluation"""
         self.weights = WEIGHTS
         self.feedback_scores = FEEDBACK_SCORES
 
@@ -340,7 +331,7 @@ def compare_models(results: Dict[str, Any]) -> Dict[str, Any]:
     )
     
     return comparison
-
+#CHATGPT
 
 if __name__ == "__main__":
     # Chemins des fichiers
@@ -358,9 +349,10 @@ if __name__ == "__main__":
     print("=" * 70)
     comparison = compare_models(results)
     for modele, stats in comparison.items():
-        print(f"\n📦 {modele}")
+        print(f" {modele}")
         print(f"   Tickets: {stats['nombre_tickets']}")
         print(f"   Score moyen: {stats['score_moyen']}/10")
         print(f"   Score médian: {stats['score_median']}/10")
         print(f"   Score min-max: {stats['score_range']}")
         print(f"   Écart-type: {stats['score_std_dev']}")
+

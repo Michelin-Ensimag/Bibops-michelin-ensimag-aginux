@@ -1,6 +1,6 @@
 """
 Configuration de la formule d'évaluation des réponses des modèles LLM
-Permet d'ajuster les poids et les paramètres
+Permet d'ajuster les poids
 """
 
 # POIDS RELATIFS 
@@ -46,7 +46,7 @@ SCORE_MAX = 10
 # Format de la colonne dateheure attendue
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 
-# Modèles connus (pour filtrage et analyse)
+# Modèles connus (pour analyse)
 KNOWN_MODELS = [
     "llama3.2:1b",
     "gpt-4",
