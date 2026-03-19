@@ -1,0 +1,23 @@
+[
+  {
+    "modele": "gpt-4o-mini",
+    "reponse": "Voici les étapes à suivre pour résoudre le problème de connexion au VPN Cisco :\n\n1. **Vérifiez votre connexion Internet :** Assurez-vous d'être connecté à Internet en ouvrant un navigateur et en accédant à un site web.\n\n2. **Redémarrez le client VPN :** Fermez complètement le client Cisco VPN, puis relancez-le et essayez de vous reconnecter.\n\n3. **Vérifiez les paramètres VPN :**\n   - Assurez-vous que vos identifiants sont corrects.\n   - Vérifiez que l'adresse du serveur VPN est bien saisie.\n\n4. **Désactivez temporairement le pare-feu :** Si vous utilisez un logiciel de pare-feu, essayez de le désactiver temporairement pour voir si cela résout le problème.\n\n5. **Reboot de l’ordinateur :** Redémarrez votre ordinateur pour appliquer toutes les mises à jour et réinitialiser les connexions réseaux.\n\nSi le problème persiste après ces étapes, je vous recommande d'escalader ce problème au support de niveau 2 pour une assistance plus approfondie.",
+    "temps_s": 2.71,
+    "total_tokens": 328,
+    "statut": "OK"
+  },
+  {
+    "modele": "gpt-4o",
+    "reponse": "Voici les étapes pour tenter de résoudre le problème de connexion au VPN Cisco :\n\n1. **Vérifier la connexion Internet** : Assurez-vous que votre connexion Internet fonctionne correctement en testant l'accès à des sites web. \n2. **Redémarrer votre routeur et PC** : Éteignez votre modem/routeur pendant 30 secondes, rallumez-le, puis redémarrez votre ordinateur.\n3. **Tester un autre réseau** : Si possible, essayez de vous connecter à un autre réseau (Wi-Fi ou câble Ethernet) pour voir si le problème persiste.\n4. **Vérifier les identifiants VPN** : Assurez-vous que vous utilisez les bons identifiants et que vos informations de connexion sont correctes.\n5. **Redémarrer le client VPN** : Fermez complètement le logiciel Cisco AnyConnect, patientez quelques secondes, puis relancez-le.\n6. **Mise à jour du logiciel VPN** : Vérifiez que Cisco AnyConnect est bien à jour. Si besoin, téléchargez la dernière version fournie par Michelin.\n7. **Échec de pare-feu ou antivirus** : Vérifiez que votre pare-feu ou votre antivirus n'empêche pas la connexion. Désactivez-le temporairement pour tester.\n8. **Changer le serveur VPN (si applicable)** : Si votre configuration VPN offre plusieurs serveurs, essayez d'en sélectionner un autre.\n\nSi le problème persiste après avoir suivi ces étapes, je vous recommande de contacter le support niveau 2 en leur fournissant ces informations :\n- Heure précise de l'erreur\n- Message d'erreur complet\n- Réseau utilisé (domicile, Wi-Fi entreprise, etc.)\n- Toute modification récente de votre configuration réseau ou PC\n\n",
+    "temps_s": 4.18,
+    "total_tokens": 460,
+    "statut": "OK"
+  },
+  {
+    "modele": "claude-haiku-4.5",
+    "reponse": "# Dépannage VPN Cisco - Connection Timeout\n\n## Étapes de résolution :\n\n1. **Vérifiez votre connexion réseau**\n   - Testez la connexion Internet (ouvrez un site web)\n   - Redémarrez votre routeur/WiFi si nécessaire\n\n2. **Redémarrez le client Cisco AnyConnect**\n   - Fermez complètement l'application\n   - Attendez 30 secondes\n   - Relancez-la\n\n3. **Vérifiez les pare-feu**\n   - Vérifiez que le pare-feu Windows n'a pas bloqué Cisco AnyConnect\n   - Autorisez l'application si nécessaire\n\n4. **Effacez le cache de connexion**\n   - Supprimez les profils VPN en cache dans AnyConnect\n   - Relancez la connexion\n\n5. **Vérifiez votre accès VPN**\n   - Confirmez que votre compte VPN n'a pas expiré\n   - Vérifiez vos identifiants\n\n## Si le problème persiste :\n⚠️ **Escalade recommandée** → Contactez le **Support IT Niveau 2** avec :\n- Le message d'erreur exact\n- Votre OS (Windows/Mac/Linux)\n- La version d'AnyConnect\n- L'heure du dernier accès réussi\n\n**Ticket de support urgent :** support-it@michelin.com ou poste 5000",
+    "temps_s": 3.64,
+    "total_tokens": 500,
+    "statut": "OK"
+  }
+]
