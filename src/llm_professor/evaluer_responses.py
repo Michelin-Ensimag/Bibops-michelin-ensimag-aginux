@@ -174,7 +174,7 @@ class EvaluationProcessor:
     def __init__(self, input_json_path: str, output_json_path: str):
         """
         Args:
-            input_json_path: Chemin vers le fichier tickets_evalues_fake.json
+            input_json_path: Chemin vers le fichier tickets_evalues.json
             output_json_path: Chemin vers le fichier de résultats avec scores
         """
         self.input_path = Path(input_json_path)
@@ -336,7 +336,7 @@ def compare_models(results: Dict[str, Any]) -> Dict[str, Any]:
 if __name__ == "__main__":
     # Chemins des fichiers
     DATA_DIR = Path(__file__).parent.parent.parent / "data" / "benchmark"
-    INPUT_FILE = DATA_DIR / "tickets_evalues_fake.json"
+    INPUT_FILE = DATA_DIR / "tickets_evalues.json"
     OUTPUT_FILE = DATA_DIR / "tickets_evalues_scores.json"
 
     # Création et lancement du processeur
