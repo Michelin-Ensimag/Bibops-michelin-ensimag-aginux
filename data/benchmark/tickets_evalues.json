@@ -4,10 +4,10 @@
         "contexte": "Tu es un technicien support IT chez Michelin. Résous ce problème brièvement.",
         "ticket": "Mon VPN Cisco ne marche plus.",
         "modele": "phi3:latest",
-        "reponse": "Votre service de sécurité réseau (VPN) utilisant le matériel Cisco s'est probablement arrêté pour plusieurs raisons possibles, telles que des problèmes d'actifs physiques comme les cartes virtuelles ou des appareils VPN, une configuration incorrecte dans votre pare-feu Cisco ASA, un fuseau horaire incompatible avec la politique de sécurité réseau, ou encore une mise à jour mineure non reconnue par le système. Pour résoudre rapidement ce problème :\n\n1. Vérifiez que les cartes virtuelles Cisco sont bien installées et éteintes pour éviter des conflits de port avec d'autres équipements réseau. \n2. Exécutez une vérification complète en utilisant la commande 'show run | include crypto map' dans le PAN (Personal Area Network) VPN Cisco pour examiner les configurations potentiellement problématiques.\n3. Assurez-vous que votre pare-feu Cisco ASA a des politiques de sécurité réseau bien définies et configurées correctement pour l'accès au VPN, en vérifiant 'show running-config security policy device'. \n4. Sortez d’utilisation le fuseau horaire actuel si celui-ci est incompatible avec les exigences de votre politique de sécurité réseau (Cisco recommandait généralement UTC pour la synchronisation des timestamps). Utilisez 'set time zone utc' dans l'interface terminal Cisco ASA.\n5. Mettez à jour le firmware ou la version logicielle du matériel VPN avec les derniers correctifs disponibles en utilisant 'copy tftp://<Copie-URL> flash:'.\n6. Si possible, réessayez l'utilisation de votre service de VPN après avoir mis à jour le firmware et vérifié que la configuration est stable sur plusieurs pannes successives pour confirmer qu'il fonctionne comme prévu.",
-        "temps_reponse (s)": 63.12,
-        "nombre_tokens": 416,
-        "dateheure": "2026-03-19T17:01:37.589191",
+        "reponse": "Pour résoudre le problème de votre VPN Cisco qui ne fonctionne plus, suivez ces étapes :\n\n1. **Vérification des paramètres**: Assurez-vous que les configurations du parempteur et client sont correctement configurés selon la documentation officielle fournie par Cisco.\n\n2. **Redémarrage de l'appareil VPN**: Essayez un redémarrage complet des appareils impliqués dans le réseau VPN pour voir si cela résout les problèmes temporaires.\n\n3. extrême-vpn \n4. **Vérification du service Internet et d’autres connexions**: Confirmez que votre accès à internet est stable, car des interruptions peuvent affecter la fonctionnalité de VPN.\n\n5. **Exécution d'un test réseau**: Utilisez un outil comme Wireshark pour analyser les paquets échangés et identifier si le problème réside dans l'infrastructure réseau ou au niveau du parempteur/client.\n\n6. **Révision des journaux d’erreurs**: Consultez les logs système pour déceler tout message d'erreur pouvant indiquer la source du problème.\n\n7. **Mise à jour de logiciels et firmware**: Assurez-vous que le parempteur, le client VPN Cisco et toutes les autres appareils réseau sont mises à jour vers les dernières versions compatibles avec votre système d'exploitation.\n\n8. **Contactez l’assistance technique de Cisco**: Si aucune des étapes ci-dessus ne résout le problème, contacter directement la support clientèle pour obtenir une assistance supplémentaire peut être nécessaire.",
+        "temps_reponse (s)": 68.25,
+        "nombre_tokens": 462,
+        "dateheure": "2026-03-19T21:49:30.915606",
         "feedback_utilisateur": "Utile"
     },
     {
@@ -15,10 +15,10 @@
         "contexte": "Tu es un expert en Ressources Humaines chez Michelin.",
         "ticket": "Combien de jours de congés me reste-t-il ?",
         "modele": "phi3:latest",
-        "reponse": "En tant qu'expert renommé dans le domaine des ressources humaines pour la marque Michelin, je m'engage à fournir un service d'exceptionnel niveau en vous répondant que les détails spécifiques concernant vos jours de congés restants dépendent de votre statut et du calendrier annuel des congés. Pour obtenir ces informations précises, veuillez consulter le plan de télétravail proposé ou contacter directement la personne chargée des ressources humaines au sein de l'entreprise Michelin par e-mail (email@example.com) pour une réponse personnalisée et informative concernant vos congés en attente.",
-        "temps_reponse (s)": 16.01,
-        "nombre_tokens": 149,
-        "dateheure": "2026-03-19T17:06:49.629145",
+        "reponse": "Pour répondre à cette question, il faudrait que vous fournissiez des informations spécifiques concernant vos conditions d'emploi au sein de Michelin. En général, les employés peuvent consulter leur calendrier personnel ou contacter votre service des ressources humaines pour obtenir ces détails précis. Si vous êtes un salarié en France, par exemple, le nombre de jours de congés accordés peut varier selon la durée d'ancienneté et les conventions collectives applicables à Michelin dans cette région.\n\n\nSi je suis votre assistant virtuel ou si j'ai accès aux informations nécessaires via une API interne, voici comment je pourrais répondre : \n\n\"En tant qu'assistant AI de Michelin, je peux vous aider à vérifier le nombre de jours de congés restants. Pour ce faire, veuillez me fournir votre numéro d'identification ou les détails nécessaires pour accéder aux informations personnelles.\"\n\n\nSi cela n'est pas possible et que vous êtes un employé en France avec des conditions standard de travail, le nombre moyen de jours de congés accordés est généralement autour de 20 à 25 jours par an. Cependant, il convient toujours dner consulter votre calendrier personnel ou contacter directement les Ressources Humaines pour obtenir la réponse exacte qui s'applique à vous.",
+        "temps_reponse (s)": 58.53,
+        "nombre_tokens": 371,
+        "dateheure": "2026-03-19T21:50:49.648853",
         "feedback_utilisateur": "Partiellement utile"
     },
     {
@@ -26,21 +26,65 @@
         "contexte": "Tu es un technicien support IT chez Michelin.",
         "ticket": "Mon imprimante affiche erreur 404.",
         "modele": "phi3:latest",
-        "reponse": "Je suis désolé d'apprendre que vous rencontrez des problèmes avec votre imprimante en affichant une erreur 404, ce qui indique généralement qu'une ressource web est introuvable sur le serveur. Cependant, étant donné que l'imprimante est un périphérique matériel et non pas un site Web ou une page web directement accessible via Internet, il semble probable qu'il y ait eu une confusion dans la communication du problème. Voici quelques étapes pour diagnostiquer le problème avec votre imprimante Michelin :\n\n1. Vérifiez les câbles d’alimentation et de données (par exemple, USB ou Wi-Fi) - ils doivent être solidement connectés à la fois au périphérique d'impression et à votre ordinateur ou routeur/modem pour assurer une communication correcte.\n\n2. Vérifiez le mode d’alimentation de l'imprimante (manuel). Assurez-vous que les piles sont chargées si vous utilisez des imprimantes laser et qu'il n'y a pas dendrocyte qui semblent endommager.\n\n3. Redémarrez votre imprimante et votre ordinateur pour réinitialiser le matériel sans toucher à la mémoire du périphérique (la commande 'redémarrer').\n\n4. Ouvrez les paramètres d'impression dans votre système Windows ou macOS, vérifiez que l'imprimante est reconnue et configurée correctement pour utiliser le bon fournisseur de données réseau si nécessaire.\n\n5. Vérifiez sur la page web des mises à jour logicielle que les derniers pilotes d’impression sont installés à partir du site officiel Michelin ou via un gestionnaire tel qu'IBM WebSphere Studio Application Center pour Windows, et effectuez une mise à jour si nécessaire.\n\n6. Consultez le manuel de votre imprimante concernant la résolution des erreurs 404 liées aux fichiers spécifiques sur l’imprimante (par exemple, documents bloqués ou inutilisables), car cela pourrait être une situation similaire.\n\n7. Si les étapes ci-dessus ne fonctionnent pas, vérifiez si d'autres imprimantes sont correctement installées et reconnues par votre ordinateur via le BIOS/UEFI ou un utilitaire de configuration réseau pour exclure une erreur logicielle spécifique à l’imprimante.\n\n8. Si vous avez déjà contacté le service clientèle Michelin, ré-envoyez la demande avec ces informations supplémentaires et qu'ils peuvent fournir des conseils plus personnalisés ou un support technique direct pour résoudre ce problème particulier sur votre imprimante de marque.\n\nN'oubliez pas que les erreurs 404 sont généralement liées à l'accès aux ressources web et non aux périphériques matériels tels qu’une imprimante, donc il est toujours utile d'examiner attentivement la communication pour vous assurer de ne pas mélanger les enjeux.\n\nSi après ces vérifications le problème persiste, il serait judicieux de contacter directement Michelin ou un service technique professionnel qui peut fournir une assistance plus spécialisée et techniquement avancée à résoudre ce problème d'impression chez la société automobile prestigieuse.",
-        "temps_reponse (s)": 92.94,
-        "nombre_tokens": 728,
-        "dateheure": "2026-03-19T17:07:17.956832",
-        "feedback_utilisateur": "Partiellement utile"
+        "reponse": "Bonjour, je suis désolé d'apprendre que vous rencontrez des problèmes avec votre imprimante en affichant une erreur 404. Voici quelques étapes pour résoudre ce problème :\n\n1. Vérifiez si l'imprimante est correctement connectée à votre ordinateur via un câble USB ou Bluetooth, et que le bon pilote d'impression a été installé sur votre système.\n2. Essayez de redémarrer la machine pour voir si cela résout le problème temporaire.\n3. Vérifiez les paramètres réseau de l'imprimante pour vous assurer quener est correctement configurée et connectée à Internet (si c'est une imprimante en ligne).\n4. Essayez d'utiliser un autre site Web ou document pour imprimer, cela peut aider à identifier si le problème vient de votre ordinateur ou du serveur web spécifique que vous essayiez d'imprimer depuis.\n5. Si l'erreur persiste, contactez le support clientèle Michelin et fournissez-leur les détails des erreurs pour obtenir un soutien supplémentaire.",
+        "temps_reponse (s)": 43.71,
+        "nombre_tokens": 316,
+        "dateheure": "2026-03-19T21:51:53.100934",
+        "feedback_utilisateur": "Inutile"
     },
     {
         "id_ticket": "4",
         "contexte": "Tu es un juriste d'entreprise. Réponds de manière formelle.",
         "ticket": "Est-ce que je peux cumuler deux emplois ?",
         "modele": "phi3:latest",
-        "reponse": "Bonsoir, en tant qu'expert en droit des affaires et bien sûr tout respectueusement, il est important d'aborder la question de l'emploi avec prudence. Le fait de cumuler plusieurs emplois peut être possible mais dépendra de divers facteurs juridiques spécifiques à votre situation personnelle et au statut légal des entreprises impliquées.\n\nPremièrement, le contrat que vous avez signé avec chaque employeur devrait clairement indiquer les termes du travail indépendant ou contractuel pour éviter tout malentendu concernant la nature de votre relation d'emploi. Si vos emplois sont considérés comme des traites ou des contrats, il est impératif que vous respectiez leurs termes spécifiques sans les violer ni provoquer le risque d'une action en justice pour rupture de contrat ou même concurrence déloyale.\n\nDeuxièmement, la loi française et belge reconnaissent l'importance du travail indépendant sous certaines conditions précises telles que l’indépendance claire des tâches entreprises et le respect d'une juste rémunération pour votre travail. Il est primordial de s'assurer qu'il n'y a pas eu de tromperie ou de conflit d'intérêt dans la relation employeur-employé avant de commencer à cumuler des emplois, et que vous respectez les obligations légales telles que le paiement des cotisations sociales.\n\nEnfin, il est conseillé de consulter un avocat spécialisé en droit du travail afin d'obtenir une orientation adaptée à votre situation particulière, ce qui pourrait également inclure l’examen de possibles clauses de non-concurrence ou limitation des dépenses dans vos contrats actuels.\n\nEn somme, il est essentiel que vous évaluiez minutieusement les implications légales et potentielles d'une telle décision avant de poursuivre cette voie professionnelle supplémentaire. Je reste à votre disposition pour toute question spécifique ou information juridique dont je pourrais être amené à fournir un éclaircissement en me basant sur les dernières jurisprudences et textes légaux applicables dans le contexte français/belge.",
-        "temps_reponse (s)": 61.7,
-        "nombre_tokens": 507,
-        "dateheure": "2026-03-19T17:09:03.000698",
+        "reponse": "Bonjour,\n\n\nEn tant qu'expert en droit du travail et dans les pratiques professionnelles d'entreprise, il est essential de comprendre la légalité des situations impliquant plusieurs sources de revenus. En France, le principe général repose sur l'idée que chaque personne doit exercer une activité lucrative pour subvenir à ses besoins et ceux de sa famille. Cependant, cela ne signifie pas nécessairement qu'une personne est tenue d'occuper un seul poste au sein d'une entreprise ou organisation.\n\n\nLa possibilité de cumuler plusieurs emplois dépendra des circonstances spécifiques de votre situation et doit être évaluée en prenant en compte les éléments suivants : \n\n1. La nature du travail effectué dans chaque poste, notamment si elle est similaire ou complémentaire ;\n\n2. Les heures travaillées cumulativement par semaine pour chacun des emplois et leur impact sur votre santé physique et mentale ;\n\n3. L'existence de clauses spécifiques dans vos contrats d'emploi qui régissent le travail à temps partiel ou la possibilité de travailler en freelance, si applicable ;\n\n4. Les lois locales et les conventions collectives applicables au sein du secteur d'activité concerné par votre situation professionnelle. \n\n\nIl est conseillé de consulter un avocat spécialisé dans le droit du travail pour obtenir des éclaircissements personnalisés à votre sujet, en vous assurant que vos droits sont respectés et que vous opérez légalement.",
+        "temps_reponse (s)": 60.27,
+        "nombre_tokens": 427,
+        "dateheure": "2026-03-19T21:52:50.947632",
+        "feedback_utilisateur": "Utile"
+    },
+    {
+        "id_ticket": "1",
+        "contexte": "Tu es un technicien support IT chez Michelin. Résous ce problème brièvement.",
+        "ticket": "Mon VPN Cisco ne marche plus.",
+        "modele": "mistral:latest",
+        "reponse": "ERREUR",
+        "temps_reponse (s)": 0.0,
+        "nombre_tokens": null,
+        "dateheure": "2026-03-19T21:54:23.823190",
+        "feedback_utilisateur": "Utile"
+    },
+    {
+        "id_ticket": "2",
+        "contexte": "Tu es un expert en Ressources Humaines chez Michelin.",
+        "ticket": "Combien de jours de congés me reste-t-il ?",
+        "modele": "mistral:latest",
+        "reponse": "ERREUR",
+        "temps_reponse (s)": 0.0,
+        "nombre_tokens": null,
+        "dateheure": "2026-03-19T21:54:29.127774",
+        "feedback_utilisateur": "Partiellement utile"
+    },
+    {
+        "id_ticket": "3",
+        "contexte": "Tu es un technicien support IT chez Michelin.",
+        "ticket": "Mon imprimante affiche erreur 404.",
+        "modele": "mistral:latest",
+        "reponse": "ERREUR",
+        "temps_reponse (s)": 0.0,
+        "nombre_tokens": null,
+        "dateheure": "2026-03-19T21:54:32.258855",
         "feedback_utilisateur": "Inutile"
+    },
+    {
+        "id_ticket": "4",
+        "contexte": "Tu es un juriste d'entreprise. Réponds de manière formelle.",
+        "ticket": "Est-ce que je peux cumuler deux emplois ?",
+        "modele": "mistral:latest",
+        "reponse": "ERREUR",
+        "temps_reponse (s)": 0.0,
+        "nombre_tokens": null,
+        "dateheure": "2026-03-19T21:54:33.677126",
+        "feedback_utilisateur": "Utile"
     }
 ]

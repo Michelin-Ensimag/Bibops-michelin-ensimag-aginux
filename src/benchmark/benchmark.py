@@ -2,6 +2,7 @@ import csv
 import json
 import time
 import os
+import sys
 from datetime import datetime
 import ollama
 
@@ -15,6 +16,12 @@ FEEDBACK_OPTIONS = {
     "1": "Utile",
     "2": "Partiellement utile",
     "3": "Inutile",
+}
+
+# Options de generation pour garder le benchmark rapide et stable.
+OLLAMA_OPTIONS = {
+    "num_predict": 1024,
+    "temperature": 0,
 }
 
 
@@ -33,20 +40,65 @@ def demander_feedback_utilisateur():
         print("Choix invalide. Merci de saisir 1, 2 ou 3.")
 
 
-def extraire_compteurs_tokens(_reponse_ollama, texte_reponse):
-    """Approximation simple des tokens (1 token ~= 4 caracteres)."""
-    return len(texte_reponse) // 4
+def _lire_champ(objet, cle):
+    """Lit un champ depuis un dict ou un objet (attribut)."""
+    if isinstance(objet, dict):
+        return objet.get(cle)
+    return getattr(objet, cle, None)
 
-def run_benchmark(model_name="phi3:latest"):
-    print(f"Benchmark BibOps sur le modèle : {model_name}\n")
+
+def extraire_texte_reponse(reponse_ollama):
+    """Extrait le texte de reponse sans supposer un format unique."""
+    message = _lire_champ(reponse_ollama, "message")
+    contenu = _lire_champ(message, "content") if message is not None else None
+    if isinstance(contenu, str):
+        return contenu
+    return ""
+
+
+def extraire_compteurs_tokens(reponse_ollama):
+    """Compte les tokens via metadonnees natives Ollama, sans approximation."""
+    # Format Ollama chat classique
+    prompt_eval_count = _lire_champ(reponse_ollama, "prompt_eval_count")
+    eval_count = _lire_champ(reponse_ollama, "eval_count")
+    if isinstance(prompt_eval_count, int) and isinstance(eval_count, int):
+        return prompt_eval_count + eval_count, "ollama_native"
+
+    # Format type usage (compatibilite clients/API differents)
+    usage = _lire_champ(reponse_ollama, "usage")
+    if isinstance(usage, dict):
+        total_tokens = usage.get("total_tokens")
+        if isinstance(total_tokens, int):
+            return total_tokens, "usage_total_tokens"
+
+        prompt_tokens = usage.get("prompt_tokens")
+        completion_tokens = usage.get("completion_tokens")
+        if isinstance(prompt_tokens, int) and isinstance(completion_tokens, int):
+            return prompt_tokens + completion_tokens, "usage_prompt_plus_completion"
+
+    # Cas ou l'API ne fournit pas de compteur fiable pour cette requete.
+    return None, "native_tokens_absents"
+
+def run_benchmark(model_names=None):
+    if model_names is None:
+        model_names = ["phi3:latest"]
+    elif isinstance(model_names, str):
+        model_names = [model_names]
+
+    print(f"Benchmark BibOps sur les modèles : {', '.join(model_names)}\n")
 
     resultats = []
 
     # Lecture des tickets
     with open(INPUT_CSV, mode='r', encoding='utf-8') as file:
-        reader = csv.DictReader(file)
+        tickets = list(csv.DictReader(file))
 
-        for row in reader:
+    for model_name in model_names:
+        print("=" * 70)
+        print(f"Modèle en cours : {model_name}")
+        print("=" * 70)
+
+        for row in tickets:
             ticket_id = row.get('id', 'Inconnu')
             ticket_texte = row.get('ticket', '')
             # LECTURE DU CONTEXTE DEPUIS LE CSV (La magie opère ici)
@@ -66,27 +118,38 @@ def run_benchmark(model_name="phi3:latest"):
                 dateheure_capture = datetime.now().isoformat()
 
                 # Appel à Ollama
+                print("  -> Appel Ollama en cours...")
                 reponse = ollama.chat(
                     model=model_name,
-                    messages=prompt
+                    messages=prompt,
+                    options=OLLAMA_OPTIONS,
                 )
 
                 # STOP
                 latency = time.time() - start_time
-                texte_ia = reponse['message']['content']
-                nombre_tokens = extraire_compteurs_tokens(reponse, texte_ia)
+                texte_ia = extraire_texte_reponse(reponse)
+                if not texte_ia:
+                    raise RuntimeError("Reponse Ollama vide ou format inattendu (message.content manquant).")
+                nombre_tokens, _ = extraire_compteurs_tokens(reponse)
 
-                print(f"Fait en {latency:.2f} secondes. Tokens total: {nombre_tokens}.")
+                print(
+                    f"Fait en {latency:.2f} secondes. "
+                    f"Traitement termine."
+                )
+
+                if nombre_tokens is None:
+                    print("[Avertissement] Compteurs de tokens natifs absents pour ce ticket (aucune approximation appliquee).")
 
             except Exception as e:
                 print(f"Erreur sur le ticket {ticket_id}: {e}")
                 texte_ia = "ERREUR"
                 latency = 0.0
                 dateheure_capture = datetime.now().isoformat()
-                nombre_tokens = 0
+                nombre_tokens = None
 
             print("\nRéponse du modèle :")
             print(texte_ia)
+            print("\nEn attente du feedback utilisateur...")
             feedback_utilisateur = demander_feedback_utilisateur()
 
 
@@ -111,8 +174,18 @@ def run_benchmark(model_name="phi3:latest"):
     print(f"\nrésultats du Benchmark dans : {OUTPUT_JSON}")
 
 if __name__ == "__main__":
-    # On doit mettre d autres models que celui la pour comparer ( ou les mixer peut etre ... )
-    run_benchmark(model_name="phi3:latest")
+    # Usage:
+    # python src/benchmark/benchmark.py
+    # python src/benchmark/benchmark.py phi3:latest mistral:latest
+    # python src/benchmark/benchmark.py "phi3:latest,mistral:latest"
+    modeles_cli = []
+    for arg in sys.argv[1:]:
+        modeles_cli.extend([m.strip() for m in arg.split(",") if m.strip()])
+
+    if not modeles_cli:
+        modeles_cli = ["phi3:latest"]
+
+    run_benchmark(model_names=modeles_cli)
 
 # Le "Cold Start" (Démarrage à froid). Lors de la première question, Ollama doit charger le modèle d'un giga-octet
 # depuis le disque dur vers la mémoire vive (RAM/VRAM)
