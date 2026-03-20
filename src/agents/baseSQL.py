@@ -17,9 +17,20 @@ def initialiser_base_de_donnees():
     # Ajout de la colonne justification_juge pour llm_professor plus tard
     cursor.execute('''CREATE TABLE IF NOT EXISTS evaluations (id INTEGER PRIMARY KEY AUTOINCREMENT, ticket_id INTEGER, modele TEXT, reponse_ia TEXT, temps_reponse_s REAL, note_juge INTEGER, justification_juge TEXT, FOREIGN KEY(ticket_id) REFERENCES tickets(id))''')
 
+    # Migration : ajoute justification_juge si la table existait avant cette colonne
+    try:
+        cursor.execute("ALTER TABLE evaluations ADD COLUMN justification_juge TEXT")
+    except sqlite3.OperationalError:
+        pass  # colonne déjà présente
+
     # Upsert serveurs : on remplace uniquement les données de référence
     cursor.execute('DELETE FROM serveurs_it')
-    serveurs = [('VPN', 'HORS LIGNE (Incident 4042)', '2026-02-26'), ('CISCO', 'EN LIGNE', '2026-02-26'), ('OUTLOOK', 'EN LIGNE', '2026-02-26')]
+    serveurs = [
+        ('VPN',        'HORS LIGNE (Incident 4042)', '2026-02-26'),
+        ('CISCO',      'EN LIGNE',                   '2026-02-26'),
+        ('OUTLOOK',    'EN LIGNE',                   '2026-02-26'),
+        ('IMPRIMANTE', 'EN LIGNE',                   '2026-02-26'),
+    ]
     cursor.executemany('INSERT INTO serveurs_it VALUES (?, ?, ?)', serveurs)
 
     # On insère les tickets de test seulement si la table est vide (pour ne pas perdre les évaluations liées)

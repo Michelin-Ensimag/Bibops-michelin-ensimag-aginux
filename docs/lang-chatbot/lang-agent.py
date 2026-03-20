@@ -29,7 +29,7 @@ llm_secours = ChatOllama(model="phi3:latest", temperature=0)
 # STEP 2 — Vector store path
 # This must match the persist_directory used in main.py when building the index.
 # ---------------------------------------------------------------------------
-VECTOR_STORE_PATH = "./chatbot_article_dataset"
+VECTOR_STORE_PATH = "chatbot_article_dataset"
 
 # ---------------------------------------------------------------------------
 # STEP 3 — RAG tool

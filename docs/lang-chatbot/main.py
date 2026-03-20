@@ -50,7 +50,7 @@ embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 # --- STEP 4: Vector Store (The Brain) ---
 # We store our chunks and their embeddings in Chroma (local, no token needed).
 # This allows us to do "similarity search" to find chunks that match a user's question.
-dataset_path = "./chatbot_article_dataset"
+dataset_path = "chatbot_article_dataset"
 print("Adding documents to Chroma...")
 db = Chroma.from_documents(docs, embedding=embeddings, persist_directory=dataset_path)
 
