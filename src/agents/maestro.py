@@ -15,20 +15,26 @@ def lancer_agent(contexte,ticket_utilisateur, outils_disponibles, modele="phi3:l
 
     # systeme_prompt
     noms_outils = [outil.__name__ for outil in outils_disponibles]
-    systeme_prompt = f"""
-    Tu es l'agent IA de support informatique (BibOps). 
-    Contexte actuel : {contexte}
-    
-    Règles STRICTES :
-    1. Pense étape par étape ( Chain of thought ) 
-    2. Si tu as besoin d'une information, utilise UNIQUEMENT un des outils listés ci-dessous.
-    3. FORMAT OBLIGATOIRE pour appeler un outil, sur UNE SEULE LIGNE et RIEN D'AUTRE :
-       ACTION: nom_de_l_outil("argument")
-    4. INTERDIT : écrire du texte avant ou après la ligne ACTION.
-    5. INTERDIT : appeler le même outil deux fois avec la même question.
-    6. INTERDIT : utiliser un outil qui n'est pas dans la liste : {noms_outils}
-    7. Dès que tu as un résultat d'outil, rédige ta réponse finale sans appeler d'outil supplémentaire.
-    """
+    systeme_prompt = f"""Tu es l'agent IA de support informatique BibOps chez Michelin.
+Contexte : {contexte}
+
+PROCEDURE OBLIGATOIRE — suis ces etapes dans l'ordre :
+1. Lis le ticket et extrait le mot-cle principal (exemples: "vpn", "bitlocker", "outlook", "imprimante").
+2. Appelle l'outil le plus adapte avec ce mot-cle.
+3. Apres avoir recu le resultat de l'outil, redige ta reponse finale en francais a l'utilisateur.
+
+FORMAT STRICT pour appeler un outil — ecris UNIQUEMENT cette ligne, rien avant, rien apres :
+ACTION: nom_outil("mot_cle")
+
+OUTILS DISPONIBLES : {noms_outils}
+INTERDIT : inventer un nom d'outil. INTERDIT : appeler deux fois le meme outil avec le meme argument.
+INTERDIT : ecrire ACTION dans ta reponse finale.
+
+Exemples corrects :
+- Ticket "VPN ne marche pas" → ACTION: verifier_statut_serveur("VPN")
+- Ticket "recuperer mot de passe Bitlocker" → ACTION: chercher_documentation_technique("bitlocker")
+- Ticket "Outlook crash" → ACTION: chercher_dans_kb("outlook crash")
+"""
 
 
     print(f"\n [Utilisateur] : {ticket_utilisateur}")
@@ -82,7 +88,11 @@ def lancer_agent(contexte,ticket_utilisateur, outils_disponibles, modele="phi3:l
         # Déduplication : éviter de rappeler le même outil avec le même argument
         cle_appel = (nom_outil_demande, argument.lower().strip())
         if cle_appel in appels_deja_faits:
-            dedup_msg = f"Tu as déjà utilisé '{nom_outil_demande}' avec cet argument. Utilise le résultat précédent pour formuler ta réponse finale."
+            dedup_msg = (
+                f"STOP. Tu as déjà appelé '{nom_outil_demande}(\"{argument}\")' et obtenu un résultat. "
+                f"N'appelle PLUS aucun outil. Rédige maintenant ta réponse finale à l'utilisateur "
+                f"en utilisant uniquement les résultats déjà obtenus."
+            )
             messages_a_envoyer.append({'role': 'assistant', 'content': contenu})
             messages_a_envoyer.append({'role': 'user', 'content': dedup_msg})
             continue

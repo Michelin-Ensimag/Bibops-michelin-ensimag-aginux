@@ -1,0 +1,72 @@
+[
+  {
+    "id_ticket": "MCP-001",
+    "ticket": "Mon VPN Cisco ne marche plus.",
+    "outil": "mcp_chercher_dans_kb",
+    "statut": "OK",
+    "temps_reponse_s": 0.008,
+    "scores": {
+      "score_erreur": 10.0,
+      "score_feedback": 10.0,
+      "score_vitesse": 10.0,
+      "score_efficacite_tokens": 6.13,
+      "score_final": 9.23
+    }
+  },
+  {
+    "id_ticket": "MCP-002",
+    "ticket": "Est-ce que le service Mail est en ligne ?",
+    "outil": "mcp_verifier_statut_serveur",
+    "statut": "OK",
+    "temps_reponse_s": 0.012,
+    "scores": {
+      "score_erreur": 10.0,
+      "score_feedback": 10.0,
+      "score_vitesse": 10.0,
+      "score_efficacite_tokens": 10.0,
+      "score_final": 10
+    }
+  },
+  {
+    "id_ticket": "MCP-003",
+    "ticket": "Comment récupérer ma clé Bitlocker ?",
+    "outil": "mcp_chercher_documentation_technique",
+    "statut": "OK",
+    "temps_reponse_s": 2.417,
+    "scores": {
+      "score_erreur": 10.0,
+      "score_feedback": 10.0,
+      "score_vitesse": 7.87,
+      "score_efficacite_tokens": 2.46,
+      "score_final": 8.07
+    }
+  },
+  {
+    "id_ticket": "MCP-004",
+    "ticket": "Mon PC est très lent depuis ce matin.",
+    "outil": "mcp_chercher_dans_kb",
+    "statut": "OK",
+    "temps_reponse_s": 0.004,
+    "scores": {
+      "score_erreur": 10.0,
+      "score_feedback": 10.0,
+      "score_vitesse": 10.0,
+      "score_efficacite_tokens": 9.18,
+      "score_final": 9.84
+    }
+  },
+  {
+    "id_ticket": "MCP-005",
+    "ticket": "Outlook crash au démarrage.",
+    "outil": "mcp_chercher_dans_kb",
+    "statut": "OK",
+    "temps_reponse_s": 0.005,
+    "scores": {
+      "score_erreur": 10.0,
+      "score_feedback": 10.0,
+      "score_vitesse": 10.0,
+      "score_efficacite_tokens": 9.22,
+      "score_final": 9.84
+    }
+  }
+]
