@@ -32,7 +32,7 @@ from mcp.client.stdio import stdio_client
 
 # Import du moteur d'évaluation
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
-from src.llm_professor.evaluer_responses import EvaluationEngine
+from src.llm_professor.evaluation import EvaluationEngine
 
 
 # ============================================================

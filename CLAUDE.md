@@ -26,22 +26,32 @@ python src/agents/serveur_mcp.py    # Start MCP server (for Claude Desktop/Curso
 
 ### Benchmarking
 ```bash
-python src/benchmark/benchmark_mcp.py        # Full pipeline (agent + tools + DB)
-python src/benchmark/benchmark.py            # Raw Ollama call, no agent layer
-python src/benchmark/benchmark_langsmith.py  # With LangSmith tracing + LLM judge
-python src/llm_professor/client_mcp.py       # MCP tool benchmark via MCP protocol (async)
-python src/llm_professor/evaluer_responses.py  # Rule-based scoring from tickets_evalues_fake.json
+python src/benchmark/benchmark_pipeline.py   # Full agent pipeline (SQLite tickets → SQLite results)
+python src/benchmark/benchmark.py            # Raw Ollama call, no agent layer (CSV + human feedback)
+python src/benchmark/benchmark_langsmith.py  # Agent + LLM judge + LangSmith tracing
+python src/benchmark/benchmark_mcp_tools.py  # MCP tools benchmark via MCP protocol (async)
+python src/llm_professor/evaluation.py       # Rule-based scoring from tickets_evalues_fake.json
 ```
 
-### LangChain chatbot (experimental)
+### Copilot API agent (requires GitHub Copilot proxy)
 ```bash
-python src/lang-chatbot/main.py     # RAG pipeline demo using DeepLake + HuggingFace embeddings
+# Terminal 1:
+npx copilot-api@latest start        # Start proxy on localhost:4141
+# Terminal 2:
+python3 -m src.llm_professor.agent_copilot_mcp   # Multi-model benchmark (gpt-4o, claude-haiku)
+python scripts/test_copilot_api.py               # Quick Copilot API smoke test (no MCP)
+```
+
+### LangChain chatbot (experimental, in docs/)
+```bash
+python docs/lang-chatbot/main.py    # RAG pipeline demo using DeepLake + HuggingFace embeddings
 ```
 
 ### Tests
 ```bash
 pytest tests/
-pytest tests/test_1.py             # Unit tests for outils.py (require seeded SQLite, no Ollama)
+pytest tests/test_outils.py        # Unit tests for outils.py (fully mocked, no external deps)
+pytest tests/test_memoire.py       # Unit tests for MemoCourTerme (no external deps)
 pytest tests/test_maestro.py       # Integration tests (require Ollama running)
 ```
 
@@ -71,9 +81,17 @@ There are **two independent evaluation systems**:
 
 2. **Rule-based scoring** (`evaluer_responses.py` + `config_evaluation.py`): `EvaluationEngine` scores **0–10** based on weighted criteria: error presence (25%), user feedback (35%), response time (20%), token efficiency (20%). Weights and thresholds are configured in `config_evaluation.py`. `EvaluationProcessor` reads `data/benchmark/tickets_evalues_fake.json` and writes `data/benchmark/tickets_evalues_scores.json`.
 
-- **client_mcp.py**: Async MCP client that spawns `serveur_mcp.py` as a subprocess, calls each tool over the MCP protocol with test tickets, and scores results with `EvaluationEngine`. Saves to `data/benchmark/benchmark_mcp.json`.
+- **agent_copilot_mcp.py**: Bridges the Copilot API proxy (`localhost:4141`) with the MCP server. Translates MCP tools to OpenAI function-calling format, sends tickets to multiple models (gpt-4o-mini, gpt-4o, claude-haiku-4.5), executes tool calls via MCP, and scores results with `EvaluationEngine`. Saves to `data/benchmark/benchmark_copilot_mcp.json`. Requires `npx copilot-api@latest start` in a separate terminal.
 
-### LangChain Chatbot (`src/lang-chatbot/`)
+### Evaluation Module (`src/llm_professor/evaluation.py`)
+
+Single unified module for both evaluation systems:
+
+1. **`LLMProfessor`** (LLM judge via Copilot proxy): scores responses 0–10 with justification, persists to SQLite. Includes `evaluer_tickets_en_attente()` for batch evaluation with RCA enrichment. Requires proxy on `localhost:4141`.
+2. **`EvaluationEngine`** (rule-based, no LLM): weighted score 0–10 across error presence (25%), user feedback (35%), response time (20%), token efficiency (20%). Used by `benchmark_mcp_tools.py` and `agent_copilot_mcp.py`.
+3. **`EvaluationProcessor`**: reads `tickets_evalues_fake.json`, writes `tickets_evalues_scores.json`. Run directly: `python src/llm_professor/evaluation.py` (rule-based) or `python src/llm_professor/evaluation.py --llm-judge` (proxy test).
+
+### LangChain Chatbot (`docs/lang-chatbot/`)
 - **main.py**: Standalone RAG demo (not integrated with the main agent). Loads web articles, splits into chunks, embeds with HuggingFace `all-MiniLM-L6-v2`, stores in a local DeepLake vector store (`chatbot_article_dataset/`), and answers queries using Ollama phi3 with `ConversationBufferMemory`.
 - **lang-agent.py**: Incomplete prototype sketch for a LangChain-native agent with a `ModelFallbackMiddleware`. Not runnable as-is.
 
@@ -88,11 +106,15 @@ There are **two independent evaluation systems**:
 | `data/databases/bibops.db` | Auto-generated SQLite (gitignored) |
 | `data/databases/vectordb/` | Auto-generated ChromaDB (gitignored) |
 
+## Test Infrastructure
+
+- **`conftest.py`** (project root): Adds the project root to `sys.path` so `from src.agents.*` imports work regardless of launch directory. Also injects a `langchain.verbose` / `langchain.debug` shim for compatibility between `langchain-core 0.2.x` and `langchain >= 1.0`.
+- **`tests/test_1.py`**: Hits the real SQLite database — requires `baseSQL.py` to have been run first.
+- **`tests/test_outils.py`**: Fully mocked (SQLite, JSON KB, ChromaDB) — no external dependencies.
+- **`tests/test_memoire.py`**: No external dependencies.
+
 ## Known Issues
 
-- **`benchmark_langsmith.py` line 9**: The LangSmith API key is hardcoded in the source file. Remove it and use the environment variable `LANGCHAIN_API_KEY` instead before committing.
-- **`evaluation_manager.py`**: The `evaluer_reponse` method is missing its `try:` block (indentation error). The code under the method body starting at line 46 should be wrapped in `try/except`. See `eva_mg_rev_proxy.py` for the correct pattern.
-- **`eva_mg_lang.py`**: `_sauvegarder_en_base` is defined at module level instead of as a class method — it will raise a `TypeError` at runtime when called.
 - **`tests/test_maestro.py`**: The call to `lancer_agent` has swapped arguments — it passes the ticket text as `contexte` and the context string as `ticket_utilisateur`, opposite of `maestro.py`'s signature.
 
 ## Environment Variables (LangSmith)
