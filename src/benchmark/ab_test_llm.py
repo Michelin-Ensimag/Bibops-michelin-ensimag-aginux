@@ -15,7 +15,10 @@ import csv
 import json
 import os
 import random
+import re
 import subprocess
+import time
+from concurrent.futures import ThreadPoolExecutor, TimeoutError as FuturesTimeoutError
 from typing import Any, Dict, Optional, Tuple
 
 from openai import OpenAI
@@ -26,9 +29,21 @@ OUTPUT_JSON = os.path.join(BASE_DIR, "data", "benchmark", "ab_llm_resultat.json"
 
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 DEFAULT_MODEL_A = "stepfun/step-3.5-flash:free"
-DEFAULT_MODEL_B = "nvidia/nemotron-nano-9b-v2:free"
-DEFAULT_JUDGE_MODEL = "qwen/qwen3-32b:free"
+DEFAULT_MODEL_B = "qwen/qwen3.6-plus:free"
+DEFAULT_JUDGE_MODEL = "qwen/qwen3.6-plus:free"
 RANDOM_SEED = 42
+MODEL_REQUEST_TIMEOUT_S = 30
+JUDGE_REQUEST_TIMEOUT_S = 30
+MAX_TICKETS = 3
+
+# Pool de secours pour continuer le benchmark meme si un endpoint free tombe.
+MODEL_FALLBACK_POOL = [
+    "qwen/qwen3.6-plus:free",
+    "stepfun/step-3.5-flash:free",
+    "openai/gpt-oss-120b:free",
+    "z-ai/glm-4.5-air:free",
+    "arcee-ai/trinity-mini:free",
+]
 
 JUDGE_SYSTEM_PROMPT = (
     "Tu es un evaluateur impartial de reponses de support IT. "
@@ -88,20 +103,130 @@ def _extraire_texte(message: Any) -> str:
     return "[Reponse vide]"
 
 
+def _executer_avec_timeout(fn, timeout_s: int):
+    # Hard timeout côté client pour éviter tout blocage silencieux.
+    with ThreadPoolExecutor(max_workers=1) as executor:
+        future = executor.submit(fn)
+        return future.result(timeout=timeout_s)
+
+
 def appeler_modele(client: OpenAI, modele: str, contexte: str, ticket: str) -> str:
     try:
-        reponse = client.chat.completions.create(
-            model=modele,
-            messages=[
-                {"role": "system", "content": contexte},
-                {"role": "user", "content": ticket},
-            ],
-            max_tokens=384,
-            temperature=0,
-        )
+        def _call():
+            return client.chat.completions.create(
+                model=modele,
+                messages=[
+                    {"role": "system", "content": contexte},
+                    {"role": "user", "content": ticket},
+                ],
+                max_tokens=180,
+                temperature=0,
+                timeout=MODEL_REQUEST_TIMEOUT_S,
+            )
+
+        reponse = _executer_avec_timeout(_call, MODEL_REQUEST_TIMEOUT_S + 1)
         return _extraire_texte(reponse.choices[0].message)
+    except FuturesTimeoutError:
+        return f"[ERREUR_MODELE {modele}] Delai depasse ({MODEL_REQUEST_TIMEOUT_S}s)."
     except Exception as exc:
+        # Certains providers (ex: Gemma via Google AI Studio) refusent les instructions
+        # en role 'system'. On retente alors avec un seul message user.
+        msg = str(exc)
+        if "Developer instruction is not enabled" in msg:
+            try:
+                def _call_user_only():
+                    return client.chat.completions.create(
+                        model=modele,
+                        messages=[
+                            {
+                                "role": "user",
+                                "content": (
+                                    f"Contexte metier: {contexte}\n\n"
+                                    f"Question utilisateur: {ticket}\n\n"
+                                    "Reponds de facon concise et actionnable."
+                                ),
+                            }
+                        ],
+                        max_tokens=180,
+                        temperature=0,
+                        timeout=MODEL_REQUEST_TIMEOUT_S,
+                    )
+
+                reponse = _executer_avec_timeout(_call_user_only, MODEL_REQUEST_TIMEOUT_S + 1)
+                return _extraire_texte(reponse.choices[0].message)
+            except FuturesTimeoutError:
+                return f"[ERREUR_MODELE {modele}] Delai depasse ({MODEL_REQUEST_TIMEOUT_S}s)."
+            except Exception as exc2:
+                return f"[ERREUR_MODELE {modele}] {exc2}"
+
         return f"[ERREUR_MODELE {modele}] {exc}"
+
+
+def _est_reponse_erreur(texte: str) -> bool:
+    return texte.strip().startswith("[ERREUR_MODELE")
+
+
+def _est_quota_free_epuise(texte: str) -> bool:
+    t = texte.lower()
+    return "free-models-per-day" in t or "x-ratelimit-remaining': '0" in t
+
+
+def _message_erreur_court(texte_erreur: str) -> str:
+    t = texte_erreur.lower()
+    if "free-models-per-day" in t:
+        return "Quota OpenRouter free-models-per-day atteint (remaining=0)."
+    if "temporarily rate-limited" in t:
+        return "Modele temporairement rate-limited par le provider."
+    if "no endpoints found" in t:
+        return "Aucun endpoint disponible pour ce modele actuellement."
+    if "timeout" in t:
+        return "Delai depasse pour cet appel modele."
+    return texte_erreur
+
+
+def _erreur_modele_eligible_fallback(texte_erreur: str) -> bool:
+    t = texte_erreur.lower()
+    motifs = [
+        "rate limit",
+        "temporarily rate-limited",
+        "free-models-per-day",
+        "no endpoints found",
+        "timeout",
+        "developer instruction is not enabled",
+    ]
+    return any(m in t for m in motifs)
+
+
+def generer_reponse_avec_fallback(
+    client: OpenAI,
+    modele_initial: str,
+    contexte: str,
+    ticket: str,
+    modeles_interdits: Optional[set[str]] = None,
+) -> Tuple[str, str, list[str]]:
+    interdits = modeles_interdits or set()
+    essayes = []
+
+    def _try(modele: str) -> str:
+        nonlocal essayes
+        essayes.append(modele)
+        return appeler_modele(client, modele, contexte, ticket)
+
+    rep = _try(modele_initial)
+    if not _est_reponse_erreur(rep):
+        return rep, modele_initial, essayes
+
+    if not _erreur_modele_eligible_fallback(rep):
+        return rep, modele_initial, essayes
+
+    for modele in MODEL_FALLBACK_POOL:
+        if modele == modele_initial or modele in interdits or modele in essayes:
+            continue
+        rep_fb = _try(modele)
+        if not _est_reponse_erreur(rep_fb):
+            return rep_fb, modele, essayes
+
+    return f"{rep} | modeles_tentes={essayes}", modele_initial, essayes
 
 
 def _construire_prompt_juge(contexte: str, question: str, reponse_a: str, reponse_b: str) -> str:
@@ -131,7 +256,29 @@ def _extraire_json_depuis_texte(texte: str) -> Optional[Dict[str, Any]]:
         if isinstance(obj, dict):
             return obj
     except Exception:
-        return None
+        pass
+
+    # Cas frequents: JSON dans un bloc markdown ```json ... ```
+    blocs = re.findall(r"```(?:json)?\s*(\{.*?\})\s*```", brut, flags=re.DOTALL | re.IGNORECASE)
+    for bloc in blocs:
+        try:
+            obj = json.loads(bloc)
+            if isinstance(obj, dict):
+                return obj
+        except Exception:
+            continue
+
+    # Fallback: tente de parser le premier objet JSON trouve dans le texte libre.
+    candidats = re.findall(r"\{[\s\S]*?\}", brut)
+    for c in candidats:
+        try:
+            obj = json.loads(c)
+            if isinstance(obj, dict):
+                return obj
+        except Exception:
+            continue
+
+    return None
 
 
 def _normaliser_choix(choix: Any) -> Optional[str]:
@@ -149,15 +296,19 @@ def appeler_juge(
     prompt_juge: str,
 ) -> Tuple[Optional[Dict[str, Any]], str]:
     try:
-        reponse = client.chat.completions.create(
-            model=modele_juge,
-            messages=[
-                {"role": "system", "content": JUDGE_SYSTEM_PROMPT},
-                {"role": "user", "content": prompt_juge},
-            ],
-            max_tokens=180,
-            temperature=0,
-        )
+        def _call():
+            return client.chat.completions.create(
+                model=modele_juge,
+                messages=[
+                    {"role": "system", "content": JUDGE_SYSTEM_PROMPT},
+                    {"role": "user", "content": prompt_juge},
+                ],
+                max_tokens=80,
+                temperature=0,
+                timeout=JUDGE_REQUEST_TIMEOUT_S,
+            )
+
+        reponse = _executer_avec_timeout(_call, JUDGE_REQUEST_TIMEOUT_S + 1)
         texte = _extraire_texte(reponse.choices[0].message)
         obj = _extraire_json_depuis_texte(texte)
         if obj is None:
@@ -168,6 +319,7 @@ def appeler_juge(
             return None, f"Champ choix invalide: {obj}"
 
         justification = obj.get("justification", "")
+
         return (
             {
                 "choix": choix,
@@ -175,11 +327,73 @@ def appeler_juge(
             },
             "",
         )
+    except FuturesTimeoutError:
+        return None, f"Timeout local depasse ({JUDGE_REQUEST_TIMEOUT_S}s)"
     except Exception as exc:
         return None, str(exc)
 
 
+def appeler_juge_qwen_robuste(
+    client: OpenAI,
+    modele_juge: str,
+    prompt_juge: str,
+) -> Tuple[Optional[Dict[str, Any]], str, str]:
+    # On conserve Qwen comme strategie de jugement, avec fallback deterministe
+    # dans la meme famille si l'endpoint principal est indisponible.
+    candidats = [
+        modele_juge,
+        "qwen/qwen3.6-plus:free",
+        "qwen/qwen3-next-80b-a3b-instruct:free",
+    ]
+
+    vus = set()
+    dernier_err = ""
+    for modele in candidats:
+        if not modele or modele in vus:
+            continue
+        vus.add(modele)
+
+        res, err = appeler_juge(client, modele, prompt_juge)
+        if res is not None:
+            return res, modele, ""
+        dernier_err = err
+
+    return None, "", f"Aucun endpoint Qwen disponible: {dernier_err}"
+
+
 def evaluer_ticket_avec_juge_robuste(
+    client: OpenAI,
+    modele_juge: str,
+    contexte: str,
+    question: str,
+    reponse_a: str,
+    reponse_b: str,
+) -> Dict[str, Any]:
+    prompt = _construire_prompt_juge(contexte, question, reponse_a, reponse_b)
+    res, juge_utilise, err = appeler_juge_qwen_robuste(
+        client,
+        modele_juge,
+        prompt,
+    )
+    if res is None:
+        return {
+            "ok": False,
+            "erreur": err,
+            "choix": "",
+            "justification": "",
+            "juge_utilise": "",
+        }
+
+    return {
+        "ok": True,
+        "erreur": "",
+        "choix": res["choix"],
+        "justification": res["justification"],
+        "juge_utilise": juge_utilise,
+    }
+
+
+def evaluer_ticket_avec_juge_simple(
     client: OpenAI,
     modele_juge: str,
     contexte: str,
@@ -195,6 +409,7 @@ def evaluer_ticket_avec_juge_robuste(
             "erreur": err,
             "choix": "",
             "justification": "",
+            "juge_utilise": "",
         }
 
     return {
@@ -202,7 +417,36 @@ def evaluer_ticket_avec_juge_robuste(
         "erreur": "",
         "choix": res["choix"],
         "justification": res["justification"],
+        "juge_utilise": modele_juge,
     }
+
+
+def evaluer_ticket_par_juge(
+    client: OpenAI,
+    modele_juge: str,
+    contexte: str,
+    question: str,
+    reponse_a: str,
+    reponse_b: str,
+) -> Dict[str, Any]:
+    if modele_juge.startswith("qwen/"):
+        return evaluer_ticket_avec_juge_robuste(
+            client=client,
+            modele_juge=modele_juge,
+            contexte=contexte,
+            question=question,
+            reponse_a=reponse_a,
+            reponse_b=reponse_b,
+        )
+
+    return evaluer_ticket_avec_juge_simple(
+        client=client,
+        modele_juge=modele_juge,
+        contexte=contexte,
+        question=question,
+        reponse_a=reponse_a,
+        reponse_b=reponse_b,
+    )
 
 
 def main() -> None:
@@ -214,7 +458,7 @@ def main() -> None:
     parser.add_argument(
         "--judge-model",
         default=DEFAULT_JUDGE_MODEL,
-        help="Modele juge principal (OpenRouter)",
+        help="Modele juge principal",
     )
     parser.add_argument(
         "--output",
@@ -232,11 +476,12 @@ def main() -> None:
         )
         raise SystemExit(1)
 
-    client = OpenAI(api_key=api_key, base_url=OPENROUTER_BASE_URL, timeout=35)
+    # Fail fast: OpenAI SDK retries can multiply wait time unexpectedly.
+    client = OpenAI(api_key=api_key, base_url=OPENROUTER_BASE_URL, timeout=20, max_retries=0)
     rng = random.Random(RANDOM_SEED)
 
     with open(INPUT_CSV, newline="", encoding="utf-8") as f:
-        tickets = list(csv.DictReader(f))
+        tickets = list(csv.DictReader(f))[:MAX_TICKETS]
 
     resultats = []
     scores = {args.model_a: 0, args.model_b: 0}
@@ -256,39 +501,72 @@ def main() -> None:
         print(f"Question : {question}\n")
         print("Generation des reponses en cours...")
 
-        rep_modele_a = appeler_modele(client, args.model_a, contexte, question)
-        rep_modele_b = appeler_modele(client, args.model_b, contexte, question)
+        print(f"  -> Appel modele A: {args.model_a}")
+        t0 = time.perf_counter()
+        rep_modele_a, modele_a_effectif, essais_a = generer_reponse_avec_fallback(
+            client, args.model_a, contexte, question
+        )
+        print(f"     termine en {time.perf_counter() - t0:.1f}s")
+        if modele_a_effectif != args.model_a:
+            print(f"     fallback A: {args.model_a} -> {modele_a_effectif}")
+
+        print(f"  -> Appel modele B: {args.model_b}")
+        t0 = time.perf_counter()
+        rep_modele_b, modele_b_effectif, essais_b = generer_reponse_avec_fallback(
+            client, args.model_b, contexte, question, modeles_interdits={modele_a_effectif}
+        )
+        print(f"     termine en {time.perf_counter() - t0:.1f}s")
+        if modele_b_effectif != args.model_b:
+            print(f"     fallback B: {args.model_b} -> {modele_b_effectif}")
 
         # Blindage: ordre aleatoire avant passage au juge.
         if rng.random() < 0.5:
-            label_a, rep_a = args.model_a, rep_modele_a
-            label_b, rep_b = args.model_b, rep_modele_b
+            label_a, rep_a = modele_a_effectif, rep_modele_a
+            label_b, rep_b = modele_b_effectif, rep_modele_b
         else:
-            label_a, rep_a = args.model_b, rep_modele_b
-            label_b, rep_b = args.model_a, rep_modele_a
+            label_a, rep_a = modele_b_effectif, rep_modele_b
+            label_b, rep_b = modele_a_effectif, rep_modele_a
 
         print("Evaluation par le juge LLM...")
-        jugement = evaluer_ticket_avec_juge_robuste(
-            client=client,
-            modele_juge=args.judge_model,
-            contexte=contexte,
-            question=question,
-            reponse_a=rep_a,
-            reponse_b=rep_b,
-        )
-
-        if not jugement.get("ok"):
-            err = jugement.get("erreur", "Erreur inconnue")
-            print(f"[ERREUR_JUGE] {err}")
-            meilleur_modele = "[INDETERMINE]"
+        if _est_reponse_erreur(rep_a) or _est_reponse_erreur(rep_b):
             choix_llm = "?"
-            justification_juge = ""
+            meilleur_modele = "[INDETERMINE]"
+            justification_juge = "Comparaison impossible: au moins un modele n'a pas repondu correctement."
+            print("[ERREUR_MODELE] Impossible de comparer ce ticket: au moins un modele a renvoye une erreur.")
+            if _est_reponse_erreur(rep_a):
+                print(f"  A ({label_a}): {_message_erreur_court(rep_a)}")
+            if _est_reponse_erreur(rep_b):
+                print(f"  B ({label_b}): {_message_erreur_court(rep_b)}")
+
+            # Si le quota free est atteint, continuer ticket par ticket ne sert plus a rien.
+            if _est_quota_free_epuise(rep_a) or _est_quota_free_epuise(rep_b):
+                print("\n[ARRET] Quota free journalier atteint. Le benchmark est interrompu pour eviter du temps perdu.")
+                break
         else:
-            choix_llm = jugement["choix"]
-            meilleur_modele = label_a if choix_llm == "A" else label_b
-            justification_juge = jugement["justification"]
-            scores[meilleur_modele] += 1
-            print(f"-> Choix juge: {choix_llm} | Meilleur modele: {meilleur_modele}")
+            jugement = evaluer_ticket_par_juge(
+                client=client,
+                modele_juge=args.judge_model,
+                contexte=contexte,
+                question=question,
+                reponse_a=rep_a,
+                reponse_b=rep_b,
+            )
+
+            if not jugement.get("ok"):
+                err = jugement.get("erreur", "Erreur inconnue")
+                print(f"[ERREUR_JUGE] {err}")
+                meilleur_modele = "[INDETERMINE]"
+                choix_llm = "?"
+                justification_juge = ""
+            else:
+                choix_llm = jugement["choix"]
+                meilleur_modele = label_a if choix_llm == "A" else label_b
+                justification_juge = jugement["justification"]
+                scores[meilleur_modele] += 1
+                juge_actif = jugement.get("juge_utilise", args.judge_model)
+                print(
+                    f"-> Choix juge: {choix_llm} | Meilleur modele: {meilleur_modele} | Juge utilise: {juge_actif}"
+                )
 
         resultats.append(
             {
