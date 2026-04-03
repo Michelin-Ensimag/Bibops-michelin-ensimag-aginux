@@ -29,20 +29,20 @@ OUTPUT_JSON = os.path.join(BASE_DIR, "data", "benchmark", "ab_llm_resultat.json"
 
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 DEFAULT_MODEL_A = "stepfun/step-3.5-flash:free"
-DEFAULT_MODEL_B = "qwen/qwen3.6-plus:free"
+DEFAULT_MODEL_B = "arcee-ai/trinity-mini:free"
 DEFAULT_JUDGE_MODEL = "qwen/qwen3.6-plus:free"
 RANDOM_SEED = 42
 MODEL_REQUEST_TIMEOUT_S = 30
 JUDGE_REQUEST_TIMEOUT_S = 30
 MAX_TICKETS = 3
+INTER_TICKET_DELAY_S = 20
 
 # Pool de secours pour continuer le benchmark meme si un endpoint free tombe.
 MODEL_FALLBACK_POOL = [
-    "qwen/qwen3.6-plus:free",
     "stepfun/step-3.5-flash:free",
+    "arcee-ai/trinity-mini:free",
     "openai/gpt-oss-120b:free",
     "z-ai/glm-4.5-air:free",
-    "arcee-ai/trinity-mini:free",
 ]
 
 JUDGE_SYSTEM_PROMPT = (
@@ -181,6 +181,8 @@ def _message_erreur_court(texte_erreur: str) -> str:
         return "Aucun endpoint disponible pour ce modele actuellement."
     if "timeout" in t:
         return "Delai depasse pour cet appel modele."
+    if "json invalide" in t or "champ choix invalide" in t:
+        return "Sortie juge invalide (format JSON non conforme ou tronque)."
     return texte_erreur
 
 
@@ -203,6 +205,7 @@ def generer_reponse_avec_fallback(
     contexte: str,
     ticket: str,
     modeles_interdits: Optional[set[str]] = None,
+    etiquette: str = "",
 ) -> Tuple[str, str, list[str]]:
     interdits = modeles_interdits or set()
     essayes = []
@@ -212,19 +215,32 @@ def generer_reponse_avec_fallback(
         essayes.append(modele)
         return appeler_modele(client, modele, contexte, ticket)
 
-    rep = _try(modele_initial)
-    if not _est_reponse_erreur(rep):
-        return rep, modele_initial, essayes
+    # Si le modele initial est interdit (ex: deja utilise par l'autre bras A/B),
+    # on ne le tente pas pour eviter de comparer un modele contre lui-meme.
+    if modele_initial not in interdits:
+        rep = _try(modele_initial)
+        if not _est_reponse_erreur(rep):
+            return rep, modele_initial, essayes
 
-    if not _erreur_modele_eligible_fallback(rep):
-        return rep, modele_initial, essayes
+        prefix = f"[{etiquette}] " if etiquette else ""
+        print(f"     {prefix}echec {modele_initial}: {_message_erreur_court(rep)}")
+
+        if not _erreur_modele_eligible_fallback(rep):
+            return rep, modele_initial, essayes
+    else:
+        rep = f"[ERREUR_MODELE {modele_initial}] Modele interdit pour ce duel A/B."
+        prefix = f"[{etiquette}] " if etiquette else ""
+        print(f"     {prefix}skip {modele_initial}: modele interdit pour ce ticket")
 
     for modele in MODEL_FALLBACK_POOL:
         if modele == modele_initial or modele in interdits or modele in essayes:
             continue
+        prefix = f"[{etiquette}] " if etiquette else ""
+        print(f"     {prefix}fallback -> {modele}")
         rep_fb = _try(modele)
         if not _est_reponse_erreur(rep_fb):
             return rep_fb, modele, essayes
+        print(f"     {prefix}echec {modele}: {_message_erreur_court(rep_fb)}")
 
     return f"{rep} | modeles_tentes={essayes}", modele_initial, essayes
 
@@ -296,27 +312,44 @@ def appeler_juge(
     prompt_juge: str,
 ) -> Tuple[Optional[Dict[str, Any]], str]:
     try:
-        def _call():
+        def _call(messages, max_tokens: int):
             return client.chat.completions.create(
                 model=modele_juge,
-                messages=[
-                    {"role": "system", "content": JUDGE_SYSTEM_PROMPT},
-                    {"role": "user", "content": prompt_juge},
-                ],
-                max_tokens=80,
+                messages=messages,
+                max_tokens=max_tokens,
                 temperature=0,
                 timeout=JUDGE_REQUEST_TIMEOUT_S,
             )
 
-        reponse = _executer_avec_timeout(_call, JUDGE_REQUEST_TIMEOUT_S + 1)
+        messages = [
+            {"role": "system", "content": JUDGE_SYSTEM_PROMPT},
+            {"role": "user", "content": prompt_juge},
+        ]
+
+        reponse = _executer_avec_timeout(
+            lambda: _call(messages, 180), JUDGE_REQUEST_TIMEOUT_S + 1
+        )
         texte = _extraire_texte(reponse.choices[0].message)
         obj = _extraire_json_depuis_texte(texte)
         if obj is None:
-            return None, f"JSON invalide: {texte[:200]}"
+            # Retry unique avec instruction de format plus stricte.
+            strict_prompt = (
+                prompt_juge
+                + "\n\nIMPORTANT: Retourne UNIQUEMENT un JSON valide en une ligne, "
+                + 'exactement {"choix":"A|B","justification":"..."}.'
+            )
+            reponse2 = _executer_avec_timeout(
+                lambda: _call([{"role": "user", "content": strict_prompt}], 140),
+                JUDGE_REQUEST_TIMEOUT_S + 1,
+            )
+            texte2 = _extraire_texte(reponse2.choices[0].message)
+            obj = _extraire_json_depuis_texte(texte2)
+            if obj is None:
+                return None, "JSON invalide"
 
         choix = _normaliser_choix(obj.get("choix"))
         if choix is None:
-            return None, f"Champ choix invalide: {obj}"
+            return None, "Champ choix invalide"
 
         justification = obj.get("justification", "")
 
@@ -337,28 +370,38 @@ def appeler_juge_qwen_robuste(
     client: OpenAI,
     modele_juge: str,
     prompt_juge: str,
+    modeles_interdits: Optional[set[str]] = None,
 ) -> Tuple[Optional[Dict[str, Any]], str, str]:
-    # On conserve Qwen comme strategie de jugement, avec fallback deterministe
-    # dans la meme famille si l'endpoint principal est indisponible.
+    # Strategie de jugement: modele principal (Qwen), puis DeepSeek,
+    # puis Qwen3.6, puis GPT-OSS si les autres sont indisponibles.
+    interdits = modeles_interdits or set()
     candidats = [
         modele_juge,
+        "deepseek/deepseek-r1:free",
         "qwen/qwen3.6-plus:free",
-        "qwen/qwen3-next-80b-a3b-instruct:free",
+        "openai/gpt-oss-120b:free",
     ]
 
     vus = set()
-    dernier_err = ""
+    erreurs: list[str] = []
     for modele in candidats:
-        if not modele or modele in vus:
+        if not modele or modele in vus or modele in interdits:
+            if modele in interdits:
+                print(f"     [JUGE] skip {modele}: deja utilise comme modele A/B sur ce ticket")
             continue
         vus.add(modele)
 
         res, err = appeler_juge(client, modele, prompt_juge)
         if res is not None:
             return res, modele, ""
-        dernier_err = err
+        print(f"     [JUGE] echec {modele}: {_message_erreur_court(err)}")
+        erreurs.append(f"{modele}: {_message_erreur_court(err)}")
+        print("     [JUGE] bascule vers le fallback suivant...")
 
-    return None, "", f"Aucun endpoint Qwen disponible: {dernier_err}"
+    if not erreurs:
+        return None, "", "Aucun juge disponible: tous les fallback sont interdits pour ce ticket."
+
+    return None, "", "Aucun endpoint juge disponible (Qwen/DeepSeek/Qwen3.6/GPT-OSS): " + " | ".join(erreurs)
 
 
 def evaluer_ticket_avec_juge_robuste(
@@ -368,12 +411,14 @@ def evaluer_ticket_avec_juge_robuste(
     question: str,
     reponse_a: str,
     reponse_b: str,
+    modeles_interdits: Optional[set[str]] = None,
 ) -> Dict[str, Any]:
     prompt = _construire_prompt_juge(contexte, question, reponse_a, reponse_b)
     res, juge_utilise, err = appeler_juge_qwen_robuste(
         client,
         modele_juge,
         prompt,
+        modeles_interdits=modeles_interdits,
     )
     if res is None:
         return {
@@ -428,6 +473,7 @@ def evaluer_ticket_par_juge(
     question: str,
     reponse_a: str,
     reponse_b: str,
+    modeles_interdits: Optional[set[str]] = None,
 ) -> Dict[str, Any]:
     if modele_juge.startswith("qwen/"):
         return evaluer_ticket_avec_juge_robuste(
@@ -437,6 +483,7 @@ def evaluer_ticket_par_juge(
             question=question,
             reponse_a=reponse_a,
             reponse_b=reponse_b,
+            modeles_interdits=modeles_interdits,
         )
 
     return evaluer_ticket_avec_juge_simple(
@@ -465,6 +512,12 @@ def main() -> None:
         default=OUTPUT_JSON,
         help="Chemin du JSON de resultats",
     )
+    parser.add_argument(
+        "--inter-ticket-delay",
+        type=int,
+        default=INTER_TICKET_DELAY_S,
+        help="Delai en secondes entre deux tickets (anti rate-limit)",
+    )
     args = parser.parse_args()
 
     api_key = charger_openrouter_api_key()
@@ -492,7 +545,7 @@ def main() -> None:
     print(f"Juge principal : {args.judge_model}")
     print(f"{len(tickets)} ticket(s) a evaluer.\n")
 
-    for ticket in tickets:
+    for idx, ticket in enumerate(tickets):
         tid = ticket["id"]
         contexte = ticket["contexte"]
         question = ticket["ticket"]
@@ -504,7 +557,12 @@ def main() -> None:
         print(f"  -> Appel modele A: {args.model_a}")
         t0 = time.perf_counter()
         rep_modele_a, modele_a_effectif, essais_a = generer_reponse_avec_fallback(
-            client, args.model_a, contexte, question
+            client,
+            args.model_a,
+            contexte,
+            question,
+            modeles_interdits={args.judge_model},
+            etiquette="A",
         )
         print(f"     termine en {time.perf_counter() - t0:.1f}s")
         if modele_a_effectif != args.model_a:
@@ -513,7 +571,12 @@ def main() -> None:
         print(f"  -> Appel modele B: {args.model_b}")
         t0 = time.perf_counter()
         rep_modele_b, modele_b_effectif, essais_b = generer_reponse_avec_fallback(
-            client, args.model_b, contexte, question, modeles_interdits={modele_a_effectif}
+            client,
+            args.model_b,
+            contexte,
+            question,
+            modeles_interdits={modele_a_effectif, args.judge_model},
+            etiquette="B",
         )
         print(f"     termine en {time.perf_counter() - t0:.1f}s")
         if modele_b_effectif != args.model_b:
@@ -528,6 +591,7 @@ def main() -> None:
             label_b, rep_b = modele_a_effectif, rep_modele_a
 
         print("Evaluation par le juge LLM...")
+        juge_utilise_ticket = ""
         if _est_reponse_erreur(rep_a) or _est_reponse_erreur(rep_b):
             choix_llm = "?"
             meilleur_modele = "[INDETERMINE]"
@@ -550,6 +614,7 @@ def main() -> None:
                 question=question,
                 reponse_a=rep_a,
                 reponse_b=rep_b,
+                modeles_interdits={label_a, label_b},
             )
 
             if not jugement.get("ok"):
@@ -558,12 +623,18 @@ def main() -> None:
                 meilleur_modele = "[INDETERMINE]"
                 choix_llm = "?"
                 justification_juge = ""
+                juge_utilise_ticket = ""
             else:
                 choix_llm = jugement["choix"]
                 meilleur_modele = label_a if choix_llm == "A" else label_b
                 justification_juge = jugement["justification"]
+                if meilleur_modele not in scores:
+                    scores[meilleur_modele] = 0
                 scores[meilleur_modele] += 1
                 juge_actif = jugement.get("juge_utilise", args.judge_model)
+                juge_utilise_ticket = juge_actif
+                if juge_actif != args.judge_model:
+                    print(f"     fallback juge: {args.judge_model} -> {juge_actif}")
                 print(
                     f"-> Choix juge: {choix_llm} | Meilleur modele: {meilleur_modele} | Juge utilise: {juge_actif}"
                 )
@@ -574,11 +645,14 @@ def main() -> None:
                 "question": question,
                 "choix_llm": choix_llm,
                 "meilleur_modele": meilleur_modele,
+                "juge_utilise": juge_utilise_ticket,
                 "justification_juge": justification_juge,
             }
         )
 
         print()
+        if idx < len(tickets) - 1 and args.inter_ticket_delay > 0:
+            time.sleep(args.inter_ticket_delay)
 
     print("=== Synthese des votes ===")
     total_votes = sum(scores.values())

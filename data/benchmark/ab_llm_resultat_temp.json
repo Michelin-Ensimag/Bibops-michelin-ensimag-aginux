@@ -1,0 +1,38 @@
+{
+  "modeles": [
+    "stepfun/step-3.5-flash:free",
+    "arcee-ai/trinity-mini:free"
+  ],
+  "juge": "qwen/qwen3.6-plus:free",
+  "scores": {
+    "stepfun/step-3.5-flash:free": 3,
+    "arcee-ai/trinity-mini:free": 0
+  },
+  "pourcentages": {
+    "stepfun/step-3.5-flash:free": 100.0,
+    "arcee-ai/trinity-mini:free": 0.0
+  },
+  "details": [
+    {
+      "ticket_id": "1",
+      "question": "Mon VPN Cisco ne marche plus.",
+      "choix_llm": "B",
+      "meilleur_modele": "stepfun/step-3.5-flash:free",
+      "justification_juge": "La réponse B est rédigée en français, intègre explicitement le contexte Michelin et propose une démarche de dépannage structurée, contrairement à la réponse A qui est en anglais, tronquée et formulée comme une réflexion interne plutôt qu'une réponse directe à l'utilisateur."
+    },
+    {
+      "ticket_id": "2",
+      "question": "Combien de jours de congés me reste-t-il ?",
+      "choix_llm": "A",
+      "meilleur_modele": "stepfun/step-3.5-flash:free",
+      "justification_juge": "La réponse A explique clairement l’impossibilité d’accéder aux données personnelles, oriente l’utilisateur vers les canaux officiels et reste conforme à la confidentialité, ce qui la rend plus pertinente, claire et actionnable."
+    },
+    {
+      "ticket_id": "3",
+      "question": "Mon imprimante affiche erreur 404.",
+      "choix_llm": "A",
+      "meilleur_modele": "stepfun/step-3.5-flash:free",
+      "justification_juge": "La réponse A est rédigée dans la bonne langue, identifie correctement que le code 404 est un statut HTTP et non une erreur matérielle standard, et demande les informations essentielles pour un diagnostic précis, contrairement à la réponse B qui est en anglais, techniquement discutable et tronquée."
+    }
+  ]
+}
