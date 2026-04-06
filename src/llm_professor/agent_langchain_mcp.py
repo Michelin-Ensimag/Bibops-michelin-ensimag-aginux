@@ -48,17 +48,17 @@ except ImportError:
 
 BASE_DIR = Path(__file__).parent.parent.parent
 
-# MODELES = [
-#     "gpt-4o-mini",
-#     "gpt-4o",
-#     "claude-haiku-4.5",
-# ]
-
 MODELES = [
-    "openai/gpt-4o-mini",
-    "meta-llama/llama-3.1-70b-instruct",
-    "mistralai/mixtral-8x7b-instruct"
+    "gpt-4o-mini",
+    "gpt-4o",
+    "claude-haiku-4.5",
 ]
+
+# MODELES = [
+#     "google/gemini-3-flash-preview",
+#     "anthropic/claude-sonnet-4.5",
+#     "qwen/qwen3.6-plus:free"
+# ]
 
 SYSTEM_PROMPT = """Tu es l'agent IA de support informatique (BibOps) chez Michelin.
 
@@ -136,18 +136,18 @@ async def recuperer_outils_langchain(session):
 
 def creer_agent(modele, outils):
     """Crée un agent ReAct avec LangGraph."""
-    # llm = ChatOpenAI(
-    #     base_url="http://localhost:4141/v1",
-    #     api_key="dummy",
-    #     model=modele,
-    #     temperature=0,
-    # )
     llm = ChatOpenAI(
-        base_url="https://openrouter.ai/api/v1",
-        api_key="***OPENROUTER_KEY_REMOVED***",
+        base_url="http://localhost:4141/v1",
+        api_key="dummy",
         model=modele,
         temperature=0,
     )
+    # llm = ChatOpenAI(
+    #     base_url="https://openrouter.ai/api/v1",
+    #     api_key="***OPENROUTER_KEY_REMOVED***",
+    #     model=modele,
+    #     temperature=0,
+    # )
     agent = create_react_agent(llm, outils, prompt=SYSTEM_PROMPT)
     return agent
 
