@@ -1,0 +1,213 @@
+
+[92m[1m══════════════════════════════════════════════════════════════[0m
+[92m[1m  🏎️  RedBull_GPT  |  Modèle : gpt-4o-mini[0m
+[92m[1m══════════════════════════════════════════════════════════════[0m
+
+[92m[1m[RedBull_GPT][0m Connexion au Hub : http://localhost:8000/stream ...
+
+
+[92m[1m[RedBull_GPT][0m [90mTour  1/50[0m  Météo:[94mEnsoleillé[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [92m[1m🟢 STAY OUT[0m  [90m(9.5s)[0m
+[92m[1m[RedBull_GPT][0m   [90mLes pneus MEDIUM sont en bon état et la consommation de carburant est juste suffisante pour terminer la course. Il est p[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour  2/50[0m  Météo:[94mEnsoleillé[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [92m[1m🟢 STAY OUT[0m  [90m(7.2s)[0m
+[92m[1m[RedBull_GPT][0m   [90mLes pneus Medium sont en bon état et adaptés aux conditions actuelles. La consommation de carburant est critique, il est[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour  3/50[0m  Météo:[94mEnsoleillé[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m[1m🔴 BOX BOX BOX[0m  Pneus:HARD  Carbu:none  [90m(7.3s)[0m
+[92m[1m[RedBull_GPT][0m   [90mNous devons changer les pneus pour éviter une dégradation excessive, surtout avec la chaleur. De plus, la situation crit[0m
+[92m[1m[RedBull_GPT][0m   [92m✓ décision envoyée au Hub (tour 3)[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour  4/50[0m  Météo:[94mEnsoleillé[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour  5/50[0m  Météo:[94mEnsoleillé[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour  6/50[0m  Météo:[94mEnsoleillé[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour  7/50[0m  Météo:[94mEnsoleillé[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour  8/50[0m  Météo:[94mEnsoleillé[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour  9/50[0m  Météo:[94mEnsoleillé[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [92m[1m🟢 STAY OUT[0m  [90m(9.1s)[0m
+[92m[1m[RedBull_GPT][0m   [90mLes pneus MEDIUM sont encore performants malgré l'usure, et nous avons juste assez de carburant pour terminer la course.[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour 10/50[0m  Météo:[94mEnsoleillé[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour 11/50[0m  Météo:[94mEnsoleillé[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour 12/50[0m  Météo:[94mEnsoleillé[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour 13/50[0m  Météo:[94mEnsoleillé[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour 14/50[0m  Météo:[94mEnsoleillé[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour 15/50[0m  Météo:[94mPluie légère[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour 16/50[0m  Météo:[94mPluie légère[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour 17/50[0m  Météo:[94mPluie légère[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour 18/50[0m  Météo:[94mPluie légère[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour 19/50[0m  Météo:[94mPluie légère[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour 20/50[0m  Météo:[94mPluie légère[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour 21/50[0m  Météo:[94mPluie légère[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour 22/50[0m  Météo:[94mPluie légère[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour 23/50[0m  Météo:[94mPluie légère[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour 24/50[0m  Météo:[94mPluie légère[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour 25/50[0m  Météo:[94mPluie légère[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour 26/50[0m  Météo:[94mPluie légère[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour 27/50[0m  Météo:[94mPluie légère[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour 28/50[0m  Météo:[94mPluie légère[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour 29/50[0m  Météo:[94mPluie légère[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour 30/50[0m  Météo:[94mPluie forte[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour 31/50[0m  Météo:[94mPluie forte[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour 32/50[0m  Météo:[94mPluie forte[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour 33/50[0m  Météo:[94mPluie forte[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour 34/50[0m  Météo:[94mPluie forte[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour 35/50[0m  Météo:[94mPluie forte[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour 36/50[0m  Météo:[94mPluie forte[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour 37/50[0m  Météo:[94mPluie forte[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour 38/50[0m  Météo:[94mPluie forte[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour 39/50[0m  Météo:[94mPluie forte[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour 40/50[0m  Météo:[94mPluie forte[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour 41/50[0m  Météo:[94mPluie forte[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour 42/50[0m  Météo:[94mSéchant[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour 43/50[0m  Météo:[94mSéchant[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour 44/50[0m  Météo:[94mSéchant[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour 45/50[0m  Météo:[94mSéchant[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour 46/50[0m  Météo:[94mSéchant[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour 47/50[0m  Météo:[94mSéchant[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour 48/50[0m  Météo:[94mSéchant[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour 49/50[0m  Météo:[94mSéchant[0m
+[92m[1m[RedBull_GPT][0m   ⟳ réflexion en cours...
+[92m[1m[RedBull_GPT][0m   [91m✗ Proxy LLM injoignable (localhost:4141). Lancez : npx copilot-api@latest start[0m
+
+[92m[1m[RedBull_GPT][0m [90mTour 50/50[0m  Météo:[94mSéchant[0m
+
+[92m[1m[RedBull_GPT][0m [1m🏁 Course terminée ![0m
+
