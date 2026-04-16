@@ -1,0 +1,97 @@
+{
+  "modeles": [
+    "gpt-4o-mini",
+    "claude-haiku-4.5"
+  ],
+  "juge": "gpt-4o",
+  "scores": {
+    "gpt-4o-mini": 6,
+    "claude-haiku-4.5": 4
+  },
+  "pourcentages": {
+    "gpt-4o-mini": 60.0,
+    "claude-haiku-4.5": 40.0
+  },
+  "details": [
+    {
+      "ticket_id": "1",
+      "question": "Mon VPN Cisco ne marche plus.",
+      "choix_llm": "B",
+      "meilleur_modele": "gpt-4o-mini",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse B est plus claire et actionnable pour un utilisateur non technique, avec des étapes simples et compréhensibles, tout en incluant des solutions pratiques comme la mise à jour du logiciel et la désactivation temporaire du pare-feu."
+    },
+    {
+      "ticket_id": "2",
+      "question": "Combien de jours de congés me reste-t-il ?",
+      "choix_llm": "A",
+      "meilleur_modele": "gpt-4o-mini",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse A est plus concise et directe tout en fournissant les étapes nécessaires pour obtenir l'information, ce qui la rend plus claire et actionnable dans le contexte professionnel de Michelin."
+    },
+    {
+      "ticket_id": "3",
+      "question": "Mon imprimante affiche erreur 404.",
+      "choix_llm": "A",
+      "meilleur_modele": "gpt-4o-mini",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse A est plus complète et fournit des étapes claires et détaillées pour résoudre le problème, ce qui la rend plus actionnable et adaptée au contexte utilisateur."
+    },
+    {
+      "ticket_id": "4",
+      "question": "Est-ce que je peux cumuler deux emplois ?",
+      "choix_llm": "A",
+      "meilleur_modele": "gpt-4o-mini",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse A est plus détaillée, claire et actionnable, en fournissant des informations spécifiques sur les contrats, le temps de travail et les secteurs d'activité, ce qui est essentiel pour un juriste d'entreprise répondant à cette question."
+    },
+    {
+      "ticket_id": "5",
+      "question": "Je ne peux pas accéder à Outlook depuis ce matin, le client refuse de se connecter.",
+      "choix_llm": "A",
+      "meilleur_modele": "claude-haiku-4.5",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse A est plus concise, claire et adaptée au contexte en se concentrant sur les étapes essentielles et immédiates pour résoudre le problème, sans ajouter d'informations superflues."
+    },
+    {
+      "ticket_id": "6",
+      "question": "Je suis en télétravail et ma connexion WiFi est très lente. Comment l'améliorer ?",
+      "choix_llm": "B",
+      "meilleur_modele": "gpt-4o-mini",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse B est plus complète, claire et propose des actions concrètes adaptées au contexte du télétravail, comme l'utilisation de la bande 5 GHz et la gestion des interférences."
+    },
+    {
+      "ticket_id": "7",
+      "question": "J'ai oublié mon mot de passe Windows. Comment faire pour le réinitialiser ?",
+      "choix_llm": "A",
+      "meilleur_modele": "claude-haiku-4.5",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse A est plus adaptée au contexte professionnel de Michelin, mentionnant spécifiquement le réseau interne et le support IT, tout en étant claire et actionnable."
+    },
+    {
+      "ticket_id": "8",
+      "question": "Je dois installer un logiciel pour mon projet (Python, Node.js, Docker). Qui autoriser ?",
+      "choix_llm": "B",
+      "meilleur_modele": "claude-haiku-4.5",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse B est plus claire, structurée et actionnable, avec des étapes précises et adaptées au contexte professionnel chez Michelin."
+    },
+    {
+      "ticket_id": "9",
+      "question": "Quels sont les équipements que Michelin fournit pour une configuration de bureau à domicile ?",
+      "choix_llm": "A",
+      "meilleur_modele": "gpt-4o-mini",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse A est plus pertinente et claire car elle fournit une liste détaillée et concrète des équipements potentiellement fournis, ce qui est directement utile à l'utilisateur. Elle est également mieux adaptée au contexte en répondant directement à la question posée."
+    },
+    {
+      "ticket_id": "10",
+      "question": "Quel est le montant maximal de remboursement pour un repas lors d'un déplacement professionnel ?",
+      "choix_llm": "B",
+      "meilleur_modele": "claude-haiku-4.5",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse B est plus claire, actionnable et adaptée au contexte en fournissant des étapes concrètes pour obtenir l'information précise, tout en reconnaissant les limites de l'accès aux politiques spécifiques de Michelin."
+    }
+  ]
+}

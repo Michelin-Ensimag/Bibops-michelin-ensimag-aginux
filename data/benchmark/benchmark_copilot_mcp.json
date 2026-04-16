@@ -3,144 +3,144 @@
     "modele": "gpt-4o-mini",
     "ticket": "Mon VPN Cisco ne marche plus, j'ai un message 'connection timeout'.",
     "reponse": "'choices'",
-    "outil_utilise": "mcp_verifier_statut_serveur",
-    "temps_s": 2.27,
+    "outil_utilise": "mcp_chercher_dans_kb",
+    "temps_s": 3.14,
     "tokens": 0,
     "statut": "ERREUR",
     "scores": {
       "score_erreur": 0.0,
       "score_feedback": 0.0,
-      "score_vitesse": 8.1,
+      "score_vitesse": 6.88,
       "score_efficacite_tokens": 10.0,
-      "score_final": 1.81
+      "score_final": 1.69
     }
   },
   {
     "modele": "gpt-4o-mini",
     "ticket": "Outlook crash au démarrage depuis ce matin.",
-    "reponse": "Pour résoudre le problème de crash d'Outlook au démarrage, veuillez suivre ces étapes :\n\n1. **Démarrer Outlook en mode sans échec** :\n   - Appuyez sur `Win + R` pour ouvrir la boîte de dialogue Exécuter.\n   - Tapez `outlook.exe /safe` et appuyez sur Entrée.\n\n2. **Désactiver les compléments** :\n   - Si Outlook s'ouvre en mode sans échec, allez dans `Fichier > Options > Compléments`.\n   - Dans la section Gérer, choisissez `Compléments COM` et cliquez sur `Atteindre`.\n   - Désactivez tous les compléments, puis redémarrez Outlook normalement.\n\n3. **Réparer Office** :\n   - Accédez au Panneau de configuration.\n   - Cliquez sur `Programmes > Programmes et fonctionnalités`.\n   - Trouvez `Microsoft Office`, cliquez dessus, puis sélectionnez `Modifier`.\n   - Choisissez `Réparation rapide`, puis suivez les instructions. Si cela ne fonctionne pas, essayez `Réparation en ligne`.\n\n4. **Recréer le profil Outlook** :\n   - Ouvrez le Panneau de configuration.\n   - Allez dans `Courrier > Profils`.\n   - Supprimez votre profil actuel puis créez un nouveau profil.\n\n5. **Vider le cache d'Outlook** :\n   - Accédez à `%localappdata%\\Microsoft\\Outlook` dans l'Éxplorateur de fichiers.\n   - Supprimez tous les fichiers avec l'extension `.ost`.\n\n**Escalade :** Si le problème persiste après ces étapes, veuillez ouvrir un ticket auprès de l'équipe de niveau 2 (équipe messagerie).",
+    "reponse": "'choices'",
     "outil_utilise": "mcp_chercher_dans_kb",
-    "temps_s": 4.48,
-    "tokens": 1332,
-    "statut": "OK",
+    "temps_s": 1.07,
+    "tokens": 0,
+    "statut": "ERREUR",
     "scores": {
-      "score_erreur": 10.0,
-      "score_feedback": 10.0,
-      "score_vitesse": 5.73,
-      "score_efficacite_tokens": 0.92,
-      "score_final": 7.33
+      "score_erreur": 0.0,
+      "score_feedback": 0.0,
+      "score_vitesse": 9.89,
+      "score_efficacite_tokens": 10.0,
+      "score_final": 1.99
     }
   },
   {
     "modele": "gpt-4o-mini",
     "ticket": "Mon PC est très lent, il met 10 minutes à démarrer.",
-    "reponse": "Pour résoudre le problème de lenteur au démarrage de votre PC, suivez ces étapes :\n\n1. **Ouvrir le Gestionnaire des tâches** :\n   - Appuyez sur `Ctrl + Shift + Esc`.\n   - Vérifiez quels processus consomment le plus de ressources (CPU, RAM).\n\n2. **Vérifier l'espace disque disponible** :\n   - Assurez-vous d'avoir au moins 15% d'espace libre sur le disque.\n\n3. **Fermer les applications inutilisées** :\n   - Terminez les applications qui ne sont pas nécessaires.\n\n4. **Désactiver les programmes au démarrage** :\n   - Dans le Gestionnaire des tâches, allez dans l'onglet **Démarrage** et désactivez les applications inutiles au démarrage.\n\n5. **Nettoyer les fichiers temporaires** :\n   - Appuyez sur `Win + R`, tapez `cleanmgr`, sélectionnez le disque C et nettoyez les fichiers système.\n\n6. **Défragmenter le disque (si vous avez un HDD)** :\n   - Allez dans **Optimiser les lecteurs** et choisissez le disque C, puis cliquez sur **Optimiser**.\n\n7. **Vérifier les mises à jour Windows** :\n   - Allez dans les **Paramètres** et vérifiez s'il y a des mises à jour à installer.\n\n8. **Scanner pour des malwares** :\n   - Ouvrez **Sécurité Windows** et effectuez une **analyse rapide**.\n\n9. **Augmenter la mémoire virtuelle si nécessaire** :\n   - Allez dans **Système**, puis **Paramètres système avancés**, et modifiez les paramètres de performance pour ajuster la mémoire virtuelle.\n\nSi la lenteur persiste après ces étapes, je vous recommande d'ouvrir un ticket de support niveau 1 pour un diagnostic matériel ou un éventuel upgrade de la RAM.",
+    "reponse": "Pour résoudre le problème de lenteur de démarrage de votre PC, suivez ces étapes :\n\n1. **Ouvrir le Gestionnaire des tâches** : Appuyez sur `Ctrl + Shift + Esc` pour identifier les processus qui consomment le plus de ressources.\n2. **Vérifier l'espace disque disponible** : Assurez-vous qu'il y a au moins 15% d'espace libre sur le disque dur.\n3. **Fermer les applications inutilisées** : Si vous avez des applications ouvertes, fermez celles que vous n’utilisez pas.\n4. **Désactiver les programmes au démarrage** :\n   - Ouvrez le Gestionnaire des tâches (Ctrl + Shift + Esc).\n   - Allez dans l'onglet **Démarrage** et désactivez les applications inutiles.\n5. **Nettoyer les fichiers temporaires** :\n   - Appuyez sur `Win + R`, tapez `cleanmgr`, et sélectionnez le disque `C:` pour nettoyer les fichiers système.\n6. **Défragmenter le disque** (si vous avez un HDD) :\n   - Recherchez \"Optimiser les lecteurs\", sélectionnez le disque `C:` et cliquez sur **Optimiser**.\n7. **Vérifier les mises à jour Windows** : Assurez-vous que votre système d'exploitation est à jour.\n8. **Scanner les malwares** : Utilisez Windows Defender pour effectuer une analyse rapide. Allez dans **Sécurité Windows** > **Protection contre les virus et menaces**.\n9. **Augmenter la mémoire virtuelle** :\n   - Allez dans les **Paramètres système avancés** > **Performances** > **Modifier** pour ajuster la mémoire virtuelle.\n\nSi la lenteur persiste après avoir suivi ces étapes, il est recommandé d'ouvrir un ticket pour un diagnostic matériel ou envisager une mise à niveau RAM.",
     "outil_utilise": "mcp_chercher_dans_kb",
-    "temps_s": 5.2,
-    "tokens": 1110,
+    "temps_s": 4.58,
+    "tokens": 1111,
     "statut": "OK",
     "scores": {
       "score_erreur": 10.0,
       "score_feedback": 10.0,
-      "score_vitesse": 5.11,
+      "score_vitesse": 5.65,
       "score_efficacite_tokens": 0.97,
-      "score_final": 7.22
+      "score_final": 7.32
     }
   },
   {
     "modele": "gpt-4o-mini",
     "ticket": "J'ai oublié mon mot de passe Windows.",
-    "reponse": "Pour réinitialiser votre mot de passe Windows, veuillez suivre les étapes ci-dessous :\n\n1. Accédez au portail de réinitialisation des mots de passe : [https://password.michelin.com](https://password.michelin.com).\n2. Cliquez sur \"Mot de passe oublié\".\n3. Entrez votre adresse email professionnelle (prenom.nom@michelin.com).\n4. Répondez aux questions de sécurité ou utilisez le code SMS (si configuré).\n5. Créez un nouveau mot de passe en respectant les critères suivants :\n   - Minimum 12 caractères\n   - Inclure des majuscules, des minuscules, des chiffres et des caractères spéciaux\n6. Si votre compte est verrouillé, attendez 30 minutes ou contactez le helpdesk pour un déverrouillage manuel.\n\nSi vous rencontrez des problèmes avec le portail, veuillez ouvrir un ticket au niveau 1 (helpdesk).",
+    "reponse": "Pour réinitialiser votre mot de passe Windows, suivez les étapes ci-dessous :\n\n1. Accédez à la page de réinitialisation des mots de passe : [https://password.michelin.com](https://password.michelin.com).\n2. Cliquez sur 'Mot de passe oublié'.\n3. Saisissez votre adresse email professionnelle (prenom.nom@michelin.com).\n4. Répondez aux questions de sécurité ou utilisez le code SMS (si configuré).\n5. Choisissez un nouveau mot de passe conforme à la politique de sécurité : 12 caractères minimum, avec majuscules, minuscules, chiffres, et caractères spéciaux.\n6. Si votre compte est bloqué, attendez 30 minutes ou contactez le helpdesk pour un déverrouillage manuel.\n\nSi vous rencontrez des difficultés, ouvrez un ticket auprès du helpdesk pour obtenir de l'aide supplémentaire.",
     "outil_utilise": "mcp_chercher_dans_kb",
-    "temps_s": 2.36,
-    "tokens": 1430,
+    "temps_s": 1.94,
+    "tokens": 1421,
     "statut": "OK",
     "scores": {
       "score_erreur": 10.0,
       "score_feedback": 10.0,
-      "score_vitesse": 7.96,
+      "score_vitesse": 8.59,
       "score_efficacite_tokens": 0.89,
-      "score_final": 7.77
+      "score_final": 7.9
     }
   },
   {
     "modele": "gpt-4o-mini",
     "ticket": "Impossible d'accéder au dossier partagé Ressources Humaines.",
-    "reponse": "Voici les étapes à suivre pour résoudre le problème d'accès au dossier partagé Ressources Humaines :\n\n1. **Tester l'accès avec le chemin complet** : Ouvrez l'explorateur de fichiers et entrez le chemin \\\\fs-michelin-01\\Ressources_Humaines dans la barre d'adresse.\n   \n2. **Vérifier la connectivité au serveur** : Ouvrez l'invite de commandes et tapez `ping fs-michelin-01` pour confirmer que le serveur répond.\n\n3. **Vider le cache des identifiants** :\n   - Accédez au Panneau de configuration.\n   - Cliquez sur \"Gestionnaire d'identifications\".\n   - Sous la section \"Windows\", supprimez les identifiants liés au serveur si présents.\n\n4. **Se reconnecter manuellement** : \n   - Appuyez sur Win+R.\n   - Entrez \\\\fs-michelin-01\\Ressources_Humaines et appuyez sur Entrée.\n   - Saisissez vos identifiants si demandé.\n\n5. **Mapper le lecteur réseau** :\n   - Cliquez-droit sur \"Ce PC\".\n   - Sélectionnez \"Connecter un lecteur réseau\".\n   - Suivez les instructions pour le mapper.\n\n6. **Redémarrer le service Workstation** :\n   - Ouvrez \"services.msc\".\n   - Recherchez \"Workstation\", faites un clic droit et sélectionnez \"Redémarrer\".\n\nSi vous ne parvenez toujours pas à accéder au dossier après ces étapes, il est conseillé d'ouvrir un ticket au niveau 2 pour une vérification des droits Active Directory.",
+    "reponse": "Pour résoudre le problème d'accès au dossier partagé Ressources Humaines, veuillez suivre ces étapes :\n\n1. **Tester l'accès avec le chemin complet** :\n   - Ouvrez l'Explorateur de fichiers et entrez : `\\\\fs-michelin-01\\Ressources_Humaines`\n   \n2. **Vérifier la connectivité au serveur** :\n   - Ouvrez l'invite de commande et tapez : `ping fs-michelin-01`\n   - Vérifiez si vous obtenez des réponses.\n\n3. **Vider le cache des identifiants** :\n   - Accédez au Panneau de configuration.\n   - Cliquez sur \"Gestionnaire d'identifications\".\n   - Sous \"Windows\", supprimez les identifiants liés au dossier partagé.\n\n4. **Se reconnecter manuellement** :\n   - Appuyez sur `Win + R`, tapez : `\\\\fs-michelin-01\\Ressources_Humaines`, puis appuyez sur Entrée.\n   - Entrez vos identifiants si demandé.\n\n5. **Mapper le lecteur réseau** :\n   - Faites un clic droit sur \"Ce PC\" et sélectionnez \"Connecter un lecteur réseau\".\n   - Suivez les instructions pour mapper le dossier.\n\n6. **Redémarrer le service Workstation** :\n   - Tapez `services.msc` dans la barre de recherche et appuyez sur Entrée.\n   - Trouvez \"Workstation\", faites un clic droit et sélectionnez \"Redémarrer\".\n\nSi l'accès est toujours refusé après ces étapes, veuillez soumettre un ticket de niveau 2 pour une gestion des droits dans Active Directory.",
     "outil_utilise": "mcp_chercher_dans_kb",
-    "temps_s": 3.04,
-    "tokens": 1055,
+    "temps_s": 4.56,
+    "tokens": 1059,
     "statut": "OK",
     "scores": {
       "score_erreur": 10.0,
       "score_feedback": 10.0,
-      "score_vitesse": 6.97,
+      "score_vitesse": 5.66,
       "score_efficacite_tokens": 0.99,
-      "score_final": 7.59
+      "score_final": 7.33
     }
   },
   {
     "modele": "gpt-4o",
     "ticket": "Mon VPN Cisco ne marche plus, j'ai un message 'connection timeout'.",
-    "reponse": "Pour résoudre le problème de \"connection timeout\" avec le VPN Cisco, suivez ces étapes dans l'ordre :\n\n1. **Redémarrer le service** :\n   - Ouvrez `services.msc`.\n   - Trouvez le service \"Cisco AnyConnect\".\n   - Faites un clic droit et sélectionnez \"Redémarrer\".\n\n2. **Vider le cache DNS** :\n   - Lancez l'invite de commandes (`CMD`) en tant qu'administrateur.\n   - Exécutez la commande : `ipconfig /flushdns`.\n\n3. **Tester le serveur backup** :\n   - Modifiez l'adresse dans Cisco AnyConnect, remplacez `vpn.michelin.com` par `vpn-backup.michelin.com`.\n   - Essayez de vous connecter à nouveau.\n\n4. **Réinstaller Cisco AnyConnect** :\n   - Désinstallez complètement le logiciel.\n   - Redémarrez votre PC.\n   - Téléchargez et réinstallez Cisco AnyConnect depuis le portail intranet Michelin.\n\n5. **Vérification antivirus/pare-feu** :\n   - Assurez-vous que Cisco AnyConnect est autorisé dans votre antivirus et dans le pare-feu Windows.\n\nSi aucune des étapes ne résout le problème, ouvrez un ticket pour l'équipe réseau infrastructure (niveau 2).",
+    "reponse": "'choices'",
     "outil_utilise": "mcp_chercher_dans_kb",
-    "temps_s": 3.93,
-    "tokens": 951,
-    "statut": "OK",
+    "temps_s": 1.33,
+    "tokens": 0,
+    "statut": "ERREUR",
     "scores": {
-      "score_erreur": 10.0,
-      "score_feedback": 10.0,
-      "score_vitesse": 6.2,
-      "score_efficacite_tokens": 1.42,
-      "score_final": 7.52
+      "score_erreur": 0.0,
+      "score_feedback": 0.0,
+      "score_vitesse": 9.5,
+      "score_efficacite_tokens": 10.0,
+      "score_final": 1.95
     }
   },
   {
     "modele": "gpt-4o",
     "ticket": "Outlook crash au démarrage depuis ce matin.",
-    "reponse": "Voici les étapes pour résoudre le crash d'Outlook au démarrage :\n\n1. **Mode sans échec** : Démarrez Outlook en mode sans échec.\n   - Appuyez sur `Win+R`, tapez `outlook.exe /safe`, et appuyez sur Entrée.\n\n2. **Vérifier les compléments** :\n   - Dans Outlook, allez à **Fichier** -> **Options** -> **Compléments** -> **Gérer : Compléments COM** -> Cliquez sur **Atteindre…** et désactivez tous les compléments.\n\n3. **Réparer Office** :\n   - Ouvrez le Panneau de configuration -> **Programmes et fonctionnalités** -> **Microsoft Office** -> Cliquez sur **Modifier**. Sélectionnez **Réparation rapide**.\n   - Si cela ne résout pas le problème, effectuez une **Réparation en ligne** (elle prendra plus de temps).\n\n4. **Recréer le profil utilisateur** :\n   - Panneau de configuration -> **Courrier (Mail)** -> **Afficher les profils** -> Supprimez le profil actuel et créez-en un nouveau.\n\n5. **Vider le cache Outlook** :\n   - Naviguez vers `%localappdata%\\Microsoft\\Outlook` (copiez-collez dans l’explorateur Windows) et supprimez les fichiers `.ost`.\n\n**Escalade** : Si le problème persiste après ces étapes, il faudra créer un ticket pour l'équipe messagerie (Niveau 2).",
+    "reponse": "Suivez les étapes suivantes pour résoudre le crash d'Outlook au démarrage :\n\n1. **Démarrage en mode sans échec** :\n   - Appuyez sur `Win + R`.\n   - Tapez `outlook.exe /safe` puis appuyez sur Entrée.\n\n2. **Désactiver les compléments** :\n   - Dans Outlook, allez dans `Fichier` -> `Options` -> `Compléments`.\n   - En bas, sélectionnez `Compléments COM`, puis cliquez sur `Atteindre` et désactivez tous les compléments.\n\n3. **Réparer Office** :\n   - Allez dans le `Panneau de configuration` -> `Programmes`.\n   - Cliquez sur `Microsoft Office` -> `Modifier`.\n   - Choisissez `Réparation rapide`. Si le problème persiste, essayez la `Réparation en ligne`.\n\n4. **Recréer le profil Outlook** :\n   - Ouvrez le `Panneau de configuration`.\n   - Cliquez sur `Courrier` -> `Afficher les profils`.\n   - Supprimez l'ancien profil et créez-en un nouveau.\n\n5. **Vider le cache Outlook** :\n   - Dans l'Explorateur de fichiers, accédez à : `%localappdata%\\Microsoft\\Outlook`.\n   - Supprimez les fichiers `.ost`.\n\nSi le problème persiste après ces étapes, escaladez le ticket au niveau 2 (équipe messagerie).",
     "outil_utilise": "mcp_chercher_dans_kb",
-    "temps_s": 4.96,
-    "tokens": 1285,
+    "temps_s": 4.68,
+    "tokens": 1014,
     "statut": "OK",
     "scores": {
       "score_erreur": 10.0,
       "score_feedback": 10.0,
-      "score_vitesse": 5.32,
-      "score_efficacite_tokens": 0.93,
-      "score_final": 7.25
+      "score_vitesse": 5.56,
+      "score_efficacite_tokens": 1.0,
+      "score_final": 7.31
     }
   },
   {
     "modele": "gpt-4o",
     "ticket": "Mon PC est très lent, il met 10 minutes à démarrer.",
-    "reponse": "Voici les étapes pour résoudre la lenteur de démarrage de votre PC :\n\n1. **Vérifier les ressources en cours d'utilisation** :\n   - Ouvrez le Gestionnaire des tâches (Ctrl+Shift+Esc) et identifiez les processus consommant beaucoup de CPU, RAM ou Disque.\n\n2. **Désactiver les programmes inutiles au démarrage** :\n   - Dans le Gestionnaire des tâches, allez à l'onglet *Démarrage* et désactivez les programmes non nécessaires.\n\n3. **Nettoyer les fichiers temporaires** :\n   - Appuyez sur Win+R -> Tapez `cleanmgr` -> Sélectionnez le disque principal (généralement C:) -> *Nettoyer les fichiers système*.\n\n4. **Optimiser le disque (pour HDD)** :\n   - Recherchez et ouvrez *Optimiser les lecteurs* -> Sélectionnez le disque principal -> Cliquez sur *Optimiser*.\n\n5. **Mettre à jour Windows** :\n   - Accédez aux paramètres Windows Update et appliquez les mises à jour disponibles.\n\n6. **Rechercher des logiciels malveillants** :\n   - Ouvrez *Sécurité Windows* -> Effectuez une *Analyse rapide* avec Windows Defender.\n\n7. **Augmenter la mémoire virtuelle (si nécessaire)** :\n   - Panneau de configuration -> Système -> Paramètres système avancés -> Performances -> *Paramètres* -> *Modifier* sous *Mémoire virtuelle*.\n\nSi le problème persiste après ces étapes, ouvrez un ticket pour un diagnostic matériel ou une mise à niveau de la RAM.",
+    "reponse": "Voici comment résoudre la lenteur de démarrage de votre PC :\n\n1. **Identifier les processus gourmands** :\n   - Ouvrez le Gestionnaire des tâches (Ctrl+Shift+Esc).\n   - Vérifiez l'utilisation CPU, RAM et Disque.\n\n2. **Désactiver les programmes inutiles au démarrage** :\n   - Accédez à l'onglet \"Démarrage\" dans le Gestionnaire des tâches.\n   - Désactivez les applications non nécessaires.\n\n3. **Nettoyer les fichiers temporaires** :\n   - Appuyez sur Win+R, tapez `cleanmgr`, sélectionnez le disque C: et supprimez les fichiers inutiles.\n\n4. **Défragmenter le disque (si HDD)** :\n   - Recherchez \"Optimiser les lecteurs\", choisissez C: puis cliquez sur \"Optimiser\".\n\n5. **Vérifier les mises à jour Windows** :\n   - Allez dans Paramètres -> \"Mises à jour et sécurité\" -> \"Rechercher les mises à jour\".\n\n6. **Scanner les malwares** :\n   - Ouvrez Sécurité Windows -> \"Analyse rapide\".\n\n7. **Vérifier la mémoire virtuelle** :\n   - Accédez à \"Système\" -> Paramètres système avancés -> Performances -> Modifier pour ajuster.\n\nSi votre PC est toujours lent après ces étapes, contactez le support informatique pour effectuer un diagnostic matériel.",
     "outil_utilise": "mcp_chercher_dans_kb",
-    "temps_s": 4.82,
-    "tokens": 1324,
+    "temps_s": 5.9,
+    "tokens": 1025,
     "statut": "OK",
     "scores": {
       "score_erreur": 10.0,
       "score_feedback": 10.0,
-      "score_vitesse": 5.44,
-      "score_efficacite_tokens": 0.92,
-      "score_final": 7.27
+      "score_vitesse": 4.51,
+      "score_efficacite_tokens": 0.99,
+      "score_final": 7.1
     }
   },
   {
     "modele": "gpt-4o",
     "ticket": "J'ai oublié mon mot de passe Windows.",
-    "reponse": "Voici les étapes pour réinitialiser votre mot de passe Windows avec les outils Michelin :\n\n1. Rendez-vous sur le portail de réinitialisation : [password.michelin.com](https://password.michelin.com).\n2. Cliquez sur \"Mot de passe oublié\".\n3. Saisissez votre adresse professionnelle (ex : prenom.nom@michelin.com).\n4. Suivez les étapes, notamment répondre aux questions de sécurité ou utiliser le code reçu par SMS (si configuré).\n5. Une fois l'accès validé, créez un nouveau mot de passe (12 caractères minimum, incluant majuscules, minuscules, chiffres et caractères spéciaux).\n\nSi cela ne fonctionne pas ou si votre compte est verrouillé, contactez le helpdesk Michelin pour assistance.",
+    "reponse": "'choices'",
     "outil_utilise": "mcp_chercher_dans_kb",
-    "temps_s": 2.78,
-    "tokens": 1391,
-    "statut": "OK",
+    "temps_s": 1.58,
+    "tokens": 0,
+    "statut": "ERREUR",
     "scores": {
-      "score_erreur": 10.0,
-      "score_feedback": 10.0,
-      "score_vitesse": 7.33,
-      "score_efficacite_tokens": 0.9,
-      "score_final": 7.65
+      "score_erreur": 0.0,
+      "score_feedback": 0.0,
+      "score_vitesse": 9.13,
+      "score_efficacite_tokens": 10.0,
+      "score_final": 1.91
     }
   },
   {
@@ -148,13 +148,13 @@
     "ticket": "Impossible d'accéder au dossier partagé Ressources Humaines.",
     "reponse": "'choices'",
     "outil_utilise": "mcp_chercher_dans_kb",
-    "temps_s": 1.62,
+    "temps_s": 1.63,
     "tokens": 0,
     "statut": "ERREUR",
     "scores": {
       "score_erreur": 0.0,
       "score_feedback": 0.0,
-      "score_vitesse": 9.07,
+      "score_vitesse": 9.05,
       "score_efficacite_tokens": 10.0,
       "score_final": 1.91
     }
@@ -162,81 +162,81 @@
   {
     "modele": "claude-haiku-4.5",
     "ticket": "Mon VPN Cisco ne marche plus, j'ai un message 'connection timeout'.",
-    "reponse": "Je vais chercher une solution pour votre problème de VPN Cisco.",
+    "reponse": "Je vais chercher une solution pour votre problème de VPN Cisco avec le message \"connection timeout\".",
     "outil_utilise": "aucun",
-    "temps_s": 2.09,
-    "tokens": 1053,
-    "statut": "OK",
-    "scores": {
-      "score_erreur": 10.0,
-      "score_feedback": 10.0,
-      "score_vitesse": 8.37,
-      "score_efficacite_tokens": 0.99,
-      "score_final": 7.87
-    }
-  },
-  {
-    "modele": "claude-haiku-4.5",
-    "ticket": "Outlook crash au démarrage depuis ce matin.",
-    "reponse": "Je vais chercher une solution pour ce problème Outlook dans notre Knowledge Base.",
-    "outil_utilise": "aucun",
-    "temps_s": 1.07,
-    "tokens": 996,
-    "statut": "OK",
-    "scores": {
-      "score_erreur": 10.0,
-      "score_feedback": 10.0,
-      "score_vitesse": 9.89,
-      "score_efficacite_tokens": 1.03,
-      "score_final": 8.19
-    }
-  },
-  {
-    "modele": "claude-haiku-4.5",
-    "ticket": "Mon PC est très lent, il met 10 minutes à démarrer.",
-    "reponse": "Je vais chercher des solutions pour ce problème de lenteur au démarrage.",
-    "outil_utilise": "aucun",
-    "temps_s": 1.35,
+    "temps_s": 1.59,
     "tokens": 1059,
     "statut": "OK",
     "scores": {
       "score_erreur": 10.0,
       "score_feedback": 10.0,
-      "score_vitesse": 9.47,
+      "score_vitesse": 9.12,
       "score_efficacite_tokens": 0.99,
-      "score_final": 8.09
+      "score_final": 8.02
+    }
+  },
+  {
+    "modele": "claude-haiku-4.5",
+    "ticket": "Outlook crash au démarrage depuis ce matin.",
+    "reponse": "Je vais chercher une solution pour ce problème d'Outlook qui crash au démarrage.",
+    "outil_utilise": "aucun",
+    "temps_s": 1.31,
+    "tokens": 1051,
+    "statut": "OK",
+    "scores": {
+      "score_erreur": 10.0,
+      "score_feedback": 10.0,
+      "score_vitesse": 9.54,
+      "score_efficacite_tokens": 0.99,
+      "score_final": 8.1
+    }
+  },
+  {
+    "modele": "claude-haiku-4.5",
+    "ticket": "Mon PC est très lent, il met 10 minutes à démarrer.",
+    "reponse": "Je vais chercher des solutions pour ce problème de lenteur de démarrage.",
+    "outil_utilise": "aucun",
+    "temps_s": 1.56,
+    "tokens": 1059,
+    "statut": "OK",
+    "scores": {
+      "score_erreur": 10.0,
+      "score_feedback": 10.0,
+      "score_vitesse": 9.16,
+      "score_efficacite_tokens": 0.99,
+      "score_final": 8.03
     }
   },
   {
     "modele": "claude-haiku-4.5",
     "ticket": "J'ai oublié mon mot de passe Windows.",
-    "reponse": "Je vais chercher une solution dans notre Knowledge Base pour vous aider à récupérer votre accès Windows.",
+    "reponse": "Je vais chercher une solution pour vous aider à récupérer l'accès à votre compte Windows.",
     "outil_utilise": "aucun",
-    "temps_s": 1.78,
-    "tokens": 1012,
+    "temps_s": 2.55,
+    "tokens": 1066,
     "statut": "OK",
     "scores": {
       "score_erreur": 10.0,
       "score_feedback": 10.0,
-      "score_vitesse": 8.83,
-      "score_efficacite_tokens": 1.0,
-      "score_final": 7.97
+      "score_vitesse": 7.68,
+      "score_efficacite_tokens": 0.98,
+      "score_final": 7.73
     }
   },
   {
     "modele": "claude-haiku-4.5",
     "ticket": "Impossible d'accéder au dossier partagé Ressources Humaines.",
-    "reponse": "Je vais rechercher une solution pour ce problème d'accès au dossier partagé.",
+    "reponse": "Je vais chercher une solution pour votre problème d'accès au dossier partagé RH.",
     "outil_utilise": "aucun",
-    "temps_s": 1.2,
-    "tokens": 1020,
+    "temps_s": 1.63,
+    "tokens": 1075,
     "statut": "OK",
     "scores": {
       "score_erreur": 10.0,
       "score_feedback": 10.0,
-      "score_vitesse": 9.7,
-      "score_efficacite_tokens": 0.99,
-      "score_final": 8.14
+      "score_vitesse": 9.05,
+      "score_efficacite_tokens": 0.98,
+      "score_final": 8.01
     }
   }
 ]
