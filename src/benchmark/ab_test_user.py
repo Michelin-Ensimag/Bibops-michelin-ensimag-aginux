@@ -1,10 +1,10 @@
 """
-Test A/B humain : compare deux modeles OpenRouter en aveugle.
+Test A/B humain : compare deux modeles Copilot API en aveugle.
 
 Usage (PowerShell):
-    $env:OPENROUTER_API_KEY = [Environment]::GetEnvironmentVariable("OPENROUTER_API_KEY", "User")
+    npx copilot-api@latest start
     python src/benchmark/ab_test_user.py
-    python src/benchmark/ab_test_user.py --model-a stepfun/step-3.5-flash:free --model-b nvidia/nemotron-nano-9b-v2:free
+    python src/benchmark/ab_test_user.py --model-a gpt-4o-mini --model-b claude-haiku-4.5
 
 Le script lit les tickets depuis tickets_scenario_1.csv, genere une reponse
 par modele, les presente en aveugle (A/B) a l'evaluateur humain, enregistre
@@ -17,7 +17,6 @@ import json
 import os
 import random
 import time
-import subprocess
 
 from openai import OpenAI
 
@@ -25,39 +24,21 @@ BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
 INPUT_CSV = os.path.join(BASE_DIR, "data", "benchmark", "tickets_scenario_1.csv")
 OUTPUT_JSON = os.path.join(BASE_DIR, "data", "benchmark", "ab_user_resultat.json")
 
-OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
-DEFAULT_MODEL_A = "stepfun/step-3.5-flash:free"
-DEFAULT_MODEL_B = "nvidia/nemotron-nano-9b-v2:free"
+COPILOT_BASE_URL = os.environ.get("COPILOT_API_URL", "http://localhost:4141/v1")
+DEFAULT_MODEL_A = "gpt-4o-mini"
+DEFAULT_MODEL_B = "claude-haiku-4.5"
+MAX_TICKETS = 10
 
 
-def charger_openrouter_api_key() -> str:
-    # 1) Standard environment variable for current process/session.
-    key = os.environ.get("OPENROUTER_API_KEY", "").strip()
+def charger_copilot_api_key() -> str:
+    # Le proxy Copilot local n'exige en general pas de clé ; OpenAI SDK en demande une.
+    key = os.environ.get("COPILOT_API_KEY", "").strip()
     if key:
         return key
-
-    # 2) Windows fallback: read user-level variable saved by setx.
-    if os.name == "nt":
-        try:
-            result = subprocess.run(
-                [
-                    "powershell",
-                    "-NoProfile",
-                    "-Command",
-                    "[Environment]::GetEnvironmentVariable('OPENROUTER_API_KEY','User')",
-                ],
-                capture_output=True,
-                text=True,
-                timeout=5,
-                check=False,
-            )
-            fallback = (result.stdout or "").strip()
-            if fallback:
-                return fallback
-        except Exception:
-            pass
-
-    return ""
+    key = os.environ.get("OPENAI_API_KEY", "").strip()
+    if key:
+        return key
+    return "copilot"
 
 
 def _extraire_texte(message) -> str:
@@ -95,25 +76,20 @@ def appeler_modele(client: OpenAI, modele: str, contexte: str, ticket: str, retr
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Test A/B humain entre deux modeles OpenRouter")
+    parser = argparse.ArgumentParser(description="Test A/B humain entre deux modeles Copilot API")
     parser.add_argument("--model-a", default=DEFAULT_MODEL_A, help="Premier modele")
     parser.add_argument("--model-b", default=DEFAULT_MODEL_B, help="Deuxieme modele")
     parser.add_argument("--seed", type=int, default=42, help="Graine aléatoire pour l'ordre A/B")
     parser.add_argument("--retries", type=int, default=3, help="Nombre de tentatives API par appel")
     args = parser.parse_args()
 
-    api_key = charger_openrouter_api_key()
-    if not api_key:
-        print("Erreur: OPENROUTER_API_KEY introuvable dans l'environnement.")
-        print("PowerShell: $env:OPENROUTER_API_KEY = [Environment]::GetEnvironmentVariable('OPENROUTER_API_KEY', 'User')")
-        raise SystemExit(1)
-
-    client = OpenAI(api_key=api_key, base_url=OPENROUTER_BASE_URL, timeout=40)
+    api_key = charger_copilot_api_key()
+    client = OpenAI(api_key=api_key, base_url=COPILOT_BASE_URL, timeout=40)
 
     rng = random.Random(args.seed)
 
     with open(INPUT_CSV, newline="", encoding="utf-8") as f:
-        tickets = list(csv.DictReader(f))
+        tickets = list(csv.DictReader(f))[:MAX_TICKETS]
 
     resultats = []
     scores = {args.model_a: 0, args.model_b: 0}

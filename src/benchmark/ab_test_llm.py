@@ -1,8 +1,8 @@
 """
-Test A/B automatique : compare deux modeles OpenRouter avec un LLM juge.
+Test A/B automatique : compare deux modeles via la Copilot API (proxy local).
 
 Usage (PowerShell):
-    $env:OPENROUTER_API_KEY = [Environment]::GetEnvironmentVariable("OPENROUTER_API_KEY", "User")
+    npx copilot-api@latest start
     python src/benchmark/ab_test_llm.py
 
 Le script lit les tickets depuis tickets_scenario_1.csv, genere une reponse
@@ -16,7 +16,6 @@ import json
 import os
 import random
 import re
-import subprocess
 import time
 from concurrent.futures import ThreadPoolExecutor, TimeoutError as FuturesTimeoutError
 from typing import Any, Dict, Optional, Tuple
@@ -27,22 +26,21 @@ BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
 INPUT_CSV = os.path.join(BASE_DIR, "data", "benchmark", "tickets_scenario_1.csv")
 OUTPUT_JSON = os.path.join(BASE_DIR, "data", "benchmark", "ab_llm_resultat.json")
 
-OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
-DEFAULT_MODEL_A = "stepfun/step-3.5-flash:free"
-DEFAULT_MODEL_B = "arcee-ai/trinity-mini:free"
-DEFAULT_JUDGE_MODEL = "qwen/qwen3.6-plus:free"
+COPILOT_BASE_URL = os.environ.get("COPILOT_API_URL", "http://localhost:4141/v1")
+DEFAULT_MODEL_A = "gpt-4o-mini"
+DEFAULT_MODEL_B = "claude-haiku-4.5"
+DEFAULT_JUDGE_MODEL = "gpt-4o"
 RANDOM_SEED = 42
 MODEL_REQUEST_TIMEOUT_S = 30
 JUDGE_REQUEST_TIMEOUT_S = 30
-MAX_TICKETS = 3
+MAX_TICKETS = 10
 INTER_TICKET_DELAY_S = 20
 
-# Pool de secours pour continuer le benchmark meme si un endpoint free tombe.
+# Modeles de secours pour continuer le benchmark en cas d'indisponibilite ponctuelle.
 MODEL_FALLBACK_POOL = [
-    "stepfun/step-3.5-flash:free",
-    "arcee-ai/trinity-mini:free",
-    "openai/gpt-oss-120b:free",
-    "z-ai/glm-4.5-air:free",
+    "gpt-4o-mini",
+    "claude-haiku-4.5",
+    "gpt-4o",
 ]
 
 JUDGE_SYSTEM_PROMPT = (
@@ -53,32 +51,16 @@ JUDGE_SYSTEM_PROMPT = (
 )
 
 
-def charger_openrouter_api_key() -> str:
-    key = os.environ.get("OPENROUTER_API_KEY", "").strip()
+def charger_copilot_api_key() -> str:
+    # Le proxy Copilot local n'exige en general pas de clé ; OpenAI SDK en demande une.
+    # On accepte une clé explicite via env, sinon on utilise un placeholder.
+    key = os.environ.get("COPILOT_API_KEY", "").strip()
     if key:
         return key
-
-    if os.name == "nt":
-        try:
-            result = subprocess.run(
-                [
-                    "powershell",
-                    "-NoProfile",
-                    "-Command",
-                    "[Environment]::GetEnvironmentVariable('OPENROUTER_API_KEY','User')",
-                ],
-                capture_output=True,
-                text=True,
-                timeout=5,
-                check=False,
-            )
-            fallback = (result.stdout or "").strip()
-            if fallback:
-                return fallback
-        except Exception:
-            pass
-
-    return ""
+    key = os.environ.get("OPENAI_API_KEY", "").strip()
+    if key:
+        return key
+    return "copilot"
 
 
 def _extraire_texte(message: Any) -> str:
@@ -372,14 +354,13 @@ def appeler_juge_qwen_robuste(
     prompt_juge: str,
     modeles_interdits: Optional[set[str]] = None,
 ) -> Tuple[Optional[Dict[str, Any]], str, str]:
-    # Strategie de jugement: modele principal (Qwen), puis DeepSeek,
-    # puis Qwen3.6, puis GPT-OSS si les autres sont indisponibles.
+    # Strategie de jugement robuste (Copilot): modele principal puis fallbacks.
     interdits = modeles_interdits or set()
     candidats = [
         modele_juge,
-        "deepseek/deepseek-r1:free",
-        "qwen/qwen3.6-plus:free",
-        "openai/gpt-oss-120b:free",
+        "gpt-4o",
+        "claude-haiku-4.5",
+        "gpt-4o-mini",
     ]
 
     vus = set()
@@ -401,7 +382,7 @@ def appeler_juge_qwen_robuste(
     if not erreurs:
         return None, "", "Aucun juge disponible: tous les fallback sont interdits pour ce ticket."
 
-    return None, "", "Aucun endpoint juge disponible (Qwen/DeepSeek/Qwen3.6/GPT-OSS): " + " | ".join(erreurs)
+    return None, "", "Aucun endpoint juge disponible (gpt-4o/claude-haiku-4.5/gpt-4o-mini): " + " | ".join(erreurs)
 
 
 def evaluer_ticket_avec_juge_robuste(
@@ -475,30 +456,20 @@ def evaluer_ticket_par_juge(
     reponse_b: str,
     modeles_interdits: Optional[set[str]] = None,
 ) -> Dict[str, Any]:
-    if modele_juge.startswith("qwen/"):
-        return evaluer_ticket_avec_juge_robuste(
-            client=client,
-            modele_juge=modele_juge,
-            contexte=contexte,
-            question=question,
-            reponse_a=reponse_a,
-            reponse_b=reponse_b,
-            modeles_interdits=modeles_interdits,
-        )
-
-    return evaluer_ticket_avec_juge_simple(
+    return evaluer_ticket_avec_juge_robuste(
         client=client,
         modele_juge=modele_juge,
         contexte=contexte,
         question=question,
         reponse_a=reponse_a,
         reponse_b=reponse_b,
+        modeles_interdits=modeles_interdits,
     )
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Test A/B automatique (LLM juge) entre deux modeles OpenRouter"
+        description="Test A/B automatique (LLM juge) via Copilot API"
     )
     parser.add_argument("--model-a", default=DEFAULT_MODEL_A, help="Premier modele")
     parser.add_argument("--model-b", default=DEFAULT_MODEL_B, help="Deuxieme modele")
@@ -520,21 +491,15 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    api_key = charger_openrouter_api_key()
-    if not api_key:
-        print("Erreur: OPENROUTER_API_KEY introuvable dans l'environnement.")
-        print(
-            "PowerShell: $env:OPENROUTER_API_KEY = "
-            "[Environment]::GetEnvironmentVariable('OPENROUTER_API_KEY', 'User')"
-        )
-        raise SystemExit(1)
-
+    api_key = charger_copilot_api_key()
     # Fail fast: OpenAI SDK retries can multiply wait time unexpectedly.
-    client = OpenAI(api_key=api_key, base_url=OPENROUTER_BASE_URL, timeout=20, max_retries=0)
+    client = OpenAI(api_key=api_key, base_url=COPILOT_BASE_URL, timeout=20, max_retries=0)
     rng = random.Random(RANDOM_SEED)
 
     with open(INPUT_CSV, newline="", encoding="utf-8") as f:
-        tickets = list(csv.DictReader(f))[:MAX_TICKETS]
+        tickets = list(csv.DictReader(f))
+        if MAX_TICKETS > 0:
+            tickets = tickets[:MAX_TICKETS]
 
     resultats = []
     scores = {args.model_a: 0, args.model_b: 0}

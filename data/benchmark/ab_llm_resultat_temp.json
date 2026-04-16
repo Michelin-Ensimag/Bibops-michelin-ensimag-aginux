@@ -1,38 +1,97 @@
 {
   "modeles": [
-    "stepfun/step-3.5-flash:free",
-    "arcee-ai/trinity-mini:free"
+    "gpt-4o-mini",
+    "claude-haiku-4.5"
   ],
-  "juge": "qwen/qwen3.6-plus:free",
+  "juge": "gpt-4o",
   "scores": {
-    "stepfun/step-3.5-flash:free": 3,
-    "arcee-ai/trinity-mini:free": 0
+    "gpt-4o-mini": 9,
+    "claude-haiku-4.5": 1
   },
   "pourcentages": {
-    "stepfun/step-3.5-flash:free": 100.0,
-    "arcee-ai/trinity-mini:free": 0.0
+    "gpt-4o-mini": 90.0,
+    "claude-haiku-4.5": 10.0
   },
   "details": [
     {
       "ticket_id": "1",
       "question": "Mon VPN Cisco ne marche plus.",
       "choix_llm": "B",
-      "meilleur_modele": "stepfun/step-3.5-flash:free",
-      "justification_juge": "La réponse B est rédigée en français, intègre explicitement le contexte Michelin et propose une démarche de dépannage structurée, contrairement à la réponse A qui est en anglais, tronquée et formulée comme une réflexion interne plutôt qu'une réponse directe à l'utilisateur."
+      "meilleur_modele": "gpt-4o-mini",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse B est plus claire, mieux structurée et fournit des étapes actionnables adaptées à un utilisateur non technique, tout en suggérant de contacter le support si nécessaire."
     },
     {
       "ticket_id": "2",
       "question": "Combien de jours de congés me reste-t-il ?",
       "choix_llm": "A",
-      "meilleur_modele": "stepfun/step-3.5-flash:free",
-      "justification_juge": "La réponse A explique clairement l’impossibilité d’accéder aux données personnelles, oriente l’utilisateur vers les canaux officiels et reste conforme à la confidentialité, ce qui la rend plus pertinente, claire et actionnable."
+      "meilleur_modele": "gpt-4o-mini",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse A est plus concise, claire et directement actionnable, en orientant l'utilisateur vers les ressources appropriées sans ajouter d'informations superflues ou redondantes."
     },
     {
       "ticket_id": "3",
       "question": "Mon imprimante affiche erreur 404.",
       "choix_llm": "A",
-      "meilleur_modele": "stepfun/step-3.5-flash:free",
-      "justification_juge": "La réponse A est rédigée dans la bonne langue, identifie correctement que le code 404 est un statut HTTP et non une erreur matérielle standard, et demande les informations essentielles pour un diagnostic précis, contrairement à la réponse B qui est en anglais, techniquement discutable et tronquée."
+      "meilleur_modele": "gpt-4o-mini",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse A est plus complète, claire et actionnable, offrant des étapes détaillées pour résoudre le problème, ce qui est essentiel dans un contexte de support IT."
+    },
+    {
+      "ticket_id": "4",
+      "question": "Est-ce que je peux cumuler deux emplois ?",
+      "choix_llm": "A",
+      "meilleur_modele": "gpt-4o-mini",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse A est plus complète, claire et actionnable, car elle détaille les aspects contractuels, la durée légale du travail et les implications liées au secteur d'activité, ce qui est essentiel dans un contexte juridique."
+    },
+    {
+      "ticket_id": "5",
+      "question": "Je ne peux pas accéder à Outlook depuis ce matin, le client refuse de se connecter.",
+      "choix_llm": "B",
+      "meilleur_modele": "gpt-4o-mini",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse B est plus claire, structurée et directement actionnable avec des étapes précises adaptées au problème signalé, sans demander d'informations supplémentaires inutiles au départ."
+    },
+    {
+      "ticket_id": "6",
+      "question": "Je suis en télétravail et ma connexion WiFi est très lente. Comment l'améliorer ?",
+      "choix_llm": "B",
+      "meilleur_modele": "gpt-4o-mini",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse B est plus claire et structurée, avec des conseils pratiques et directement applicables, adaptés au contexte de télétravail. Elle évite les coupures et fournit des informations complètes et pertinentes."
+    },
+    {
+      "ticket_id": "7",
+      "question": "J'ai oublié mon mot de passe Windows. Comment faire pour le réinitialiser ?",
+      "choix_llm": "B",
+      "meilleur_modele": "gpt-4o-mini",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse B est plus claire, mieux structurée et offre des étapes actionnables adaptées à différents scénarios, tout en mentionnant le support IT en cas de besoin supplémentaire."
+    },
+    {
+      "ticket_id": "8",
+      "question": "Je dois installer un logiciel pour mon projet (Python, Node.js, Docker). Qui autoriser ?",
+      "choix_llm": "B",
+      "meilleur_modele": "claude-haiku-4.5",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse B est plus claire, directement actionnable et adaptée au contexte professionnel de Michelin, en fournissant des étapes précises et une justification des restrictions."
+    },
+    {
+      "ticket_id": "9",
+      "question": "Quels sont les équipements que Michelin fournit pour une configuration de bureau à domicile ?",
+      "choix_llm": "A",
+      "meilleur_modele": "gpt-4o-mini",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse A est plus pertinente et adaptée car elle fournit une liste claire et détaillée des équipements couramment fournis, ce qui répond directement à la question de l'utilisateur, même si elle reste générale."
+    },
+    {
+      "ticket_id": "10",
+      "question": "Quel est le montant maximal de remboursement pour un repas lors d'un déplacement professionnel ?",
+      "choix_llm": "A",
+      "meilleur_modele": "gpt-4o-mini",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse A est plus complète, claire et adaptée au contexte en expliquant les critères de variation des montants et en orientant l'utilisateur vers les ressources internes spécifiques pour obtenir des informations précises."
     }
   ]
 }
