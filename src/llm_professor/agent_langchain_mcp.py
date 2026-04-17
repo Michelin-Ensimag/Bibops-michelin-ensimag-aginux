@@ -33,7 +33,10 @@ from langgraph.prebuilt import create_react_agent
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
-# Moteur d'évaluation (celui de Widad)
+from typing import Optional
+from pydantic import Field, create_model
+
+# Moteur d'évaluation
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
 try:
@@ -51,8 +54,9 @@ BASE_DIR = Path(__file__).parent.parent.parent
 MODELES = [
     "gpt-4o-mini",
     "gpt-4o",
-    "claude-haiku-4.5",
+    "claude-haiku-4.5"
 ]
+
 
 # MODELES = [
 #     "google/gemini-3-flash-preview",
@@ -70,28 +74,17 @@ Règles :
 5. Si un outil échoue, essaie un autre outil disponible.
 """
 
-# SYSTEM_PROMPT = """Tu es l'agent IA de support informatique (BibOps) chez Michelin.
 
-# RÈGLE ABSOLUE :
-# Tu dois utiliser un outil pour répondre.
-
-# FORMAT OBLIGATOIRE :
-
-# Thought: ...
-# Action: nom_de_l_outil
-# Action Input: ...
-
-# Tu n'as PAS le droit de répondre directement.
-
-# Après avoir utilisé un outil, tu dois répondre avec les informations retournées.
-# """
+# TICKETS_TEST = [
+#     "Mon VPN Cisco ne marche plus, j'ai un message 'connection timeout'.",
+#     "Outlook crash au démarrage depuis ce matin.",
+#     "Mon PC est très lent, il met 10 minutes à démarrer.",
+#     "J'ai oublié mon mot de passe Windows.",
+#     "Impossible d'accéder au dossier partagé Ressources Humaines.",
+# ]
 
 TICKETS_TEST = [
     "Mon VPN Cisco ne marche plus, j'ai un message 'connection timeout'.",
-    "Outlook crash au démarrage depuis ce matin.",
-    "Mon PC est très lent, il met 10 minutes à démarrer.",
-    "J'ai oublié mon mot de passe Windows.",
-    "Impossible d'accéder au dossier partagé Ressources Humaines.",
 ]
 
 
@@ -99,24 +92,24 @@ TICKETS_TEST = [
 # ÉTAPE 1 : Convertir les outils MCP en outils LangChain
 # ============================================================
 
-def creer_outil_langchain(session, outil_mcp):
-    nom = outil_mcp.name
-    description = outil_mcp.description or ""
+# def creer_outil_langchain(session, outil_mcp):
+#     nom = outil_mcp.name
+#     description = outil_mcp.description or ""
 
-    async def appeler_outil_async(**kwargs):
-        resultat = await session.call_tool(nom, kwargs)
-        contenu = ""
-        for block in resultat.content:
-            if hasattr(block, "text"):
-                contenu += block.text
-        return contenu
+#     async def appeler_outil_async(**kwargs):
+#         resultat = await session.call_tool(nom, kwargs)
+#         contenu = ""
+#         for block in resultat.content:
+#             if hasattr(block, "text"):
+#                 contenu += block.text
+#         return contenu
 
-    return StructuredTool.from_function(
-        func=appeler_outil_async, 
-        name=nom,
-        description=description,
-        coroutine=appeler_outil_async 
-    )
+#     return StructuredTool.from_function(
+#         func=appeler_outil_async, 
+#         name=nom,
+#         description=description,
+#         coroutine=appeler_outil_async 
+#     )
 
 
 async def recuperer_outils_langchain(session):
@@ -128,6 +121,51 @@ async def recuperer_outils_langchain(session):
         outils.append(outil_lc)
         print(f"  - {outil.name} → converti en outil LangChain")
     return outils
+
+def creer_schema_pydantic(nom_outil: str, input_schema: dict):
+    """Convertit le JSON Schema MCP en modèle Pydantic pour LangChain."""
+    properties = input_schema.get("properties", {})
+    required = input_schema.get("required", [])
+    champs = {}
+
+    for nom_param, info_param in properties.items():
+        type_map = {
+            "string": str,
+            "integer": int,
+            "number": float,
+            "boolean": bool,
+        }
+        type_python = type_map.get(info_param.get("type", "string"), str)
+        description = info_param.get("description", f"Paramètre {nom_param}")
+
+        if nom_param in required:
+            champs[nom_param] = (type_python, Field(description=description))
+        else:
+            champs[nom_param] = (Optional[type_python], Field(default=None, description=description))
+
+    return create_model(f"{nom_outil}_Args", **champs)
+
+
+def creer_outil_langchain(session, outil_mcp):
+    nom = outil_mcp.name
+    description = outil_mcp.description or ""
+    schema = creer_schema_pydantic(nom, outil_mcp.inputSchema or {})
+
+    async def appeler_outil_async(**kwargs):
+        resultat = await session.call_tool(nom, kwargs)
+        contenu = ""
+        for block in resultat.content:
+            if hasattr(block, "text"):
+                contenu += block.text
+        return contenu
+
+    return StructuredTool.from_function(
+        func=appeler_outil_async,
+        name=nom,
+        description=description,
+        coroutine=appeler_outil_async,
+        args_schema=schema,
+    )
 
 
 # ============================================================
@@ -226,11 +264,13 @@ async def benchmark():
                     reponse_eval = resultat["reponse"] if resultat["statut"] == "OK" else "ERREUR"
                     feedback = "Utile" if resultat["statut"] == "OK" else "Inutile"
 
+
                     scores = engine.calculate_final_score(
                         reponse=reponse_eval,
                         feedback=feedback,
                         temps_secondes=resultat["temps_s"],
                         nombre_tokens=len(resultat["reponse"].split()),
+                        ticket=ticket,  # on passe le ticket pour calculer le F1-Score KB
                     )
 
                     resultat["scores"] = scores

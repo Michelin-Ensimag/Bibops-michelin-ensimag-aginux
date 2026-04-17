@@ -2,241 +2,67 @@
   {
     "modele": "gpt-4o-mini",
     "ticket": "Mon VPN Cisco ne marche plus, j'ai un message 'connection timeout'.",
-    "reponse": "Il semble que les outils de recherche rencontrent des problèmes techniques. Voici quelques étapes de dépannage que vous pouvez suivre pour résoudre le problème de connexion de votre VPN Cisco :\n\n1. **Vérifiez votre connexion Internet** :\n   - Assurez-vous que vous êtes connecté à Internet. Essayez d'accéder à un site web pour confirmer.\n\n2. **Redémarrez le VPN** :\n   - Fermez l'application VPN Cisco et redémarrez-la.\n\n3. **Vérifiez les paramètres de configuration** :\n   - Assurez-vous que les paramètres de connexion (adresse du serveur, nom d'utilisateur, mot de passe) sont corrects.\n\n4. **Désactivez temporairement le pare-feu** :\n   - Parfois, le pare-feu peut bloquer la connexion. Désactivez-le temporairement pour voir si cela résout le problème.\n\n5. **Mettez à jour le client VPN** :\n   - Vérifiez si une mise à jour du client VPN Cisco est disponible et installez-la.\n\n6. **Contactez le support technique** :\n   - Si le problème persiste, contactez le support technique de votre entreprise pour obtenir de l'aide.\n\nSi vous avez besoin d'une assistance supplémentaire, n'hésitez pas à me le faire savoir.",
+    "reponse": "Voici les étapes à suivre pour résoudre le problème de connexion de votre VPN Cisco :\n\n1. **Vérifiez l'installation** : Assurez-vous que le client Cisco AnyConnect est installé (version 4.9 ou supérieure).\n2. **Vérifiez vos identifiants** : Utilisez les identifiants de votre session Windows.\n3. **Testez votre connexion Internet** : Ouvrez une invite de commande et exécutez `ping google.com` pour vérifier la connectivité.\n4. **Vérifiez le pare-feu** : Assurez-vous que le pare-feu Windows autorise Cisco AnyConnect.\n5. **Redémarrez le service** : \n   - Ouvrez `services.msc`.\n   - Trouvez \"Cisco AnyConnect\" et redémarrez le service.\n6. **Videz le cache DNS** : Ouvrez CMD en mode administrateur et exécutez `ipconfig /flushdns`.\n7. **Essayez le serveur de secours** : Connectez-vous à `vpn-backup.michelin.com` au lieu de `vpn.michelin.com`.\n8. **Réinstallez AnyConnect** : Si le problème persiste, désinstallez complètement AnyConnect, redémarrez votre PC, puis réinstallez-le depuis le portail intranet.\n9. **Vérifiez l'antivirus** : Assurez-vous que votre antivirus ne bloque pas la connexion VPN.\n\n**Note** : Le service VPN est actuellement hors ligne (Incident 4042). Si le problème persiste après ces étapes, veuillez ouvrir un ticket pour l'équipe réseau infrastructure.",
     "outil_utilise": "auto (LangGraph)",
-    "temps_s": 6.19,
+    "temps_s": 3.93,
     "tokens": 0,
     "statut": "OK",
     "scores": {
       "score_erreur": 10.0,
       "score_feedback": 10.0,
-      "score_vitesse": 4.27,
-      "score_efficacite_tokens": 8.94,
-      "score_final": 8.64
-    }
-  },
-  {
-    "modele": "gpt-4o-mini",
-    "ticket": "Outlook crash au démarrage depuis ce matin.",
-    "reponse": "Il semble que les outils de recherche rencontrent des problèmes techniques. Voici quelques étapes de dépannage que vous pouvez essayer pour résoudre le problème de crash d'Outlook au démarrage :\n\n1. **Redémarrer l'ordinateur** : Parfois, un simple redémarrage peut résoudre des problèmes temporaires.\n\n2. **Démarrer Outlook en mode sans échec** :\n   - Appuyez sur `Windows + R` pour ouvrir la boîte de dialogue Exécuter.\n   - Tapez `outlook.exe /safe` et appuyez sur Entrée.\n   - Si Outlook démarre en mode sans échec, cela peut indiquer un problème avec un complément.\n\n3. **Désactiver les compléments** :\n   - Si Outlook démarre en mode sans échec, allez dans `Fichier > Options > Compléments`.\n   - Désactivez tous les compléments et redémarrez Outlook normalement.\n\n4. **Réparer Outlook** :\n   - Allez dans le Panneau de configuration.\n   - Sélectionnez `Programmes > Programmes et fonctionnalités`.\n   - Trouvez Microsoft Office dans la liste, cliquez dessus, puis sélectionnez `Modifier` et choisissez l'option de réparation.\n\n5. **Mettre à jour Outlook** :\n   - Assurez-vous que votre version d'Outlook est à jour. Allez dans `Fichier > Compte Office > Options de mise à jour`.\n\nSi le problème persiste après ces étapes, veuillez me le faire savoir pour que je puisse essayer d'autres solutions.",
-    "outil_utilise": "auto (LangGraph)",
-    "temps_s": 7.68,
-    "tokens": 0,
-    "statut": "OK",
-    "scores": {
-      "score_erreur": 10.0,
-      "score_feedback": 10.0,
-      "score_vitesse": 2.99,
-      "score_efficacite_tokens": 8.53,
-      "score_final": 8.3
-    }
-  },
-  {
-    "modele": "gpt-4o-mini",
-    "ticket": "Mon PC est très lent, il met 10 minutes à démarrer.",
-    "reponse": "Il semble que je rencontre des difficultés techniques pour accéder aux outils de recherche. Cependant, voici quelques étapes que vous pouvez suivre pour résoudre le problème de lenteur de votre PC au démarrage :\n\n1. **Désactiver les programmes au démarrage** :\n   - Appuyez sur `Ctrl + Shift + Esc` pour ouvrir le Gestionnaire des tâches.\n   - Allez dans l'onglet \"Démarrage\".\n   - Désactivez les programmes non essentiels qui se lancent au démarrage.\n\n2. **Vérifier l'espace disque** :\n   - Assurez-vous que votre disque dur a suffisamment d'espace libre. Un disque plein peut ralentir le démarrage.\n   - Supprimez les fichiers inutiles ou utilisez un outil de nettoyage de disque.\n\n3. **Exécuter un scan antivirus** :\n   - Assurez-vous que votre PC n'est pas infecté par un virus ou un malware qui pourrait ralentir le système.\n\n4. **Mettre à jour les pilotes** :\n   - Vérifiez que tous vos pilotes, en particulier ceux de la carte graphique et du chipset, sont à jour.\n\n5. **Vérifier l'état du disque dur** :\n   - Utilisez l'outil de vérification de disque (chkdsk) pour détecter et corriger les erreurs sur le disque dur.\n\n6. **Considérer un SSD** :\n   - Si votre PC utilise un disque dur traditionnel, envisagez de passer à un SSD, ce qui peut considérablement améliorer les temps de démarrage.\n\nSi le problème persiste après avoir suivi ces étapes, je vous recommande de contacter le support technique pour une assistance plus approfondie.",
-    "outil_utilise": "auto (LangGraph)",
-    "temps_s": 12.29,
-    "tokens": 0,
-    "statut": "OK",
-    "scores": {
-      "score_erreur": 10.0,
-      "score_feedback": 10.0,
-      "score_vitesse": 0.89,
-      "score_efficacite_tokens": 8.0,
-      "score_final": 7.78
-    }
-  },
-  {
-    "modele": "gpt-4o-mini",
-    "ticket": "J'ai oublié mon mot de passe Windows.",
-    "reponse": "Il semble que je rencontre des difficultés pour accéder aux outils de recherche. Cependant, voici des étapes générales que vous pouvez suivre pour réinitialiser votre mot de passe Windows :\n\n1. **Écran de connexion** : Sur l'écran de connexion, cliquez sur \"Réinitialiser le mot de passe\" ou \"Mot de passe oublié\" (si disponible).\n2. **Suivre les instructions** : Suivez les instructions à l'écran pour réinitialiser votre mot de passe. Cela peut impliquer de répondre à des questions de sécurité ou d'utiliser un code envoyé à votre adresse e-mail ou numéro de téléphone associé.\n3. **Utiliser un autre compte** : Si vous avez un autre compte administrateur sur l'ordinateur, connectez-vous avec celui-ci et changez le mot de passe de votre compte principal via le Panneau de configuration.\n4. **Disque de réinitialisation de mot de passe** : Si vous avez créé un disque de réinitialisation de mot de passe, insérez-le et suivez les instructions pour réinitialiser votre mot de passe.\n\nSi ces étapes ne fonctionnent pas, je vous recommande de contacter le support informatique de votre entreprise pour obtenir de l'aide.",
-    "outil_utilise": "auto (LangGraph)",
-    "temps_s": 6.24,
-    "tokens": 0,
-    "statut": "OK",
-    "scores": {
-      "score_erreur": 10.0,
-      "score_feedback": 10.0,
-      "score_vitesse": 4.22,
-      "score_efficacite_tokens": 8.81,
-      "score_final": 8.61
-    }
-  },
-  {
-    "modele": "gpt-4o-mini",
-    "ticket": "Impossible d'accéder au dossier partagé Ressources Humaines.",
-    "reponse": "Je rencontre des difficultés techniques pour accéder aux outils nécessaires à la recherche de solutions. \n\nEn attendant, voici quelques étapes de dépannage que vous pouvez essayer :\n\n1. **Vérifiez votre connexion réseau** : Assurez-vous que vous êtes connecté à Internet ou au réseau de l'entreprise.\n2. **Vérifiez les autorisations** : Assurez-vous que vous avez les droits d'accès au dossier partagé. Contactez votre responsable RH si nécessaire.\n3. **Redémarrez votre ordinateur** : Parfois, un simple redémarrage peut résoudre des problèmes d'accès.\n4. **Essayez un autre appareil** : Si possible, essayez d'accéder au dossier depuis un autre ordinateur ou appareil.\n5. **Contactez le support IT** : Si le problème persiste, il est recommandé de contacter le support informatique pour une assistance plus approfondie.\n\nSi vous avez besoin d'une aide supplémentaire, n'hésitez pas à me le faire savoir.",
-    "outil_utilise": "auto (LangGraph)",
-    "temps_s": 6.39,
-    "tokens": 0,
-    "statut": "OK",
-    "scores": {
-      "score_erreur": 10.0,
-      "score_feedback": 10.0,
-      "score_vitesse": 4.09,
-      "score_efficacite_tokens": 9.47,
-      "score_final": 8.71
+      "score_vitesse": 6.2,
+      "score_efficacite_tokens": 8.79,
+      "score_pertinence": 6.08,
+      "f1_details": {
+        "precision": 0.5,
+        "recall": 0.776,
+        "f1": 0.608
+      },
+      "score_final": 7.88
     }
   },
   {
     "modele": "gpt-4o",
     "ticket": "Mon VPN Cisco ne marche plus, j'ai un message 'connection timeout'.",
-    "reponse": "Je n'ai pas pu obtenir les informations nécessaires via les outils. Voici des étapes générales pour résoudre le problème de \"connection timeout\" avec le VPN Cisco :\n\n1. **Vérifiez votre connexion Internet** :\n   - Assurez-vous que vous êtes connecté à un réseau stable.\n\n2. **Redémarrez votre routeur/modem** :\n   - Cela peut résoudre des problèmes de connectivité réseau.\n\n3. **Vérifiez les paramètres VPN** :\n   - Assurez-vous que l'adresse du serveur VPN, le nom d'utilisateur et le mot de passe sont corrects.\n\n4. **Désactivez temporairement le pare-feu ou l'antivirus** :\n   - Ces outils peuvent bloquer la connexion VPN. Si cela résout le problème, configurez une exception pour le VPN.\n\n5. **Testez un autre réseau** :\n   - Essayez de vous connecter à partir d'un autre réseau pour voir si le problème persiste.\n\n6. **Contactez le support IT** :\n   - Si le problème persiste, il pourrait être lié au serveur VPN ou à des restrictions réseau.\n\nSi vous avez des informations spécifiques sur le serveur ou des messages d'erreur supplémentaires, je peux affiner les étapes.",
+    "reponse": "Voici les étapes pour résoudre le problème de \"connection timeout\" avec le VPN Cisco AnyConnect :\n\n### Diagnostic :\n1. Vérifiez que le client Cisco AnyConnect est installé (version 4.9 ou supérieure).\n2. Assurez-vous que vos identifiants sont corrects (utilisez ceux de votre session Windows).\n3. Testez votre connexion internet en exécutant `ping google.com` dans l'invite de commande.\n4. Vérifiez que le pare-feu Windows autorise Cisco AnyConnect.\n\n### Résolution :\n1. **Redémarrez le service Cisco AnyConnect** :\n   - Ouvrez `services.msc`.\n   - Recherchez \"Cisco AnyConnect\".\n   - Faites un clic droit et sélectionnez \"Redémarrer\".\n   \n2. **Videz le cache DNS** :\n   - Ouvrez l'invite de commande en tant qu'administrateur.\n   - Tapez `ipconfig /flushdns` et appuyez sur Entrée.\n\n3. **Essayez un serveur de secours** :\n   - Utilisez `vpn-backup.michelin.com` au lieu de `vpn.michelin.com`.\n\n4. **Réinstallez Cisco AnyConnect** :\n   - Désinstallez complètement le client.\n   - Redémarrez votre PC.\n   - Réinstallez le client depuis le portail intranet Michelin.\n\n5. **Vérifiez votre antivirus** :\n   - Assurez-vous que votre antivirus ne bloque pas la connexion VPN.\n\n### Escalade :\nSi le problème persiste, ouvrez un ticket de niveau 2 auprès de l'équipe réseau infrastructure.\n\n### Note :\n- Si vous êtes dans une zone géographique spécifique, utilisez le serveur correspondant (ex. `vpn-clermont.michelin.com` pour EMEA).\n- Assurez-vous que votre antivirus CrowdStrike et Windows Update sont à jour, car cela peut bloquer la connexion.",
     "outil_utilise": "auto (LangGraph)",
-    "temps_s": 7.26,
+    "temps_s": 8.58,
     "tokens": 0,
     "statut": "OK",
     "scores": {
       "score_erreur": 10.0,
       "score_feedback": 10.0,
-      "score_vitesse": 3.35,
-      "score_efficacite_tokens": 8.94,
-      "score_final": 8.46
-    }
-  },
-  {
-    "modele": "gpt-4o",
-    "ticket": "Outlook crash au démarrage depuis ce matin.",
-    "reponse": "Je vais avoir besoin de plus de détails pour effectuer une recherche précise. Pouvez-vous préciser si un message d'erreur s'affiche lors du crash d'Outlook ou si d'autres symptômes sont observés ?",
-    "outil_utilise": "auto (LangGraph)",
-    "temps_s": 1.98,
-    "tokens": 0,
-    "statut": "OK",
-    "scores": {
-      "score_erreur": 10.0,
-      "score_feedback": 10.0,
-      "score_vitesse": 8.53,
-      "score_efficacite_tokens": 10.0,
-      "score_final": 9.71
-    }
-  },
-  {
-    "modele": "gpt-4o",
-    "ticket": "Mon PC est très lent, il met 10 minutes à démarrer.",
-    "reponse": "Je vais avoir besoin de plus de détails pour effectuer une recherche précise. Pouvez-vous préciser si le problème est lié à un logiciel spécifique, à une mise à jour récente, ou si d'autres symptômes sont observés ?",
-    "outil_utilise": "auto (LangGraph)",
-    "temps_s": 2.21,
-    "tokens": 0,
-    "statut": "OK",
-    "scores": {
-      "score_erreur": 10.0,
-      "score_feedback": 10.0,
-      "score_vitesse": 8.19,
-      "score_efficacite_tokens": 10.0,
-      "score_final": 9.64
-    }
-  },
-  {
-    "modele": "gpt-4o",
-    "ticket": "J'ai oublié mon mot de passe Windows.",
-    "reponse": "Je vais avoir besoin de plus de détails pour effectuer une recherche précise. Pouvez-vous préciser votre problème ou fournir un mot-clé, comme \"réinitialisation mot de passe Windows\" ?",
-    "outil_utilise": "auto (LangGraph)",
-    "temps_s": 2.29,
-    "tokens": 0,
-    "statut": "OK",
-    "scores": {
-      "score_erreur": 10.0,
-      "score_feedback": 10.0,
-      "score_vitesse": 8.06,
-      "score_efficacite_tokens": 10.0,
-      "score_final": 9.61
-    }
-  },
-  {
-    "modele": "gpt-4o",
-    "ticket": "Impossible d'accéder au dossier partagé Ressources Humaines.",
-    "reponse": "Je vais avoir besoin de plus de détails pour résoudre votre problème. Pouvez-vous préciser :\n\n1. Le message d'erreur exact que vous recevez ?\n2. Si d'autres utilisateurs rencontrent le même problème ?\n3. Si vous avez récemment changé vos identifiants ou vos droits d'accès ?\n\nCela m'aidera à affiner ma recherche et à vous fournir une solution adaptée.",
-    "outil_utilise": "auto (LangGraph)",
-    "temps_s": 2.82,
-    "tokens": 0,
-    "statut": "OK",
-    "scores": {
-      "score_erreur": 10.0,
-      "score_feedback": 10.0,
-      "score_vitesse": 7.27,
-      "score_efficacite_tokens": 10.0,
-      "score_final": 9.45
+      "score_vitesse": 2.22,
+      "score_efficacite_tokens": 8.15,
+      "score_pertinence": 5.29,
+      "f1_details": {
+        "precision": 0.407,
+        "recall": 0.755,
+        "f1": 0.529
+      },
+      "score_final": 6.91
     }
   },
   {
     "modele": "claude-haiku-4.5",
     "ticket": "Mon VPN Cisco ne marche plus, j'ai un message 'connection timeout'.",
-    "reponse": "Je vais chercher une solution pour votre problème de VPN Cisco.",
+    "reponse": "Je vais rechercher une solution pour ce problème de connexion VPN Cisco.",
     "outil_utilise": "auto (LangGraph)",
-    "temps_s": 4.2,
+    "temps_s": 2.57,
     "tokens": 0,
     "statut": "OK",
     "scores": {
       "score_erreur": 10.0,
       "score_feedback": 10.0,
-      "score_vitesse": 5.97,
+      "score_vitesse": 7.65,
       "score_efficacite_tokens": 10.0,
-      "score_final": 9.19
-    }
-  },
-  {
-    "modele": "claude-haiku-4.5",
-    "ticket": "Outlook crash au démarrage depuis ce matin.",
-    "reponse": "Je vais chercher une solution pour ce problème d'Outlook.",
-    "outil_utilise": "auto (LangGraph)",
-    "temps_s": 1.92,
-    "tokens": 0,
-    "statut": "OK",
-    "scores": {
-      "score_erreur": 10.0,
-      "score_feedback": 10.0,
-      "score_vitesse": 8.62,
-      "score_efficacite_tokens": 10.0,
-      "score_final": 9.72
-    }
-  },
-  {
-    "modele": "claude-haiku-4.5",
-    "ticket": "Mon PC est très lent, il met 10 minutes à démarrer.",
-    "reponse": "Je vais rechercher une solution pour ce problème de lenteur au démarrage.",
-    "outil_utilise": "auto (LangGraph)",
-    "temps_s": 2.0,
-    "tokens": 0,
-    "statut": "OK",
-    "scores": {
-      "score_erreur": 10.0,
-      "score_feedback": 10.0,
-      "score_vitesse": 8.5,
-      "score_efficacite_tokens": 10.0,
-      "score_final": 9.7
-    }
-  },
-  {
-    "modele": "claude-haiku-4.5",
-    "ticket": "J'ai oublié mon mot de passe Windows.",
-    "reponse": "Je vais chercher une solution pour vous aider à réinitialiser votre mot de passe Windows.",
-    "outil_utilise": "auto (LangGraph)",
-    "temps_s": 5.81,
-    "tokens": 0,
-    "statut": "OK",
-    "scores": {
-      "score_erreur": 10.0,
-      "score_feedback": 10.0,
-      "score_vitesse": 4.59,
-      "score_efficacite_tokens": 10.0,
-      "score_final": 8.92
-    }
-  },
-  {
-    "modele": "claude-haiku-4.5",
-    "ticket": "Impossible d'accéder au dossier partagé Ressources Humaines.",
-    "reponse": "Je vais rechercher une solution pour ce problème d'accès au dossier partagé RH.",
-    "outil_utilise": "auto (LangGraph)",
-    "temps_s": 1.91,
-    "tokens": 0,
-    "statut": "OK",
-    "scores": {
-      "score_erreur": 10.0,
-      "score_feedback": 10.0,
-      "score_vitesse": 8.63,
-      "score_efficacite_tokens": 10.0,
-      "score_final": 9.73
+      "score_pertinence": 1.07,
+      "f1_details": {
+        "precision": 0.429,
+        "recall": 0.061,
+        "f1": 0.107
+      },
+      "score_final": 6.52
     }
   }
 ]

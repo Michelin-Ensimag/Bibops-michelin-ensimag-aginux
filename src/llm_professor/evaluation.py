@@ -28,6 +28,7 @@ import os
 import sqlite3
 import statistics
 import sys
+import re  # pour tokeniser les textes (découper en mots propres)
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -283,9 +284,144 @@ class LLMProfessor:
 class EvaluationEngine:
     """Moteur d'évaluation par règles (sans LLM). Score pondéré 0–10."""
 
+    _STOPWORDS = {
+        # Français — articles, pronoms, prépositions, conjonctions, verbes courants
+        "le", "la", "les", "de", "du", "des", "un", "une", "et", "est", "en",
+        "que", "qui", "dans", "pour", "pas", "sur", "ce", "il", "je", "tu",
+        "nous", "vous", "ils", "son", "sa", "ses", "au", "aux", "avec", "ne",
+        "se", "ou", "mais", "donc", "car", "ni", "si", "mon", "ma", "mes",
+        "ton", "ta", "tes", "par", "plus", "tout", "très", "bien", "peut",
+        "été", "aussi", "cette", "être", "avoir", "faire", "comme", "sont",
+        "ont", "fait", "dit", "votre", "ces", "cela", "lors", "dont",
+        "après", "avant", "elle", "elles", "leur", "leurs", "même",
+        "puis", "sans", "sous", "chez", "vers", "entre", "encore",
+        # Anglais — au cas où le LLM répond en anglais
+        "the", "is", "are", "was", "to", "of", "and", "in", "for", "on",
+        "it", "that", "this", "an", "at", "or", "if", "you", "your",
+        "can", "from", "not", "be", "has", "had", "will", "would",
+    }
+
+
     def __init__(self):
         self.weights = WEIGHTS
         self.feedback_scores = FEEDBACK_SCORES
+
+
+    def _tokeniser(self, texte: str) -> set:
+        """Tokenise un texte en mots significatifs (minuscules, sans stopwords)."""
+        mots = re.findall(r'[a-zàâäéèêëïîôùûüç0-9]+', texte.lower())
+        return {m for m in mots if m not in self._STOPWORDS and len(m) > 2}
+
+    def _charger_kb(self) -> list:
+        """Charge la KB JSON. Mise en cache après le 1er appel."""
+        if not hasattr(self, '_kb_cache'):
+            kb_path = os.path.join(
+                os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')),
+                'data', 'knowledge_base', 'knowledge_base.json'
+            )
+            try:
+                with open(kb_path, "r", encoding="utf-8") as f:
+                    self._kb_cache = json.load(f)["knowledge_base"]
+            except (FileNotFoundError, json.JSONDecodeError, KeyError):
+                self._kb_cache = []
+        return self._kb_cache
+
+    def _trouver_fiche_kb(self, ticket: str) -> dict | None:
+        """Trouve la fiche KB la plus pertinente pour un ticket (même algo que outils.py)."""
+        kb = self._charger_kb()
+        if not kb:
+            return None
+
+        ticket_lower = ticket.lower()
+        meilleur_score = 0
+        meilleure_fiche = None
+
+        for entry in kb:
+            score = 0
+            for mot in entry.get("mots_cles", []):
+                if mot.lower() in ticket_lower:
+                    score += 2
+            for mot in ticket_lower.split():
+                if mot in entry.get("probleme", "").lower():
+                    score += 1
+            if score > meilleur_score:
+                meilleur_score = score
+                meilleure_fiche = entry
+
+        return meilleure_fiche if meilleur_score > 0 else None
+
+    def _extraire_termes_reference(self, fiche_kb: dict) -> set:
+        """Extrait les termes de référence d'une fiche KB (mots-clés + étapes).
+        On concatène :
+        - Les mots-clés de la fiche KB (ex: ["VPN", "Cisco", "AnyConnect"])
+        - Le titre du problème (ex: "Problème de connexion VPN Cisco AnyConnect")
+        - Les étapes de diagnostic (ex: "Vérifier que le client est installé")
+        - Les étapes de résolution (ex: "Redémarrer le client Cisco AnyConnect")
+ 
+        Puis on tokenise le tout pour obtenir un set de mots significatifs."""
+
+        texte_parts = []
+
+        # Mots-clés
+        texte_parts.extend(fiche_kb.get("mots_cles", []))
+
+        # Problème
+        texte_parts.append(fiche_kb.get("probleme", ""))
+
+        # Étapes de diagnostic
+        solution = fiche_kb.get("solution", {})
+        texte_parts.extend(solution.get("diagnostic", []))
+
+        # Étapes de résolution
+        texte_parts.extend(solution.get("resolution", []))
+
+        texte_complet = " ".join(texte_parts)
+        return self._tokeniser(texte_complet)
+
+    def score_pertinence(self, reponse: str, ticket: str) -> dict:
+        """
+        Calcule un F1-Score textuel entre la réponse et la KB.
+
+        Retourne un dict avec :
+        - score     : note de 0 à 10
+        - precision : % de mots de la réponse qui viennent de la KB
+        - recall    : % de mots de la KB couverts par la réponse
+        - f1        : moyenne harmonique de precision et recall
+        """
+        # Cas 1 : réponse vide ou erreur → score 0
+        if reponse == "ERREUR" or not reponse.strip():
+            return {"score": 0.0, "precision": 0.0, "recall": 0.0, "f1": 0.0}
+
+        # Cas 2 : pas de fiche KB correspondante → score neutre
+        fiche = self._trouver_fiche_kb(ticket)
+        if fiche is None:
+            return {"score": 5.0, "precision": 0.0, "recall": 0.0, "f1": 0.0}
+
+        # Extraire les mots de référence (KB) et les mots de la réponse
+        termes_kb = self._extraire_termes_reference(fiche)
+        termes_reponse = self._tokeniser(reponse)
+
+        # Cas 3 : un des deux ensembles est vide → score 0
+        if not termes_kb or not termes_reponse:
+            return {"score": 0.0, "precision": 0.0, "recall": 0.0, "f1": 0.0}
+
+        # Intersection : mots présents dans les deux
+        communs = termes_kb & termes_reponse
+
+        precision = len(communs) / len(termes_reponse)
+        recall = len(communs) / len(termes_kb)
+
+        if precision + recall == 0:
+            return {"score": 0.0, "precision": 0.0, "recall": 0.0, "f1": 0.0}
+
+        f1 = 2 * (precision * recall) / (precision + recall)
+
+        return {
+            "score": round(f1 * 10.0, 2),
+            "precision": round(precision, 3),
+            "recall": round(recall, 3),
+            "f1": round(f1, 3),
+        }
 
     def score_erreur(self, reponse: str) -> float:
         """Score 0 si réponse == "ERREUR", 10 sinon."""
@@ -347,6 +483,7 @@ class EvaluationEngine:
         feedback: str,
         temps_secondes: float,
         nombre_tokens: int,
+        ticket: str = "",  # texte du ticket pour calculer le F1-Score KB
     ) -> Dict[str, float]:
         """
         Calcule le score final pondéré.
@@ -356,14 +493,24 @@ class EvaluationEngine:
             feedback: Feedback utilisateur (Utile/Partiellement utile/Inutile)
             temps_secondes: Temps de réponse en secondes
             nombre_tokens: Nombre de tokens utilisés
+            ticket: texte du ticket utilisateur (pour comparer avec la KB)
 
         Returns:
-            Dict contenant les scores individuels + le score final
+            Dict contenant les scores individuels + détails F1 + le score final
         """
         score_erreur = self.score_erreur(reponse)
         score_feedback = self.score_feedback(feedback)
         score_vitesse = self.score_vitesse(temps_secondes)
         score_efficacite = self.score_efficacite_tokens(nombre_tokens)
+
+        # calcul du F1-Score pertinence
+        # Si ticket est vide (ancien appel sans ticket), on met un score neutre
+        if ticket:
+            pertinence_result = self.score_pertinence(reponse, ticket)
+            score_pertinence = pertinence_result["score"]
+        else:
+            pertinence_result = {"score": 5.0, "precision": 0.0, "recall": 0.0, "f1": 0.0}
+            score_pertinence = 5.0
 
         if reponse == "ERREUR":
             final_score = (
@@ -371,6 +518,7 @@ class EvaluationEngine:
                 + score_feedback * self.weights["feedback"] * 0.2
                 + score_vitesse * self.weights["vitesse"] * 0.2
                 + score_efficacite * self.weights["efficacite_tokens"] * 0.2
+                + score_pertinence * self.weights["pertinence"] * 0.2  # AJOUTÉ
             ) / (
                 self.weights["erreur_penalty"] + 0.2 * (1 - self.weights["erreur_penalty"])
             )
@@ -380,6 +528,7 @@ class EvaluationEngine:
                 + score_feedback * self.weights["feedback"]
                 + score_vitesse * self.weights["vitesse"]
                 + score_efficacite * self.weights["efficacite_tokens"]
+                + score_pertinence * self.weights["pertinence"]  # AJOUTÉ
             )
 
         final_score = max(SCORE_MIN, min(SCORE_MAX, final_score))
@@ -389,6 +538,12 @@ class EvaluationEngine:
             "score_feedback": round(score_feedback, 2),
             "score_vitesse": round(score_vitesse, 2),
             "score_efficacite_tokens": round(score_efficacite, 2),
+            "score_pertinence": round(score_pertinence, 2),  # score de pertinence basé sur le F1-Score
+            "f1_details": {                                   # détails du F1-Score pour analyse approfondie
+                "precision": pertinence_result["precision"],
+                "recall": pertinence_result["recall"],
+                "f1": pertinence_result["f1"],
+            },
             "score_final": round(final_score, 2),
         }
 

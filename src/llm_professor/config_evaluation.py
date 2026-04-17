@@ -5,11 +5,13 @@ Permet d'ajuster les poids
 
 # POIDS RELATIFS 
 WEIGHTS = {
-    "erreur_penalty": 0.25,      # Pénalité pour "ERREUR" (abscence de réponse valide)
-    "feedback": 0.35,             # Feedback utilisateur (Utile/Partiellement utile/Inutile)
-    "vitesse": 0.20,              # Performance du temps de réponse
-    "efficacite_tokens": 0.20,    # Efficacité (moins de tokens = plus efficace)
+    "erreur_penalty": 0.15,      # Pénalité pour "ERREUR" (abscence de réponse valide)
+    "feedback": 0.20,             # Feedback utilisateur (Utile/Partiellement utile/Inutile)
+    "vitesse": 0.15,              # Performance du temps de réponse
+    "efficacite_tokens": 0.15,    # Efficacité (moins de tokens = plus efficace)
+    "pertinence": 0.35,           # Pertinence de la réponse (F1-Score KB) — le plus important
 }
+
 
 # Vérification que la somme = 1.0
 assert abs(sum(WEIGHTS.values()) - 1.0) < 0.001, "Les poids doivent sommer à 1.0"
