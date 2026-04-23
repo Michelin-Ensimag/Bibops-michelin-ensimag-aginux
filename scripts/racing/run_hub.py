@@ -5,7 +5,7 @@ import uvicorn
 
 if __name__ == "__main__":
     uvicorn.run(
-        "src.agents_racing.hub.server:app",
+        "src.bibops.racing.hub.server:app",
         host="localhost",
         port=8000,
         reload=False,

@@ -1,7 +1,7 @@
 """
 tests/test_maestro.py
 
-Tests d'intégration pour la boucle ReAct de src/agents/maestro.py.
+Tests d'intégration pour la boucle ReAct de src/bibops/it_support/maestro.py.
 
 Le juge LLM (ollama.chat) est remplacé par GenericFakeChatModel de LangChain :
 aucun modèle Ollama n'est nécessaire pour exécuter cette suite.
@@ -22,7 +22,7 @@ import pytest
 from langchain_core.language_models.fake_chat_models import GenericFakeChatModel
 from langchain_core.messages import AIMessage, HumanMessage
 
-from src.agents.maestro import lancer_agent
+from src.bibops.it_support.maestro import lancer_agent
 
 
 # ── Factory : mock d'ollama.chat alimenté par GenericFakeChatModel ────────────

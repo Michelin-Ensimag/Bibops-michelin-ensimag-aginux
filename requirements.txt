@@ -1,4 +1,12 @@
-pytest
+chromadb
+langchain
+langchain-core
+langchain-openai
+langgraph
+mcp
 ollama
-requests
 openai
+pydantic
+pytest
+requests
+rich

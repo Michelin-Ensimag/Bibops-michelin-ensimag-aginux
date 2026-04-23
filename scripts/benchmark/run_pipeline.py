@@ -1,6 +1,6 @@
 """Run the full agent pipeline benchmark (wrapper script)."""
 
-from src.benchmark.benchmark_pipeline import run_benchmark_agent
+from src.bibops.benchmark.pipeline import run_benchmark_agent
 
 
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
 """
 tests/test_memoire.py
 
-Tests unitaires pour src/agents/memoire_courte.py.
+Tests unitaires pour src/bibops/it_support/memoire_courte.py.
 Valide la logique de fenêtre glissante de MemoCourTerme sans aucune dépendance externe.
 
 TODO [T1-2a] Initialisation – historique vide, max_messages correct
@@ -11,7 +11,7 @@ TODO [T1-2d] Sliding window – les messages les PLUS RÉCENTS sont conservés
 """
 import pytest
 
-from src.agents.memoire_courte import MemoCourTerme
+from src.bibops.it_support.memoire_courte import MemoCourTerme
 
 
 class TestMemoCourTerme:

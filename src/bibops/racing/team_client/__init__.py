@@ -1,5 +1,4 @@
-"""Team client wrappers."""
-
-from src.bibops.racing.team_client.main import listen_and_race
-
-__all__ = ["listen_and_race"]
+"""
+src/bibops/racing/team_client — Écurie IA
+Client asynchrone qui écoute le Hub, réfléchit via LangGraph et renvoie ses décisions.
+"""

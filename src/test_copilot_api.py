@@ -125,7 +125,7 @@ if __name__ == "__main__":
         print(f"  Statut: {r['statut']} | Temps: {r['temps_s']}s | Tokens: {r['total_tokens']}")
 
     # Sauvegarder les résultats
-    with open("data/benchmark/benchmark_copilot.json", "w", encoding="utf-8") as f:
+    with open("data/outputs/benchmark/benchmark_copilot.json", "w", encoding="utf-8") as f:
         json.dump(resultats, f, indent=2, ensure_ascii=False)
 
-    print(f"\nRésultats sauvegardés dans data/benchmark/benchmark_copilot.json")
+    print(f"\nRésultats sauvegardés dans data/outputs/benchmark/benchmark_copilot.json")

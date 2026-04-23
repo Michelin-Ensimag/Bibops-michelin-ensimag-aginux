@@ -1,6 +1,4 @@
-"""Racing Hub wrappers."""
-
-from src.bibops.racing.hub.ingest import ingest
-from src.bibops.racing.hub.server import app
-
-__all__ = ["app", "ingest"]
+"""
+src/bibops/racing/hub — The Hub
+Serveur maître de la Distributed AI Arena : moteur de course + API SSE.
+"""

@@ -2,7 +2,7 @@
 conftest.py (racine du projet)
 
 Garantit que la racine du projet est dans sys.path afin que les imports
-`from src.agents.*` fonctionnent indépendamment du répertoire de lancement.
+`from src.bibops.it_support.*` fonctionnent indépendamment du répertoire de lancement.
 
 Contient aussi un shim de compatibilité LangChain :
   langchain-core 0.2.x cherche langchain.verbose qui n'existe plus dans

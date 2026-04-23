@@ -2,7 +2,7 @@
 
 import asyncio
 
-from src.llm_professor.agent_copilot_mcp import main
+from src.bibops.evaluation.agent_copilot_mcp import main
 
 
 if __name__ == "__main__":
