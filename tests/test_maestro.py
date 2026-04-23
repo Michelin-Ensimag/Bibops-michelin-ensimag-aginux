@@ -18,11 +18,10 @@ TODO [T1-3c] Hallucination outil       – ACTION: CAFETIERE(...) → erreur ren
 """
 from unittest.mock import MagicMock, patch
 
-import pytest
 from langchain_core.language_models.fake_chat_models import GenericFakeChatModel
 from langchain_core.messages import AIMessage, HumanMessage
 
-from src.bibops.it_support.maestro import lancer_agent
+from src.it_support.agent_maestro import lancer_agent
 
 
 # ── Factory : mock d'ollama.chat alimenté par GenericFakeChatModel ────────────

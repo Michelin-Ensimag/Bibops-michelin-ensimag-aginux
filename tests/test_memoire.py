@@ -9,9 +9,8 @@ TODO [T1-2b] add_message    – messages ajoutés dans le bon ordre
 TODO [T1-2c] Sliding window – max_messages=2, ajout de 3 → taille reste 2
 TODO [T1-2d] Sliding window – les messages les PLUS RÉCENTS sont conservés
 """
-import pytest
 
-from src.bibops.it_support.memoire_courte import MemoCourTerme
+from src.it_support.short_memory import MemoCourTerme
 
 
 class TestMemoCourTerme:

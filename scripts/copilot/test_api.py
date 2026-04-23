@@ -1,6 +1,6 @@
 """Run Copilot API smoke test."""
 
-from src.test_copilot_api import tester_modele, MODELES, TICKET
+from tests.test_copilot_api import tester_modele, MODELES, TICKET
 
 
 if __name__ == "__main__":

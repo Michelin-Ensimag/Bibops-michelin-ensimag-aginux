@@ -1,6 +1,6 @@
 """Initialize BibOps IT support vector database."""
 
-from src.bibops.it_support.memoire_RAG import initialiser_documentation
+from src.it_support.rag import initialiser_documentation
 
 
 if __name__ == "__main__":

@@ -1,5 +1,5 @@
 """
-lang-agent.py — A LangChain agent with a RAG tool and model fallback.
+lang-agent_maestro.py — A LangChain agent with a RAG tool and model fallback.
 
 Architecture:
   1. A Chroma vector store (built by main.py) holds embedded article chunks.
@@ -73,7 +73,7 @@ agent = create_agent(
 # ---------------------------------------------------------------------------
 # STEP 5 — CLI entry point
 # Kept in __main__ so the agent is importable without side-effects.
-# Usage: python lang-agent.py "How do I configure a virtual environment in PyCharm?"
+# Usage: python lang-agent_maestro.py "How do I configure a virtual environment in PyCharm?"
 # ---------------------------------------------------------------------------
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(

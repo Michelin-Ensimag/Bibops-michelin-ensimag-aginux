@@ -1,6 +1,6 @@
 """Run the distributed racing arena."""
 
-from src.bibops.racing.start_arena import main
+from src.racing.start_arena import main
 
 
 if __name__ == "__main__":

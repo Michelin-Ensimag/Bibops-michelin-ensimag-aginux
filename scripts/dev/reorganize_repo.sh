@@ -5,7 +5,7 @@ ROOT="$(git rev-parse --show-toplevel)"
 cd "$ROOT"
 
 echo "[P0] Preflight"
-mkdir -p src/bibops/it_support src/bibops/racing/hub src/bibops/racing/team_client src/bibops/benchmark src/bibops/evaluation src/bibops/common
+mkdir -p src/bibops/it_support src/bibops/racing/hub src/bibops/racing/team_client src/bibops/benchmark src/bibops/llm_professor src/bibops/common
 mkdir -p data/raw/benchmark data/temp/benchmark data/outputs/benchmark data/fixtures/benchmark
 mkdir -p docs/literature docs/notebooks docs/presentations docs/assets/screenshots docs/notebooks/lang_chatbot
 mkdir -p data/databases
@@ -53,23 +53,23 @@ git mv -f src/benchmark/ab_test_user.py src/bibops/benchmark/ab_test_user.py
 git mv -f src/benchmark/test-biais-position.py src/bibops/benchmark/test-biais-position.py
 
 # Evaluation
-git mv -f src/llm_professor/__init__.py src/bibops/evaluation/__init__.py
-git mv -f src/llm_professor/evaluation.py src/bibops/evaluation/llm_judge.py
-git mv -f src/llm_professor/rca_engine.py src/bibops/evaluation/rca.py
-git mv -f src/llm_professor/agent_copilot_mcp.py src/bibops/evaluation/copilot_mcp.py
-git mv -f src/llm_professor/agent_langchain_mcp.py src/bibops/evaluation/langchain_mcp.py
-git mv -f src/llm_professor/config_evaluation.py src/bibops/evaluation/config_evaluation.py
+git mv -f src/llm_professor/__init__.py src/bibops/llm_professor/__init__.py
+git mv -f src/llm_professor/llm_professor.py src/bibops/llm_professor/llm_judge.py
+git mv -f src/llm_professor/rca_engine.py src/bibops/llm_professor/rca.py
+git mv -f src/llm_professor/agent_copilot_mcp.py src/bibops/llm_professor/copilot_mcp.py
+git mv -f src/llm_professor/agent_langchain_mcp.py src/bibops/llm_professor/langchain_mcp.py
+git mv -f src/llm_professor/config_evaluation.py src/bibops/llm_professor/config_evaluation.py
 
-# Untracked-but-important evaluation modules from recent refactor
+# Untracked-but-important llm_professor modules from recent refactor
 if [ -f src/llm_professor/adversarial_loop.py ]; then
-  mv -f src/llm_professor/adversarial_loop.py src/bibops/evaluation/adversarial.py
+  mv -f src/llm_professor/adversarial_loop.py src/bibops/llm_professor/adversarial.py
 fi
 if [ -f src/llm_professor/discriminator.py ]; then
-  mv -f src/llm_professor/discriminator.py src/bibops/evaluation/discriminator.py
+  mv -f src/llm_professor/discriminator.py src/bibops/llm_professor/discriminator.py
 fi
 
 echo "[P3] Rewrite Python imports to src.bibops.*"
-find . -type f -name '*.py' -not -path './.git/*' -print0 | xargs -0 perl -pi -e 's/src\.agents_racing/src.bibops.racing/g; s/src\.llm_professor/src.bibops.evaluation/g; s/src\.benchmark/src.bibops.benchmark/g; s/src\.agents/src.bibops.it_support/g;'
+find . -type f -name '*.py' -not -path './.git/*' -print0 | xargs -0 perl -pi -e 's/src\.agents_racing/src.bibops.racing/g; s/src\.llm_professor/src.bibops.llm_professor/g; s/src\.benchmark/src.bibops.benchmark/g; s/src\.agents/src.bibops.it_support/g;'
 
 echo "[P3b] Normalize benchmark data paths"
 # Inputs
@@ -121,10 +121,10 @@ git mv -f "docs/doc_Akram.ipynb" docs/notebooks/
 git mv -f "docs/slides.pdf" docs/presentations/slides.pdf
 
 # tracked lang-chatbot artifacts: code to notebooks area, vector DB to data/databases
-git mv -f docs/lang-chatbot/lang-agent.py docs/notebooks/lang_chatbot/lang-agent.py
+git mv -f docs/lang-chatbot/lang-agent-maestro.py docs/notebooks/lang_chatbot/lang-agent-maestro.py
 git mv -f docs/lang-chatbot/lang-gen.py docs/notebooks/lang_chatbot/lang-gen.py
 git mv -f docs/lang-chatbot/main.py docs/notebooks/lang_chatbot/main.py
-git mv -f docs/lang-chatbot/tools.py docs/notebooks/lang_chatbot/tools.py
+git mv -f docs/lang-chatbot/outils.py docs/notebooks/lang_chatbot/outils.py
 git mv -f docs/lang-chatbot/chatbot_article_dataset data/databases/
 
 # untracked docs artifacts
@@ -135,7 +135,7 @@ if [ -f "docs/A05 Injection - OWASP Top 10:2025.pdf" ]; then mv "docs/A05 Inject
 if [ -f docs/PRESENTATION_RACING.md ]; then mv docs/PRESENTATION_RACING.md docs/presentations/; fi
 
 # adjust references mentioning old modules and old data/doc paths in markdown/notebooks scripts
-find docs scripts src tests -type f \( -name '*.md' -o -name '*.py' -o -name '*.ipynb' \) -print0 | xargs -0 perl -pi -e 's/src\/agents_racing/src\/bibops\/racing/g; s/src\/llm_professor/src\/bibops\/evaluation/g; s/src\/benchmark/src\/bibops\/benchmark/g; s/src\/agents/src\/bibops\/it_support/g; s/data\/benchmark\/tickets_scenario_1\.csv/data\/raw\/benchmark\/tickets_scenario_1.csv/g; s/data\/benchmark\/ab_llm_resultat_temp\.json/data\/temp\/benchmark\/ab_llm_resultat_temp.json/g; s/data\/benchmark\/position_biais_resultat_temp\.json/data\/temp\/benchmark\/position_biais_resultat_temp.json/g; s/data\/benchmark\//data\/outputs\/benchmark\//g; s/docs\/lang-chatbot\/chatbot_article_dataset/data\/databases\/chatbot_article_dataset/g;'
+find docs scripts src tests -type f \( -name '*.md' -o -name '*.py' -o -name '*.ipynb' \) -print0 | xargs -0 perl -pi -e 's/src\/agents_racing/src\/bibops\/racing/g; s/src\/llm_professor/src\/bibops\/llm_professor/g; s/src\/benchmark/src\/bibops\/benchmark/g; s/src\/agents/src\/bibops\/it_support/g; s/data\/benchmark\/tickets_scenario_1\.csv/data\/raw\/benchmark\/tickets_scenario_1.csv/g; s/data\/benchmark\/ab_llm_resultat_temp\.json/data\/temp\/benchmark\/ab_llm_resultat_temp.json/g; s/data\/benchmark\/position_biais_resultat_temp\.json/data\/temp\/benchmark\/position_biais_resultat_temp.json/g; s/data\/benchmark\//data\/outputs\/benchmark\//g; s/docs\/lang-chatbot\/chatbot_article_dataset/data\/databases\/chatbot_article_dataset/g;'
 # fix fixture replacement in text refs if needed
 find docs scripts src tests -type f \( -name '*.md' -o -name '*.py' -o -name '*.ipynb' \) -print0 | xargs -0 perl -pi -e 's/data\/outputs\/benchmark\/tickets_evalues_fake\.json/data\/fixtures\/benchmark\/tickets_evalues_fake.json/g;'
 

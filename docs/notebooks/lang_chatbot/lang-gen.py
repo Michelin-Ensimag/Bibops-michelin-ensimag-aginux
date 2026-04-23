@@ -2,7 +2,7 @@
 lang-gen.py — A LangChain agent that drafts a Python release newsletter.
 
 Architecture:
-  1. fetch_python_whatsnew (defined in tools.py) scrapes the official Python docs.
+  1. fetch_python_whatsnew (defined in outils.py) scrapes the official Python docs.
   2. create_agent() builds a ReAct loop: the agent fetches the page, reads it,
      then writes a structured marketing newsletter in one shot.
   3. ModelFallbackMiddleware retries with phi3 if mistral fails.
@@ -14,7 +14,7 @@ from langchain_ollama import ChatOllama
 
 # ---------------------------------------------------------------------------
 # STEP 1 — Import the tool
-# tools.py lives in the same directory, so a plain (non-relative) import works
+# outils.py lives in the same directory, so a plain (non-relative) import works
 # when running as a script. Relative imports (from .tools) only work inside a
 # package and would break with `python lang-gen.py`.
 # ---------------------------------------------------------------------------

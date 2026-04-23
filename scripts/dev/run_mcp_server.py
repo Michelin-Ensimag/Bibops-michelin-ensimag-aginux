@@ -1,6 +1,6 @@
 """Run BibOps MCP server."""
 
-from src.bibops.it_support.serveur_mcp import mcp
+from src.it_support.mcp_server import mcp
 
 
 if __name__ == "__main__":

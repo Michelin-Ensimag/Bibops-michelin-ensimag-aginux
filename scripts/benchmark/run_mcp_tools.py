@@ -2,7 +2,7 @@
 
 import asyncio
 
-from src.bibops.benchmark.mcp_tools import main
+from src.benchmark.mcp_tools import main
 
 
 if __name__ == "__main__":

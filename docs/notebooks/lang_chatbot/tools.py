@@ -1,5 +1,5 @@
 """
-tools.py — LangChain tools used by lang-gen.py.
+outils.py — LangChain tools used by lang-gen.py.
 
 A "tool" is just a Python function decorated with @tool so LangChain agents
 can discover it, call it automatically, and read its return value.

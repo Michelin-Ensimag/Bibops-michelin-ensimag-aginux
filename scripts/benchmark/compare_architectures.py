@@ -20,25 +20,25 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.bibops.evaluation.greenops import calculate_carbon_footprint
-from src.bibops.evaluation.composite_policy import CompositePolicy
-from src.bibops.evaluation.evaluator_registry import EvaluatorRegistry
-from src.bibops.evaluation.llm_judge import LLMProfessor
-from src.bibops.evaluation.quality_evaluator import QualityEvaluator
-from src.bibops.evaluation.result_schema import build_benchmark_payload
-from src.bibops.evaluation.security_llminspector_adapter import SecurityLLMInspectorAdapter
-from src.bibops.it_support.agent import lancer_agent
-from src.bibops.it_support.tools import (
+from src.it_support.agent_maestro import lancer_agent
+from src.it_support.outils import (
     chercher_dans_kb,
     chercher_documentation_technique,
     verifier_statut_serveur,
 )
+from src.llm_professor.composite_policy import CompositePolicy
+from src.llm_professor.evaluator_registry import EvaluatorRegistry
+from src.llm_professor.greenops import calculate_carbon_footprint
+from src.llm_professor.llm_judge import LLMProfessor
+from src.llm_professor.quality_evaluator import QualityEvaluator
+from src.llm_professor.result_schema import build_benchmark_payload
+from src.llm_professor.security_llminspector_adapter import SecurityLLMInspectorAdapter
 
 DEFAULT_INPUT_CSV = PROJECT_ROOT / "data" / "raw" / "benchmark" / "tickets_scenario_1.csv"
 DEFAULT_OUTPUT_JSON = PROJECT_ROOT / "data" / "outputs" / "benchmark" / "comparison_results.json"
 DEFAULT_DB_PATH = PROJECT_ROOT / "data" / "databases" / "bibops.db"
 
-# FinOps heuristic (USD / 1M tokens), aligned with existing evaluation constants.
+# FinOps heuristic (USD / 1M tokens), aligned with existing llm_professor constants.
 USD_INPUT_PER_1M_TOKENS = 2.50
 USD_OUTPUT_PER_1M_TOKENS = 10.00
 

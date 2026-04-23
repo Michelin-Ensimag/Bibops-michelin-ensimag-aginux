@@ -19,9 +19,7 @@ TODO [T1-3c] chercher_documentation_technique – exception ChromaDB → message
 import json
 from unittest.mock import MagicMock, patch, mock_open
 
-import pytest
-
-from src.bibops.it_support.outils import (
+from src.it_support.outils import (
     chercher_dans_kb,
     chercher_documentation_technique,
     verifier_statut_serveur,
@@ -153,7 +151,7 @@ class TestChercherDansKB:
 class TestChercherDocumentationTechnique:
     """TODO [T1-3] : Vérifie le filtrage par seuil de distance cosine (ChromaDB mocké)."""
 
-    @patch("src.bibops.it_support.outils._get_chroma_collection")
+    @patch("src.it_support.outils._get_chroma_collection")
     def test_relevant_doc_returned_below_threshold(self, mock_get_coll):
         """TODO [T1-3a] : Distance < 1.2 → document et identifiant retournés."""
         mock_collection = MagicMock()
@@ -169,7 +167,7 @@ class TestChercherDocumentationTechnique:
         assert "Bitlocker" in result
         assert "KB_BITLOCKER" in result
 
-    @patch("src.bibops.it_support.outils._get_chroma_collection")
+    @patch("src.it_support.outils._get_chroma_collection")
     def test_irrelevant_doc_rejected_above_threshold(self, mock_get_coll):
         """TODO [T1-3b] : Distance >= 1.2 → résultat rejeté, message 'non pertinent'."""
         mock_collection = MagicMock()
@@ -184,7 +182,7 @@ class TestChercherDocumentationTechnique:
 
         assert "Aucune documentation pertinente" in result
 
-    @patch("src.bibops.it_support.outils._get_chroma_collection")
+    @patch("src.it_support.outils._get_chroma_collection")
     def test_chroma_exception_returns_error_message(self, mock_get_coll):
         """TODO [T1-3c] : Exception ChromaDB → retourne un message d'erreur, ne lève pas."""
         mock_get_coll.side_effect = Exception("ChromaDB indisponible")

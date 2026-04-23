@@ -1,6 +1,6 @@
 """Run the core benchmark (wrapper script)."""
 
-from src.bibops.benchmark.core import run_benchmark
+from src.benchmark.core import run_benchmark
 
 
 if __name__ == "__main__":
