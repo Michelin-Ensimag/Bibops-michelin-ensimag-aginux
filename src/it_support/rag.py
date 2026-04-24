@@ -10,13 +10,13 @@ DOC_MD_DIR = os.path.join(BASE_DIR, 'data', 'knowledge_base', 'doc_md')
 def initialiser_documentation():
     print("Initialisation de la Vector DB avec la Knowledge Base Michelin...")
 
-    client = chromadb.PersistentClient(path=CHROMA_PATH)
+    client = chromadb.PersistentClient(path=CHROMA_PATH) # persistant pour dire les donnes sauvg sur disque
 
-    # On supprime l'ancienne collection si elle existe pour repartir au propre
-    try:
-        client.delete_collection(name="doc_michelin")
-    except Exception:
-        pass
+    # # On supprime l'ancienne collection si elle existe pour repartir au propre
+    # try:
+    #     client.delete_collection(name="doc_michelin")
+    # except Exception: # c est dangeureux cette ligne car exeption capture tous les prob , du coup s il y une autre exept que celle de colect inxsitant , elle serait silencieusement ignore
+    #     pass
 
     collection = client.create_collection(name="doc_michelin")
 
@@ -34,7 +34,7 @@ def initialiser_documentation():
                     content = f.read()
                     documents.append(content)
                     ids.append(kb_id)
-                    print(f"[Ajout de l'article] : {kb_id}")
+                    print(f"[Ajout de l'article michelin] : {kb_id}")
 
     # 2. Parcours des documentations techniques (doc_md/)
     if os.path.isdir(DOC_MD_DIR):
@@ -51,7 +51,7 @@ def initialiser_documentation():
 
     # Injection dans la base de données
     if documents:
-        collection.add(documents=documents, ids=ids)
+        collection.add(documents=documents, ids=ids) # on doit verifier avec quoi chromadb embedd icic , est ce avec un truc par defaut ou bien par exemple un  embeddeur specifique
         print(f"\n[Vector DB] : {len(documents)} articles vectorisés avec succès dans : {CHROMA_PATH}")
     else:
         print("\n[Vector DB] : Aucun article trouvé.")

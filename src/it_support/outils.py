@@ -1,7 +1,6 @@
 import json
 import sqlite3
 import os
-import contextlib
 import re
 from dataclasses import dataclass, asdict
 from typing import Any
@@ -10,11 +9,11 @@ BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
 DB_PATH = os.path.join(BASE_DIR, 'data', 'databases', 'bibops.db')
 CHROMA_PATH = os.path.join(BASE_DIR, 'data', 'databases', 'vectordb')
 
-# Initialisé une seule fois au niveau du module
-_chroma_client = None
 
 
-@dataclass(frozen=True)
+
+
+@dataclass(frozen=True) # frozen pour rendre les instances immuables, ce qui est une bonne pratique pour les configurations
 class ToolPolicy:
     timeout_s: float
     max_retries: int
@@ -28,33 +27,14 @@ TOOL_POLICIES: dict[str, ToolPolicy] = {
     "chercher_dans_kb": ToolPolicy(timeout_s=5.0, max_retries=1, min_arg_len=2, max_arg_len=120),
 }
 
-RAG_DISTANCE_MAX = 1.2
-RAG_N_RESULTS_PER_QUERY = 3
-RAG_MAX_CITATIONS = 3
+RAG_DISTANCE_MAX = 1.2 # dans les distances de ChromaDB, plus c'est petit, plus c'est pertinent; au-delà de 1.2, on considère que le document est trop éloigné pour être utile
+RAG_N_RESULTS_PER_QUERY = 3 # nombre de résultats à récupérer pour chaque variante de la requête avant le reranking; on peut ajuster pour trouver un bon équilibre entre diversité et pertinence
+RAG_MAX_CITATIONS = 3 # nombre maximum de citations à inclure dans la réponse finale pour éviter de submerger l'utilisateur avec trop d'informations, même si plus de résultats sont pertinents
 
 
-@contextlib.contextmanager
-def _silence_native_stderr():
-    """Silence low-level stderr (fd=2) to hide noisy native library warnings."""
-    saved_stderr_fd = os.dup(2)
-    try:
-        with open(os.devnull, "w") as devnull:
-            os.dup2(devnull.fileno(), 2)
-            yield
-    finally:
-        os.dup2(saved_stderr_fd, 2)
-        os.close(saved_stderr_fd)
-
-
-def _get_chroma_collection():
-    global _chroma_client
-    if _chroma_client is None:
-        # Some grpc/absl dependencies used by vector backends can print noisy
-        # startup warnings to stderr; keep CLI output focused on agent logs.
-        with _silence_native_stderr():
-            import chromadb
-            _chroma_client = chromadb.PersistentClient(path=CHROMA_PATH)
-    return _chroma_client.get_collection(name="doc_michelin")
+import chromadb
+_chroma_client = chromadb.PersistentClient(path=CHROMA_PATH)
+_chroma_client.get_collection(name="doc_michelin")
 
 
 def get_tool_policy(tool_name: str) -> ToolPolicy:
@@ -66,7 +46,7 @@ def get_tool_policies() -> dict[str, dict[str, Any]]:
 
 
 def normaliser_argument_outil(tool_name: str, argument: str) -> str:
-    arg = (argument or "").strip()
+    arg = (argument or "").strip() # on enlève les espaces au début et à la fin
     policy = get_tool_policy(tool_name)
 
     if len(arg) < policy.min_arg_len:
