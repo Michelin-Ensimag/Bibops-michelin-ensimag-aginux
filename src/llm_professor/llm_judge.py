@@ -666,9 +666,15 @@ if __name__ == "__main__":
 
     else:
         # Scoring par règles depuis le dataset fixture.
-        DATA_ROOT = Path(__file__).parent.parent.parent.parent / "data"
+        DATA_ROOT = Path(__file__).resolve().parents[2] / "data"
         INPUT_FILE = DATA_ROOT / "fixtures" / "benchmark" / "tickets_evalues_fake.json"
         OUTPUT_FILE = DATA_ROOT / "outputs" / "benchmark" / "tickets_evalues_scores.json"
+
+        if not INPUT_FILE.exists():
+            fallback_input = Path.cwd() / "data" / "fixtures" / "benchmark" / "tickets_evalues_fake.json"
+            if fallback_input.exists():
+                INPUT_FILE = fallback_input
+        OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
 
         processor = EvaluationProcessor(str(INPUT_FILE), str(OUTPUT_FILE))
         results = processor.process()

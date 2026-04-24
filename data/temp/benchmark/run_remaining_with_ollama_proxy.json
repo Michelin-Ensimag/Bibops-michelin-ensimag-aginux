@@ -1,0 +1,65 @@
+{
+  "total": 7,
+  "ok": 4,
+  "fail": 1,
+  "timeout": 2,
+  "error": 0,
+  "results": [
+    {
+      "name": "src_benchmark_ab_test_llm",
+      "cmd": "python -m src.benchmark.ab_test_llm",
+      "status": "timeout",
+      "returncode": -15,
+      "duration_s": 180.047,
+      "output_tail": ""
+    },
+    {
+      "name": "src_benchmark_test_biais_position",
+      "cmd": "python 'src/benchmark/test-biais-position.py'",
+      "status": "timeout",
+      "returncode": -15,
+      "duration_s": 120.008,
+      "output_tail": ""
+    },
+    {
+      "name": "src_racing_demo",
+      "cmd": "python -m src.racing.demo",
+      "status": "ok",
+      "returncode": 0,
+      "duration_s": 22.904,
+      "output_tail": "   Si nous restons en piste, nous pourrions tenter un overcut sur le\n   concurrent devant (+3.20s) si ses pneus se dégradent plus rapidement.\n   - Si nous arrêtons maintenant, nous risquons de perdre la position\n   actuelle et de ressortir dans le trafic, ce qui compromettrait notre\n   rythme.    **RECOMMANDATION STRATÉGIE : STAY OUT**   - Continuez à\n   surveiller les écarts et la dégradation des pneus. Un arrêt pourrait\n   être envisagé dans 3-4 tours pour éviter une perte de performance\n   critique.\n\n\u001b[90m─────────────────────────────────────────────────────────────────\u001b[0m\n\u001b[90m  ⟳ ÉTAPE 5\u001b[0m\n\u001b[90m─────────────────────────────────────────────────────────────────\u001b[0m\n\n\u001b[95m\u001b[1m🎯  SUPERVISOR\u001b[0m\n   [Supervisor → fuel_engineer] Le fuel_engineer est le dernier expert\n   restant à consulter, et son avis est crucial pour évaluer si le\n   carburant est suffisant pour attendre la pluie ou s'il faut\n   ravitailler avant.\n\n\u001b[90m─────────────────────────────────────────────────────────────────\u001b[0m\n\u001b[90m  ⟳ ÉTAPE 6\u001b[0m\n\u001b[90m─────────────────────────────────────────────────────────────────\u001b[0m\n\n\u001b[96m\u001b[1m⛽  FUEL ENGINEER\u001b[0m\n   === ANALYSE CARBURANT ===   - **Carburant restant** : 18.5 L   -\n   **Carburant nécessaire** : 41.2 L   - **Déficit** : 22.8 L   -\n   **Consommation moyenne** : 1.65 L/tour   - **Tours restants** : 25\n   Avec une marge de -22.8 L, il est impossible de terminer la course\n   sans ravitaillement. Un arrêt aux stands est impératif pour ajouter\n   au moins 22.8 L de carburant, mais il serait prudent de ravitailler\n   légèrement plus pour couvrir toute variation de consommation ou\n   d'événements imprévus (ex. : Safety Car, changements de rythme).\n   **Temps perdu au stand** : ~25 secondes. Cela doit être pris en\n   compte dans la stratégie globale.    ### RECOMMANDATION CARBURANT :\n   CRITIQUE\n\n\u001b[90m─────────────────────────────────────────────────────────────────\u001b[0m\n\u001b[90m  ⟳ ÉTAPE 7\u001b[0m\n\u001b[90m─────────────────────────────────────────────────────────────────\u001b[0m\n\n\u001b[95m\u001b[1m🎯  SUPERVISOR\u001b[0m\n   🔴 BOX BOX BOX   On entre maintenant pour un double arrêt stratégique\n   : **plein de carburant** et passage aux pneus **Intermédiaires**. La\n   pluie est prévue dans 2 tours avec 60% de probabilité, et tes pneus\n   Medium sont déjà à 82% d'usure, ce qui compromet le rythme. On\n   anticipe pour éviter un arrêt supplémentaire et se préparer à la\n   pluie. Maximisons notre position en limitant les pertes dans le\n   trafic.\n\n\u001b[1m\u001b[91m═════════════════════════════════════════════════════════════════\u001b[0m\n\u001b[1m\u001b[91m  🔴  DÉCISION FINALE — RADIO PILOTE\u001b[0m\n\u001b[1m\u001b[91m═════════════════════════════════════════════════════════════════\u001b[0m\n\n  \u001b[1m\u001b[91m🔴 BOX BOX BOX  \u001b[0m\n  \u001b[1m\u001b[91mOn entre maintenant pour un double arrêt stratégique : **plein de carburant** et passage aux pneus **Intermédiaires**. La pluie est prévue dans 2 tours avec 60% de probabilité, et tes pneus Medium sont déjà à 82% d'usure, ce qui compromet le rythme. On anticipe pour éviter un arrêt supplémentaire et se préparer à la pluie. Maximisons notre position en limitant les pertes dans le trafic.\u001b[0m\n\n\u001b[1m\u001b[91m═════════════════════════════════════════════════════════════════\u001b[0m\n\n\u001b[90m[MAS terminé en 7 étapes]\u001b[0m\n"
+    },
+    {
+      "name": "src_racing_hub_server",
+      "cmd": "python -m src.racing.hub.server",
+      "status": "ok",
+      "returncode": -15,
+      "duration_s": 25.134,
+      "output_tail": "\nINFO:     Started server process [97453]\nINFO:     Waiting for application startup.\nINFO:     Application startup complete.\nINFO:     Uvicorn running on http://localhost:8000 (Press CTRL+C to quit)\nINFO:     Shutting down\nINFO:     Waiting for application shutdown.\nINFO:     Application shutdown complete.\nINFO:     Finished server process [97453]"
+    },
+    {
+      "name": "src_racing_hub_ingest",
+      "cmd": "python -m src.racing.hub.ingest",
+      "status": "ok",
+      "returncode": 0,
+      "duration_s": 13.132,
+      "output_tail": "\n════════════════════════════════════════════════════════════\n  BibOps Racing Hub — Ingestion RAG (racing_kb)\n════════════════════════════════════════════════════════════\n\n[INFO] Dossier créé : /Users/mohammedakramlrhorfi/PycharmProjects/BibOps-michelin-ensimag-aginux/src/data/knowledge_base/racing_docs\n[INFO] Placez vos .pdf/.md/.txt dans ce dossier puis relancez."
+    },
+    {
+      "name": "src_racing_start_arena",
+      "cmd": "python -m src.racing.start_arena",
+      "status": "ok",
+      "returncode": -15,
+      "duration_s": 25.004,
+      "output_tail": "\n\n\u001b[1m\u001b[96m╔══════════════════════════════════════════════════════════╗\u001b[0m\n\u001b[1m\u001b[96m║           BibOps Racing — Distributed AI Arena           ║\u001b[0m\n\u001b[1m\u001b[96m╚══════════════════════════════════════════════════════════╝\u001b[0m\n\n\u001b[1m[1/4] Démarrage du Hub...\u001b[0m\n  \u001b[92m✓ Hub lancé\u001b[0m  PID=97466  \u001b[90m→ /Users/mohammedakramlrhorfi/PycharmProjects/BibOps-michelin-ensimag-aginux/src/racing/../../logs/arena/hub.log\u001b[0m\n\n\u001b[1m[2/4] Attente du Hub (4s)...\u001b[0m\n  \u001b[90m4s...\u001b[0m\n  \u001b[90m3s...\u001b[0m\n  \u001b[90m2s...\u001b[0m\n  \u001b[90m1s...\u001b[0m"
+    },
+    {
+      "name": "src_racing_team_client_main",
+      "cmd": "python -m src.racing.team_client.main",
+      "status": "fail",
+      "returncode": 1,
+      "duration_s": 4.209,
+      "output_tail": "\n\u001b[96m\u001b[1m══════════════════════════════════════════════════════════════\u001b[0m\n\u001b[96m\u001b[1m  🏎️  team_alpha  |  Modèle : gpt-4o\u001b[0m\n\u001b[96m\u001b[1m══════════════════════════════════════════════════════════════\u001b[0m\n\n\u001b[96m\u001b[1m[team_alpha]\u001b[0m Connexion au Hub : http://localhost:8000/stream ...\n\n\n\u001b[96m\u001b[1m[team_alpha]\u001b[0m \u001b[91m\u001b[1mImpossible de joindre le Hub (http://localhost:8000).\u001b[0m\n\u001b[96m\u001b[1m[team_alpha]\u001b[0m Vérifiez que le Hub tourne : python -m src.racing.hub.server\n"
+    }
+  ]
+}

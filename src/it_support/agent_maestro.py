@@ -252,7 +252,7 @@ def _execute_tool_with_policy(
                 f"Timeout outil '{nom_outil}' (> {policy.timeout_s:.1f}s) "
                 f"apres tentative {attempt}/{policy.max_retries + 1}."
             )
-            future.cancel()
+            future.cancel() # future.cancel() ne tue pas forcément un thread Python déjà en cours. Le code limite l’attente côté agent, mais l’opération interne peut continuer brièvement selon ce que fait l’outil
         except Exception as exc:  # pragma: no cover
             last_status = "failed"
             last_result = (
@@ -288,7 +288,7 @@ def lancer_agent(
 
     memoire = MemoCourTerme(max_messages=50)
     noms_outils = [outil.__name__ for outil in outils_disponibles]
-    outils_map = {outil.__name__: outil for outil in outils_disponibles}
+    outils_map = {outil.__name__: outil for outil in outils_disponibles} # outils_map permet de retrouver une fonction Python à partir du nom demandé par le LLM.
 
     trace.routing_hint = _routing_hint(ticket_utilisateur, outils_disponibles)
 

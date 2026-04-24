@@ -594,7 +594,7 @@ Every file currently present in the Git scope (tracked + untracked), grouped by 
 - `src/bibops/it_support/outils.py` (python, 1.1 KB, 37 lines) - Compatibility layer preserving legacy patch points for tests and callers. [functions=verifier_statut_serveur, chercher_dans_kb, chercher_documentation_technique] | imports: `src/bibops/it_support/__init__.py`, `src/bibops/it_support/tools.py`
 - `src/bibops/it_support/rag.py` (python, 2.1 KB, 60 lines) - Python module. [functions=initialiser_documentation]
 - `src/bibops/it_support/serveur_mcp.py` (python, 0.1 KB, 5 lines) - Compatibility alias for legacy module name. | imports: `src/bibops/it_support/mcp_server.py`
-- `src/bibops/it_support/tools.py` (python, 10.6 KB, 300 lines) - Python module. [classes=ToolPolicy | functions=_silence_native_stderr, _get_chroma_collection, get_tool_policy, get_tool_policies]
+- `src/bibops/it_support/tools.py` (python, 10.6 KB, 300 lines) - Python module. [classes=ToolPolicy | functions= get_tool_policy, get_tool_policies]
 
 ### `src/bibops/racing`
 

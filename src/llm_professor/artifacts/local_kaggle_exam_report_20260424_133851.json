@@ -1,0 +1,52 @@
+{
+  "exam": {
+    "name": "Kaggle SAE Local Copy",
+    "version": "2026-04-20",
+    "source": "reconstructed_from_live_run",
+    "question_count": 2
+  },
+  "config": {
+    "judge_model": "gpt-4o",
+    "agent_model": "phi3:latest",
+    "copilot_api_url": "http://localhost:4141/v1"
+  },
+  "summary": {
+    "score": 0,
+    "max_score": 2,
+    "percentage": 0.0
+  },
+  "results": [
+    {
+      "question_id": "2",
+      "question_text": "Count every instance of the letter 'e' (both uppercase 'E' and lowercase 'e') in the following text. Provide only the final integer count as your answer.\n\nText: \"every emerald eel eats eleven eggs elegantly every evening even Eyeing the eerie, effervescent ewe, the elite engineer eats eleven exquisite, ester-based entrees. Electroencephalographically, the unrepresentative heterogeneousness re-emphasizes extraterritoriality.\"",
+      "agent_raw_answer": "34",
+      "agent_normalized_answer": "34",
+      "agent_latency_ms": 5121,
+      "judge": {
+        "correct": false,
+        "score": 0,
+        "format_ok": false,
+        "safety_ok": false,
+        "expected_answer": "",
+        "reason": "judge_error: 404 Client Error:  for url: http://localhost:4141/v1"
+      },
+      "score": 0
+    },
+    {
+      "question_id": "8",
+      "question_text": "You need to find the average order value for each customer from a sales dataset.\n\nWhich approach is correct?\nA) Sum all order amounts, then divide by number of customers\nB) For each customer, sum their orders, then divide each customer's total by their number of orders, then average those results\nC) For each customer, sum their order amounts, then divide the total by number of customers\nD) Count the number of orders per customer, then divide total sales by that count\n\nReturn only the letter of the correct answer.",
+      "agent_raw_answer": "B",
+      "agent_normalized_answer": "B",
+      "agent_latency_ms": 904,
+      "judge": {
+        "correct": false,
+        "score": 0,
+        "format_ok": false,
+        "safety_ok": false,
+        "expected_answer": "",
+        "reason": "judge_error: 404 Client Error:  for url: http://localhost:4141/v1"
+      },
+      "score": 0
+    }
+  ]
+}

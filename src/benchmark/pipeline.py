@@ -1,6 +1,7 @@
 import sqlite3
 import time
 import os
+from typing import Optional
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
 
@@ -9,7 +10,22 @@ from src.it_support.outils import verifier_statut_serveur
 
 DB_PATH = os.path.join(BASE_DIR, 'data', 'databases', 'bibops.db')
 
-def run_benchmark_agent(model_name="phi3:latest"):
+
+def _resolve_max_tickets(explicit_value: Optional[int] = None) -> Optional[int]:
+    if explicit_value is not None and explicit_value > 0:
+        return explicit_value
+
+    raw = os.environ.get("BIBOPS_MAX_TICKETS", "").strip()
+    if not raw:
+        return None
+    try:
+        value = int(raw)
+        return value if value > 0 else None
+    except ValueError:
+        return None
+
+
+def run_benchmark_agent(model_name="phi3:latest", max_tickets: Optional[int] = None):
     print(f"🚀 Démarrage du Benchmark de l'Agent BibOps sur le modèle : {model_name}\n")
 
     if not os.path.exists(DB_PATH):
@@ -22,6 +38,10 @@ def run_benchmark_agent(model_name="phi3:latest"):
     # Lecture des tickets depuis SQL (contexte + texte)
     cursor.execute("SELECT id, contexte, texte_utilisateur FROM tickets")
     tickets = cursor.fetchall()
+    effective_max_tickets = _resolve_max_tickets(max_tickets)
+    if effective_max_tickets is not None:
+        tickets = tickets[:effective_max_tickets]
+        print(f"🔧 Limitation active: {effective_max_tickets} ticket(s) max.")
 
     for ticket in tickets:
         ticket_id, contexte_ticket, ticket_texte = ticket

@@ -21,6 +21,7 @@ Exécution directe (démo) :
 """
 
 import os
+import signal
 import sys
 import textwrap
 import time
@@ -428,13 +429,31 @@ if __name__ == "__main__":
         "compte AnyConnect et lui fournisse le fichier de configuration XML."
     )
 
-    run_adversarial_training(
-        ticket=TICKET_DEMO,
-        rca_ground_truth=RCA_GROUND_TRUTH,
-        max_iterations=3,
-        modele_agent="phi3:latest",
-        # NOTE : Le proxy Copilot (localhost:4141) accepte uniquement les modèles GPT.
-        # Remplacez par "claude-sonnet-4-6" si vous utilisez un proxy LiteLLM+Anthropic.
-        modele_discriminateur="gpt-5.2",
-        contexte_initial="L'entreprise est Michelin. Le VPN principal est Cisco AnyConnect.",
-    )
+    max_iter = int(os.environ.get("BIBOPS_ADVERSARIAL_MAX_ITER", "2"))
+    judge_model = os.environ.get("BIBOPS_ADVERSARIAL_JUDGE_MODEL", "gpt-4o-mini")
+    run_timeout_s = int(os.environ.get("BIBOPS_ADVERSARIAL_RUN_TIMEOUT_S", "120"))
+
+    def _on_timeout(_signum, _frame):
+        raise TimeoutError(f"Timeout adversarial dépassé ({run_timeout_s}s).")
+
+    if run_timeout_s > 0:
+        signal.signal(signal.SIGALRM, _on_timeout)
+        signal.alarm(run_timeout_s)
+
+    try:
+        run_adversarial_training(
+            ticket=TICKET_DEMO,
+            rca_ground_truth=RCA_GROUND_TRUTH,
+            max_iterations=max_iter,
+            modele_agent="phi3:latest",
+            # NOTE : Le proxy Copilot (localhost:4141) accepte uniquement les modèles GPT.
+            # Remplacez par "claude-sonnet-4-6" si vous utilisez un proxy LiteLLM+Anthropic.
+            modele_discriminateur=judge_model,
+            contexte_initial="L'entreprise est Michelin. Le VPN principal est Cisco AnyConnect.",
+        )
+    except TimeoutError as exc:
+        print(f"\n[WARN] {exc}")
+        print("[WARN] Arrêt propre de la démo adversariale (utilisez BIBOPS_ADVERSARIAL_RUN_TIMEOUT_S pour ajuster).")
+    finally:
+        if run_timeout_s > 0:
+            signal.alarm(0)

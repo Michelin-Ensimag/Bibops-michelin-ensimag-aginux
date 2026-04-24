@@ -24,7 +24,7 @@ from typing import Any
 import requests
 
 # Garantit l'import de `src.*` quel que soit le dossier de lancement.
-PROJECT_ROOT = Path(__file__).resolve().parents[3]
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
@@ -43,6 +43,10 @@ MAX_NORMALIZED_ANSWER_LEN = 1200
 
 AGENT_ID_FILE = os.path.expanduser("~/.kaggle-agent-id")
 AGENT_API_KEY_FILE = os.path.expanduser("~/.kaggle-agent-api-key")
+
+
+class SubmissionLimitReached(Exception):
+    pass
 
 
 def _banner(title: str) -> None:
@@ -212,8 +216,13 @@ def _start_exam_submission(session: requests.Session, api_key: str) -> tuple[str
         sys.exit(1)
 
     if response.status_code == 412:
-        print("[ERREUR 412] Limite atteinte: maximum 3 submissions.")
-        sys.exit(1)
+        raise SubmissionLimitReached("Limite atteinte: maximum 3 submissions.")
+
+    if response.status_code == 400:
+        body = _safe_json(response)
+        message = str(body.get("message", ""))
+        if "maximum of 3 submissions" in message.lower():
+            raise SubmissionLimitReached("Limite atteinte: maximum 3 submissions.")
 
     if response.status_code == 429:
         retry_after = response.headers.get("Retry-After", "?")
@@ -503,7 +512,13 @@ def main() -> None:
     agent_id, api_key = _get_or_create_credentials(session)
     print(f"Agent ID utilisé: {agent_id}")
 
-    submission_id, questions = _start_exam_submission(session, api_key)
+    try:
+        submission_id, questions = _start_exam_submission(session, api_key)
+    except SubmissionLimitReached as exc:
+        print(f"[INFO] {exc}")
+        print("[INFO] Lancement d'examen ignoré proprement (quota Kaggle atteint).")
+        return
+
     answers = _evaluate_questions(questions)
 
     print(f"\n[INFO] Total réponses préparées: {len(answers)}")

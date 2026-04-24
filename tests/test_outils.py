@@ -151,8 +151,8 @@ class TestChercherDansKB:
 class TestChercherDocumentationTechnique:
     """TODO [T1-3] : Vérifie le filtrage par seuil de distance cosine (ChromaDB mocké)."""
 
-    @patch("src.it_support.outils._get_chroma_collection")
-    def test_relevant_doc_returned_below_threshold(self, mock_get_coll):
+    @patch("src.it_support.outils._chroma_client")
+    def test_relevant_doc_returned_below_threshold(self, mock_chroma_client):
         """TODO [T1-3a] : Distance < 1.2 → document et identifiant retournés."""
         mock_collection = MagicMock()
         mock_collection.query.return_value = {
@@ -160,15 +160,15 @@ class TestChercherDocumentationTechnique:
             "distances": [[0.35]],
             "ids": [["KB_BITLOCKER"]],
         }
-        mock_get_coll.return_value = mock_collection
+        mock_chroma_client.get_collection.return_value = mock_collection
 
         result = chercher_documentation_technique("bitlocker")
 
         assert "Bitlocker" in result
         assert "KB_BITLOCKER" in result
 
-    @patch("src.it_support.outils._get_chroma_collection")
-    def test_irrelevant_doc_rejected_above_threshold(self, mock_get_coll):
+    @patch("src.it_support.outils._chroma_client")
+    def test_irrelevant_doc_rejected_above_threshold(self, mock_chroma_client):
         """TODO [T1-3b] : Distance >= 1.2 → résultat rejeté, message 'non pertinent'."""
         mock_collection = MagicMock()
         mock_collection.query.return_value = {
@@ -176,16 +176,16 @@ class TestChercherDocumentationTechnique:
             "distances": [[1.5]],
             "ids": [["KB_RANDOM"]],
         }
-        mock_get_coll.return_value = mock_collection
+        mock_chroma_client.get_collection.return_value = mock_collection
 
         result = chercher_documentation_technique("sujet totalement inconnu")
 
         assert "Aucune documentation pertinente" in result
 
-    @patch("src.it_support.outils._get_chroma_collection")
-    def test_chroma_exception_returns_error_message(self, mock_get_coll):
+    @patch("src.it_support.outils._chroma_client")
+    def test_chroma_exception_returns_error_message(self, mock_chroma_client):
         """TODO [T1-3c] : Exception ChromaDB → retourne un message d'erreur, ne lève pas."""
-        mock_get_coll.side_effect = Exception("ChromaDB indisponible")
+        mock_chroma_client.get_collection.side_effect = Exception("ChromaDB indisponible")
 
         result = chercher_documentation_technique("bitlocker")
 

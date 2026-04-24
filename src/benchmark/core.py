@@ -25,14 +25,41 @@ OLLAMA_OPTIONS = {
 }
 
 
+def _is_non_interactive_mode() -> bool:
+    return os.environ.get("BIBOPS_NON_INTERACTIVE", "0") == "1" or not sys.stdin.isatty()
+
+
+def _default_feedback_choice() -> str:
+    raw = os.environ.get("BIBOPS_DEFAULT_FEEDBACK", "2").strip()
+    if raw in FEEDBACK_OPTIONS:
+        return raw
+    normalized = raw.lower()
+    for key, label in FEEDBACK_OPTIONS.items():
+        if normalized == label.lower():
+            return key
+    return "2"
+
+
 def demander_feedback_utilisateur():
     """Demande un feedback utilisateur standardise pour chaque reponse."""
+    if _is_non_interactive_mode():
+        choice = _default_feedback_choice()
+        default_feedback = FEEDBACK_OPTIONS[choice]
+        print(f"[Mode non interactif] feedback automatique: {choice} ({default_feedback})")
+        return default_feedback
+
     while True:
         print("\nAvez-vous trouve cette reponse utile ?")
         print("  1. Utile")
         print("  2. Partiellement utile")
         print("  3. Inutile")
-        choix = input("Votre choix (1/2/3) : ").strip()
+        try:
+            choix = input("Votre choix (1/2/3) : ").strip()
+        except EOFError:
+            choice = _default_feedback_choice()
+            default_feedback = FEEDBACK_OPTIONS[choice]
+            print(f"\n[EOF] feedback automatique: {choice} ({default_feedback})")
+            return default_feedback
 
         if choix in FEEDBACK_OPTIONS:
             return FEEDBACK_OPTIONS[choix]
@@ -92,6 +119,14 @@ def run_benchmark(model_names=None):
     # Lecture des tickets
     with open(INPUT_CSV, mode='r', encoding='utf-8') as file:
         tickets = list(csv.DictReader(file))
+    max_tickets_env = os.environ.get("BIBOPS_MAX_TICKETS", "").strip()
+    if max_tickets_env:
+        try:
+            max_tickets = int(max_tickets_env)
+            if max_tickets > 0:
+                tickets = tickets[:max_tickets]
+        except ValueError:
+            pass
 
     for model_name in model_names:
         print("=" * 70)

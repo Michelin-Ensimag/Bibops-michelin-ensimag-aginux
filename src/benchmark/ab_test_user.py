@@ -17,6 +17,7 @@ import json
 import os
 import random
 import time
+import sys
 
 from openai import OpenAI
 
@@ -28,6 +29,26 @@ COPILOT_BASE_URL = os.environ.get("COPILOT_API_URL", "http://localhost:4141/v1")
 DEFAULT_MODEL_A = "gpt-4o-mini"
 DEFAULT_MODEL_B = "claude-haiku-4.5"
 MAX_TICKETS = 10
+
+
+def _env_int(name: str, default: int) -> int:
+    raw = os.environ.get(name, "").strip()
+    if not raw:
+        return default
+    try:
+        value = int(raw)
+        return value if value > 0 else default
+    except ValueError:
+        return default
+
+
+def _auto_choice_default() -> str:
+    raw = os.environ.get("BIBOPS_AB_USER_CHOICE", "A").strip().upper()
+    return raw if raw in ("A", "B") else "A"
+
+
+def _is_non_interactive_mode() -> bool:
+    return os.environ.get("BIBOPS_NON_INTERACTIVE", "0") == "1" or not sys.stdin.isatty()
 
 
 def charger_copilot_api_key() -> str:
@@ -81,6 +102,8 @@ def main():
     parser.add_argument("--model-b", default=DEFAULT_MODEL_B, help="Deuxieme modele")
     parser.add_argument("--seed", type=int, default=42, help="Graine aléatoire pour l'ordre A/B")
     parser.add_argument("--retries", type=int, default=3, help="Nombre de tentatives API par appel")
+    parser.add_argument("--max-tickets", type=int, default=_env_int("BIBOPS_AB_USER_MAX_TICKETS", MAX_TICKETS), help="Nombre max de tickets")
+    parser.add_argument("--auto-choice", choices=["A", "B"], default=_auto_choice_default(), help="Choix auto en mode non interactif")
     args = parser.parse_args()
 
     api_key = charger_copilot_api_key()
@@ -89,7 +112,7 @@ def main():
     rng = random.Random(args.seed)
 
     with open(INPUT_CSV, newline="", encoding="utf-8") as f:
-        tickets = list(csv.DictReader(f))[:MAX_TICKETS]
+        tickets = list(csv.DictReader(f))[:args.max_tickets]
 
     resultats = []
     scores = {args.model_a: 0, args.model_b: 0}
@@ -120,11 +143,19 @@ def main():
         print(f"\n--- Réponse A ---\n{rep_a}\n")
         print(f"--- Réponse B ---\n{rep_b}\n")
 
-        while True:
-            choix = input("Quelle réponse est meilleure ? (A/B) : ").strip().upper()
-            if choix in ("A", "B"):
-                break
-            print("Répondez A ou B.")
+        if _is_non_interactive_mode():
+            choix = args.auto_choice
+            print(f"[Mode non interactif] choix automatique: {choix}")
+        else:
+            while True:
+                try:
+                    choix = input("Quelle réponse est meilleure ? (A/B) : ").strip().upper()
+                except EOFError:
+                    choix = args.auto_choice
+                    print(f"\n[EOF] choix automatique: {choix}")
+                if choix in ("A", "B"):
+                    break
+                print("Répondez A ou B.")
 
         meilleur_modele = label_a if choix == "A" else label_b
         scores[meilleur_modele] += 1

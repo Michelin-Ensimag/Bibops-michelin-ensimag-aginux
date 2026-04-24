@@ -1,48 +1,24 @@
 {
   "modeles": [
-    "stepfun/step-3.5-flash:free",
-    "nvidia/nemotron-nano-9b-v2:free"
+    "gpt-4o-mini",
+    "claude-haiku-4.5"
   ],
   "scores": {
-    "stepfun/step-3.5-flash:free": 2,
-    "nvidia/nemotron-nano-9b-v2:free": 2
+    "gpt-4o-mini": 0,
+    "claude-haiku-4.5": 1
   },
   "pourcentages": {
-    "stepfun/step-3.5-flash:free": 50.0,
-    "nvidia/nemotron-nano-9b-v2:free": 50.0
+    "gpt-4o-mini": 0.0,
+    "claude-haiku-4.5": 100.0
   },
   "details": [
     {
       "ticket_id": "1",
       "question": "Mon VPN Cisco ne marche plus.",
-      "reponse_a": "Vérifiez :  \n1. Votre connexion internet.  \n2. Les paramètres du VPN (serveur, identifiants).  \n3. Le pare-feu/antivirus (désactivez temporairement).  \n4. Redémarrez le client Cisco AnyConnect.  \nSi le problème persiste, contactez le support Cisco ou votre équipe IT.",
-      "reponse_b": "**Étapes de dépannage rapide :**\n\n1. **Vérifiez votre connexion Internet** (testez avec un navigateur).\n2. **Redémarrez le client Cisco AnyConnect** (fermez-le complètement et rouvrez-le).\n3. **Vérifiez vos identifiants** (login/mot de passe, certificat si nécessaire).\n4. **Mettez à jour le client** (si une mise à jour est disponible via le portail Michelin).\n5. **Vérifiez le pare-feu/antivirus** (désactivez temporairement pour tester).\n\n**Si le problème persiste :**\n- Consultez le **portail d'assistance IT Michelin** (intranet) pour les procédures spécifiques et les numéros d'urgence.\n- Contactez le **support IT Michelin** via le ticket interne ou le numéro dédié (ex: 0 800 XXX XXX depuis un poste Michelin).\n\n**Note :** En tant qu'employé Michelin, utilisez **uniquement les canaux officiels** pour éviter les risques de sécurité.",
+      "reponse_a": "# Dépannage VPN Cisco\n\nVoici les vérifications rapides :\n\n1. **Connectivité réseau** : Vérifiez que vous avez accès à Internet (testez un site web)\n\n2. **Client VPN Cisco** :\n   - Redémarrez l'application Cisco AnyConnect\n   - Vérifiez que la version est à jour (Help > About)\n\n3. **Identifiants** : Confirmez votre login/mot de passe Michelin\n\n4. **Pare-feu** : Désactivez temporairement votre antivirus personnel pour tester\n\n5. **Logs** : Vérifiez les messages d'erreur affichés lors de la connexion\n\n**Si cela persiste :**\n- Ouvrez un ticket sur le portail IT Michelin\n- Fournissez le message d'erreur exact et votre OS\n- Préparez votre numéro d'employé\n\nBesoin de plus de détails sur l'erreur affichée ?",
+      "reponse_b": "Pour résoudre le problème de votre VPN Cisco, voici quelques étapes à suivre :\n\n1. **Vérifiez votre connexion Internet** : Assurez-vous que vous êtes bien connecté à Internet.\n\n2. **Redémarrez le VPN** : Fermez l'application VPN et relancez-la.\n\n3. **Mettez à jour le logiciel** : Assurez-vous que vous utilisez la dernière version du client VPN Cisco.\n\n4. **Vérifiez les paramètres de connexion** : Assurez-vous que vos identifiants et paramètres de connexion sont corrects.\n\n5. **Désactivez temporairement votre pare-feu/antivirus** : Parfois, ces logiciels peuvent bloquer la connexion VPN.\n\n6. **Redémarrez votre ordinateur** : Cela peut résoudre des problèmes temporaires.\n\nSi le problème persiste, contactez le support IT pour une assistance plus approfondie.",
       "choix_humain": "A",
-      "meilleur_modele": "nvidia/nemotron-nano-9b-v2:free"
-    },
-    {
-      "ticket_id": "2",
-      "question": "Combien de jours de congés me reste-t-il ?",
-      "reponse_a": "En tant qu'expert en Ressources Humaines chez Michelin, je ne peux pas accéder à vos données personnelles ou à votre solde de congés, car cela nécessiterait une connexion sécurisée à votre espace employé et relève de la confidentialité des informations individuelles (RGPD).\n\nPour connaître votre solde exact de jours de congés, voici les démarches à suivre :\n\n1. **Consultez votre espace RH en ligne** (généralement accessible via le portail **MyMichelin** ou l’intranet de l’entreprise).  \n   → Votre solde de congés y est mis à jour en temps réel.\n\n2. **Contactez directement votre responsable hiérarchique** ou le **service des Ressources Humaines** de votre site/département.  \n   → Ils peuvent vous fournir l’information officielle.\n\n3. **Vérifiez vos derniers bulletins de paie** : le solde de congés y est souvent indiqué.\n\n**Rappel important** :  \n- Le nombre de jours de congés chez Michelin dépend de votre **statut** (cadre, non-cadre), de votre **ancienneté** et des **accords collectifs** applicables (généralement 25 à 30",
-      "reponse_b": "Pour connaître le nombre exact de jours de congés que vous avez encore à percevoir, il est nécessaire de consulter votre contrat de travail, les politiques internes de Michelin concernant les congés, et les jours accumulés en fonction de votre période d'ancienneté ou de vos absences antérieures. \n\nJe vous recommande de consulter votre espace collaborateur (plateforme RH) ou de contacter le service des Ressources Humaines de Michelin pour obtenir une réponse précise et personnalisée. Si vous avez besoin d'aide pour localiser ces informations, je peux vous guider !",
-      "choix_humain": "B",
-      "meilleur_modele": "nvidia/nemotron-nano-9b-v2:free"
-    },
-    {
-      "ticket_id": "3",
-      "question": "Mon imprimante affiche erreur 404.",
-      "reponse_a": "Bonjour ! En tant que technicien support IT chez Michelin, je peux vous aider avec cette erreur 404 sur votre imprimante.\n\n**Important :** Une erreur 404 est typiquement une erreur **web** (signifiant \"Page non trouvée\"). Sur une imprimante, cela peut indiquer :\n\n1. **Vous essayez d'accéder à l'interface web de l'imprimante** (en tapant son adresse IP dans un navigateur) et cette page spécifique n'existe pas ou l'imprimante ne répond pas correctement.\n2. **Un problème de communication réseau** entre votre ordinateur et l'imprimante.\n3. **Un firmware ou un pilote obsolète** qui tente d'accéder à une ressource indisponible.\n\n---\n\n### **Étapes de diagnostic et résolution :**\n\n#### **1. Vérifiez le contexte de l'erreur :**\n- **Où voyez-vous exactement le code \"404\" ?**\n  - Sur l'écran de l'imprimante ?\n  - Dans le panneau de configuration de l'ordinateur (Windows/macOS) ?\n  - Dans le navigateur web lorsque vous essayez d'ouvrir l'interface de l'imprim",
-      "reponse_b": "Okay, the user is saying their printer is showing a 404 error. First, I need to figure out what exactly a 404 error means in the context of a printer. Usually, 404 is a web-related error, like a page not found. But printers might have their own error codes. Maybe the printer is trying to access a network resource or a web interface and can't find it.\n\nI should start by asking the user to clarify which printer model they have. Different models might have different error codes or solutions. Also, checking if the error is on the printer's display or on a computer when trying to print. If it's on the printer, maybe it's a network issue. If it's on the computer, maybe a connectivity problem.\n\nNext, possible causes could be network connectivity issues, incorrect IP address or DNS settings, firewall blocking the printer's port, or a problem with the printer's web interface. Also, maybe the printer is trying to access a service that's not available, like a web server or a cloud service.\n\nI should guide the user through basic troubleshooting steps. First, check the printer's network connection. Make sure it's connected to the same network as the computer. Then, restart the printer and the router. Maybe check the printer's IP address and ensure it's correct. If the printer has a web interface, try accessing it via a browser to see if the 404 is there. If it is, maybe the web server is down or the URL is wrong.\n\nAlso, check if other devices can access the printer. If not, it's a network issue. If yes, maybe the problem is specific to the user's computer. Maybe the printer's driver is outdated or there's a conflict. Suggest updating the printer drivers or reinstalling them.\n\nAnother thing is to check the printer's error logs. If the printer has a display, maybe there's a specific error message that can be looked up. If not, the user might need to check the printer's manual or contact support with the model number.\n\nI should also consider if the 404 is a custom error message from the printer's software. Maybe the printer is trying to access a file or a service that's not found. In that case, checking the printer's settings or the software it's connected to might help.\n\nFinally, if all else fails, recommend contacting Michelin's support with the printer model and detailed steps taken so far. That way, they can provide more",
-      "choix_humain": "A",
-      "meilleur_modele": "stepfun/step-3.5-flash:free"
-    },
-    {
-      "ticket_id": "4",
-      "question": "Est-ce que je peux cumuler deux emplois ?",
-      "reponse_a": "En tant que juriste d'entreprise, je vous informe que le cumul d'emplois est **possible sous certaines conditions strictes**, mais il est **généralement encadré et soumis à des restrictions légales et contractuelles**. Voici les principaux points à examiner :\n\n---\n\n### 1. **Cadre légal général (droit du travail français)**\n   - **Principe de non-cumul** : Un salarié ne peut pas occuper simultanément plusieurs emplois **sans l’accord expr",
-      "reponse_b": "Oui, il est généralement possible de cumuler deux emplois, à condition que cela ne viole pas les termes de vos contrats de travail, les lois en vigueur dans votre pays ou les réglementations spécifiques à votre secteur. Cependant, plusieurs facteurs doivent être pris en compte :  \n\n1. **Contrats de travail** : Vérifiez les clauses de vos contrats actuels. Certains peuvent prévoir des restrictions (ex. : exclusivité, non-concurrence) ou des obligations de notification.  \n2. **Lois et réglementations** : Dans certains pays ou secteurs, des règles spécifiques peuvent limiter la cumulation d’emplois (ex. : limites horaires, obligations de déclaration fiscale).  \n3. **Fiscalité** : La cumulation d’emplois peut avoir des conséquences fiscales (ex. : déclaration de revenus multiples, cotisations sociales).  \n4. **Conflits d’intérêts** : Si les deux emplois sont dans le même secteur ou impliquent des responsabilités similaires, cela pourrait poser des problèmes éthiques ou juridiques.",
-      "choix_humain": "A",
-      "meilleur_modele": "stepfun/step-3.5-flash:free"
+      "meilleur_modele": "claude-haiku-4.5"
     }
   ]
 }

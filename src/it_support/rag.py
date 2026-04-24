@@ -10,6 +10,7 @@ DOC_MD_DIR = os.path.join(BASE_DIR, 'data', 'knowledge_base', 'doc_md')
 def initialiser_documentation():
     print("Initialisation de la Vector DB avec la Knowledge Base Michelin...")
 
+    os.makedirs(CHROMA_PATH, exist_ok=True)
     client = chromadb.PersistentClient(path=CHROMA_PATH) # persistant pour dire les donnes sauvg sur disque
 
     # # On supprime l'ancienne collection si elle existe pour repartir au propre
@@ -18,7 +19,13 @@ def initialiser_documentation():
     # except Exception: # c est dangeureux cette ligne car exeption capture tous les prob , du coup s il y une autre exept que celle de colect inxsitant , elle serait silencieusement ignore
     #     pass
 
-    collection = client.create_collection(name="doc_michelin")
+    try:
+        collection = client.get_or_create_collection(name="doc_michelin")
+    except AttributeError:
+        try:
+            collection = client.get_collection(name="doc_michelin")
+        except Exception:
+            collection = client.create_collection(name="doc_michelin")
 
     documents = []
     ids = []
@@ -51,8 +58,19 @@ def initialiser_documentation():
 
     # Injection dans la base de données
     if documents:
-        collection.add(documents=documents, ids=ids) # on doit verifier avec quoi chromadb embedd icic , est ce avec un truc par defaut ou bien par exemple un  embeddeur specifique
-        print(f"\n[Vector DB] : {len(documents)} articles vectorisés avec succès dans : {CHROMA_PATH}")
+        # Déduplique les IDs pour permettre des relances idempotentes.
+        docs_by_id = {}
+        for doc_id, doc_content in zip(ids, documents):
+            docs_by_id[doc_id] = doc_content
+
+        dedup_ids = list(docs_by_id.keys())
+        dedup_docs = [docs_by_id[i] for i in dedup_ids]
+
+        if hasattr(collection, "upsert"):
+            collection.upsert(documents=dedup_docs, ids=dedup_ids)
+        else:
+            collection.add(documents=dedup_docs, ids=dedup_ids)
+        print(f"\n[Vector DB] : {len(dedup_docs)} articles synchronisés avec succès dans : {CHROMA_PATH}")
     else:
         print("\n[Vector DB] : Aucun article trouvé.")
 

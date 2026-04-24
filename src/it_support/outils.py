@@ -32,9 +32,11 @@ RAG_N_RESULTS_PER_QUERY = 3 # nombre de résultats à récupérer pour chaque va
 RAG_MAX_CITATIONS = 3 # nombre maximum de citations à inclure dans la réponse finale pour éviter de submerger l'utilisateur avec trop d'informations, même si plus de résultats sont pertinents
 
 
-import chromadb
-_chroma_client = chromadb.PersistentClient(path=CHROMA_PATH)
-_chroma_client.get_collection(name="doc_michelin")
+try:
+    import chromadb
+    _chroma_client = chromadb.PersistentClient(path=CHROMA_PATH)
+except Exception:
+    _chroma_client = None
 
 
 def get_tool_policy(tool_name: str) -> ToolPolicy:
@@ -103,7 +105,7 @@ def _lexical_overlap_score(query: str, document: str) -> float:
 
 
 def _rerank_hybrid_candidates(query: str, raw_results: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    by_id: dict[str, dict[str, Any]] = {}
+    by_id: dict[str, dict[str, Any]] = {} # Comme on interroge Chroma avec plusieurs variantes, le même document peut revenir plusieurs fois. Donc on utilise un dictionnaire by_id pour garder une seule version de chaque document.
 
     for result in raw_results:
         ids = result.get("ids") or []
@@ -124,7 +126,7 @@ def _rerank_hybrid_candidates(query: str, raw_results: list[dict[str, Any]]) -> 
 
             lexical = _lexical_overlap_score(query, doc_text)
             vector_score = 1.0 / (1.0 + float(distance))
-            hybrid_score = (0.75 * vector_score) + (0.25 * lexical)
+            hybrid_score = (0.75 * vector_score) + (0.25 * lexical) # Cela favorise la recherche sémantique tout en gardant un contrôle lexical
 
             current = by_id.get(doc_id)
             candidate = {
@@ -134,10 +136,10 @@ def _rerank_hybrid_candidates(query: str, raw_results: list[dict[str, Any]]) -> 
                 "lexical_score": round(lexical, 4),
                 "hybrid_score": round(hybrid_score, 4),
             }
-            if current is None or candidate["hybrid_score"] > current["hybrid_score"]:
+            if current is None or candidate["hybrid_score"] > current["hybrid_score"]: # Si le même document revient plusieurs fois, on garde la version qui a le meilleur score hybride
                 by_id[doc_id] = candidate
 
-    ordered = sorted(by_id.values(), key=lambda c: c["hybrid_score"], reverse=True)
+    ordered = sorted(by_id.values(), key=lambda c: c["hybrid_score"], reverse=True) # On trie les candidats du meilleur au moins bon
     filtered = [
         cand
         for cand in ordered
@@ -241,19 +243,21 @@ def chercher_documentation_technique(mot_cle: str) -> str:
             return "Aucune documentation pertinente trouvée pour : requête vide."
 
         query_variants = _generate_query_variants(query)
-        with _silence_native_stderr():
-            collection = _get_chroma_collection()
-            raw_results = [
-                collection.query(
-                    query_texts=[variant],
-                    n_results=RAG_N_RESULTS_PER_QUERY,
-                    include=["documents", "distances"],
-                )
-                for variant in query_variants
-            ]
+
+        if _chroma_client is None:
+            return "Aucune documentation trouvée. Erreur: ChromaDB indisponible"
+        collection = _chroma_client.get_collection(name="doc_michelin")
+        raw_results = [
+            collection.query(
+                query_texts=[variant],
+                n_results=RAG_N_RESULTS_PER_QUERY,
+                include=["documents", "distances"],
+            )
+            for variant in query_variants
+        ]
 
         candidates = _rerank_hybrid_candidates(query, raw_results)
-        if not candidates:
+        if not candidates: # Cela signifie que Chroma a peut-être retourné des résultats, mais qu’ils étaient jugés trop faibles
             return (
                 f"Aucune documentation pertinente trouvée pour : {query} "
                 f"(meilleur résultat trop éloigné ou sans overlap lexical)."
@@ -278,3 +282,6 @@ def chercher_documentation_technique(mot_cle: str) -> str:
         return "\n".join(lines)
     except Exception as e:
         return f"Aucune documentation trouvée. Erreur: {e}"
+
+
+# je dois ssayer de merger ces trois types de sources : sql lite (pour les statuts de serveurs), json (pour la kb classique) et chromadb (pour la doc technique) pour pouvoir faire du RAG hybride dans l'outil de recherche documentaire, et aussi pour pouvoir faire des recherches plus robustes dans la kb classique (ex: si l'utilisateur demande "mon VPN Cisco ne marche pas", je voudrais que l'outil puisse trouver les articles liés à "VPN" et "Cisco" même si aucun article n'a exactement cette phrase)

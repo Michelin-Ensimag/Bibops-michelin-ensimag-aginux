@@ -16,6 +16,7 @@ from __future__ import annotations
 import argparse
 import asyncio
 import json
+import os
 import sys
 import time
 
@@ -209,6 +210,10 @@ async def listen_and_race() -> None:
                 f"\n{_pfx()} {RED}{BOLD}Impossible de joindre le Hub ({HUB_BASE_URL}).{RESET}\n"
                 f"{_pfx()} Vérifiez que le Hub tourne : python -m src.racing.hub.server\n"
             )
+            non_interactive = os.environ.get("BIBOPS_NON_INTERACTIVE", "0") == "1" or not sys.stdin.isatty()
+            if non_interactive:
+                print(f"{_pfx()} Mode non interactif: arrêt propre sans erreur.\n")
+                return
             sys.exit(1)
 
         except Exception as exc:

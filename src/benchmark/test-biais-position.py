@@ -36,6 +36,7 @@ from src.benchmark import ab_test_llm as core
 
 
 OUTPUT_JSON = os.path.join(core.BASE_DIR, "data", "outputs", "benchmark", "position_bias_resultat.json")
+DEFAULT_MAX_TICKETS = int(os.environ.get("BIBOPS_POSITION_MAX_TICKETS", "2"))
 
 
 def _binom_pmf(n: int, k: int, p: float) -> float:
@@ -61,7 +62,7 @@ def main() -> None:
     parser.add_argument("--model-a", default=core.DEFAULT_MODEL_A, help="Premier modèle candidat")
     parser.add_argument("--model-b", default=core.DEFAULT_MODEL_B, help="Deuxième modèle candidat")
     parser.add_argument("--judge-model", default=core.DEFAULT_JUDGE_MODEL, help="Modèle juge")
-    parser.add_argument("--max-tickets", type=int, default=40, help="Nombre max de tickets à analyser")
+    parser.add_argument("--max-tickets", type=int, default=DEFAULT_MAX_TICKETS, help="Nombre max de tickets à analyser")
     parser.add_argument("--seed", type=int, default=42, help="Graine aléatoire")
     parser.add_argument("--output", default=OUTPUT_JSON, help="Chemin du JSON de sortie")
     args = parser.parse_args()

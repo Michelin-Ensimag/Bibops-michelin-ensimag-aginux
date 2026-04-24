@@ -1,0 +1,164 @@
+{
+  "env": {
+    "OLLAMA_HOST": "http://127.0.0.1:11434",
+    "COPILOT_API_URL": "http://localhost:4141/v1",
+    "COPILOT_API_BASE_URL": "http://localhost:4141/v1",
+    "COPILOT_API_KEY": "copilot"
+  },
+  "total": 37,
+  "ok": 24,
+  "fail": 9,
+  "timeout": 4,
+  "error": 0,
+  "results": [
+    {
+      "name": "pytest_all",
+      "status": "fail"
+    },
+    {
+      "name": "scripts_dev_init_sqlite",
+      "status": "ok"
+    },
+    {
+      "name": "scripts_dev_build_it_vector_db",
+      "status": "fail"
+    },
+    {
+      "name": "scripts_dev_run_mcp_server",
+      "status": "ok"
+    },
+    {
+      "name": "scripts_copilot_test_api",
+      "status": "ok"
+    },
+    {
+      "name": "scripts_copilot_run_agent_mcp",
+      "status": "ok"
+    },
+    {
+      "name": "scripts_benchmark_run_core",
+      "status": "fail"
+    },
+    {
+      "name": "scripts_benchmark_run_pipeline",
+      "status": "ok"
+    },
+    {
+      "name": "scripts_benchmark_run_mcp_tools",
+      "status": "ok"
+    },
+    {
+      "name": "scripts_benchmark_compare_architectures",
+      "status": "ok"
+    },
+    {
+      "name": "scripts_benchmark_validate_output",
+      "status": "ok"
+    },
+    {
+      "name": "scripts_racing_run_demo",
+      "status": "ok"
+    },
+    {
+      "name": "scripts_racing_run_hub",
+      "status": "ok"
+    },
+    {
+      "name": "scripts_racing_run_arena",
+      "status": "ok"
+    },
+    {
+      "name": "src_it_support_agent_maestro",
+      "status": "ok"
+    },
+    {
+      "name": "src_it_support_database",
+      "status": "ok"
+    },
+    {
+      "name": "src_it_support_rag",
+      "status": "fail"
+    },
+    {
+      "name": "src_it_support_mcp_server",
+      "status": "ok"
+    },
+    {
+      "name": "src_llm_professor_llm_judge_default",
+      "status": "fail"
+    },
+    {
+      "name": "src_llm_professor_llm_judge_mode",
+      "status": "ok"
+    },
+    {
+      "name": "src_llm_professor_rca",
+      "status": "ok"
+    },
+    {
+      "name": "src_llm_professor_adversarial",
+      "status": "timeout"
+    },
+    {
+      "name": "src_llm_professor_run_local_kaggle",
+      "status": "ok"
+    },
+    {
+      "name": "src_llm_professor_run_kaggle",
+      "status": "fail"
+    },
+    {
+      "name": "src_llm_professor_copilot_mcp",
+      "status": "ok"
+    },
+    {
+      "name": "src_llm_professor_langchain_mcp",
+      "status": "ok"
+    },
+    {
+      "name": "src_benchmark_core",
+      "status": "fail"
+    },
+    {
+      "name": "src_benchmark_pipeline",
+      "status": "timeout"
+    },
+    {
+      "name": "src_benchmark_mcp_tools",
+      "status": "ok"
+    },
+    {
+      "name": "src_benchmark_ab_test_user",
+      "status": "fail"
+    },
+    {
+      "name": "src_benchmark_ab_test_llm",
+      "status": "timeout"
+    },
+    {
+      "name": "src_benchmark_test_biais_position",
+      "status": "timeout"
+    },
+    {
+      "name": "src_racing_demo",
+      "status": "ok"
+    },
+    {
+      "name": "src_racing_hub_server",
+      "status": "ok"
+    },
+    {
+      "name": "src_racing_hub_ingest",
+      "status": "ok"
+    },
+    {
+      "name": "src_racing_start_arena",
+      "status": "ok"
+    },
+    {
+      "name": "src_racing_team_client_main",
+      "status": "fail"
+    }
+  ],
+  "note": "Consolidation de deux passes host-level (batch principal + run remaining)."
+}

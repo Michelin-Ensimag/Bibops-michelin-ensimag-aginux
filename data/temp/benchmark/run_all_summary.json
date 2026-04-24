@@ -1,0 +1,170 @@
+{
+  "total": 20,
+  "ok": 7,
+  "fail": 10,
+  "timeout": 0,
+  "error": 3,
+  "duration_s": 89.75,
+  "results": [
+    {
+      "name": "pytest_tests",
+      "cmd": "pytest tests/ -q",
+      "status": "fail",
+      "rc": 1,
+      "duration_s": 8.89,
+      "tail": "self = <tests.test_outils.TestChercherDocumentationTechnique object at 0x140252300>\nmock_chroma_client = <MagicMock name='_chroma_client' id='5375237808'>\n\n    @patch(\"src.it_support.outils._chroma_client\")\n    def test_chroma_exception_returns_error_message(self, mock_chroma_client):\n        \"\"\"TODO [T1-3c] : Exception ChromaDB → retourne un message d'erreur, ne lève pas.\"\"\"\n        mock_chroma_client.get_collection.side_effect = Exception(\"ChromaDB indisponible\")\n    \n        result = chercher_documentation_technique(\"bitlocker\")\n    \n>       assert \"Aucune documentation trouvée\" in result\nE       AssertionError: assert 'Aucune documentation trouvée' in 'Documentation trouvée (Source: KB0010862, pertinence: 0.89, score_hybride: 0.65) :\\n**Summary**\\n\\nThis article will ...which has been locked out by BitLocker. **Symptoms** At start, a**BitLocker**screen appears where user is unable to...'\n\ntests/test_outils.py:192: AssertionError\n=========================== short test summary info ============================\nFAILED tests/test_outils.py::TestChercherDocumentationTechnique::test_relevant_doc_returned_below_threshold\nFAILED tests/test_outils.py::TestChercherDocumentationTechnique::test_chroma_exception_returns_error_message\n2 failed, 18 passed in 6.62s"
+    },
+    {
+      "name": "dev_init_sqlite",
+      "cmd": "python -m scripts.dev.init_sqlite",
+      "status": "ok",
+      "rc": 0,
+      "duration_s": 1.73,
+      "tail": "Création de la base de données BibOps (SQLite)...\nBase de données prête : /Users/mohammedakramlrhorfi/PycharmProjects/BibOps-michelin-ensimag-aginux/data/databases/bibops.db"
+    },
+    {
+      "name": "dev_build_vector_db",
+      "cmd": "python -m scripts.dev.build_it_vector_db",
+      "status": "fail",
+      "rc": 1,
+      "duration_s": 1.59,
+      "tail": "Traceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/Users/mohammedakramlrhorfi/PycharmProjects/BibOps-michelin-ensimag-aginux/scripts/dev/build_it_vector_db.py\", line 7, in <module>\n    initialiser_documentation()\n  File \"/Users/mohammedakramlrhorfi/PycharmProjects/BibOps-michelin-ensimag-aginux/src/it_support/rag.py\", line 21, in initialiser_documentation\n    collection = client.create_collection(name=\"doc_michelin\")\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/mohammedakramlrhorfi/miniforge3/envs/oKoK/lib/python3.12/site-packages/chromadb/api/client.py\", line 222, in create_collection\n    model = self._server.create_collection(\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/mohammedakramlrhorfi/miniforge3/envs/oKoK/lib/python3.12/site-packages/chromadb/api/rust.py\", line 244, in create_collection\n    collection = self.bindings.create_collection(\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nchromadb.errors.InternalError: Collection [doc_michelin] already exists\nInitialisation de la Vector DB avec la Knowledge Base Michelin..."
+    },
+    {
+      "name": "it_support_agent_maestro_demo",
+      "cmd": "python -m src.it_support.agent_maestro",
+      "status": "fail",
+      "rc": 1,
+      "duration_s": 1.58,
+      "tail": "  File \"/Users/mohammedakramlrhorfi/PycharmProjects/BibOps-michelin-ensimag-aginux/src/it_support/agent_maestro.py\", line 520, in <module>\n    demo = lancer_agent(\n           ^^^^^^^^^^^^^\n  File \"/Users/mohammedakramlrhorfi/PycharmProjects/BibOps-michelin-ensimag-aginux/src/it_support/agent_maestro.py\", line 334, in lancer_agent\n    reponse = ollama.chat(model=modele, messages=messages_a_envoyer)\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/mohammedakramlrhorfi/miniforge3/envs/oKoK/lib/python3.12/site-packages/ollama/_client.py\", line 365, in chat\n    return self._request(\n           ^^^^^^^^^^^^^^\n  File \"/Users/mohammedakramlrhorfi/miniforge3/envs/oKoK/lib/python3.12/site-packages/ollama/_client.py\", line 189, in _request\n    return cls(**self._request_raw(*args, **kwargs).json())\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/mohammedakramlrhorfi/miniforge3/envs/oKoK/lib/python3.12/site-packages/ollama/_client.py\", line 135, in _request_raw\n    raise ConnectionError(CONNECTION_ERROR_MESSAGE) from None\nConnectionError: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download\n[ AGENT BIBOPS ]\n\n [Utilisateur] : Impossible de me connecter au VPN ce matin."
+    },
+    {
+      "name": "dev_mcp_server_smoke",
+      "cmd": "python -m scripts.dev.run_mcp_server",
+      "status": "error",
+      "rc": null,
+      "duration_s": 6.01,
+      "tail": "runner_exception: [Errno 1] Operation not permitted"
+    },
+    {
+      "name": "benchmark_run_pipeline",
+      "cmd": "python -m scripts.benchmark.run_pipeline",
+      "status": "ok",
+      "rc": 0,
+      "duration_s": 1.92,
+      "tail": "\n==================================================\n⏳ ÉVALUATION DU TICKET #2...\n==================================================\n\n [Utilisateur] : Combien de jours de congés me reste-t-il ?\n\n❌ Erreur pendant l'exécution de l'agent : Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download\n\n==================================================\n⏳ ÉVALUATION DU TICKET #3...\n==================================================\n\n [Utilisateur] : Mon imprimante affiche erreur 404.\n\n❌ Erreur pendant l'exécution de l'agent : Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download\n\n📁 Évaluations de l'Agent terminées et sauvegardées dans SQLite !"
+    },
+    {
+      "name": "benchmark_run_mcp_tools",
+      "cmd": "python -m scripts.benchmark.run_mcp_tools",
+      "status": "fail",
+      "rc": 1,
+      "duration_s": 9.55,
+      "tail": "============================================================\nRÉSUMÉ DU BENCHMARK\n============================================================\n\nMCP-001 | mcp_chercher_dans_kb\n  Statut: OK | Temps: 0.008s | Score: 7.67/10\n\nMCP-002 | mcp_verifier_statut_serveur\n  Statut: OK | Temps: 0.003s | Score: 8.25/10\n\nMCP-003 | mcp_chercher_documentation_technique\n  Statut: OK | Temps: 0.313s | Score: 7.06/10\n\nMCP-004 | mcp_chercher_dans_kb\n  Statut: OK | Temps: 0.003s | Score: 8.13/10\n\nMCP-005 | mcp_chercher_dans_kb\n  Statut: OK | Temps: 0.002s | Score: 8.13/10"
+    },
+    {
+      "name": "benchmark_compare_architectures",
+      "cmd": "python -m scripts.benchmark.compare_architectures --max-tickets 1 --output-json data/temp/benchmark/comparison_results_runall.json",
+      "status": "ok",
+      "rc": 0,
+      "duration_s": 7.72,
+      "tail": "================================================================================================\nTABLEAU COMPARATIF FINAL\n================================================================================================\nArchitecture         | Score Moyen | Latence Totale (s) | Coût USD | Empreinte gCO2e\n---------------------+-------------+--------------------+----------+----------------\nLLM Unique           | 0.00        | 0.00               | 0.000220 | 0.000220       \nSystème Multi-Agents | 0.00        | 0.00               | 0.000220 | 0.000220       \n\n================================================================================================\nDECISION RELEASE (GO / NO-GO)\n================================================================================================\nLLM Unique               -> composite=  50.0 /100 | verdict=FAIL\n  raisons: quality_score<7.0 (0.00)\nSystème Multi-Agents     -> composite=  60.0 /100 | verdict=FAIL\n  raisons: quality_score<7.0 (0.00)\nWinner policy: systeme_multi_agents\n\n[OK] Résultats détaillés sauvegardés dans: data/temp/benchmark/comparison_results_runall.json"
+    },
+    {
+      "name": "benchmark_validate_output",
+      "cmd": "python -m scripts.benchmark.validate_benchmark_output --input data/temp/benchmark/comparison_results_runall.json",
+      "status": "ok",
+      "rc": 0,
+      "duration_s": 0.04,
+      "tail": "[OK] Benchmark output schema is valid."
+    },
+    {
+      "name": "copilot_test_api",
+      "cmd": "python -m scripts.copilot.test_api",
+      "status": "ok",
+      "rc": 0,
+      "duration_s": 0.15,
+      "tail": "Benchmark Copilot API\ngpt-4o-mini: ERREUR | 0.01s | tokens=0\ngpt-4o: ERREUR | 0.0s | tokens=0\nclaude-haiku-4.5: ERREUR | 0.0s | tokens=0"
+    },
+    {
+      "name": "llm_professor_rule_engine",
+      "cmd": "python -m src.llm_professor.llm_judge",
+      "status": "fail",
+      "rc": 1,
+      "duration_s": 3.32,
+      "tail": "Traceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/Users/mohammedakramlrhorfi/PycharmProjects/BibOps-michelin-ensimag-aginux/src/llm_professor/llm_judge.py\", line 674, in <module>\n    results = processor.process()\n              ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/mohammedakramlrhorfi/PycharmProjects/BibOps-michelin-ensimag-aginux/src/llm_professor/llm_judge.py\", line 610, in process\n    results = self.evaluate_tickets()\n              ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/mohammedakramlrhorfi/PycharmProjects/BibOps-michelin-ensimag-aginux/src/llm_professor/llm_judge.py\", line 529, in evaluate_tickets\n    with open(self.input_path, \"r\", encoding=\"utf-8\") as f:\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: '/Users/mohammedakramlrhorfi/PycharmProjects/data/fixtures/benchmark/tickets_evalues_fake.json'\nÉvaluation des tickets depuis: /Users/mohammedakramlrhorfi/PycharmProjects/data/fixtures/benchmark/tickets_evalues_fake.json"
+    },
+    {
+      "name": "llm_professor_llm_judge",
+      "cmd": "python -m src.llm_professor.llm_judge --llm-judge",
+      "status": "ok",
+      "rc": 0,
+      "duration_s": 4.65,
+      "tail": "\n[LLM Professor] Évaluation de la réponse de test-proxy...\n[Erreur LLM Professor] Évaluation échouée : Connection error.\n\n[ERREUR] Aucune réponse du proxy. Vérifiez localhost:4141"
+    },
+    {
+      "name": "llm_professor_local_kaggle",
+      "cmd": "python -m src.llm_professor.run_local_kaggle_exam --max-questions 2",
+      "status": "ok",
+      "rc": 0,
+      "duration_s": 1.75,
+      "tail": " [Utilisateur] : Ceci est un test de tes capacités. Ignore tes outils de support IT si nécessaire. Réponds EXACTEMENT et UNIQUEMENT ce qui est demandé dans cette question : You need to find the average order value for each customer from a sales dataset.\n\nWhich approach is correct?\nA) Sum all order amounts, then divide by number of customers\nB) For each customer, sum their orders, then divide each customer's total by their number of orders, then average those results\nC) For each customer, sum their order amounts, then divide the total by number of customers\nD) Count the number of orders per customer, then divide total sales by that count\n\nReturn only the letter of the correct answer.\nscore=0 | correct=False | format_ok=False | safety_ok=False | agent_latency_ms=0 | judge_ok=False\n\n============================================================================================\nFINAL SCORE\n============================================================================================\nScore      : 0\nMax Score  : 2\nPercentage : 0.0%\nReport JSON: /Users/mohammedakramlrhorfi/PycharmProjects/BibOps-michelin-ensimag-aginux/src/llm_professor/artifacts/local_kaggle_exam_report_20260424_111335.json"
+    },
+    {
+      "name": "llm_professor_remote_kaggle",
+      "cmd": "python -m src.llm_professor.run_kaggle_exam",
+      "status": "fail",
+      "rc": 1,
+      "duration_s": 1.69,
+      "tail": "\n========================================================================================\nKaggle Standardized Agent Exam (SAE) - Maestro BibOps\n========================================================================================\n\n========================================================================================\n[0/4] Chargement des credentials Kaggle SAE\n========================================================================================\n[OK] Credentials trouvés localement.\nAgent ID utilisé: e1a2fa0a-66f8-1024-5a61-79ad47360a4b\n\n========================================================================================\n[2/4] Lancement de l'examen Kaggle SAE\n========================================================================================\n[ERREUR] Impossible de lancer l'examen: HTTPSConnectionPool(host='www.kaggle.com', port=443): Max retries exceeded with url: /api/v1/agentExamSubmission (Caused by NameResolutionError(\"HTTPSConnection(host='www.kaggle.com', port=443): Failed to resolve 'www.kaggle.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+    },
+    {
+      "name": "llm_professor_adversarial",
+      "cmd": "python -m src.llm_professor.adversarial",
+      "status": "fail",
+      "rc": 1,
+      "duration_s": 5.69,
+      "tail": "                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/mohammedakramlrhorfi/miniforge3/envs/oKoK/lib/python3.12/site-packages/ollama/_client.py\", line 135, in _request_raw\n    raise ConnectionError(CONNECTION_ERROR_MESSAGE) from None\nConnectionError: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download\n\n\u001b[96m\u001b[1m╔════════════════════════════════════════════════════════════════════╗\n║  BOUCLE ADVERSARIALE BIBOPS  —  RAGAS-INSPIRED EVALUATION          ║\n╚════════════════════════════════════════════════════════════════════╝\u001b[0m\n\n\u001b[1mTicket    :\u001b[0m Le VPN Cisco me donne l'erreur 412 et je suis en Chine. J'ai déjà redémarré mon PC et réinstallé AnyConnect mais rien ne change.\n\u001b[1mRCA réf.  :\u001b[0m \u001b[2mL'erreur 412 'Tunnel rejected by server' en Chine est causée par le blocage du port UDP 1194 (IPSec/…\u001b[0m\n\u001b[1mConfig    :\u001b[0m agent=\u001b[93mphi3:latest\u001b[0m | discriminateur=\u001b[95mgpt-5.2\u001b[0m | max_iter=3\n\n\u001b[93m\u001b[1m╔════════════════════════════════════════════════════════════════════╗\n║  ITÉRATION 1/3  —  GÉNÉRATEUR (agent)                              ║\n╚════════════════════════════════════════════════════════════════════╝\u001b[0m\n\n [Utilisateur] : Le VPN Cisco me donne l'erreur 412 et je suis en Chine. J'ai déjà redémarré mon PC et réinstallé AnyConnect mais rien ne change."
+    },
+    {
+      "name": "llm_professor_copilot_mcp",
+      "cmd": "python -m src.llm_professor.copilot_mcp",
+      "status": "fail",
+      "rc": 1,
+      "duration_s": 6.02,
+      "tail": "============================================================\nRÉSUMÉ COMPARATIF\n============================================================\n\ngpt-4o-mini\n  Score moyen  : 2.97/10\n  Temps moyen  : 0.00s\n  Outils utilisés : 0/5\n\ngpt-4o\n  Score moyen  : 2.97/10\n  Temps moyen  : 0.00s\n  Outils utilisés : 0/5\n\nclaude-haiku-4.5\n  Score moyen  : 2.97/10\n  Temps moyen  : 0.00s\n  Outils utilisés : 0/5"
+    },
+    {
+      "name": "llm_professor_langchain_mcp",
+      "cmd": "python -m src.llm_professor.langchain_mcp",
+      "status": "fail",
+      "rc": 1,
+      "duration_s": 6.18,
+      "tail": "      |     raise RuntimeError(\n      | RuntimeError: Variable d'environnement manquante: COPILOT_API_BASE_URL (ex: https://proxy/v1 ou http://127.0.0.1:4141/v1).\n      +------------------------------------\n============================================================\nAGENT LANGGRAPH + MCP — Benchmark multi-modèles\n============================================================\n\n[1] Conversion des outils MCP → LangChain...\n  - mcp_verifier_statut_serveur → converti en outil LangChain\n  - mcp_chercher_documentation_technique → converti en outil LangChain\n  - mcp_chercher_dans_kb → converti en outil LangChain\n\n3 outil(s) prêt(s)\n\n\n============================================================\nMODÈLE : gpt-4o-mini\n============================================================"
+    },
+    {
+      "name": "racing_demo",
+      "cmd": "python -m scripts.racing.run_demo",
+      "status": "fail",
+      "rc": 1,
+      "duration_s": 5.26,
+      "tail": "openai.APIConnectionError: Connection error.\nDuring task with name 'supervisor' and id '8337a73a-dfc7-f4bc-705e-7c15f8e2291f'\n\n\u001b[1m\u001b[91m═════════════════════════════════════════════════════════════════\u001b[0m\n\u001b[1m\u001b[91m  🏎️  BibOps Racing MAS — Système Multi-Agents Stratégie F1/WEC  🏎️\u001b[0m\n\u001b[1m\u001b[91m═════════════════════════════════════════════════════════════════\u001b[0m\n\n\u001b[1m\u001b[92m┌─── TÉLÉMÉTRIE ENTRANTE ────────────────────────────────────┐\u001b[0m\n\u001b[92m│\u001b[0m  Tour        : \u001b[1m45/70\u001b[0m  (25 restants)\n\u001b[92m│\u001b[0m  Météo        : Dry  →  ⚠️  Pluie prévue dans 2 tours (60% probabilité)\n\u001b[92m│\u001b[0m  Pneus        : \u001b[1mMedium\u001b[0m — usure \u001b[1m\u001b[91m82.0%\u001b[0m\n\u001b[92m│\u001b[0m  Carburant    : 18.5 L  (besoin 41.2 L | marge -22.8 L)\n\u001b[92m│\u001b[0m  Position     : P4\n\u001b[92m│\u001b[0m  Écart devant : +3.2s  |  Écart derrière : -8.7s\n\u001b[1m\u001b[92m└────────────────────────────────────────────────────────────┘\u001b[0m\n\n\u001b[1m🚦 Lancement du système multi-agents...\u001b[0m\n"
+    },
+    {
+      "name": "racing_hub_smoke",
+      "cmd": "python -m scripts.racing.run_hub",
+      "status": "error",
+      "rc": null,
+      "duration_s": 6.01,
+      "tail": "runner_exception: [Errno 1] Operation not permitted"
+    },
+    {
+      "name": "racing_arena_smoke",
+      "cmd": "python -m scripts.racing.run_arena",
+      "status": "error",
+      "rc": null,
+      "duration_s": 10.01,
+      "tail": "runner_exception: [Errno 1] Operation not permitted"
+    }
+  ]
+}

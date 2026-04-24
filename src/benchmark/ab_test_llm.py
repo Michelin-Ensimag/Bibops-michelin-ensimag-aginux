@@ -33,8 +33,8 @@ DEFAULT_JUDGE_MODEL = "gpt-4o"
 RANDOM_SEED = 42
 MODEL_REQUEST_TIMEOUT_S = 30
 JUDGE_REQUEST_TIMEOUT_S = 30
-MAX_TICKETS = 10
-INTER_TICKET_DELAY_S = 20
+MAX_TICKETS = 3
+INTER_TICKET_DELAY_S = 0
 
 # Modeles de secours pour continuer le benchmark en cas d'indisponibilite ponctuelle.
 MODEL_FALLBACK_POOL = [
@@ -484,9 +484,15 @@ def main() -> None:
         help="Chemin du JSON de resultats",
     )
     parser.add_argument(
+        "--max-tickets",
+        type=int,
+        default=int(os.environ.get("BIBOPS_AB_LLM_MAX_TICKETS", MAX_TICKETS)),
+        help="Nombre max de tickets a evaluer",
+    )
+    parser.add_argument(
         "--inter-ticket-delay",
         type=int,
-        default=INTER_TICKET_DELAY_S,
+        default=int(os.environ.get("BIBOPS_AB_LLM_INTER_TICKET_DELAY", INTER_TICKET_DELAY_S)),
         help="Delai en secondes entre deux tickets (anti rate-limit)",
     )
     args = parser.parse_args()
@@ -498,8 +504,8 @@ def main() -> None:
 
     with open(INPUT_CSV, newline="", encoding="utf-8") as f:
         tickets = list(csv.DictReader(f))
-        if MAX_TICKETS > 0:
-            tickets = tickets[:MAX_TICKETS]
+        if args.max_tickets > 0:
+            tickets = tickets[:args.max_tickets]
 
     resultats = []
     scores = {args.model_a: 0, args.model_b: 0}
