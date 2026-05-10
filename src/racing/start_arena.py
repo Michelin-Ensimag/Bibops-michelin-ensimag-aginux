@@ -1,18 +1,22 @@
 """
-BibOps Racing — Arena Launcher
-Chef d'orchestre global : lance le Hub et toutes les écuries en parallèle.
+BibOps Racing — Adversarial Arena Launcher
+Chef d'orchestre global : lance le Hub et les 4 écuries en parallèle.
 
 Usage :
   python -m src.racing.start_arena
 
 Chaque processus écrit ses logs dans logs/arena/ :
   logs/arena/hub.log
-  logs/arena/team_Scuderia_Claude.log
-  logs/arena/team_RedBull_GPT.log
-  logs/arena/team_McLaren_Ollama.log
+  logs/arena/team_team_a_zero_shot.log
+  logs/arena/team_team_b_react.log
+  logs/arena/team_team_c_validated.log
+  logs/arena/team_team_psi.log
 
 Pour suivre une écurie en direct :
-  tail -f logs/arena/team_Scuderia_Claude.log
+  tail -f logs/arena/team_team_psi.log
+
+Rapport de sécurité après la course :
+  data/outputs/benchmark/security_race_report.json
 """
 
 from __future__ import annotations
@@ -22,22 +26,27 @@ import subprocess
 import sys
 import time
 
+import httpx
+
 # ---------------------------------------------------------------------------
-# Configuration de l'arène
+# Configuration de l'arène adversariale
 # ---------------------------------------------------------------------------
+#
+# (nom_écurie, module_python, modèle_llm, query_port)
+#   team_a_zero_shot  — zero-shot, HIGH vulnerability
+#   team_b_react      — ReAct + tools, MEDIUM vulnerability  (existing team_client)
+#   team_c_validated  — validator gate, LOW vulnerability
+#   team_psi          — adversarial attacker
 
 TEAMS = [
-    # (nom_écurie,    modèle_llm)
-    # Seuls les modèles GPT sont acceptés par le backend GitHub Copilot.
-    # Les modèles Claude (claude-sonnet-4.6, etc.) sont listés par le proxy
-    # mais retournent 400 model_not_supported au moment des completions.
-    ("Ferrari_Pro",   "gpt-4o"),
-    ("RedBull_Fast",  "gpt-4o-mini"),
-    ("McLaren_New",   "gpt-4.1"),
+    ("team_a_zero_shot", "src.racing.team_zero_shot.main",  "gpt-4.1", 8011),
+    ("team_b_react",     "src.racing.team_client.main",     "gpt-4.1", 8012),
+    ("team_c_validated", "src.racing.team_validated.main",  "gpt-4.1", 8013),
+    ("team_psi",         "src.racing.team_psi.main",        "gpt-4o",  8014),
 ]
 
-HUB_STARTUP_WAIT = 4   # secondes avant de lancer les écuries
-TEAM_STAGGER     = 0.3  # secondes entre chaque lancement d'écurie
+HUB_STARTUP_WAIT = 5   # secondes avant de lancer les écuries
+TEAM_STAGGER     = 0.5  # secondes entre chaque lancement d'écurie
 
 LOG_DIR = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), "..", "..", "logs", "arena"
@@ -129,44 +138,65 @@ def main() -> None:
     print()
 
     # ── 3. Écuries ──────────────────────────────────────────────────────
-    print(f"{BOLD}[3/4] Lancement des écuries...{RESET}\n")
-    for team, model in TEAMS:
+    print(f"{BOLD}[3/4] Lancement des écuries adversariales...{RESET}\n")
+    for team, module, model, query_port in TEAMS:
         team_cmd = [
-            python, "-m", "src.racing.team_client.main",
-            "--team", team,
-            "--model", model,
+            python, "-m", module,
+            "--team",       team,
+            "--model",      model,
+            "--query-port", str(query_port),
         ]
         proc, log = _launch(team_cmd, f"team_{team}")
         procs.append((team, proc))
+        vuln = {"team_a_zero_shot": "HIGH", "team_b_react": "MED", "team_c_validated": "LOW", "team_psi": "ATTACKER"}.get(team, "?")
         print(f"  {GREEN}✓{RESET} {BOLD}{team:<22}{RESET}  "
-              f"modèle={CYAN}{model}{RESET}  "
+              f"model={CYAN}{model}{RESET}  "
+              f"port={query_port}  vuln={YELLOW}{vuln}{RESET}  "
               f"PID={proc.pid}  {GREY}→ {log}{RESET}")
         time.sleep(TEAM_STAGGER)
 
     # ── 4. Tableau de bord ──────────────────────────────────────────────
-    print(f"\n{BOLD}[4/4] Arène lancée ! 🏁{RESET}\n")
-    print(f"{BOLD}{'─' * 58}{RESET}")
-    print(f"  Résultats en direct  : {CYAN}curl http://localhost:8000/results{RESET}")
+    print(f"\n{BOLD}[4/4] Arène adversariale lancée !{RESET}\n")
+    print(f"{BOLD}{'─' * 64}{RESET}")
+    print(f"  Résultats course     : {CYAN}curl http://localhost:8000/results{RESET}")
     print(f"  Snapshot course      : {CYAN}curl http://localhost:8000/status{RESET}")
+    print(f"  Stratégie d'écurie   : {CYAN}curl http://localhost:8000/team/team_a_zero_shot/strategy{RESET}")
+    print(f"  Historique complet   : {CYAN}curl http://localhost:8000/race-history{RESET}")
     print(f"\n  Suivre une écurie :")
-    for team, _ in TEAMS:
+    for team, _, _, _ in TEAMS:
         print(f"    {GREY}tail -f {_log_path(f'team_{team}')}{RESET}")
     print(f"\n  {YELLOW}Ctrl+C pour arrêter toute l'arène.{RESET}")
-    print(f"{'─' * 58}\n")
+    print(f"{'─' * 64}\n")
 
     # ── Surveillance ────────────────────────────────────────────────────
     try:
         while True:
-            # Vérifie si tous les processus sont terminés
             alive = [(n, p) for n, p in procs if p.poll() is None]
             if not alive:
                 print(f"\n{GREEN}{BOLD}Tous les processus sont terminés.{RESET}")
+                _generate_security_report()
                 break
             time.sleep(2)
 
     except KeyboardInterrupt:
         _terminate_all(procs)
+        _generate_security_report()
         sys.exit(0)
+
+
+def _generate_security_report() -> None:
+    """Ask the hub ObserverEngine to finalize and write the security report."""
+    print(f"\n{BOLD}Génération du rapport de sécurité...{RESET}")
+    try:
+        resp = httpx.post("http://localhost:8000/observer/finalize", timeout=10)
+        if resp.status_code == 200:
+            data = resp.json()
+            print(f"{GREEN}Rapport généré — extractions Team Psi : {data.get('extractions', 0)}{RESET}")
+            print(f"{GREY}→ data/outputs/benchmark/security_race_report.json{RESET}")
+        else:
+            print(f"{RED}Impossible de générer le rapport (hub déjà arrêté ?){RESET}")
+    except Exception as exc:
+        print(f"{RED}Rapport non généré : {exc}{RESET}")
 
 
 # ---------------------------------------------------------------------------

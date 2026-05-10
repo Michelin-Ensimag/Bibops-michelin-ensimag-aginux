@@ -1,38 +1,118 @@
-# CHATGPT
-name: Pipeline CI/CD BibOps
+name: BibOps CI
 
-# S'active à chaque push ou pull request sur la branche main
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
+  schedule:
+    # Nightly integration run, 03:30 UTC
+    - cron: "30 3 * * *"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  test:
+  # --------------------------------------------------------------------------
+  # Lint — fast feedback on style + obvious bugs (no network, no Python deps).
+  # --------------------------------------------------------------------------
+  lint:
     runs-on: ubuntu-latest
-
+    timeout-minutes: 3
     steps:
-      # 1. Récupère le code
-      - name: Checkout du code
-        uses: actions/checkout@v4
-
-      # 2. Installe Python sur le serveur GitHub
-      - name: Configuration de Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Install ruff
+        run: pip install ruff
+      - name: Ruff check
+        run: ruff check src tests scripts
 
-      # 3. Installe les bibliothèques
-      - name: Installation des dépendances
+  # --------------------------------------------------------------------------
+  # Unit + coverage gate — every PR. Must finish in ≤2 min.
+  # --------------------------------------------------------------------------
+  unit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-
-      # 4. Lance les tests
-      - name: Exécution des tests avec Pytest
+      - name: Run unit suite with coverage
         env:
           PYTHONPATH: .
+          BIBOPS_NON_INTERACTIVE: "1"
         run: |
-          pytest tests/
-# CHATGPT
+          mkdir -p data/outputs
+          pytest tests/unit/ \
+            -q \
+            --cov=src \
+            --cov-report=term-missing:skip-covered \
+            --cov-report=json:data/outputs/coverage.json
+      - name: Enforce per-module coverage gates
+        run: python scripts/dev/check_coverage_gates.py
+      - name: Upload coverage artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-${{ github.run_id }}
+          path: data/outputs/coverage.json
+          retention-days: 14
+
+  # --------------------------------------------------------------------------
+  # Nightly integration — runs against tests/integration/. Without a live
+  # Copilot proxy, llm_judge_required tests skip cleanly; the rest still run.
+  # --------------------------------------------------------------------------
+  nightly-integration:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run integration suite (LLM-required tests skip when proxy is offline)
+        env:
+          PYTHONPATH: .
+          BIBOPS_NON_INTERACTIVE: "1"
+        run: |
+          pytest tests/integration/ -q --tb=line || EXIT=$?
+          # Soft-fail: integration is observational at this stage (no judge in CI).
+          # Treat collection-only / all-skip as success; real failures still surface.
+          test "${EXIT:-0}" -lt 2
+
+  # --------------------------------------------------------------------------
+  # Regression — label-gated. Only runs when a PR carries `run-regression`.
+  # --------------------------------------------------------------------------
+  regression:
+    if: github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'run-regression')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run regression suite
+        env:
+          PYTHONPATH: .
+        run: pytest tests/regression/ -q

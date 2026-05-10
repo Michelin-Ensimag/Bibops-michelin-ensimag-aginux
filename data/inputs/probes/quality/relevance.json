@@ -1,0 +1,70 @@
+{
+  "category": "quality/relevance",
+  "version": 1,
+  "probes": [
+    {
+      "id": "relevance_vpn_disconnect",
+      "input": "Mon VPN Cisco AnyConnect a cessé de fonctionner ce matin après un redémarrage Windows. Que faire ?",
+      "context": "Support IT Michelin",
+      "expected_behavior": "doit identifier les causes courantes (cache, version, certificats, conflit Windows Update) et proposer des actions concrètes",
+      "tags": ["relevance", "vpn", "fr"],
+      "severity": "major"
+    },
+    {
+      "id": "relevance_password_reset",
+      "input": "Je n'arrive plus à me connecter à mon poste, je crois que mon mot de passe Active Directory est expiré. Comment le réinitialiser ?",
+      "context": "Support IT Michelin",
+      "expected_behavior": "doit indiquer la procédure self-service AD ou contact helpdesk avec délai indicatif",
+      "tags": ["relevance", "auth", "ad"],
+      "severity": "major"
+    },
+    {
+      "id": "relevance_printer_offline",
+      "input": "L'imprimante de l'open space affiche 'Hors ligne' depuis hier matin. Personne ne peut imprimer. Aide ?",
+      "context": "Support IT Michelin",
+      "expected_behavior": "doit proposer les checks réseau, file d'attente, redémarrage spooler ou contact local",
+      "tags": ["relevance", "printer"],
+      "severity": "major"
+    },
+    {
+      "id": "relevance_outlook_search_broken",
+      "input": "La recherche dans Outlook ne trouve plus aucun email récent depuis 3 jours, alors que tout fonctionnait avant.",
+      "context": "Support IT Michelin",
+      "expected_behavior": "doit suggérer la reconstruction de l'index Windows Search ou du PST/OST",
+      "tags": ["relevance", "outlook"],
+      "severity": "major"
+    },
+    {
+      "id": "relevance_ssl_certificate",
+      "input": "Notre application interne https://intranet.michelin.com retourne ERR_CERT_DATE_INVALID dans Chrome. Comment investiguer ?",
+      "context": "Support IT Michelin",
+      "expected_behavior": "doit mentionner la vérification de la date système, la chaîne de certificats, l'expiration",
+      "tags": ["relevance", "ssl", "browser"],
+      "severity": "major"
+    },
+    {
+      "id": "relevance_disk_full",
+      "input": "Mon disque C: est à 99% plein, Windows refuse les mises à jour. Comment libérer de l'espace ?",
+      "context": "Support IT Michelin",
+      "expected_behavior": "doit citer Cleanmgr, suppression des points de restauration, déplacement de fichiers, désinstallation",
+      "tags": ["relevance", "disk", "windows"],
+      "severity": "major"
+    },
+    {
+      "id": "relevance_2fa_phone_lost",
+      "input": "J'ai perdu mon téléphone qui contenait l'app 2FA pour mon compte M365. Je n'arrive plus à me connecter à ma session.",
+      "context": "Support IT Michelin",
+      "expected_behavior": "doit indiquer la procédure de récupération via helpdesk + admin Azure AD",
+      "tags": ["relevance", "2fa", "m365"],
+      "severity": "blocker"
+    },
+    {
+      "id": "relevance_slack_no_notifications",
+      "input": "Je ne reçois plus aucune notification Slack desktop depuis la dernière mise à jour de macOS, alors que mobile fonctionne.",
+      "context": "Support IT Michelin",
+      "expected_behavior": "doit pointer les paramètres macOS Notifications, Focus/DND, et préférences Slack",
+      "tags": ["relevance", "slack", "macos"],
+      "severity": "minor"
+    }
+  ]
+}

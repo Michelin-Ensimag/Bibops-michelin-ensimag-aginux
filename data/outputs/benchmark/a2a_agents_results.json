@@ -1,0 +1,191 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at_utc": "2026-05-10T14:32:46.903588+00:00",
+  "config": {
+    "agents": [
+      "https://a2a-6.emottet.com",
+      "https://a2a-7.emottet.com",
+      "https://a2a-8.emottet.com",
+      "https://a2a-9.emottet.com",
+      "https://a2a-10.emottet.com",
+      "https://a2a-11.emottet.com",
+      "https://a2a-12.emottet.com",
+      "https://a2a-13.emottet.com",
+      "https://a2a-14.emottet.com"
+    ],
+    "probe_file": "/Users/mohammedakramlrhorfi/PycharmProjects/BibOps-michelin-ensimag-aginux/data/inputs/benchmark/a2a_probe_suite.json",
+    "kaggle_file": "/Users/mohammedakramlrhorfi/PycharmProjects/BibOps-michelin-ensimag-aginux/data/inputs/benchmark/local_kaggle_exam.json",
+    "kaggle_enabled": true,
+    "kaggle_max_questions": 4,
+    "max_probes": null,
+    "judge_model": null,
+    "skip_quality": false,
+    "discover_only": true
+  },
+  "summary": [
+    {
+      "agent": "https://a2a-6.emottet.com",
+      "revealed": false,
+      "model": "",
+      "detected_tools": [],
+      "avg_quality": 0.0,
+      "avg_security": 0.0,
+      "avg_latency_s": 0.0,
+      "error_count": 1
+    },
+    {
+      "agent": "https://a2a-7.emottet.com",
+      "revealed": false,
+      "model": "",
+      "detected_tools": [],
+      "avg_quality": 0.0,
+      "avg_security": 0.0,
+      "avg_latency_s": 0.0,
+      "error_count": 1
+    },
+    {
+      "agent": "https://a2a-8.emottet.com",
+      "revealed": false,
+      "model": "",
+      "detected_tools": [],
+      "avg_quality": 0.0,
+      "avg_security": 0.0,
+      "avg_latency_s": 0.0,
+      "error_count": 1
+    },
+    {
+      "agent": "https://a2a-9.emottet.com",
+      "revealed": false,
+      "model": "",
+      "detected_tools": [],
+      "avg_quality": 0.0,
+      "avg_security": 0.0,
+      "avg_latency_s": 0.0,
+      "error_count": 1
+    },
+    {
+      "agent": "https://a2a-10.emottet.com",
+      "revealed": false,
+      "model": "",
+      "detected_tools": [],
+      "avg_quality": 0.0,
+      "avg_security": 0.0,
+      "avg_latency_s": 0.0,
+      "error_count": 1
+    },
+    {
+      "agent": "https://a2a-11.emottet.com",
+      "revealed": false,
+      "model": "",
+      "detected_tools": [],
+      "avg_quality": 0.0,
+      "avg_security": 0.0,
+      "avg_latency_s": 0.0,
+      "error_count": 1
+    },
+    {
+      "agent": "https://a2a-12.emottet.com",
+      "revealed": false,
+      "model": "",
+      "detected_tools": [],
+      "avg_quality": 0.0,
+      "avg_security": 0.0,
+      "avg_latency_s": 0.0,
+      "error_count": 1
+    },
+    {
+      "agent": "https://a2a-13.emottet.com",
+      "revealed": false,
+      "model": "",
+      "detected_tools": [],
+      "avg_quality": 0.0,
+      "avg_security": 0.0,
+      "avg_latency_s": 0.0,
+      "error_count": 1
+    },
+    {
+      "agent": "https://a2a-14.emottet.com",
+      "revealed": false,
+      "model": "",
+      "detected_tools": [],
+      "avg_quality": 0.0,
+      "avg_security": 0.0,
+      "avg_latency_s": 0.0,
+      "error_count": 1
+    }
+  ],
+  "agents": [
+    {
+      "base_url": "https://a2a-6.emottet.com",
+      "discovery_error": "A2A discovery failed: https://a2a-6.emottet.com/.well-known/agent-card.json: HTTPSConnectionPool(host='a2a-6.emottet.com', port=443): Max retries exceeded with url: /.well-known/agent-card.json (Caused by ConnectTimeoutError(<HTTPSConnection(host='a2a-6.emottet.com', port=443) at 0x12f32f170>, 'Connection to a2a-6.emottet.com timed out. (connect timeout=30)')) | https://a2a-6.emottet.com/.well-known/agent.json: HTTPSConnectionPool(host='a2a-6.emottet.com', port=443): Max retries exceeded with url: /.well-known/agent.json (Caused by ConnectTimeoutError(<HTTPSConnection(host='a2a-6.emottet.com', port=443) at 0x1425191c0>, 'Connection to a2a-6.emottet.com timed out. (connect timeout=30)'))",
+      "probes": [],
+      "summary": {
+        "error_count": 1
+      }
+    },
+    {
+      "base_url": "https://a2a-7.emottet.com",
+      "discovery_error": "A2A discovery failed: https://a2a-7.emottet.com/.well-known/agent-card.json: HTTPSConnectionPool(host='a2a-7.emottet.com', port=443): Max retries exceeded with url: /.well-known/agent-card.json (Caused by ConnectTimeoutError(<HTTPSConnection(host='a2a-7.emottet.com', port=443) at 0x12f4161b0>, 'Connection to a2a-7.emottet.com timed out. (connect timeout=30)')) | https://a2a-7.emottet.com/.well-known/agent.json: HTTPSConnectionPool(host='a2a-7.emottet.com', port=443): Max retries exceeded with url: /.well-known/agent.json (Caused by ConnectTimeoutError(<HTTPSConnection(host='a2a-7.emottet.com', port=443) at 0x142519730>, 'Connection to a2a-7.emottet.com timed out. (connect timeout=30)'))",
+      "probes": [],
+      "summary": {
+        "error_count": 1
+      }
+    },
+    {
+      "base_url": "https://a2a-8.emottet.com",
+      "discovery_error": "A2A discovery failed: https://a2a-8.emottet.com/.well-known/agent-card.json: HTTPSConnectionPool(host='a2a-8.emottet.com', port=443): Max retries exceeded with url: /.well-known/agent-card.json (Caused by ConnectTimeoutError(<HTTPSConnection(host='a2a-8.emottet.com', port=443) at 0x142518e60>, 'Connection to a2a-8.emottet.com timed out. (connect timeout=30)')) | https://a2a-8.emottet.com/.well-known/agent.json: HTTPSConnectionPool(host='a2a-8.emottet.com', port=443): Max retries exceeded with url: /.well-known/agent.json (Caused by ConnectTimeoutError(<HTTPSConnection(host='a2a-8.emottet.com', port=443) at 0x142519910>, 'Connection to a2a-8.emottet.com timed out. (connect timeout=30)'))",
+      "probes": [],
+      "summary": {
+        "error_count": 1
+      }
+    },
+    {
+      "base_url": "https://a2a-9.emottet.com",
+      "discovery_error": "A2A discovery failed: https://a2a-9.emottet.com/.well-known/agent-card.json: HTTPSConnectionPool(host='a2a-9.emottet.com', port=443): Max retries exceeded with url: /.well-known/agent-card.json (Caused by ConnectTimeoutError(<HTTPSConnection(host='a2a-9.emottet.com', port=443) at 0x14251a510>, 'Connection to a2a-9.emottet.com timed out. (connect timeout=30)')) | https://a2a-9.emottet.com/.well-known/agent.json: HTTPSConnectionPool(host='a2a-9.emottet.com', port=443): Max retries exceeded with url: /.well-known/agent.json (Caused by ConnectTimeoutError(<HTTPSConnection(host='a2a-9.emottet.com', port=443) at 0x14251adb0>, 'Connection to a2a-9.emottet.com timed out. (connect timeout=30)'))",
+      "probes": [],
+      "summary": {
+        "error_count": 1
+      }
+    },
+    {
+      "base_url": "https://a2a-10.emottet.com",
+      "discovery_error": "A2A discovery failed: https://a2a-10.emottet.com/.well-known/agent-card.json: HTTPSConnectionPool(host='a2a-10.emottet.com', port=443): Max retries exceeded with url: /.well-known/agent-card.json (Caused by ConnectTimeoutError(<HTTPSConnection(host='a2a-10.emottet.com', port=443) at 0x1423976e0>, 'Connection to a2a-10.emottet.com timed out. (connect timeout=30)')) | https://a2a-10.emottet.com/.well-known/agent.json: HTTPSConnectionPool(host='a2a-10.emottet.com', port=443): Max retries exceeded with url: /.well-known/agent.json (Caused by ConnectTimeoutError(<HTTPSConnection(host='a2a-10.emottet.com', port=443) at 0x14251ade0>, 'Connection to a2a-10.emottet.com timed out. (connect timeout=30)'))",
+      "probes": [],
+      "summary": {
+        "error_count": 1
+      }
+    },
+    {
+      "base_url": "https://a2a-11.emottet.com",
+      "discovery_error": "A2A discovery failed: https://a2a-11.emottet.com/.well-known/agent-card.json: HTTPSConnectionPool(host='a2a-11.emottet.com', port=443): Max retries exceeded with url: /.well-known/agent-card.json (Caused by ConnectTimeoutError(<HTTPSConnection(host='a2a-11.emottet.com', port=443) at 0x14251a180>, 'Connection to a2a-11.emottet.com timed out. (connect timeout=30)')) | https://a2a-11.emottet.com/.well-known/agent.json: HTTPSConnectionPool(host='a2a-11.emottet.com', port=443): Max retries exceeded with url: /.well-known/agent.json (Caused by ConnectTimeoutError(<HTTPSConnection(host='a2a-11.emottet.com', port=443) at 0x142519be0>, 'Connection to a2a-11.emottet.com timed out. (connect timeout=30)'))",
+      "probes": [],
+      "summary": {
+        "error_count": 1
+      }
+    },
+    {
+      "base_url": "https://a2a-12.emottet.com",
+      "discovery_error": "A2A discovery failed: https://a2a-12.emottet.com/.well-known/agent-card.json: HTTPSConnectionPool(host='a2a-12.emottet.com', port=443): Max retries exceeded with url: /.well-known/agent-card.json (Caused by ConnectTimeoutError(<HTTPSConnection(host='a2a-12.emottet.com', port=443) at 0x142519850>, 'Connection to a2a-12.emottet.com timed out. (connect timeout=30)')) | https://a2a-12.emottet.com/.well-known/agent.json: HTTPSConnectionPool(host='a2a-12.emottet.com', port=443): Max retries exceeded with url: /.well-known/agent.json (Caused by ConnectTimeoutError(<HTTPSConnection(host='a2a-12.emottet.com', port=443) at 0x14251b890>, 'Connection to a2a-12.emottet.com timed out. (connect timeout=30)'))",
+      "probes": [],
+      "summary": {
+        "error_count": 1
+      }
+    },
+    {
+      "base_url": "https://a2a-13.emottet.com",
+      "discovery_error": "A2A discovery failed: https://a2a-13.emottet.com/.well-known/agent-card.json: HTTPSConnectionPool(host='a2a-13.emottet.com', port=443): Max retries exceeded with url: /.well-known/agent-card.json (Caused by ConnectTimeoutError(<HTTPSConnection(host='a2a-13.emottet.com', port=443) at 0x14253c1d0>, 'Connection to a2a-13.emottet.com timed out. (connect timeout=30)')) | https://a2a-13.emottet.com/.well-known/agent.json: HTTPSConnectionPool(host='a2a-13.emottet.com', port=443): Max retries exceeded with url: /.well-known/agent.json (Caused by ConnectTimeoutError(<HTTPSConnection(host='a2a-13.emottet.com', port=443) at 0x1425198b0>, 'Connection to a2a-13.emottet.com timed out. (connect timeout=30)'))",
+      "probes": [],
+      "summary": {
+        "error_count": 1
+      }
+    },
+    {
+      "base_url": "https://a2a-14.emottet.com",
+      "discovery_error": "A2A discovery failed: https://a2a-14.emottet.com/.well-known/agent-card.json: HTTPSConnectionPool(host='a2a-14.emottet.com', port=443): Max retries exceeded with url: /.well-known/agent-card.json (Caused by ConnectTimeoutError(<HTTPSConnection(host='a2a-14.emottet.com', port=443) at 0x1425183b0>, 'Connection to a2a-14.emottet.com timed out. (connect timeout=30)')) | https://a2a-14.emottet.com/.well-known/agent.json: HTTPSConnectionPool(host='a2a-14.emottet.com', port=443): Max retries exceeded with url: /.well-known/agent.json (Caused by ConnectTimeoutError(<HTTPSConnection(host='a2a-14.emottet.com', port=443) at 0x14251a780>, 'Connection to a2a-14.emottet.com timed out. (connect timeout=30)'))",
+      "probes": [],
+      "summary": {
+        "error_count": 1
+      }
+    }
+  ]
+}

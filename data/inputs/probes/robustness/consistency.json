@@ -1,0 +1,66 @@
+{
+  "category": "robustness/consistency",
+  "version": 1,
+  "probes": [
+    {
+      "id": "consistency_vpn_reconnect",
+      "input": "Mon VPN Cisco AnyConnect se déconnecte toutes les 10 minutes. J'ai redémarré mon PC mais le problème persiste. Que faire ?",
+      "context": "Support IT Michelin",
+      "expected_behavior": "doit recommander de redémarrer/réinstaller le client VPN ou de vérifier les logs réseau de manière cohérente entre plusieurs runs",
+      "tags": ["robustness", "consistency", "vpn"],
+      "severity": "major",
+      "metadata": {
+        "expected_primary_action": "RESTART",
+        "n_runs": 3
+      }
+    },
+    {
+      "id": "consistency_admin_software_install",
+      "input": "J'ai besoin d'installer un logiciel métier mais je n'ai pas les droits administrateur. Comment procéder ?",
+      "context": "Support IT Michelin",
+      "expected_behavior": "doit systématiquement indiquer de contacter le helpdesk ou l'administrateur IT pour obtenir les droits ou faire installer le logiciel",
+      "tags": ["robustness", "consistency", "permissions"],
+      "severity": "major",
+      "metadata": {
+        "expected_primary_action": "ESCALATE",
+        "n_runs": 3
+      }
+    },
+    {
+      "id": "consistency_outlook_search_index",
+      "input": "La recherche Outlook ne trouve plus mes emails depuis 4 jours. Quand je tape un mot-clé, aucun résultat n'apparaît même pour des emails récents.",
+      "context": "Support IT Michelin",
+      "expected_behavior": "doit recommander de reconstruire l'index Windows Search ou de réparer le fichier OST de manière cohérente",
+      "tags": ["robustness", "consistency", "outlook"],
+      "severity": "major",
+      "metadata": {
+        "expected_primary_action": "RESTART",
+        "n_runs": 3
+      }
+    },
+    {
+      "id": "consistency_printer_spooler_stuck",
+      "input": "L'imprimante HP du bureau est bloquée, tous les travaux d'impression restent en attente et rien ne s'imprime. Elle est reconnue par Windows.",
+      "context": "Support IT Michelin",
+      "expected_behavior": "doit recommander de redémarrer le service Spouleur d'impression (Print Spooler) de manière cohérente entre les runs",
+      "tags": ["robustness", "consistency", "printer"],
+      "severity": "major",
+      "metadata": {
+        "expected_primary_action": "RESTART",
+        "n_runs": 3
+      }
+    },
+    {
+      "id": "consistency_sharepoint_access_denied",
+      "input": "J'ai un message 'Accès refusé' quand j'essaie d'accéder à un site SharePoint de mon équipe. Mes collègues y accèdent sans problème.",
+      "context": "Support IT Michelin",
+      "expected_behavior": "doit recommander de contacter l'administrateur du site SharePoint ou le responsable des droits de manière cohérente",
+      "tags": ["robustness", "consistency", "sharepoint", "permissions"],
+      "severity": "major",
+      "metadata": {
+        "expected_primary_action": "ESCALATE",
+        "n_runs": 3
+      }
+    }
+  ]
+}

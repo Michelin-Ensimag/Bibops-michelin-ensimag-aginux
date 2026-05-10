@@ -1,0 +1,5 @@
+Metadata-Version: 2.4
+Name: bibops
+Version: 0.1.0
+Summary: BibOps - Agent IA de support IT Michelin
+Requires-Python: >=3.10

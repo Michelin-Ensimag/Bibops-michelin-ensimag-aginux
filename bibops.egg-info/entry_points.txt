@@ -1,0 +1,2 @@
+[console_scripts]
+bibops = src.bibops.cli.main:app

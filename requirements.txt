@@ -8,5 +8,8 @@ ollama
 openai
 pydantic
 pytest
+pytest-cov
 requests
+ruff
 rich
+typer

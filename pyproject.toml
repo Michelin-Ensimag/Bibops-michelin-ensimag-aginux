@@ -4,8 +4,98 @@ version = "0.1.0"
 description = "BibOps - Agent IA de support IT Michelin"
 requires-python = ">=3.10"
 
+[project.scripts]
+bibops = "src.bibops.cli.main:app"
+
 [tool.setuptools.packages.find]
 where = ["."]
+include = ["src*"]
+exclude = ["tests*", "scripts*", "data*", "config*", "logs*", "docs*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+markers = [
+    "security: security-related tests (PII, injection, secrets, URLs, toxicity, refusal)",
+    "quality: response-quality tests (relevance, factual, format, completeness, tone)",
+    "reasoning: reasoning tests (arithmetic, logic, multi-step, ambiguity)",
+    "tool_use: tool-use tests (selection, argument, recovery)",
+    "robustness: robustness tests (long context, multilingual, edge cases)",
+    "performance: performance tests (latency, tokens, carbon)",
+    "regression: regression tests against frozen baselines",
+    "llm_judge_required: requires Copilot proxy on localhost:4141 (skipped otherwise)",
+    "slow: tests that take more than ~10 seconds",
+]
+
+[tool.coverage.run]
+branch = true
+source = ["src"]
+omit = [
+    # Compatibility shim packages — re-export only, no logic to cover
+    "src/llm_professor/*",
+    "src/eval_bank/*",
+    # Research / experimental code — explicitly excluded from gates
+    "src/bibops/research/*",
+    # CLI is a thin Typer + subprocess shell — exercised by --help smoke and end-to-end runs
+    "src/bibops/cli/*",
+    "src/bibops/__main__.py",
+    # Test infrastructure
+    "tests/*",
+    "scripts/*",
+]
+
+[tool.coverage.report]
+precision = 2
+show_missing = true
+skip_covered = false
+exclude_also = [
+    "if __name__ == .__main__.:",
+    "raise NotImplementedError",
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+]
+
+[tool.coverage.json]
+output = "data/outputs/coverage.json"
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+extend-exclude = [
+    "data",
+    "logs",
+    ".claude",
+    "src/llm_professor",
+    "src/eval_bank",
+]
+
+[tool.ruff.lint]
+# Conservative rule set — security + obvious bugs first; styling deferred.
+select = [
+    "E",      # pycodestyle errors
+    "F",      # pyflakes (unused imports, undefined names)
+    "B",      # flake8-bugbear (likely bugs)
+    "S",      # flake8-bandit (security)
+    "I",      # isort (import order)
+    "UP",     # pyupgrade (3.10+ idioms)
+    "RUF",    # ruff-specific
+]
+ignore = [
+    "E501",   # line-too-long — handled by formatter, not blocker
+    "S101",   # asserts in test code are fine
+    "S110",   # try-except-pass — used intentionally in degraded-mode guards
+    "S112",   # try-except-continue — same rationale
+    "S603",   # subprocess with controlled inputs (CLI helpers)
+    "S607",   # subprocess shell-False resolved binary
+    "S608",   # SQL with %s placeholders (parameterised, not concatenated)
+    "B008",   # function-call in default arg (Typer relies on this)
+    "B027",   # empty method without @abstractmethod (Adapter lifecycle hooks)
+    "RUF002", # ambiguous unicode in docstring — French accents are intentional
+    "RUF003", # ambiguous unicode in comment — French accents are intentional
+    "RUF005", # collection literal concat — readability over perf here
+    "RUF012", # mutable class default — controlled use in Pydantic-like dataclasses
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["S", "B"]      # tests can use asserts, subprocess, etc.
+"scripts/**/*.py" = ["S"]
+"src/bibops/research/**/*.py" = ["E", "F", "B", "I", "UP", "RUF"]   # experimental sandbox

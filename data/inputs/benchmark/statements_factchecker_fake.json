@@ -1,0 +1,27 @@
+[
+  {
+    "id": "1",
+    "statement": "Le VPN Cisco AnyConnect nécessite une connexion Internet pour fonctionner.",
+    "factchecker_response": "{\"artifacts\": [{\"artifactId\": \"fc1\", \"name\": \"form\", \"parts\": [{\"kind\": \"text\", \"text\": \"## Step 1: Identify the CLAIMS\\n\\n1. Le VPN Cisco AnyConnect nécessite une connexion Internet pour fonctionner.\\n\\n## Step 2: Verify the CLAIM\\n\\n- **Verdict:** Accurate\\n- **Justification:** La documentation officielle Cisco et les guides IT confirment qu'une connexion Internet est indispensable pour établir une connexion VPN avec AnyConnect.\\n  - Source: https://www.cisco.com/c/en/us/support/docs/security/anyconnect-secure-mobility-client/118978-config-anyconnect-00.html\\n\\n## Step 3: Overall Assessment\\n\\n**Overall Verdict:** Accurate\\n\\n**Overall Justification:** Affirmation correcte et vérifiée par la documentation officielle.\"}]}]}"
+  },
+  {
+    "id": "2",
+    "statement": "En France, le cumul d'emplois est interdit par la loi.",
+    "factchecker_response": "{\"artifacts\": [{\"artifactId\": \"fc2\", \"name\": \"form\", \"parts\": [{\"kind\": \"text\", \"text\": \"## Step 1: Identify the CLAIMS\\n\\n1. En France, le cumul d'emplois est interdit par la loi.\\n\\n## Step 2: Verify the CLAIM\\n\\n- **Verdict:** Not Accurate\\n- **Justification:** Le cumul d'emplois est autorisé en France sauf clause d'exclusivité dans le contrat de travail.\\n  - Source: https://www.service-public.fr/particuliers/vosdroits/F2713\\n\\n## Step 3: Overall Assessment\\n\\n**Overall Verdict:** Not Accurate\\n\\n**Overall Justification:** L'affirmation est incorrecte selon la législation française.\"}]}]}"
+  },
+  {
+    "id": "3",
+    "statement": "L'erreur 404 est un code d'erreur standard sur les imprimantes HP.",
+    "factchecker_response": "{\"artifacts\": [{\"artifactId\": \"fc3\", \"name\": \"form\", \"parts\": [{\"kind\": \"text\", \"text\": \"## Step 1: Identify the CLAIMS\\n\\n1. L'erreur 404 est un code d'erreur standard sur les imprimantes HP.\\n\\n## Step 2: Verify the CLAIM\\n\\n- **Verdict:** Not Accurate\\n- **Justification:** L'erreur 404 est un code HTTP, non un code d'erreur natif des imprimantes HP.\\n  - Source: https://support.hp.com/fr-fr/document/c00033108\\n\\n## Step 3: Overall Assessment\\n\\n**Overall Verdict:** Not Accurate\\n\\n**Overall Justification:** L'affirmation est incorrecte, l'erreur 404 n'est pas standard sur les imprimantes HP.\"}]}]}"
+  },
+  {
+    "id": "4",
+    "statement": "La Terre est la troisième planète du système solaire.",
+    "factchecker_response": "{\"artifacts\": [{\"artifactId\": \"fc4\", \"name\": \"form\", \"parts\": [{\"kind\": \"text\", \"text\": \"## Step 1: Identify the CLAIMS\\n\\n1. La Terre est la troisième planète du système solaire.\\n\\n## Step 2: Verify the CLAIM\\n\\n- **Verdict:** Accurate\\n- **Justification:** Selon l'ordre des planètes à partir du Soleil : Mercure, Vénus, Terre, Mars, etc.\\n  - Source: https://fr.wikipedia.org/wiki/Plan%C3%A8te_du_Syst%C3%A8me_solaire\\n\\n## Step 3: Overall Assessment\\n\\n**Overall Verdict:** Accurate\\n\\n**Overall Justification:** Affirmation correcte selon les sources scientifiques.\"}]}]}"
+  },
+  {
+    "id": "5",
+    "statement": "Le support IT Michelin est joignable au 1234.",
+    "factchecker_response": "{\"artifacts\": [{\"artifactId\": \"fc5\", \"name\": \"form\", \"parts\": [{\"kind\": \"text\", \"text\": \"## Step 1: Identify the CLAIMS\\n\\n1. Le support IT Michelin est joignable au 1234.\\n\\n## Step 2: Verify the CLAIM\\n\\n- **Verdict:** Not Applicable\\n- **Justification:** Aucun numéro public ne confirme que 1234 est le support IT Michelin.\\n\\n## Step 3: Overall Assessment\\n\\n**Overall Verdict:** Not Applicable\\n\\n**Overall Justification:** L'affirmation ne peut être vérifiée publiquement.\"}]}]}"
+  }
+]

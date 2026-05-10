@@ -1,0 +1,293 @@
+
+[94m[1m══════════════════════════════════════════════════════════════[0m
+[94m[1m  🏎️  RedBull_Fast  |  Modèle : gpt-4o-mini[0m
+[94m[1m══════════════════════════════════════════════════════════════[0m
+
+[94m[1m[RedBull_Fast][0m Connexion au Hub : http://localhost:8000/stream ...
+
+
+[94m[1m[RedBull_Fast][0m [90mTour  1/50[0m  Météo:[94mEnsoleillé[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [91m[1m🔴 BOX BOX BOX[0m  Pneus:MEDIUM  Carbu:partial  [90m(10.8s)[0m
+[94m[1m[RedBull_Fast][0m   [90mNous devons boxer pour ajouter un peu de carburant afin d'assurer une marge de sécurité pour la fin de la course. Les pn[0m
+[94m[1m[RedBull_Fast][0m   [92m✓ décision envoyée au Hub (tour 1)[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour  2/50[0m  Météo:[94mEnsoleillé[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [92m[1m🟢 STAY OUT[0m  [90m(9.3s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes pneus MEDIUM sont encore en bon état et la consommation de carburant est critique. Rester en piste permet de conserv[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour  3/50[0m  Météo:[94mEnsoleillé[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [92m[1m🟢 STAY OUT[0m  [90m(9.7s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes pneus MEDIUM sont encore dans une plage d'utilisation acceptable et la consommation de carburant est critique. Reste[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour  4/50[0m  Météo:[94mEnsoleillé[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [91m[1m🔴 BOX BOX BOX[0m  Pneus:SOFT  Carbu:partial  [90m(10.5s)[0m
+[94m[1m[RedBull_Fast][0m   [90mNous devons changer vers des pneus SOFT pour maximiser la performance, surtout avec la température élevée. De plus, la m[0m
+[94m[1m[RedBull_Fast][0m   [92m✓ décision envoyée au Hub (tour 4)[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour  5/50[0m  Météo:[94mEnsoleillé[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [92m[1m🟢 STAY OUT[0m  [90m(11.6s)[0m
+[94m[1m[RedBull_Fast][0m   [90mL'usure des pneus est encore acceptable et la marge de carburant est suffisante pour continuer. Nous allons surveiller l[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour  6/50[0m  Météo:[94mEnsoleillé[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [92m[1m🟢 STAY OUT[0m  [90m(11.4s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes pneus sont en bon état et l'usure est faible. Avec suffisamment de carburant pour terminer la course, il est préféra[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour  7/50[0m  Météo:[94mEnsoleillé[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [91m[1m🔴 BOX BOX BOX[0m  Pneus:SOFT  Carbu:none  [90m(10.3s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes pneus MEDIUM montrent des signes de dégradation rapide à cause de la chaleur. Il est stratégique de passer aux SOFT [0m
+[94m[1m[RedBull_Fast][0m   [92m✓ décision envoyée au Hub (tour 7)[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour  8/50[0m  Météo:[94mEnsoleillé[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [92m[1m🟢 STAY OUT[0m  [90m(9.4s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes pneus HARD sont en excellent état avec une usure minimale et la température de la piste est favorable. De plus, la m[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour  9/50[0m  Météo:[94mEnsoleillé[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [92m[1m🟢 STAY OUT[0m  [90m(10.5s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes pneus HARD sont en bon état et la consommation de carburant est suffisante pour terminer la course. Il est préférabl[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour 10/50[0m  Météo:[94mEnsoleillé[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [91m[1m🔴 BOX BOX BOX[0m  Pneus:MEDIUM  Carbu:none  [90m(10.0s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes pneus HARD commencent à se dégrader sous la chaleur. Il est stratégique de passer aux MEDIUM pour maintenir la perfo[0m
+[94m[1m[RedBull_Fast][0m   [92m✓ décision envoyée au Hub (tour 10)[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour 11/50[0m  Météo:[94mEnsoleillé[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [91m[1m🔴 BOX BOX BOX[0m  Pneus:MEDIUM  Carbu:none  [90m(10.2s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes pneus HARD commencent à perdre en performance sous cette chaleur. Passer aux MEDIUM améliorera l'adhérence et la per[0m
+[94m[1m[RedBull_Fast][0m   [92m✓ décision envoyée au Hub (tour 11)[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour 12/50[0m  Météo:[94mEnsoleillé[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [91m[1m🔴 BOX BOX BOX[0m  Pneus:MEDIUM  Carbu:none  [90m(9.1s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes pneus HARD commencent à perdre en performance avec l'usure et la chaleur. Il est stratégique de passer aux MEDIUM po[0m
+[94m[1m[RedBull_Fast][0m   [92m✓ décision envoyée au Hub (tour 12)[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour 13/50[0m  Météo:[94mEnsoleillé[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [91m[1m🔴 BOX BOX BOX[0m  Pneus:MEDIUM  Carbu:none  [90m(9.3s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes pneus HARD montrent des signes d'usure et la chaleur pourrait affecter leur performance. Un changement vers des pneu[0m
+[94m[1m[RedBull_Fast][0m   [92m✓ décision envoyée au Hub (tour 13)[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour 14/50[0m  Météo:[94mEnsoleillé[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [91m[1m🔴 BOX BOX BOX[0m  Pneus:MEDIUM  Carbu:none  [90m(9.7s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes pneus HARD montrent des signes de fatigue et la température élevée affecte leur performance. Passer aux MEDIUM perme[0m
+[94m[1m[RedBull_Fast][0m   [92m✓ décision envoyée au Hub (tour 14)[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour 15/50[0m  Météo:[94mPluie légère[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [91m[1m🔴 BOX BOX BOX[0m  Pneus:INTERMEDIATE  Carbu:none  [90m(10.0s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes pneus SOFT ne sont pas adaptés aux conditions humides actuelles. Il est crucial de passer aux pneus intermédiaires p[0m
+[94m[1m[RedBull_Fast][0m   [92m✓ décision envoyée au Hub (tour 15)[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour 16/50[0m  Météo:[94mPluie légère[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [91m[1m🔴 BOX BOX BOX[0m  Pneus:INTERMEDIATE  Carbu:none  [90m(12.3s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes pneus SOFT ne sont pas adaptés aux conditions humides actuelles. Nous devons passer aux INTERMÉDIAIRES pour garantir[0m
+[94m[1m[RedBull_Fast][0m   [92m✓ décision envoyée au Hub (tour 16)[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour 17/50[0m  Météo:[94mPluie légère[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [91m[1m🔴 BOX BOX BOX[0m  Pneus:INTERMEDIATE  Carbu:none  [90m(11.0s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes pneus HARD ne sont pas adaptés aux conditions humides actuelles. Il est crucial de passer aux INTERMÉDIAIRES pour am[0m
+[94m[1m[RedBull_Fast][0m   [92m✓ décision envoyée au Hub (tour 17)[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour 18/50[0m  Météo:[94mPluie légère[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [91m[1m🔴 BOX BOX BOX[0m  Pneus:INTERMEDIATE  Carbu:none  [90m(11.4s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes pneus HARD ne sont pas adaptés aux conditions humides. Nous devons passer aux INTERMÉDIAIRES pour garantir une meill[0m
+[94m[1m[RedBull_Fast][0m   [92m✓ décision envoyée au Hub (tour 18)[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour 19/50[0m  Météo:[94mPluie légère[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [91m[1m🔴 BOX BOX BOX[0m  Pneus:INTERMEDIATE  Carbu:none  [90m(13.3s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes pneus HARD ne sont pas adaptés aux conditions de pluie légère. Nous devons passer aux INTERMÉDIAIRES pour garantir u[0m
+[94m[1m[RedBull_Fast][0m   [92m✓ décision envoyée au Hub (tour 19)[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour 20/50[0m  Météo:[94mPluie légère[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [91m[1m🔴 BOX BOX BOX[0m  Pneus:INTERMEDIATE  Carbu:none  [90m(12.5s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes pneus HARD sont trop usés pour les conditions humides. Nous devons passer aux INTERMÉDIAIRES pour garantir une meill[0m
+[94m[1m[RedBull_Fast][0m   [92m✓ décision envoyée au Hub (tour 20)[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour 21/50[0m  Météo:[94mPluie légère[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [91m[1m🔴 BOX BOX BOX[0m  Pneus:INTERMEDIATE  Carbu:none  [90m(9.8s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes pneus HARD ne sont pas adaptés aux conditions humides actuelles. Il est impératif de passer aux pneus INTERMEDIATE p[0m
+[94m[1m[RedBull_Fast][0m   [92m✓ décision envoyée au Hub (tour 21)[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour 22/50[0m  Météo:[94mPluie légère[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [91m[1m🔴 BOX BOX BOX[0m  Pneus:INTERMEDIATE  Carbu:none  [90m(11.0s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes pneus HARD ne sont pas adaptés aux conditions humides actuelles. Il est crucial de passer aux pneus INTERMÉDIAIRES p[0m
+[94m[1m[RedBull_Fast][0m   [92m✓ décision envoyée au Hub (tour 22)[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour 23/50[0m  Météo:[94mPluie légère[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [91m[1m🔴 BOX BOX BOX[0m  Pneus:INTERMEDIATE  Carbu:none  [90m(11.0s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes pneus HARD ne sont pas adaptés aux conditions humides actuelles. Nous devons passer aux INTERMÉDIAIRES pour maximise[0m
+[94m[1m[RedBull_Fast][0m   [92m✓ décision envoyée au Hub (tour 23)[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour 24/50[0m  Météo:[94mPluie légère[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [91m[1m🔴 BOX BOX BOX[0m  Pneus:INTERMEDIATE  Carbu:none  [90m(11.3s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes pneus HARD ne sont pas adaptés aux conditions humides actuelles. Il est crucial de passer aux INTERMÉDIAIRES pour am[0m
+[94m[1m[RedBull_Fast][0m   [92m✓ décision envoyée au Hub (tour 24)[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour 25/50[0m  Météo:[94mPluie légère[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [91m[1m🔴 BOX BOX BOX[0m  Pneus:INTERMEDIATE  Carbu:none  [90m(11.7s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes pneus HARD sont trop usés pour les conditions humides. Nous devons passer aux INTERMÉDIAIRES pour garantir une meill[0m
+[94m[1m[RedBull_Fast][0m   [92m✓ décision envoyée au Hub (tour 25)[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour 26/50[0m  Météo:[94mPluie légère[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [91m[1m🔴 BOX BOX BOX[0m  Pneus:INTERMEDIATE  Carbu:none  [90m(9.2s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes pneus SOFT ne sont pas adaptés aux conditions humides. Nous devons passer aux INTERMÉDIAIRES pour maintenir l'adhére[0m
+[94m[1m[RedBull_Fast][0m   [92m✓ décision envoyée au Hub (tour 26)[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour 27/50[0m  Météo:[94mPluie légère[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [91m[1m🔴 BOX BOX BOX[0m  Pneus:INTERMEDIATE  Carbu:none  [90m(9.8s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes pneus SOFT ne sont plus adaptés aux conditions humides. Il est crucial de passer aux INTERMÉDIAIRES pour garantir un[0m
+[94m[1m[RedBull_Fast][0m   [92m✓ décision envoyée au Hub (tour 27)[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour 28/50[0m  Météo:[94mPluie légère[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [91m[1m🔴 BOX BOX BOX[0m  Pneus:INTERMEDIATE  Carbu:none  [90m(10.7s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes pneus SOFT ne sont pas adaptés aux conditions humides actuelles. Il est crucial de passer aux INTERMÉDIAIRES pour ga[0m
+[94m[1m[RedBull_Fast][0m   [92m✓ décision envoyée au Hub (tour 28)[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour 29/50[0m  Météo:[94mPluie légère[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [91m[1m🔴 BOX BOX BOX[0m  Pneus:INTERMEDIATE  Carbu:none  [90m(11.3s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes pneus SOFT ne sont pas adaptés aux conditions de pluie légère. Il est crucial de passer aux INTERMÉDIAIRES pour gara[0m
+[94m[1m[RedBull_Fast][0m   [92m✓ décision envoyée au Hub (tour 29)[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour 30/50[0m  Météo:[94mPluie forte[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [91m[1m🔴 BOX BOX BOX[0m  Pneus:INTERMEDIATE  Carbu:none  [90m(10.5s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes pneus SOFT ne sont pas adaptés aux conditions de pluie forte. Nous devons passer aux INTERMÉDIAIRES pour assurer une[0m
+[94m[1m[RedBull_Fast][0m   [92m✓ décision envoyée au Hub (tour 30)[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour 31/50[0m  Météo:[94mPluie forte[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [91m[1m🔴 BOX BOX BOX[0m  Pneus:INTERMEDIATE  Carbu:none  [90m(9.5s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes pneus SOFT sont inadaptés aux conditions de pluie forte. Nous devons passer aux INTERMÉDIAIRES pour garantir l'adhér[0m
+[94m[1m[RedBull_Fast][0m   [92m✓ décision envoyée au Hub (tour 31)[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour 32/50[0m  Météo:[94mPluie forte[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [91m[1m🔴 BOX BOX BOX[0m  Pneus:WET  Carbu:none  [90m(12.8s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes pneus SOFT ne sont pas adaptés aux conditions de pluie forte. Nous devons passer aux pneus pluie complète pour garan[0m
+[94m[1m[RedBull_Fast][0m   [92m✓ décision envoyée au Hub (tour 32)[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour 33/50[0m  Météo:[94mPluie forte[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [91m[1m🔴 BOX BOX BOX[0m  Pneus:WET  Carbu:none  [90m(11.2s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes pneus SOFT ne sont pas adaptés aux conditions de pluie forte. Nous devons passer aux pneus pluie pour garantir la sé[0m
+[94m[1m[RedBull_Fast][0m   [92m✓ décision envoyée au Hub (tour 33)[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour 34/50[0m  Météo:[94mPluie forte[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [91m[1m🔴 BOX BOX BOX[0m  Pneus:INTERMEDIATE  Carbu:none  [90m(10.8s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes pneus SOFT ne sont pas adaptés à la pluie forte. Nous devons passer aux INTERMEDIATE pour garantir la sécurité et la[0m
+[94m[1m[RedBull_Fast][0m   [92m✓ décision envoyée au Hub (tour 34)[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour 35/50[0m  Météo:[94mPluie forte[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [91m[1m🔴 BOX BOX BOX[0m  Pneus:INTERMEDIATE  Carbu:none  [90m(10.2s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes pneus SOFT ne sont pas adaptés aux conditions de pluie forte. Nous devons passer aux INTERMÉDIAIRES pour garantir la[0m
+[94m[1m[RedBull_Fast][0m   [92m✓ décision envoyée au Hub (tour 35)[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour 36/50[0m  Météo:[94mPluie forte[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [91m[1m🔴 BOX BOX BOX[0m  Pneus:WET  Carbu:none  [90m(11.8s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes conditions de pluie forte nécessitent un changement de pneus pour assurer la sécurité et l'adhérence. Nous allons pa[0m
+[94m[1m[RedBull_Fast][0m   [92m✓ décision envoyée au Hub (tour 36)[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour 37/50[0m  Météo:[94mPluie forte[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [91m[1m🔴 BOX BOX BOX[0m  Pneus:WET  Carbu:none  [90m(11.3s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes conditions de pluie forte nécessitent un changement de pneus pour garantir la sécurité et l'adhérence. Nous devons p[0m
+[94m[1m[RedBull_Fast][0m   [92m✓ décision envoyée au Hub (tour 37)[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour 38/50[0m  Météo:[94mPluie forte[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [91m[1m🔴 BOX BOX BOX[0m  Pneus:INTERMÉDIAIRE  Carbu:none  [90m(11.1s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes pneus MEDIUM ne sont pas adaptés à la pluie forte. Nous devons passer aux INTERMÉDIAIRES pour garantir l'adhérence e[0m
+[94m[1m[RedBull_Fast][0m   [92m✓ décision envoyée au Hub (tour 38)[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour 39/50[0m  Météo:[94mPluie forte[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [91m[1m🔴 BOX BOX BOX[0m  Pneus:WET  Carbu:none  [90m(9.1s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes pneus Medium ne sont pas adaptés pour la pluie forte. Nous devons changer pour des pneus WET pour garantir la perfor[0m
+[94m[1m[RedBull_Fast][0m   [92m✓ décision envoyée au Hub (tour 39)[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour 40/50[0m  Météo:[94mPluie forte[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [92m[1m🟢 STAY OUT[0m  [90m(8.5s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes conditions de pluie forte nécessitent un changement de pneus, mais le pilote a suffisamment de carburant pour finir [0m
+
+[94m[1m[RedBull_Fast][0m [90mTour 41/50[0m  Météo:[94mPluie forte[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [91m[1m🔴 BOX BOX BOX[0m  Pneus:INTERMEDIATE  Carbu:none  [90m(12.7s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes conditions de pluie forte nécessitent un changement de pneus. Nous allons passer aux INTERMÉDIAIRES pour optimiser l[0m
+[94m[1m[RedBull_Fast][0m   [92m✓ décision envoyée au Hub (tour 41)[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour 42/50[0m  Météo:[94mSéchant[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [91m[1m🔴 BOX BOX BOX[0m  Pneus:SOFT  Carbu:none  [90m(9.5s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes pneus MEDIUM sont usés, et avec des conditions séchantes, passer aux SOFT optimisera notre performance pour les dern[0m
+[94m[1m[RedBull_Fast][0m   [92m✓ décision envoyée au Hub (tour 42)[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour 43/50[0m  Météo:[94mSéchant[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [91m[1m🔴 BOX BOX BOX[0m  Pneus:SOFT  Carbu:none  [90m(9.3s)[0m
+[94m[1m[RedBull_Fast][0m   [90mNous allons changer pour des pneus SOFT pour maximiser l'adhérence et les performances sur les derniers tours. Les pneus[0m
+[94m[1m[RedBull_Fast][0m   [92m✓ décision envoyée au Hub (tour 43)[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour 44/50[0m  Météo:[94mSéchant[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [92m[1m🟢 STAY OUT[0m  [90m(9.0s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes pneus MEDIUM sont en bon état et adaptés aux conditions actuelles. Avec une marge de carburant confortable, il est p[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour 45/50[0m  Météo:[94mSéchant[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [92m[1m🟢 STAY OUT[0m  [90m(12.4s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes pneus MEDIUM sont encore performants et nous avons une marge de carburant suffisante pour terminer la course. Un pit[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour 46/50[0m  Météo:[94mSéchant[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [92m[1m🟢 STAY OUT[0m  [90m(9.0s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes pneus MEDIUM sont en bon état et peuvent tenir jusqu'à la fin. Avec suffisamment de carburant pour terminer la cours[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour 47/50[0m  Météo:[94mSéchant[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [92m[1m🟢 STAY OUT[0m  [90m(9.8s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes pneus MEDIUM sont en bon état et adaptés aux conditions actuelles. Avec une marge de carburant confortable, il est p[0m
+
+[94m[1m[RedBull_Fast][0m [90mTour 48/50[0m  Météo:[94mSéchant[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [92m[1m🟢 STAY OUT[0m  [90m(8.9s)[0m
+[94m[1m[RedBull_Fast][0m   [90mNous avons suffisamment de carburant pour terminer la course sans pit stop et les pneus MEDIUM sont encore performants. [0m
+
+[94m[1m[RedBull_Fast][0m [90mTour 49/50[0m  Météo:[94mSéchant[0m
+[94m[1m[RedBull_Fast][0m   ⟳ réflexion en cours...
+[94m[1m[RedBull_Fast][0m   [92m[1m🟢 STAY OUT[0m  [90m(9.0s)[0m
+[94m[1m[RedBull_Fast][0m   [90mLes pneus Medium sont en bon état et adaptés pour terminer le dernier tour. La marge de carburant est suffisante, et un [0m
+
+[94m[1m[RedBull_Fast][0m [90mTour 50/50[0m  Météo:[94mSéchant[0m [93m[SC][0m
+
+[94m[1m[RedBull_Fast][0m [1m🏁 Course terminée ![0m
+

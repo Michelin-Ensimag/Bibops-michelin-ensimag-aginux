@@ -1,7 +1,7 @@
 """
 Racing Hub — Ingestion RAG
 Vectorise les documents Michelin Motorsport placés dans :
-    data/knowledge_base/racing_docs/
+    data/kb/racing_docs/
 
 Formats supportés : .pdf  .md  .txt
 
@@ -33,7 +33,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 _BASE = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
 
-RACING_DOCS_DIR = os.path.join(_BASE, "data", "knowledge_base", "racing_docs")
+RACING_DOCS_DIR = os.path.join(_BASE, "data", "kb", "racing_docs")
 CHROMA_PATH     = os.path.join(_BASE, "data", "databases", "vectordb")
 COLLECTION_NAME = "racing_kb"
 EMBED_MODEL     = "nomic-embed-text"   # ollama pull nomic-embed-text

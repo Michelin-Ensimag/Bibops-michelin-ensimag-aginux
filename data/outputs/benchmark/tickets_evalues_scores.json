@@ -1,22 +1,22 @@
 {
-  "date_evaluation": "2026-04-24T13:35:14.595604",
+  "date_evaluation": "2026-05-09T10:27:49.552736",
   "total_tickets": 12,
   "tickets_evalues": [
     {
       "id_ticket": "1",
       "modele": "llama3.2:1b",
       "dateheure": "2026-03-10 09:15:32",
-      "score_final": 7.96,
+      "score_final": 6.97,
       "scores_detailles": {
         "erreur": 10.0,
         "feedback": 10.0,
         "vitesse": 8.05,
         "efficacite_tokens": 10.0,
-        "pertinence": 5.0,
+        "pertinence": 2.19,
         "f1_details": {
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0
+          "precision": 0.538,
+          "recall": 0.137,
+          "f1": 0.219
         }
       },
       "donnees_brutes": {
@@ -54,17 +54,17 @@
       "id_ticket": "3",
       "modele": "llama3.2:1b",
       "dateheure": "2026-03-10 10:12:05",
-      "score_final": 7.27,
+      "score_final": 5.88,
       "scores_detailles": {
         "erreur": 10.0,
         "feedback": 6.0,
         "vitesse": 8.8,
         "efficacite_tokens": 10.0,
-        "pertinence": 5.0,
+        "pertinence": 1.02,
         "f1_details": {
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0
+          "precision": 0.3,
+          "recall": 0.061,
+          "f1": 0.102
         }
       },
       "donnees_brutes": {
@@ -102,17 +102,17 @@
       "id_ticket": "5",
       "modele": "gpt-3.5-turbo",
       "dateheure": "2026-03-10 11:02:17",
-      "score_final": 8.21,
+      "score_final": 7.26,
       "scores_detailles": {
         "erreur": 10.0,
         "feedback": 10.0,
         "vitesse": 9.7,
         "efficacite_tokens": 10.0,
-        "pertinence": 5.0,
+        "pertinence": 2.29,
         "f1_details": {
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0
+          "precision": 0.421,
+          "recall": 0.157,
+          "f1": 0.229
         }
       },
       "donnees_brutes": {
@@ -126,17 +126,17 @@
       "id_ticket": "6",
       "modele": "gpt-3.5-turbo",
       "dateheure": "2026-03-10 11:28:44",
-      "score_final": 7.45,
+      "score_final": 5.91,
       "scores_detailles": {
         "erreur": 10.0,
         "feedback": 6.0,
         "vitesse": 10.0,
         "efficacite_tokens": 10.0,
-        "pertinence": 5.0,
+        "pertinence": 0.61,
         "f1_details": {
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0
+          "precision": 0.154,
+          "recall": 0.038,
+          "f1": 0.061
         }
       },
       "donnees_brutes": {
@@ -150,17 +150,17 @@
       "id_ticket": "7",
       "modele": "gpt-3.5-turbo",
       "dateheure": "2026-03-10 12:01:33",
-      "score_final": 8.14,
+      "score_final": 6.62,
       "scores_detailles": {
         "erreur": 10.0,
         "feedback": 10.0,
         "vitesse": 9.25,
         "efficacite_tokens": 10.0,
-        "pertinence": 5.0,
+        "pertinence": 0.65,
         "f1_details": {
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0
+          "precision": 0.154,
+          "recall": 0.041,
+          "f1": 0.065
         }
       },
       "donnees_brutes": {
@@ -222,17 +222,17 @@
       "id_ticket": "10",
       "modele": "mistral-7b",
       "dateheure": "2026-03-10 13:42:56",
-      "score_final": 7.2,
+      "score_final": 5.66,
       "scores_detailles": {
         "erreur": 10.0,
         "feedback": 6.0,
         "vitesse": 8.35,
         "efficacite_tokens": 10.0,
-        "pertinence": 5.0,
+        "pertinence": 0.6,
         "f1_details": {
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0
+          "precision": 0.143,
+          "recall": 0.038,
+          "f1": 0.06
         }
       },
       "donnees_brutes": {
@@ -246,17 +246,17 @@
       "id_ticket": "11",
       "modele": "mistral-7b",
       "dateheure": "2026-03-10 14:09:12",
-      "score_final": 7.82,
+      "score_final": 6.66,
       "scores_detailles": {
         "erreur": 10.0,
         "feedback": 10.0,
         "vitesse": 7.15,
         "efficacite_tokens": 10.0,
-        "pertinence": 5.0,
+        "pertinence": 1.67,
         "f1_details": {
-          "precision": 0.0,
-          "recall": 0.0,
-          "f1": 0.0
+          "precision": 0.455,
+          "recall": 0.102,
+          "f1": 0.167
         }
       },
       "donnees_brutes": {
@@ -294,27 +294,27 @@
   "statistiques_par_modele": {
     "llama3.2:1b": {
       "count": 4,
-      "score_moyen": 6.22,
-      "score_median": 7.53,
+      "score_moyen": 5.63,
+      "score_median": 6.42,
       "score_min": 1.88,
-      "score_max": 7.96,
-      "score_std_dev": 2.91
+      "score_max": 7.79,
+      "score_std_dev": 2.62
     },
     "gpt-3.5-turbo": {
       "count": 4,
-      "score_moyen": 8.01,
-      "score_median": 8.18,
-      "score_min": 7.45,
+      "score_moyen": 7.01,
+      "score_median": 6.94,
+      "score_min": 5.91,
       "score_max": 8.25,
-      "score_std_dev": 0.38
+      "score_std_dev": 0.99
     },
     "mistral-7b": {
       "count": 4,
-      "score_moyen": 6.16,
-      "score_median": 7.47,
+      "score_moyen": 5.49,
+      "score_median": 6.16,
       "score_min": 1.88,
-      "score_max": 7.82,
-      "score_std_dev": 2.87
+      "score_max": 7.74,
+      "score_std_dev": 2.55
     }
   }
 }

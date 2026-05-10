@@ -20,8 +20,8 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.it_support.agent_maestro import lancer_agent
-from src.it_support.outils import (
+from src.agent.maestro import lancer_agent
+from src.agent.tools import (
     chercher_dans_kb,
     chercher_documentation_technique,
     verifier_statut_serveur,

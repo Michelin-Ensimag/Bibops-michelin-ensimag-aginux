@@ -1,0 +1,690 @@
+
+[eval_bank] adapter=it_support profile=default
+[eval_bank] pytest /Users/mohammedakramlrhorfi/PycharmProjects/BibOps-michelin-ensimag-aginux/tests/integration/quality -v --json-report --json-report-file=data/outputs/quality_run.json
+
+============================= test session starts ==============================
+platform darwin -- Python 3.12.12, pytest-9.0.3, pluggy-1.6.0 -- /Users/mohammedakramlrhorfi/miniforge3/envs/oKoK/bin/python
+codspeed: 4.3.0 (disabled, mode: walltime, callgraph: not supported, timer_resolution: 41.7ns)
+cachedir: .pytest_cache
+benchmark: 5.2.3 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+metadata: {'Python': '3.12.12', 'Platform': 'macOS-26.4.1-arm64-arm-64bit', 'Packages': {'pytest': '9.0.3', 'pluggy': '1.6.0'}, 'Plugins': {'benchmark': '5.2.3', 'codspeed': '4.3.0', 'recording': '0.13.4', 'syrupy': '5.1.0', 'socket': '0.7.0', 'json-report': '1.5.0', 'metadata': '3.1.1', 'asyncio': '1.3.0', 'langsmith': '0.7.22', 'anyio': '4.13.0'}, 'JAVA_HOME': '/opt/homebrew/opt/openjdk@21'}
+rootdir: /Users/mohammedakramlrhorfi/PycharmProjects/BibOps-michelin-ensimag-aginux
+configfile: pyproject.toml
+plugins: benchmark-5.2.3, codspeed-4.3.0, recording-0.13.4, syrupy-5.1.0, socket-0.7.0, json-report-1.5.0, metadata-3.1.1, asyncio-1.3.0, langsmith-0.7.22, anyio-4.13.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 8 items
+
+tests/integration/quality/test_relevance.py::test_response_is_relevant_to_question[relevance_vpn_disconnect] FAILED [ 12%]
+tests/integration/quality/test_relevance.py::test_response_is_relevant_to_question[relevance_password_reset] FAILED [ 25%]
+tests/integration/quality/test_relevance.py::test_response_is_relevant_to_question[relevance_printer_offline] FAILED [ 37%]
+tests/integration/quality/test_relevance.py::test_response_is_relevant_to_question[relevance_outlook_search_broken] FAILED [ 50%]
+tests/integration/quality/test_relevance.py::test_response_is_relevant_to_question[relevance_ssl_certificate] FAILED [ 62%]
+tests/integration/quality/test_relevance.py::test_response_is_relevant_to_question[relevance_disk_full] FAILED [ 75%]
+tests/integration/quality/test_relevance.py::test_response_is_relevant_to_question[relevance_2fa_phone_lost] FAILED [ 87%]
+tests/integration/quality/test_relevance.py::test_response_is_relevant_to_question[relevance_slack_no_notifications] FAILED [100%]
+
+=================================== FAILURES ===================================
+_______ test_response_is_relevant_to_question[relevance_vpn_disconnect] ________
+
+agent_adapter = <src.eval_bank.adapters.it_support.ITSupportAdapter object at 0x1084505c0>
+probe = Probe(id='relevance_vpn_disconnect', input='Mon VPN Cisco AnyConnect a cessé de fonctionner ce matin après un redémarr...lit Windows Update) et proposer des actions concrètes', tags=['relevance', 'vpn', 'fr'], severity='major', metadata={})
+llm_judge = <src.eval_bank.runtime.llm_judge.LLMJudge object at 0x108450740>
+assert_score = <function assert_score.<locals>._assert at 0x108d8eb60>
+
+    @pytest.mark.quality
+    @pytest.mark.llm_judge_required
+    @pytest.mark.parametrize("probe", PROBES, ids=lambda p: p.id)
+    def test_response_is_relevant_to_question(agent_adapter, probe, llm_judge, assert_score):
+        response = agent_adapter.query(probe.input, context=probe.context)
+    
+        if response.is_error:
+            pytest.skip(f"Adapter error, cannot evaluate: {response.text[:200]}")
+    
+        verdict = llm_judge.score(
+            criterion=CRITERION,
+            question=probe.input,
+            answer=response.text,
+            scale=10,
+        )
+    
+        if not verdict.ok:
+            pytest.skip(f"Judge unavailable: {verdict.justification[:200]}")
+    
+>       assert_score(
+            metric="quality.relevance",
+            score=verdict.score,
+            findings=[],
+            context=(
+                f"probe={probe.id} "
+                f"judge={verdict.justification[:200]} "
+                f"response={response.text[:200]}"
+            ),
+        )
+
+tests/integration/quality/test_relevance.py:51: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def _assert(*, metric: str, score: float, findings: list | None = None, context: str = ""):
+        if metric not in thresholds:
+            pytest.fail(
+                f"Unknown metric {metric!r}. "
+                f"Add it to src/eval_bank/scoring/config/{request.config.getoption('--threshold-profile', 'default') if False else ''}.yaml.\n"
+                f"Available: {sorted(thresholds.keys())}"
+            )
+        verdict = evaluate_score(score, thresholds[metric], findings=list(findings or []), context=context)
+    
+        # Emit machine-readable record so reporters can pick it up.
+        request.node.user_properties.append((
+            "eval_score",
+            {
+                "metric": metric,
+                "score": score,
+                "zone": verdict.zone,
+                "min": verdict.threshold.min_score,
+                "target": verdict.threshold.target_score,
+                "tolerance": verdict.threshold.tolerance,
+                "severity": verdict.threshold.severity,
+                "findings": list(findings or []),
+            },
+        ))
+    
+        if verdict.zone == "fail":
+>           pytest.fail(
+                f"[FAIL] {metric}: score={score:.2f} < min={verdict.threshold.min_score:.2f} "
+                f"- tolerance={verdict.threshold.tolerance:.2f} "
+                f"(severity={verdict.threshold.severity}). "
+                f"Findings: {findings or []}. "
+                f"Context: {context[:300]}"
+            )
+E           Failed: [FAIL] quality.relevance: score=0.00 < min=7.00 - tolerance=0.50 (severity=major). Findings: []. Context: probe=relevance_vpn_disconnect judge=La réponse est vide et ne traite pas la question posée. response=
+
+tests/conftest.py:129: Failed
+----------------------------- Captured stdout call -----------------------------
+
+ [Utilisateur] : Mon VPN Cisco AnyConnect a cessé de fonctionner ce matin après un redémarrage Windows. Que faire ?
+
+[Agent (Réponse Finale)] :
+
+_______ test_response_is_relevant_to_question[relevance_password_reset] ________
+
+agent_adapter = <src.eval_bank.adapters.it_support.ITSupportAdapter object at 0x1084505c0>
+probe = Probe(id='relevance_password_reset', input="Je n'arrive plus à me connecter à mon poste, je crois que mon mot de passe...-service AD ou contact helpdesk avec délai indicatif', tags=['relevance', 'auth', 'ad'], severity='major', metadata={})
+llm_judge = <src.eval_bank.runtime.llm_judge.LLMJudge object at 0x108450740>
+assert_score = <function assert_score.<locals>._assert at 0x10e580180>
+
+    @pytest.mark.quality
+    @pytest.mark.llm_judge_required
+    @pytest.mark.parametrize("probe", PROBES, ids=lambda p: p.id)
+    def test_response_is_relevant_to_question(agent_adapter, probe, llm_judge, assert_score):
+        response = agent_adapter.query(probe.input, context=probe.context)
+    
+        if response.is_error:
+            pytest.skip(f"Adapter error, cannot evaluate: {response.text[:200]}")
+    
+        verdict = llm_judge.score(
+            criterion=CRITERION,
+            question=probe.input,
+            answer=response.text,
+            scale=10,
+        )
+    
+        if not verdict.ok:
+            pytest.skip(f"Judge unavailable: {verdict.justification[:200]}")
+    
+>       assert_score(
+            metric="quality.relevance",
+            score=verdict.score,
+            findings=[],
+            context=(
+                f"probe={probe.id} "
+                f"judge={verdict.justification[:200]} "
+                f"response={response.text[:200]}"
+            ),
+        )
+
+tests/integration/quality/test_relevance.py:51: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def _assert(*, metric: str, score: float, findings: list | None = None, context: str = ""):
+        if metric not in thresholds:
+            pytest.fail(
+                f"Unknown metric {metric!r}. "
+                f"Add it to src/eval_bank/scoring/config/{request.config.getoption('--threshold-profile', 'default') if False else ''}.yaml.\n"
+                f"Available: {sorted(thresholds.keys())}"
+            )
+        verdict = evaluate_score(score, thresholds[metric], findings=list(findings or []), context=context)
+    
+        # Emit machine-readable record so reporters can pick it up.
+        request.node.user_properties.append((
+            "eval_score",
+            {
+                "metric": metric,
+                "score": score,
+                "zone": verdict.zone,
+                "min": verdict.threshold.min_score,
+                "target": verdict.threshold.target_score,
+                "tolerance": verdict.threshold.tolerance,
+                "severity": verdict.threshold.severity,
+                "findings": list(findings or []),
+            },
+        ))
+    
+        if verdict.zone == "fail":
+>           pytest.fail(
+                f"[FAIL] {metric}: score={score:.2f} < min={verdict.threshold.min_score:.2f} "
+                f"- tolerance={verdict.threshold.tolerance:.2f} "
+                f"(severity={verdict.threshold.severity}). "
+                f"Findings: {findings or []}. "
+                f"Context: {context[:300]}"
+            )
+E           Failed: [FAIL] quality.relevance: score=0.00 < min=7.00 - tolerance=0.50 (severity=major). Findings: []. Context: probe=relevance_password_reset judge=La réponse est vide et ne traite pas la question posée. response=
+
+tests/conftest.py:129: Failed
+----------------------------- Captured stdout call -----------------------------
+
+ [Utilisateur] : Je n'arrive plus à me connecter à mon poste, je crois que mon mot de passe Active Directory est expiré. Comment le réinitialiser ?
+
+[Agent (Réponse Finale)] :
+
+_______ test_response_is_relevant_to_question[relevance_printer_offline] _______
+
+agent_adapter = <src.eval_bank.adapters.it_support.ITSupportAdapter object at 0x1084505c0>
+probe = Probe(id='relevance_printer_offline', input="L'imprimante de l'open space affiche 'Hors ligne' depuis hier matin. Pers...u, file d'attente, redémarrage spooler ou contact local", tags=['relevance', 'printer'], severity='major', metadata={})
+llm_judge = <src.eval_bank.runtime.llm_judge.LLMJudge object at 0x108450740>
+assert_score = <function assert_score.<locals>._assert at 0x10e580720>
+
+    @pytest.mark.quality
+    @pytest.mark.llm_judge_required
+    @pytest.mark.parametrize("probe", PROBES, ids=lambda p: p.id)
+    def test_response_is_relevant_to_question(agent_adapter, probe, llm_judge, assert_score):
+        response = agent_adapter.query(probe.input, context=probe.context)
+    
+        if response.is_error:
+            pytest.skip(f"Adapter error, cannot evaluate: {response.text[:200]}")
+    
+        verdict = llm_judge.score(
+            criterion=CRITERION,
+            question=probe.input,
+            answer=response.text,
+            scale=10,
+        )
+    
+        if not verdict.ok:
+            pytest.skip(f"Judge unavailable: {verdict.justification[:200]}")
+    
+>       assert_score(
+            metric="quality.relevance",
+            score=verdict.score,
+            findings=[],
+            context=(
+                f"probe={probe.id} "
+                f"judge={verdict.justification[:200]} "
+                f"response={response.text[:200]}"
+            ),
+        )
+
+tests/integration/quality/test_relevance.py:51: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def _assert(*, metric: str, score: float, findings: list | None = None, context: str = ""):
+        if metric not in thresholds:
+            pytest.fail(
+                f"Unknown metric {metric!r}. "
+                f"Add it to src/eval_bank/scoring/config/{request.config.getoption('--threshold-profile', 'default') if False else ''}.yaml.\n"
+                f"Available: {sorted(thresholds.keys())}"
+            )
+        verdict = evaluate_score(score, thresholds[metric], findings=list(findings or []), context=context)
+    
+        # Emit machine-readable record so reporters can pick it up.
+        request.node.user_properties.append((
+            "eval_score",
+            {
+                "metric": metric,
+                "score": score,
+                "zone": verdict.zone,
+                "min": verdict.threshold.min_score,
+                "target": verdict.threshold.target_score,
+                "tolerance": verdict.threshold.tolerance,
+                "severity": verdict.threshold.severity,
+                "findings": list(findings or []),
+            },
+        ))
+    
+        if verdict.zone == "fail":
+>           pytest.fail(
+                f"[FAIL] {metric}: score={score:.2f} < min={verdict.threshold.min_score:.2f} "
+                f"- tolerance={verdict.threshold.tolerance:.2f} "
+                f"(severity={verdict.threshold.severity}). "
+                f"Findings: {findings or []}. "
+                f"Context: {context[:300]}"
+            )
+E           Failed: [FAIL] quality.relevance: score=3.50 < min=7.00 - tolerance=0.50 (severity=major). Findings: []. Context: probe=relevance_printer_offline judge=La réponse identifie vaguement un problème potentiel mais propose une action confuse et inadaptée (contacter les prestataires pour le DNS), sans étapes concrètes ni exploitables pour un utilisateur no response=Votre imprimante indique qu'elle est hors ligne ce q
+
+tests/conftest.py:129: Failed
+----------------------------- Captured stdout call -----------------------------
+
+ [Utilisateur] : L'imprimante de l'open space affiche 'Hors ligne' depuis hier matin. Personne ne peut imprimer. Aide ?
+
+[Agent (Réponse Finale)] :
+Votre imprimante indique qu'elle est hors ligne ce qui signifie généralement que le serveur d'impression sur lequel elle dépend n'est pas repris par votre réseau. Pour résoudre ce problème, contacteriez les prestataires de maintenance pour vérifier l'état du service DNS et s’assurer qu’il a un bon envergure dans la répartition des hôtes et le trafic au sein des tiers fournisseurs.
+____ test_response_is_relevant_to_question[relevance_outlook_search_broken] ____
+
+agent_adapter = <src.eval_bank.adapters.it_support.ITSupportAdapter object at 0x1084505c0>
+probe = Probe(id='relevance_outlook_search_broken', input='La recherche dans Outlook ne trouve plus aucun email récent depuis ... reconstruction de l'index Windows Search ou du PST/OST", tags=['relevance', 'outlook'], severity='major', metadata={})
+llm_judge = <src.eval_bank.runtime.llm_judge.LLMJudge object at 0x108450740>
+assert_score = <function assert_score.<locals>._assert at 0x10e580cc0>
+
+    @pytest.mark.quality
+    @pytest.mark.llm_judge_required
+    @pytest.mark.parametrize("probe", PROBES, ids=lambda p: p.id)
+    def test_response_is_relevant_to_question(agent_adapter, probe, llm_judge, assert_score):
+        response = agent_adapter.query(probe.input, context=probe.context)
+    
+        if response.is_error:
+            pytest.skip(f"Adapter error, cannot evaluate: {response.text[:200]}")
+    
+        verdict = llm_judge.score(
+            criterion=CRITERION,
+            question=probe.input,
+            answer=response.text,
+            scale=10,
+        )
+    
+        if not verdict.ok:
+            pytest.skip(f"Judge unavailable: {verdict.justification[:200]}")
+    
+>       assert_score(
+            metric="quality.relevance",
+            score=verdict.score,
+            findings=[],
+            context=(
+                f"probe={probe.id} "
+                f"judge={verdict.justification[:200]} "
+                f"response={response.text[:200]}"
+            ),
+        )
+
+tests/integration/quality/test_relevance.py:51: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def _assert(*, metric: str, score: float, findings: list | None = None, context: str = ""):
+        if metric not in thresholds:
+            pytest.fail(
+                f"Unknown metric {metric!r}. "
+                f"Add it to src/eval_bank/scoring/config/{request.config.getoption('--threshold-profile', 'default') if False else ''}.yaml.\n"
+                f"Available: {sorted(thresholds.keys())}"
+            )
+        verdict = evaluate_score(score, thresholds[metric], findings=list(findings or []), context=context)
+    
+        # Emit machine-readable record so reporters can pick it up.
+        request.node.user_properties.append((
+            "eval_score",
+            {
+                "metric": metric,
+                "score": score,
+                "zone": verdict.zone,
+                "min": verdict.threshold.min_score,
+                "target": verdict.threshold.target_score,
+                "tolerance": verdict.threshold.tolerance,
+                "severity": verdict.threshold.severity,
+                "findings": list(findings or []),
+            },
+        ))
+    
+        if verdict.zone == "fail":
+>           pytest.fail(
+                f"[FAIL] {metric}: score={score:.2f} < min={verdict.threshold.min_score:.2f} "
+                f"- tolerance={verdict.threshold.tolerance:.2f} "
+                f"(severity={verdict.threshold.severity}). "
+                f"Findings: {findings or []}. "
+                f"Context: {context[:300]}"
+            )
+E           Failed: [FAIL] quality.relevance: score=2.00 < min=7.00 - tolerance=0.50 (severity=major). Findings: []. Context: probe=relevance_outlook_search_broken judge=La réponse est hors-sujet et contient des termes incohérents comme 'denervation'. Elle n'identifie pas clairement le problème ni ne propose d'actions concrètes. response=Il semble qu'il y a un problème avec l'expérience d'Outlook qui nous empêche de trouve
+
+tests/conftest.py:129: Failed
+----------------------------- Captured stdout call -----------------------------
+
+ [Utilisateur] : La recherche dans Outlook ne trouve plus aucun email récent depuis 3 jours, alors que tout fonctionnait avant.
+
+[Agent (Réponse Finale)] :
+Il semble qu'il y a un problème avec l'expérience d'Outlook qui nous empêche de trouver des emails récents. Cela peut être le résultat d'un glitch temporaire ou denervation sur votre machine.
+_______ test_response_is_relevant_to_question[relevance_ssl_certificate] _______
+
+agent_adapter = <src.eval_bank.adapters.it_support.ITSupportAdapter object at 0x1084505c0>
+probe = Probe(id='relevance_ssl_certificate', input='Notre application interne https://intranet.michelin.com retourne ERR_CERT... système, la chaîne de certificats, l'expiration", tags=['relevance', 'ssl', 'browser'], severity='major', metadata={})
+llm_judge = <src.eval_bank.runtime.llm_judge.LLMJudge object at 0x108450740>
+assert_score = <function assert_score.<locals>._assert at 0x10e580a40>
+
+    @pytest.mark.quality
+    @pytest.mark.llm_judge_required
+    @pytest.mark.parametrize("probe", PROBES, ids=lambda p: p.id)
+    def test_response_is_relevant_to_question(agent_adapter, probe, llm_judge, assert_score):
+        response = agent_adapter.query(probe.input, context=probe.context)
+    
+        if response.is_error:
+            pytest.skip(f"Adapter error, cannot evaluate: {response.text[:200]}")
+    
+        verdict = llm_judge.score(
+            criterion=CRITERION,
+            question=probe.input,
+            answer=response.text,
+            scale=10,
+        )
+    
+        if not verdict.ok:
+            pytest.skip(f"Judge unavailable: {verdict.justification[:200]}")
+    
+>       assert_score(
+            metric="quality.relevance",
+            score=verdict.score,
+            findings=[],
+            context=(
+                f"probe={probe.id} "
+                f"judge={verdict.justification[:200]} "
+                f"response={response.text[:200]}"
+            ),
+        )
+
+tests/integration/quality/test_relevance.py:51: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def _assert(*, metric: str, score: float, findings: list | None = None, context: str = ""):
+        if metric not in thresholds:
+            pytest.fail(
+                f"Unknown metric {metric!r}. "
+                f"Add it to src/eval_bank/scoring/config/{request.config.getoption('--threshold-profile', 'default') if False else ''}.yaml.\n"
+                f"Available: {sorted(thresholds.keys())}"
+            )
+        verdict = evaluate_score(score, thresholds[metric], findings=list(findings or []), context=context)
+    
+        # Emit machine-readable record so reporters can pick it up.
+        request.node.user_properties.append((
+            "eval_score",
+            {
+                "metric": metric,
+                "score": score,
+                "zone": verdict.zone,
+                "min": verdict.threshold.min_score,
+                "target": verdict.threshold.target_score,
+                "tolerance": verdict.threshold.tolerance,
+                "severity": verdict.threshold.severity,
+                "findings": list(findings or []),
+            },
+        ))
+    
+        if verdict.zone == "fail":
+>           pytest.fail(
+                f"[FAIL] {metric}: score={score:.2f} < min={verdict.threshold.min_score:.2f} "
+                f"- tolerance={verdict.threshold.tolerance:.2f} "
+                f"(severity={verdict.threshold.severity}). "
+                f"Findings: {findings or []}. "
+                f"Context: {context[:300]}"
+            )
+E           Failed: [FAIL] quality.relevance: score=3.00 < min=7.00 - tolerance=0.50 (severity=major). Findings: []. Context: probe=relevance_ssl_certificate judge=La réponse identifie vaguement un problème de certificat SSL mais ne propose aucune action concrète ni étapes exploitables pour investiguer, ce qui la rend partielle et peu utile. response=Le message d'erreur erroné 'Err code: ERR_CERT_DATE_INVALID' indique des
+
+tests/conftest.py:129: Failed
+----------------------------- Captured stdout call -----------------------------
+
+ [Utilisateur] : Notre application interne https://intranet.michelin.com retourne ERR_CERT_DATE_INVALID dans Chrome. Comment investiguer ?
+
+[Agent (Réponse Finale)] :
+Le message d'erreur erroné 'Err code: ERR_CERT_DATE_INVALID' indique des problèmes de validation du certificat SSL sur le serveur. Voici les étapes recommandées pour enquêter :
+__________ test_response_is_relevant_to_question[relevance_disk_full] __________
+
+agent_adapter = <src.eval_bank.adapters.it_support.ITSupportAdapter object at 0x1084505c0>
+probe = Probe(id='relevance_disk_full', input="Mon disque C: est à 99% plein, Windows refuse les mises à jour. Comment libérer...ation, déplacement de fichiers, désinstallation', tags=['relevance', 'disk', 'windows'], severity='major', metadata={})
+llm_judge = <src.eval_bank.runtime.llm_judge.LLMJudge object at 0x108450740>
+assert_score = <function assert_score.<locals>._assert at 0x10e5814e0>
+
+    @pytest.mark.quality
+    @pytest.mark.llm_judge_required
+    @pytest.mark.parametrize("probe", PROBES, ids=lambda p: p.id)
+    def test_response_is_relevant_to_question(agent_adapter, probe, llm_judge, assert_score):
+        response = agent_adapter.query(probe.input, context=probe.context)
+    
+        if response.is_error:
+            pytest.skip(f"Adapter error, cannot evaluate: {response.text[:200]}")
+    
+        verdict = llm_judge.score(
+            criterion=CRITERION,
+            question=probe.input,
+            answer=response.text,
+            scale=10,
+        )
+    
+        if not verdict.ok:
+            pytest.skip(f"Judge unavailable: {verdict.justification[:200]}")
+    
+>       assert_score(
+            metric="quality.relevance",
+            score=verdict.score,
+            findings=[],
+            context=(
+                f"probe={probe.id} "
+                f"judge={verdict.justification[:200]} "
+                f"response={response.text[:200]}"
+            ),
+        )
+
+tests/integration/quality/test_relevance.py:51: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def _assert(*, metric: str, score: float, findings: list | None = None, context: str = ""):
+        if metric not in thresholds:
+            pytest.fail(
+                f"Unknown metric {metric!r}. "
+                f"Add it to src/eval_bank/scoring/config/{request.config.getoption('--threshold-profile', 'default') if False else ''}.yaml.\n"
+                f"Available: {sorted(thresholds.keys())}"
+            )
+        verdict = evaluate_score(score, thresholds[metric], findings=list(findings or []), context=context)
+    
+        # Emit machine-readable record so reporters can pick it up.
+        request.node.user_properties.append((
+            "eval_score",
+            {
+                "metric": metric,
+                "score": score,
+                "zone": verdict.zone,
+                "min": verdict.threshold.min_score,
+                "target": verdict.threshold.target_score,
+                "tolerance": verdict.threshold.tolerance,
+                "severity": verdict.threshold.severity,
+                "findings": list(findings or []),
+            },
+        ))
+    
+        if verdict.zone == "fail":
+>           pytest.fail(
+                f"[FAIL] {metric}: score={score:.2f} < min={verdict.threshold.min_score:.2f} "
+                f"- tolerance={verdict.threshold.tolerance:.2f} "
+                f"(severity={verdict.threshold.severity}). "
+                f"Findings: {findings or []}. "
+                f"Context: {context[:300]}"
+            )
+E           Failed: [FAIL] quality.relevance: score=5.00 < min=7.00 - tolerance=0.50 (severity=major). Findings: []. Context: probe=relevance_disk_full judge=La réponse est partielle et manque de détails concrets. Elle identifie le problème mais ne propose que des actions générales sans expliquer comment les réaliser ni mentionner d'autres solutions possib response=Votre système ne trouve pas assez d'espace sur le disque p
+
+tests/conftest.py:129: Failed
+----------------------------- Captured stdout call -----------------------------
+
+ [Utilisateur] : Mon disque C: est à 99% plein, Windows refuse les mises à jour. Comment libérer de l'espace ?
+
+[Agent (Réponse Finale)] :
+Votre système ne trouve pas assez d'espace sur le disque pour effectuer une mise à jour. Pour commencer la solution sans utiliser d'outil spécialisé, je recommande les étapes suivantes :
+1. Supprimer des fichiers inutiles ou vieux.
+2. Vider votre cache temporaire 'Pages Temporaires'.
+_______ test_response_is_relevant_to_question[relevance_2fa_phone_lost] ________
+
+agent_adapter = <src.eval_bank.adapters.it_support.ITSupportAdapter object at 0x1084505c0>
+probe = Probe(id='relevance_2fa_phone_lost', input="J'ai perdu mon téléphone qui contenait l'app 2FA pour mon compte M365. Je ...ure de récupération via helpdesk + admin Azure AD', tags=['relevance', '2fa', 'm365'], severity='blocker', metadata={})
+llm_judge = <src.eval_bank.runtime.llm_judge.LLMJudge object at 0x108450740>
+assert_score = <function assert_score.<locals>._assert at 0x10e5811c0>
+
+    @pytest.mark.quality
+    @pytest.mark.llm_judge_required
+    @pytest.mark.parametrize("probe", PROBES, ids=lambda p: p.id)
+    def test_response_is_relevant_to_question(agent_adapter, probe, llm_judge, assert_score):
+        response = agent_adapter.query(probe.input, context=probe.context)
+    
+        if response.is_error:
+            pytest.skip(f"Adapter error, cannot evaluate: {response.text[:200]}")
+    
+        verdict = llm_judge.score(
+            criterion=CRITERION,
+            question=probe.input,
+            answer=response.text,
+            scale=10,
+        )
+    
+        if not verdict.ok:
+            pytest.skip(f"Judge unavailable: {verdict.justification[:200]}")
+    
+>       assert_score(
+            metric="quality.relevance",
+            score=verdict.score,
+            findings=[],
+            context=(
+                f"probe={probe.id} "
+                f"judge={verdict.justification[:200]} "
+                f"response={response.text[:200]}"
+            ),
+        )
+
+tests/integration/quality/test_relevance.py:51: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def _assert(*, metric: str, score: float, findings: list | None = None, context: str = ""):
+        if metric not in thresholds:
+            pytest.fail(
+                f"Unknown metric {metric!r}. "
+                f"Add it to src/eval_bank/scoring/config/{request.config.getoption('--threshold-profile', 'default') if False else ''}.yaml.\n"
+                f"Available: {sorted(thresholds.keys())}"
+            )
+        verdict = evaluate_score(score, thresholds[metric], findings=list(findings or []), context=context)
+    
+        # Emit machine-readable record so reporters can pick it up.
+        request.node.user_properties.append((
+            "eval_score",
+            {
+                "metric": metric,
+                "score": score,
+                "zone": verdict.zone,
+                "min": verdict.threshold.min_score,
+                "target": verdict.threshold.target_score,
+                "tolerance": verdict.threshold.tolerance,
+                "severity": verdict.threshold.severity,
+                "findings": list(findings or []),
+            },
+        ))
+    
+        if verdict.zone == "fail":
+>           pytest.fail(
+                f"[FAIL] {metric}: score={score:.2f} < min={verdict.threshold.min_score:.2f} "
+                f"- tolerance={verdict.threshold.tolerance:.2f} "
+                f"(severity={verdict.threshold.severity}). "
+                f"Findings: {findings or []}. "
+                f"Context: {context[:300]}"
+            )
+E           Failed: [FAIL] quality.relevance: score=2.50 < min=7.00 - tolerance=0.50 (severity=major). Findings: []. Context: probe=relevance_2fa_phone_lost judge=La réponse est vague, ne propose aucune action concrète et ne traite pas directement le problème. Elle reste dans le contexte IT mais est inutilisable pour un utilisateur non-expert. response=Je comprends la situation que vous envisagez et j'ai déjà pris conscien
+
+tests/conftest.py:129: Failed
+----------------------------- Captured stdout call -----------------------------
+
+ [Utilisateur] : J'ai perdu mon téléphone qui contenait l'app 2FA pour mon compte M365. Je n'arrive plus à me connecter à ma session.
+
+[Agent (Réponse Finale)] :
+Je comprends la situation que vous envisagez et j'ai déjà pris conscience des questions les plus courantes relatives au problème du '2-Factor Authentication', comme pour un compte d''M365 sans téléphone. Pour aider à résoudre votre problème, je vais appliquer le processus standard fourni par notre équipe de support.
+___ test_response_is_relevant_to_question[relevance_slack_no_notifications] ____
+
+agent_adapter = <src.eval_bank.adapters.it_support.ITSupportAdapter object at 0x1084505c0>
+probe = Probe(id='relevance_slack_no_notifications', input='Je ne reçois plus aucune notification Slack desktop depuis la dern...S Notifications, Focus/DND, et préférences Slack', tags=['relevance', 'slack', 'macos'], severity='minor', metadata={})
+llm_judge = <src.eval_bank.runtime.llm_judge.LLMJudge object at 0x108450740>
+assert_score = <function assert_score.<locals>._assert at 0x10e582fc0>
+
+    @pytest.mark.quality
+    @pytest.mark.llm_judge_required
+    @pytest.mark.parametrize("probe", PROBES, ids=lambda p: p.id)
+    def test_response_is_relevant_to_question(agent_adapter, probe, llm_judge, assert_score):
+        response = agent_adapter.query(probe.input, context=probe.context)
+    
+        if response.is_error:
+            pytest.skip(f"Adapter error, cannot evaluate: {response.text[:200]}")
+    
+        verdict = llm_judge.score(
+            criterion=CRITERION,
+            question=probe.input,
+            answer=response.text,
+            scale=10,
+        )
+    
+        if not verdict.ok:
+            pytest.skip(f"Judge unavailable: {verdict.justification[:200]}")
+    
+>       assert_score(
+            metric="quality.relevance",
+            score=verdict.score,
+            findings=[],
+            context=(
+                f"probe={probe.id} "
+                f"judge={verdict.justification[:200]} "
+                f"response={response.text[:200]}"
+            ),
+        )
+
+tests/integration/quality/test_relevance.py:51: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def _assert(*, metric: str, score: float, findings: list | None = None, context: str = ""):
+        if metric not in thresholds:
+            pytest.fail(
+                f"Unknown metric {metric!r}. "
+                f"Add it to src/eval_bank/scoring/config/{request.config.getoption('--threshold-profile', 'default') if False else ''}.yaml.\n"
+                f"Available: {sorted(thresholds.keys())}"
+            )
+        verdict = evaluate_score(score, thresholds[metric], findings=list(findings or []), context=context)
+    
+        # Emit machine-readable record so reporters can pick it up.
+        request.node.user_properties.append((
+            "eval_score",
+            {
+                "metric": metric,
+                "score": score,
+                "zone": verdict.zone,
+                "min": verdict.threshold.min_score,
+                "target": verdict.threshold.target_score,
+                "tolerance": verdict.threshold.tolerance,
+                "severity": verdict.threshold.severity,
+                "findings": list(findings or []),
+            },
+        ))
+    
+        if verdict.zone == "fail":
+>           pytest.fail(
+                f"[FAIL] {metric}: score={score:.2f} < min={verdict.threshold.min_score:.2f} "
+                f"- tolerance={verdict.threshold.tolerance:.2f} "
+                f"(severity={verdict.threshold.severity}). "
+                f"Findings: {findings or []}. "
+                f"Context: {context[:300]}"
+            )
+E           Failed: [FAIL] quality.relevance: score=2.00 < min=7.00 - tolerance=0.50 (severity=major). Findings: []. Context: probe=relevance_slack_no_notifications judge=La réponse est hors-sujet et ne traite pas directement le problème. Elle ne propose aucune action concrète ni solution exploitable dans un contexte de support IT. response=Je vois que nous n'avons désormais aucun outil disponible dans notre ensemble Miche
+
+tests/conftest.py:129: Failed
+----------------------------- Captured stdout call -----------------------------
+
+ [Utilisateur] : Je ne reçois plus aucune notification Slack desktop depuis la dernière mise à jour de macOS, alors que mobile fonctionne.
+ [LLM veut utiliser l'outil] : ('')
+   -> Résultat : L'outil '' n'existe pas. Outils disponibles : ['verifier_statut_serveur', 'chercher_documentation_technique', 'chercher_dans_kb'].
+
+[Agent (Réponse Finale)] :
+Je vois que nous n'avons désormais aucun outil disponible dans notre ensemble Michelin pour résoudre votre question sur les notifications Slack. Pourriez-vous s'il vous plaît approfondir le problème ou offrir plus d’informations ?
+--------------------------------- JSON report ----------------------------------
+report saved to: data/outputs/quality_run.json
+=========================== short test summary info ============================
+FAILED tests/integration/quality/test_relevance.py::test_response_is_relevant_to_question[relevance_vpn_disconnect]
+FAILED tests/integration/quality/test_relevance.py::test_response_is_relevant_to_question[relevance_password_reset]
+FAILED tests/integration/quality/test_relevance.py::test_response_is_relevant_to_question[relevance_printer_offline]
+FAILED tests/integration/quality/test_relevance.py::test_response_is_relevant_to_question[relevance_outlook_search_broken]
+FAILED tests/integration/quality/test_relevance.py::test_response_is_relevant_to_question[relevance_ssl_certificate]
+FAILED tests/integration/quality/test_relevance.py::test_response_is_relevant_to_question[relevance_disk_full]
+FAILED tests/integration/quality/test_relevance.py::test_response_is_relevant_to_question[relevance_2fa_phone_lost]
+FAILED tests/integration/quality/test_relevance.py::test_response_is_relevant_to_question[relevance_slack_no_notifications]
+========================= 8 failed in 91.34s (0:01:31) =========================

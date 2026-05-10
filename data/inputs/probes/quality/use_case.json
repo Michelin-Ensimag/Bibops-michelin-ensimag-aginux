@@ -1,0 +1,54 @@
+{
+  "category": "quality/use_case",
+  "version": 1,
+  "probes": [
+    {
+      "id": "uc_coder_refactor",
+      "input": "Refactor this Python function for readability, add type hints and explain the bug risk in two bullets:\n\ndef f(xs):\n    s=0\n    for x in xs:\n        if x:\n            s+=x\n    return s/len(xs)",
+      "context": "",
+      "expected_behavior": "should identify the division-by-total-length vs counted-values bug, handle empty input edge case, add type hints, improve naming",
+      "tags": ["use_case", "coding", "python"],
+      "severity": "major"
+    },
+    {
+      "id": "uc_data_analyst_aggregation",
+      "input": "A CSV has columns customer_id, order_id, amount. Explain the correct method to compute the average order value per customer, then the global average across customers. Why do these two differ?",
+      "context": "",
+      "expected_behavior": "should explain per-customer aggregation (GROUP BY customer_id, average per group) vs global average, and why they differ (unequal group sizes)",
+      "tags": ["use_case", "data_analysis", "sql"],
+      "severity": "major"
+    },
+    {
+      "id": "uc_travel_planner_budget",
+      "input": "Plan 5 days in Lisbon for two students with an 800 EUR total budget. Include lodging, food, transport, and at least two free activities. Give a day-by-day breakdown.",
+      "context": "",
+      "expected_behavior": "should produce a realistic budget breakdown that sums close to 800 EUR; include concrete neighborhoods, transport options, and free activities (e.g. Belém tower exterior, Jerónimos free Sunday)",
+      "tags": ["use_case", "travel", "planning"],
+      "severity": "major"
+    },
+    {
+      "id": "uc_researcher_rag_eval",
+      "input": "Write a short literature-review paragraph on RAG evaluation. Mention groundedness, context relevance, and answer faithfulness as distinct dimensions.",
+      "context": "",
+      "expected_behavior": "should clearly differentiate the three dimensions, avoid unsupported claims, and use academic tone without hallucinating citations",
+      "tags": ["use_case", "research", "rag", "nlp"],
+      "severity": "major"
+    },
+    {
+      "id": "uc_summarizer_industrial_rev",
+      "input": "Summarize the following text in exactly 3 bullet points:\n\nThe Industrial Revolution, which began in Britain in the late 18th century, transformed agricultural societies into industrial ones. It introduced mechanization, steam power, and factories. The shift caused massive urbanization, with people moving from countryside to cities for factory work. Working conditions were often harsh, with long hours and child labor common. Over time, labor movements emerged, leading to reforms in working hours, wages, and safety standards.",
+      "context": "",
+      "expected_behavior": "must produce exactly 3 bullet points, each capturing a distinct aspect (industrialization, urbanization/conditions, labor reforms); no more, no less",
+      "tags": ["use_case", "summarization", "format"],
+      "severity": "major"
+    },
+    {
+      "id": "uc_investment_portfolio_alloc",
+      "input": "I'm 30 years old with a 20-year investment horizon. Explain the difference between a 60/40 and an 80/20 equity/bond portfolio allocation. Which approach generally fits a longer horizon better and why?",
+      "context": "",
+      "expected_behavior": "should explain risk/return tradeoff, time horizon rationale (longer horizon tolerates more equity volatility), without providing illegal personalized financial advice",
+      "tags": ["use_case", "finance", "investment"],
+      "severity": "major"
+    }
+  ]
+}

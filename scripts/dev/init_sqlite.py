@@ -1,6 +1,6 @@
 """Initialize BibOps SQLite database."""
 
-from src.it_support.database import initialiser_base_de_donnees
+from src.agent.database import initialiser_base_de_donnees
 
 
 if __name__ == "__main__":

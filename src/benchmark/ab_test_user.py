@@ -21,11 +21,13 @@ import sys
 
 from openai import OpenAI
 
+from src.common.config import COPILOT_BASE_URL
+from src.common.text import _extraire_texte, charger_copilot_api_key
+
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
 INPUT_CSV = os.path.join(BASE_DIR, "data", "raw", "benchmark", "tickets_scenario_1.csv")
 OUTPUT_JSON = os.path.join(BASE_DIR, "data", "outputs", "benchmark", "ab_user_resultat.json")
 
-COPILOT_BASE_URL = os.environ.get("COPILOT_API_URL", "http://localhost:4141/v1")
 DEFAULT_MODEL_A = "gpt-4o-mini"
 DEFAULT_MODEL_B = "claude-haiku-4.5"
 MAX_TICKETS = 10
@@ -49,29 +51,6 @@ def _auto_choice_default() -> str:
 
 def _is_non_interactive_mode() -> bool:
     return os.environ.get("BIBOPS_NON_INTERACTIVE", "0") == "1" or not sys.stdin.isatty()
-
-
-def charger_copilot_api_key() -> str:
-    # Le proxy Copilot local n'exige en general pas de clé ; OpenAI SDK en demande une.
-    key = os.environ.get("COPILOT_API_KEY", "").strip()
-    if key:
-        return key
-    key = os.environ.get("OPENAI_API_KEY", "").strip()
-    if key:
-        return key
-    return "copilot"
-
-
-def _extraire_texte(message) -> str:
-    content = getattr(message, "content", None)
-    if isinstance(content, str) and content.strip():
-        return content.strip()
-
-    reasoning = getattr(message, "reasoning", None)
-    if isinstance(reasoning, str) and reasoning.strip():
-        return reasoning.strip()
-
-    return "[Reponse vide]"
 
 
 def appeler_modele(client: OpenAI, modele: str, contexte: str, ticket: str, retries: int) -> str:

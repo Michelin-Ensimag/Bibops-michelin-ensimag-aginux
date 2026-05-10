@@ -1,8 +1,10 @@
-"""BibOps reorganized package surface (non-destructive)."""
+"""BibOps package."""
 
 __all__ = [
+    "agent",
     "benchmark",
+    "common",
+    "eval_bank",
     "llm_professor",
-    "it_support",
     "racing",
 ]

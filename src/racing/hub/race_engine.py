@@ -30,7 +30,7 @@ from typing import AsyncGenerator
 @dataclass
 class RaceState:
     lap_current: int = 0
-    lap_total: int = 50
+    lap_total: int = 15
     weather: str = "Ensoleillé"
     track_temp_celsius: float = 42.0
     air_temp_celsius: float = 24.0
@@ -76,12 +76,12 @@ class RaceEngine:
     dans toutes les queues des clients SSE connectés.
     """
 
-    LAP_DURATION_SECONDS  = 3
-    INITIAL_WAIT_SECONDS  = 5    # attente avant le premier tour (toutes les écuries se connectent)
+    LAP_DURATION_SECONDS  = 10   # enough for multi-LLM-call teams to respond per lap
+    INITIAL_WAIT_SECONDS  = 8    # attente avant le premier tour (toutes les écuries se connectent)
 
-    WEATHER_LIGHT_RAIN_LAP = 15
-    WEATHER_HEAVY_RAIN_LAP = 30
-    WEATHER_DRY_AGAIN_LAP  = 42
+    WEATHER_LIGHT_RAIN_LAP = 5
+    WEATHER_HEAVY_RAIN_LAP = 9
+    WEATHER_DRY_AGAIN_LAP  = 12
 
     SC_PROBABILITY   = 0.04
     SC_DURATION_LAPS = 3
@@ -167,6 +167,10 @@ class RaceEngine:
         final = {**self._state.to_dict(), "event": "race_over"}
         await self._broadcast(self._sse_event(final))
         print("[HUB] 🏁 Course terminée.")
+
+    async def inject_event(self, event_data: dict) -> None:
+        """Push an arbitrary event into the SSE stream (used by authority-broadcast)."""
+        await self._broadcast(self._sse_event(event_data))
 
     async def _broadcast(self, event: str) -> None:
         """Envoie un événement SSE à tous les abonnés actifs."""
