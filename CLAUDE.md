@@ -21,51 +21,49 @@ python scripts/dev/build_it_vector_db.py   # Ingest KB into ChromaDB (requires O
 
 ### Tests
 ```bash
-PYTHONPATH=. pytest tests/                 # Full test suite (no Ollama needed — LLM is mocked)
-PYTHONPATH=. pytest tests/test_maestro.py  # Single file
+PYTHONPATH=. pytest tests/                   # Full test suite (no Ollama needed — LLM is mocked)
+PYTHONPATH=. pytest tests/unit/test_maestro.py  # Single file
 ```
 
-### Benchmarks (requires Ollama + Copilot proxy on localhost:4141)
+### CLI (`bibops` — installed via `pip install -e .`)
 ```bash
-# Start Copilot proxy first: npx copilot-api@latest start
+bibops --help                                 # Top-level command tree
 
-# Main architectural comparison (LLM Unique vs Multi-Agents)
-python scripts/benchmark/compare_architectures.py \
-  --max-tickets 10 --zero-shot-model phi3:latest \
-  --agent-model phi3:latest --judge-model gpt-4o
+# Benchmarks (requires Ollama + Copilot proxy: npx copilot-api@latest start)
+bibops bench compare-archs --max-tickets 10 --zero-shot-model phi3:latest --judge-model gpt-4o
+bibops bench ab-test --mode llm
+bibops bench position-bias --max-tickets 10
+bibops bench validate --input data/outputs/benchmark/comparison_results.json
+bibops bench kaggle --judge-model gpt-4o
 
-python src/benchmark/ab_test_llm.py
-python src/benchmark/test-biais-position.py --max-tickets 10
-python scripts/benchmark/validate_benchmark_output.py \
-  --input data/outputs/benchmark/comparison_results.json
+# Evaluation
+bibops eval pending --db data/databases/bibops.db
+bibops eval process --input data/inputs/benchmark/tickets_evalues_fake.json
 
-# Kaggle SAE (local exam + GPT judge)
-python scripts/benchmark/run_local_kaggle_exam.py --judge-model gpt-4o
+# Dev tools
+bibops dev init-db
+bibops dev build-vectordb
+bibops dev mcp-server
+
+# Racing Arena
+bibops racing demo            # Standalone demo (no hub needed)
+bibops racing arena           # Hub + 3 legacy teams in parallel processes
+bibops racing adversarial     # 4 teams: A=zero-shot, B=ReAct, C=validated, Psi=attacker
 ```
 
-### MCP tools benchmark (requires MCP server running in another terminal)
+### Direct script fallback (PYTHONPATH=. required)
 ```bash
-python scripts/dev/run_mcp_server.py   # Terminal 1
-python -m src.benchmark.mcp_tools      # Terminal 2
+# MCP benchmark (requires MCP server in another terminal)
+PYTHONPATH=. python scripts/dev/run_mcp_server.py   # Terminal 1
+PYTHONPATH=. python -m src.benchmark.mcp_tools       # Terminal 2
 ```
 
-### Racing Arena
+### Racing Arena monitoring
 ```bash
-python scripts/racing/run_demo.py    # Standalone demo (no hub needed)
-python scripts/racing/run_arena.py   # Full arena: Hub + 3 legacy teams in parallel processes
-python scripts/racing/run_hub.py     # Hub only (localhost:8000)
-
-# Adversarial arena (4 teams: A=zero-shot, B=ReAct, C=validated, Psi=attacker)
-python -m src.racing.start_arena
-
-# Monitor during adversarial run:
-tail -f logs/arena/team_team_psi.log        # attacker activity
-tail -f logs/arena/team_team_c_validated.log
-curl http://localhost:8000/team/team_a_zero_shot/strategy  # WeakProxy
-curl http://localhost:8000/race-history                    # full log
+tail -f logs/arena/team_team_psi.log             # attacker activity
+curl http://localhost:8000/race-history           # full log
 curl http://localhost:8000/results
-# Security report written after race ends:
-# data/outputs/benchmark/security_race_report.json
+# Security report: data/outputs/benchmark/security_race_report.json
 ```
 
 ### Environment variables
@@ -84,22 +82,33 @@ curl http://localhost:8000/results
 ### Module layout
 ```
 src/
-  common/       — Project-wide constants and shared text utilities
-  agent/        — IT support agent and tools
-  benchmark/    — Benchmark pipelines and A/B testing
-  llm_professor/ — Evaluation engine (judge, security, greenops, composite)
-  racing/       — Distributed F1 racing arena
-    hub/        — FastAPI server + race engine + RAG service
-    team_client/ — LangGraph-based team agent (runs as separate process)
-scripts/        — Thin wrappers that call src/ modules
+  bibops/           — Production namespace package
+    cli/            — Typer CLI (main.py, commands/{bench,eval,dev,racing}.py)
+    evaluation/     — Evaluation engine
+      judges/       — llm_judge.py (LLMJudge, JudgeVerdict) + llm_professor.py (LLMProfessor) + rule_engine.py
+      metrics/      — composite.py, greenops.py, consistency.py
+      scoring/      — thresholds.py (ScoreThreshold, ScoreVerdict, load_thresholds, evaluate_score)
+      reporting/    — regression.py
+      checks.py     — PII, injection, secrets, toxicity, URL, refusal detectors
+    adapters/       — Agent adapters (registry, it_support, a2a_client, openai_compat)
+    probes/         — Probe loader (load_probes, list_categories, Probe schema)
+    research/       — Experimental code (excluded from coverage gates)
+  agent/            — IT support ReAct agent (maestro.py, tools.py, mcp_server.py, rag.py)
+  common/           — Shared constants (config.py), text helpers (text.py), LLM clients (llm_clients.py)
+  benchmark/        — Benchmark pipelines and A/B testing
+  racing/           — Distributed F1 racing arena
+    hub/            — FastAPI server + race engine + RAG service
+    team_client/    — LangGraph-based team agent (runs as separate process)
+scripts/            — Thin wrappers that call src/ modules
 data/
   inputs/benchmark/ — Input CSVs (tickets_scenario_1.csv, 40 tickets)
-  databases/    — bibops.db (SQLite) + vectordb/ (ChromaDB)
-  outputs/      — JSON benchmark results, PNG charts
-  runtime/      — JSONL execution traces
+  databases/        — bibops.db (SQLite) + vectordb/ (ChromaDB)
+  outputs/          — JSON benchmark results, PNG charts
+  runtime/          — JSONL execution traces
 tests/
-  unit/         — Unit tests (no Ollama needed)
-  unit/fixtures/ — Test fixture JSON files
+  unit/             — Unit tests (no Ollama needed)
+  unit/fixtures/    — Test fixture JSON files
+  _fakes/           — Shared test fakes (FakeOpenAI, make_response)
 ```
 
 ### IT Support agent (`src/agent/`)
@@ -122,9 +131,10 @@ All tools share the frozen `ToolPolicy` dataclass and are exposed as MCP tools i
 ### Common utilities (`src/common/`)
 
 - **`config.py`** — Project-wide constants: `COPILOT_BASE_URL`, `DEFAULT_JUDGE_MODEL`, `DEFAULT_AGENT_MODEL`, `DEFAULT_ZERO_SHOT_MODEL`, `MODEL_REQUEST_TIMEOUT_S`, `OLLAMA_OPTIONS`, `INPUT_CSV`, `OUTPUT_DIR`
-- **`text.py`** — Shared text/response helpers: `charger_copilot_api_key()`, `_extraire_texte()`, `_extraire_json_depuis_texte()`, `_executer_avec_timeout()`, `extraire_texte_reponse()`, `extraire_compteurs_tokens()`, and error-classification helpers
+- **`text.py`** — Shared text/response helpers: `charger_copilot_api_key()`, `extraire_texte_reponse()`, `extraire_compteurs_tokens()`, and error-classification helpers
+- **`llm_clients.py`** — Singleton `get_copilot_client()` (OpenAI-compatible), `is_copilot_available()` (TCP probe)
 
-`src/benchmark/_llm_utils.py` still holds `appeler_modele()` and duplicates some helpers — prefer importing shared utilities from `src.common.text` and `src.common.config` in new code.
+`src/benchmark/_llm_utils.py` still holds `appeler_modele()` — prefer importing shared utilities from `src.common.text` and `src.common.config` in new code.
 
 ### LLM access pattern
 
@@ -132,18 +142,18 @@ All LLM calls use **Ollama** for local models (`ollama.chat(model=..., messages=
 
 Only GPT models work for Racing Arena teams — Claude models return `400 model_not_supported` from the proxy backend.
 
-### Evaluation engine (`src/llm_professor/`)
+### Evaluation engine (`src/bibops/evaluation/`)
 
 Evaluation flows through `EvaluatorRegistry` which runs registered evaluators and merges results:
-- `QualityEvaluator` wraps `LLMProfessor` (gpt-4o judge, 0-10 score + JSON justification)
+- `QualityEvaluator` wraps `LLMProfessor` — uses `LLMJudge` internally (raw OpenAI, no LangChain); returns 0-10 score + justification, persists to SQLite
 - `SecurityLLMInspectorAdapter` runs rule-based security checks (PII, injection, toxicity, secrets)
 - `CompositePolicy.evaluate()` aggregates: quality×0.40 + security×0.35 + finops×0.10 + latency×0.10 + greenops×0.05 → score/100 + PASS/FAIL verdict (gate: quality ≥ 7, security ≥ 6)
 
-`GreenOps.calculate_carbon_footprint(tokens, hardware_type)` estimates CO₂ from token counts.
+Two judge classes, different roles:
+- **`LLMJudge`** (`judges/llm_judge.py`) — general-purpose scoring primitive: `score(criterion, question, answer)` → `JudgeVerdict(score: float, justification: str)`. Used by integration tests.
+- **`LLMProfessor`** (`judges/llm_professor.py`) — IT-support-specific wrapper around `LLMJudge`: adds RCA context, SQLite persistence, batch evaluation (`evaluer_tickets_en_attente`). Used by benchmark scripts.
 
-Two scoring systems in separate files:
-- **`llm_judge.py`** — `LLMProfessor`: LLM judge via Copilot proxy (gpt-4o), returns 0-10 score + JSON justification
-- **`rule_engine.py`** — `EvaluationEngine`: pure rule-based scoring (no LLM)
+`EvaluationEngine` (`judges/rule_engine.py`) — pure rule-based scoring (no LLM): error/feedback/speed/token/F1 dimensions.
 
 ### Racing Arena (`src/racing/`)
 
@@ -161,10 +171,8 @@ Two scoring systems in separate files:
 - RAG collections in ChromaDB are keyed as `KB{id}` and `DOC_{name}`
 - SQLite database (`bibops.db`) is used ONLY for the `serveurs_it` table (server status data)
 
-### Benchmark utilities (`src/benchmark/`)
-
-`_llm_utils.py` holds benchmark-specific helpers like `appeler_modele()`. For new code, import shared utilities from `src.common.text` and `src.common.config` instead of `_llm_utils`.
-
 ### Tests
 
 Tests patch `_call_llm` in `src/agent/maestro.py` directly — the mock returns `AgentDecision` objects without any network call. `make_fake_llm(decisions)` in `test_maestro.py` feeds a list of `AgentDecision` objects one per turn. Use this same pattern for any new agent tests.
+
+`tests/_fakes/fake_openai.py` provides `FakeOpenAI` and `make_response()` for tests that need a mock OpenAI client (LLMJudge, LLMProfessor).

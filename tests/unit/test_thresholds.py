@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import pytest
 
-from src.eval_bank.scoring import (
+from src.bibops.evaluation.scoring import (
     ScoreThreshold,
     evaluate_score,
     load_thresholds,

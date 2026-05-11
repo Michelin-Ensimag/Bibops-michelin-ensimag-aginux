@@ -174,8 +174,8 @@ class ObserverEngine:
         Applies SecurityLLMInspectorAdapter + GreenOps to each team's race decision
         reasoning texts. No LLM judge required — uses deterministic rule-based scoring.
         """
-        from src.llm_professor.security_llminspector_adapter import SecurityLLMInspectorAdapter
-        from src.llm_professor.greenops import calculate_carbon_footprint
+        from src.bibops.evaluation.security_evaluator import SecurityLLMInspectorAdapter
+        from src.bibops.evaluation.metrics.greenops import calculate_carbon_footprint
 
         security = SecurityLLMInspectorAdapter()
         by_team: dict[str, list[dict]] = {}

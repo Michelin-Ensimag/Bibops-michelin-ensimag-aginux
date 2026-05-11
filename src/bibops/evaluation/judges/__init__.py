@@ -1,7 +1,7 @@
 """Judges: LLM-based and rule-based scoring."""
 
 from src.bibops.evaluation.judges.llm_judge import JudgeVerdict, LLMJudge
-from src.bibops.evaluation.judges.llm_professor import EvaluationResult, LLMProfessor
+from src.bibops.evaluation.judges.llm_professor import LLMProfessor
 from src.bibops.evaluation.judges.rule_engine import (
     EvaluationEngine,
     EvaluationProcessor,
@@ -12,7 +12,6 @@ from src.bibops.evaluation.judges.rule_engine import (
 __all__ = [
     "EvaluationEngine",
     "EvaluationProcessor",
-    "EvaluationResult",
     "JudgeVerdict",
     "LLMJudge",
     "LLMProfessor",

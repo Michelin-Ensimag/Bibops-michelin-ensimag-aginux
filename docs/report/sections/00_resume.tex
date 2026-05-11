@@ -1,0 +1,56 @@
+% ============================================================
+%  Section 0 — Résumé
+% ============================================================
+
+\chapter*{Résumé}
+\addcontentsline{toc}{chapter}{Résumé}
+\markboth{Résumé}{Résumé}
+
+\bibopsname{} est un banc d'évaluation MLOps open-source développé dans le
+cadre d'un projet de spécialité Ensimag en partenariat avec \textbf{Michelin}.
+Il compare deux architectures de traitement automatique des demandes de support
+informatique~: un modèle de langue unique (\emph{LLM Unique}, zéro-shot) face à
+un \emph{Système Multi-Agents} (SMA) basé sur une boucle \emph{ReAct} augmentée
+de recherche documentaire (RAG), de consultation d'une base de connaissances
+et d'un accès aux données temps-réel des serveurs.
+
+Le framework repose sur \textbf{11\,046 lignes de Python}, 546 tests unitaires
+et un pipeline CI/CD sur GitHub Actions. L'évaluation multi-dimensionnelle
+combine~: (i) un juge LLM (\texttt{gpt-4o}) pour la qualité des réponses,
+(ii) un inspecteur de sécurité déterministe détectant injections de prompt,
+fuites de données personnelles, toxicité et secrets, (iii) des métriques
+GreenOps (énergie et empreinte carbone), et (iv) une politique composite
+(\textit{CompositePolicy}) pondérant qualité, sécurité, coût, latence et
+empreinte environnementale.
+
+\bigskip
+
+\noindent\textbf{Résultats clés sur 10 tickets (modèle \texttt{phi3:latest})~:}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{Xcc}
+\toprule
+\textbf{Métrique} & \textbf{LLM Unique} & \textbf{Système Multi-Agents} \\
+\midrule
+Score qualité moyen (0--10)    & 0{,}0  & \textbf{3{,}8} \\
+Latence totale                 & 277{,}4 s & \textbf{100{,}7 s} ($\times$2{,}8 plus rapide) \\
+Coût total API                 & \$0{,}050  & \textbf{\$0{,}006} ($\times$7{,}9 moins cher) \\
+Tokens consommés (moy./ticket) & 534        & \textbf{63} ($-$88\,\%) \\
+Empreinte CO$_2$               & 0{,}053 gCO$_2$e & \textbf{0{,}006 gCO$_2$e} \\
+Score composite (0--100)       & 35{,}0 & \textbf{75{,}2} \\
+Sécurité (0--10)               & 10{,}0 & 10{,}0 \\
+\bottomrule
+\end{tabularx}
+\caption{Synthèse comparative des deux architectures évaluées par \bibopsname{}.}
+\end{table}
+
+Le projet comprend également une \textbf{Racing Arena adversariale}~: quatre
+équipes LLM pilotant des stratégies de course en temps réel via SSE, dont une
+équipe attaquante (\emph{Team Psi}) tentant des injections de prompt. Les
+résultats démontrent que l'architecture validée (\emph{Team C}) réduit le taux
+d'exécution d'injection de \textbf{93\,\%} (Team B sans protection) à \textbf{0\,\%}.
+
+\bigskip
+\noindent\textbf{Mots-clés~:} LLM, Multi-Agents, ReAct, RAG, MLOps, Prompt Injection,
+GreenOps, Benchmark, Support IT, Michelin.

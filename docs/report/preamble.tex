@@ -1,0 +1,132 @@
+% ============================================================
+%  BibOps — Preamble
+%  Projet de Spécialité Ensimag / Michelin - 2026
+% ============================================================
+
+% ----- Encodage & langue -----
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{csquotes}
+
+% ----- Typographie -----
+\usepackage{microtype}
+\usepackage{lmodern}
+\usepackage{setspace}
+\onehalfspacing
+
+% ----- Mise en page -----
+\usepackage[
+  a4paper,
+  top=2.5cm, bottom=2.5cm,
+  left=3cm,  right=2.5cm,
+  headheight=14pt
+]{geometry}
+\usepackage{fancyhdr}
+\usepackage{emptypage}
+\usepackage{titlesec}
+\usepackage{tocloft}
+
+% ----- Couleurs -----
+\usepackage[dvipsnames,table]{xcolor}
+\definecolor{michelinYellow}{RGB}{255, 210, 0}
+\definecolor{michelinBlue}{RGB}{  0,  74,155}
+\definecolor{codeGray}    {RGB}{248,248,248}
+\definecolor{accentRed}   {RGB}{200,  40, 40}
+\definecolor{darkGray}    {RGB}{ 60, 60, 60}
+
+% ----- Mathématiques -----
+\usepackage{amsmath, amssymb, bm}
+\usepackage{mathtools}
+
+% ----- Tableaux -----
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{tabularx}
+\renewcommand{\arraystretch}{1.35}
+
+% ----- Figures & sous-figures -----
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage{wrapfig}
+\graphicspath{{../../data/outputs/benchmark/charts/}}
+
+% ----- Code -----
+\usepackage{listings}
+\usepackage{minted}   % optionnel : compile avec --shell-escape
+\lstset{
+  backgroundcolor=\color{codeGray},
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  captionpos=b,
+  commentstyle=\color{OliveGreen},
+  keywordstyle=\color{michelinBlue}\bfseries,
+  stringstyle=\color{accentRed},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  frame=single,
+  rulecolor=\color{gray!40},
+  xleftmargin=1em,
+}
+
+% ----- Hyperliens -----
+\usepackage[
+  colorlinks=true,
+  linkcolor=michelinBlue,
+  urlcolor=michelinBlue,
+  citecolor=darkGray,
+  breaklinks=true
+]{hyperref}
+\usepackage{url}
+
+% ----- Bibliographie -----
+\usepackage[
+  backend=biber,
+  style=numeric,
+  sorting=none,
+  maxbibnames=4
+]{biblatex}
+\addbibresource{references.bib}
+
+% ----- Divers -----
+\usepackage{enumitem}
+\usepackage{pifont}
+\usepackage{todonotes}
+\usepackage{lipsum}
+\usepackage{parskip}
+\usepackage{soul}      % \hl{}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, fit, calc}
+
+% ----- En-têtes / pieds de page -----
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textcolor{darkGray}{\leftmark}}
+\fancyhead[R]{\small\textcolor{michelinBlue}{\textbf{BibOps}}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ----- Macro utilitaire -----
+\newcommand{\metric}[1]{\textbf{\textcolor{michelinBlue}{#1}}}
+\newcommand{\verdict}[1]{%
+  \ifthenelse{\equal{#1}{PASS}}%
+    {\textcolor{OliveGreen}{\bfseries PASS}}%
+    {\textcolor{accentRed}{\bfseries FAIL}}%
+}
+\usepackage{ifthen}
+
+\newcommand{\bibopsname}{\textsc{BibOps}}
+
+% Sections styling
+\titleformat{\chapter}[hang]
+  {\Large\bfseries\color{michelinBlue}}
+  {\thechapter.}{0.8em}{}
+\titleformat{\section}[hang]
+  {\large\bfseries\color{darkGray}}
+  {\thesection}{0.7em}{}
+\titleformat{\subsection}[hang]
+  {\normalsize\bfseries}
+  {\thesubsection}{0.6em}{}

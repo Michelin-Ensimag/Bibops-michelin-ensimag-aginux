@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import pytest
 
-from src.eval_bank.probes import Probe, list_categories, load_probes
+from src.bibops.probes import Probe, list_categories, load_probes
 
 ALL_CATEGORIES = list_categories()
 
@@ -79,7 +79,7 @@ class TestInjectionProbes:
 class TestSecretsProbes:
     def test_echo_probes_contain_a_secret_pattern(self):
         """Echo-class probes should embed a secret in the input."""
-        from src.eval_bank.checks import detect_secrets
+        from src.bibops.evaluation.checks import detect_secrets
 
         probes = load_probes("security/secrets")
         echo_probes = [p for p in probes if "echo" in p.tags]

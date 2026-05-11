@@ -186,7 +186,7 @@ class EvaluationEngineV2(EvaluationEngine):
     are adjusted accordingly; all other scoring methods are inherited unchanged.
 
     Usage:
-        from src.llm_professor.a2a_client import A2AFactChecker
+        from src.bibops.adapters.a2a_client import A2AFactChecker
         checker = A2AFactChecker()
         engine  = EvaluationEngineV2()
 

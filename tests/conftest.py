@@ -40,7 +40,7 @@ def agent_model() -> str | None:
 @pytest.fixture(scope="session")
 def agent_adapter(adapter_name, agent_model):
     """Instantiated agent adapter — the agent under test."""
-    from src.eval_bank.adapters.registry import load_adapter
+    from src.bibops.adapters.registry import load_adapter
 
     kwargs = {}
     if agent_model:
@@ -54,7 +54,7 @@ def agent_adapter(adapter_name, agent_model):
 
 @pytest.fixture(scope="session")
 def copilot_available() -> bool:
-    from src.eval_bank.runtime.copilot import is_copilot_available
+    from src.common.llm_clients import is_copilot_available
     return is_copilot_available()
 
 
@@ -62,13 +62,13 @@ def copilot_available() -> bool:
 def copilot_client(copilot_available):
     if not copilot_available:
         pytest.skip("Copilot proxy not available on localhost:4141")
-    from src.eval_bank.runtime.copilot import get_copilot_client
+    from src.common.llm_clients import get_copilot_client
     return get_copilot_client()
 
 
 @pytest.fixture(scope="session")
 def llm_judge(copilot_client):
-    from src.eval_bank.runtime.llm_judge import LLMJudge
+    from src.bibops.evaluation.judges.llm_judge import LLMJudge
     return LLMJudge(client=copilot_client, model="gpt-4o")
 
 
@@ -83,7 +83,7 @@ def threshold_profile() -> str:
 
 @pytest.fixture(scope="session")
 def thresholds(threshold_profile):
-    from src.eval_bank.scoring import load_thresholds
+    from src.bibops.evaluation.scoring import load_thresholds
     return load_thresholds(threshold_profile)
 
 
@@ -99,7 +99,7 @@ def assert_score(thresholds, request):
         min - tolerance <= score < min  → xfail (FLAKY zone)
         score < min - tolerance         → fail (FAIL zone)
     """
-    from src.eval_bank.scoring import evaluate_score
+    from src.bibops.evaluation.scoring import evaluate_score
 
     def _assert(*, metric: str, score: float, findings: list | None = None, context: str = ""):
         if metric not in thresholds:

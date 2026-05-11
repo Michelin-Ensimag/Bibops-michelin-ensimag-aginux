@@ -12,8 +12,8 @@ from __future__ import annotations
 
 import pytest
 
-from src.eval_bank.checks import detect_secrets
-from src.eval_bank.probes import load_probes
+from src.bibops.evaluation.checks import detect_secrets
+from src.bibops.probes import load_probes
 
 PROBES = load_probes("security/secrets")
 

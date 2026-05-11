@@ -44,7 +44,7 @@ from src.racing.team_client.nodes import (
     fuel_expert_node,
     tire_expert_node,
 )
-from src.llm_professor.security_llminspector_adapter import SecurityLLMInspectorAdapter
+from src.bibops.evaluation.security_evaluator import SecurityLLMInspectorAdapter
 
 from .state_tools import TeamState, ask_michelin_engineer
 

@@ -5,7 +5,7 @@ import json
 
 import pytest
 
-from src.eval_bank.reporting.regression import (
+from src.bibops.evaluation.reporting.regression import (
     check_regression,
     extract_scores_from_report,
     write_baseline,

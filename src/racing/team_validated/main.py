@@ -25,7 +25,7 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel as PydanticModel
 
-from src.llm_professor.security_llminspector_adapter import SecurityLLMInspectorAdapter
+from src.bibops.evaluation.security_evaluator import SecurityLLMInspectorAdapter
 
 # ---------------------------------------------------------------------------
 # CLI args

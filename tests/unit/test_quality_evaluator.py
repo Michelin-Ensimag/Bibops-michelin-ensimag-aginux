@@ -1,31 +1,34 @@
 """Unit tests for the QualityEvaluator wrapper around LLMProfessor."""
 from __future__ import annotations
 
-from unittest.mock import MagicMock
-
 from src.bibops.evaluation.quality_evaluator import QualityEvaluator
 
 
 class _FakeJudge:
-    """Stand-in for LLMProfessor with the chain interface QualityEvaluator uses."""
+    """Stand-in for LLMProfessor using evaluer_reponse interface."""
 
     def __init__(self, result):
-        self.parser = MagicMock()
-        self.parser.get_format_instructions.return_value = "INSTR"
-        self.chain = MagicMock()
-        if isinstance(result, Exception):
-            self.chain.invoke.side_effect = result
-        else:
-            self.chain.invoke.return_value = result
+        self._result = result
+        self._last_call: dict = {}
+
+    def evaluer_reponse(self, *, ticket_id, ticket_texte, reponse_agent, modele_agent, temps_reponse, diagnostic_rca):
+        self._last_call = {
+            "ticket_texte": ticket_texte,
+            "reponse_agent": reponse_agent,
+            "diagnostic_rca": diagnostic_rca,
+        }
+        if isinstance(self._result, Exception):
+            raise self._result
+        return self._result
 
 
 class TestEvaluate:
     def test_returns_score_and_justification_on_success(self):
-        judge = _FakeJudge({"note": 8.5, "justification": "fine"})
+        judge = _FakeJudge({"note": 8, "justification": "fine"})
         evaluator = QualityEvaluator(judge=judge)
         out = evaluator.evaluate({"ticket_text": "T", "answer_text": "A", "diagnostic_rca": "RCA"})
         assert out["status"] == "ok"
-        assert out["score"] == 8.5
+        assert out["score"] == 8.0
         assert out["justification"] == "fine"
         assert out["error"] == ""
 
@@ -43,12 +46,11 @@ class TestEvaluate:
         out = QualityEvaluator(judge=judge).evaluate({"ticket_text": "t", "answer_text": "a"})
         assert out["score"] == 0.0
 
-    def test_chain_exception_returns_error_envelope(self):
-        judge = _FakeJudge(RuntimeError("upstream"))
+    def test_judge_returns_none_gives_error_envelope(self):
+        judge = _FakeJudge(None)
         out = QualityEvaluator(judge=judge).evaluate({"ticket_text": "t", "answer_text": "a"})
         assert out["status"] == "error"
         assert out["score"] == 0.0
-        assert "upstream" in out["error"]
 
     def test_evaluator_has_quality_name(self):
         assert QualityEvaluator(judge=_FakeJudge({"note": 0})).name == "quality"
@@ -57,5 +59,4 @@ class TestEvaluate:
         judge = _FakeJudge({"note": 7, "justification": "ok"})
         evaluator = QualityEvaluator(judge=judge)
         evaluator.evaluate({"ticket_text": "t", "answer_text": "a"})
-        invoke_kwargs = judge.chain.invoke.call_args[0][0]
-        assert invoke_kwargs["diagnostic_rca"] == "Non disponible"
+        assert judge._last_call["diagnostic_rca"] == "Non disponible"

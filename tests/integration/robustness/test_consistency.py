@@ -28,8 +28,8 @@ import os
 
 import pytest
 
-from src.eval_bank.metrics.consistency import VocabularyConsistencyMetric, run_n_times
-from src.eval_bank.probes import load_probes
+from src.bibops.evaluation.metrics.consistency import VocabularyConsistencyMetric, run_n_times
+from src.bibops.probes import load_probes
 
 N_RUNS: int = int(os.environ.get("N_RUNS", "3"))
 

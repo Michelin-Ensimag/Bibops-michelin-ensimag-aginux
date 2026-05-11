@@ -129,3 +129,24 @@ class TestPayloadShape:
             assert key in verdict
         for sub in ("quality_norm", "security_norm", "finops_norm", "latency_norm", "greenops_norm"):
             assert 0.0 <= verdict["component_scores"][sub] <= 1.0
+
+
+
+class TestInverseMinmax:
+    def test_empty_values_returns_one(self):
+        from src.bibops.evaluation.metrics.composite import _inverse_minmax
+        assert _inverse_minmax(5.0, []) == 1.0
+
+    def test_identical_values_returns_one(self):
+        from src.bibops.evaluation.metrics.composite import _inverse_minmax
+        assert _inverse_minmax(3.0, [3.0, 3.0, 3.0]) == 1.0
+
+
+class TestUnknownArchKeys:
+    def test_non_standard_arch_keys(self):
+        summary = {"my_arch": {"cout_usd": 0.01, "latence_totale_s": 1.0, "empreinte_gco2e": 0.5}}
+        quality = {"my_arch": {"score_moyen": 8.0}}
+        security = {"my_arch": {"security_score_moyen": 7.0, "blocked_count": 0, "error_count": 0,
+                                "risks_moyens": {"pii": 0.0, "prompt_injection": 0.0, "no_refusal": 0.0, "toxicity": 0.0}}}
+        out = CompositePolicy().evaluate(summary, quality, security)
+        assert "my_arch" in out["architectures"]

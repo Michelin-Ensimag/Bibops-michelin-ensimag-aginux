@@ -1,26 +1,23 @@
 """
-LLM judge (LLMProfessor) — scores agent responses 0-10 via a ChatOpenAI proxy.
+LLM judge (LLMProfessor) — scores IT support agent responses 0-10.
 
+Uses LLMJudge internally (raw OpenAI client, no LangChain dependency).
 Rule-based scoring lives in rule_engine.py.
 """
+from __future__ import annotations
 
 import sqlite3
 
-from langchain_core.output_parsers import JsonOutputParser
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_openai import ChatOpenAI
-from pydantic import BaseModel, Field
-
+from src.bibops.evaluation.judges.llm_judge import LLMJudge
 from src.bibops.evaluation.rca import RCAEngine
+from src.common.llm_clients import get_copilot_client
 
+try:
+    from openai import OpenAI as _OpenAI
+except ImportError:
+    _OpenAI = None  # type: ignore[misc,assignment]
 
-class EvaluationResult(BaseModel):
-    """Réponse structurée du juge LLM : note sur 10 + justification courte."""
-    note: int = Field(description="Note entière de 0 à 10")
-    justification: str = Field(description="Explication courte de la note (1-2 phrases)")
-
-
-_PROMPT_TEMPLATE = """\
+_CRITERION = """\
 Tu es un expert en support IT (BibOps LLM Professor).
 Ta mission est d'évaluer la réponse d'un agent IA à un ticket utilisateur.
 
@@ -32,13 +29,8 @@ Critères d'évaluation :
 3. Complétude   : Manque-t-il des étapes cruciales pour résoudre le problème ?
 
 Renvoie UNIQUEMENT un objet JSON valide avec :
-  - "note"          : entier de 0 à 10
-  - "justification" : explication courte (1-2 phrases)
-
-{format_instructions}
-
-Ticket Utilisateur  : {ticket}
-Réponse de l'Agent  : {reponse_agent}\
+  - "score"         : entier de 0 à 10
+  - "justification" : explication courte (1-2 phrases)\
 """
 
 
@@ -46,21 +38,15 @@ class LLMProfessor:
     """
     Juge LLM : note les réponses de l'agent BibOps sur 10 et persiste les résultats.
 
-    Le juge est un modèle accessible via un proxy OpenAI-compatible local (port 4141).
+    Wraps LLMJudge with an IT-support-specific prompt, RCA context, and SQLite persistence.
     """
 
-    def __init__(self, db_path: str, modele_juge: str = "gpt-4o"):
+    def __init__(self, db_path: str, modele_juge: str = "gpt-4o", client: "_OpenAI | None" = None):
         self.db_path = db_path
-        self.juge_llm = ChatOpenAI(
-            base_url="http://localhost:4141/v1",
-            api_key="dummy",
+        self._judge = LLMJudge(
+            client=client if client is not None else get_copilot_client(),
             model=modele_juge,
-            temperature=0.0,
-            model_kwargs={"response_format": {"type": "json_object"}},
         )
-        self.parser = JsonOutputParser(pydantic_object=EvaluationResult)
-        self.prompt = ChatPromptTemplate.from_template(_PROMPT_TEMPLATE)
-        self.chain = self.prompt | self.juge_llm | self.parser
 
     def evaluer_reponse(
         self,
@@ -72,22 +58,17 @@ class LLMProfessor:
         diagnostic_rca: str = "Non disponible",
     ) -> dict | None:
         print(f"\n[LLM Professor] Évaluation de la réponse de {modele_agent}...")
-        try:
-            resultat = self.chain.invoke({
-                "ticket": ticket_texte,
-                "reponse_agent": reponse_agent,
-                "diagnostic_rca": diagnostic_rca,
-                "format_instructions": self.parser.get_format_instructions(),
-            })
-            note = resultat.get("note")
-            justification = resultat.get("justification")
-            print(f" -> Note        : {note}/10")
-            print(f" -> Justification : {justification}")
-            self._sauvegarder_en_base(ticket_id, modele_agent, reponse_agent, temps_reponse, note, justification)
-            return resultat
-        except Exception as e:
-            print(f"[Erreur LLM Professor] Évaluation échouée : {e}")
+        criterion = _CRITERION.format(diagnostic_rca=diagnostic_rca)
+        verdict = self._judge.score(criterion=criterion, question=ticket_texte, answer=reponse_agent)
+        if not verdict.ok:
+            print(f"[Erreur LLM Professor] Évaluation échouée : {verdict.justification}")
             return None
+        note = int(round(verdict.score))
+        justification = verdict.justification
+        print(f" -> Note        : {note}/10")
+        print(f" -> Justification : {justification}")
+        self._sauvegarder_en_base(ticket_id, modele_agent, reponse_agent, temps_reponse, note, justification)
+        return {"note": note, "justification": justification}
 
     def evaluer_tickets_en_attente(self) -> int:
         """Évalue en batch toutes les lignes de `evaluations` dont note_juge = 0 ou NULL."""
@@ -118,21 +99,17 @@ class LLMProfessor:
                 print(f"[Ticket eval_id={eval_id}] {texte_ticket[:80]}...")
                 diagnostic = rca.analyser_cause_racine(texte_ticket)
                 print(f"[RCA] {diagnostic[:120]}...")
-                try:
-                    resultat = self.chain.invoke({
-                        "ticket": texte_ticket,
-                        "reponse_agent": reponse_ia,
-                        "diagnostic_rca": diagnostic,
-                        "format_instructions": self.parser.get_format_instructions(),
-                    })
-                    note = resultat.get("note", 0)
-                    justification = resultat.get("justification", "")
-                    print(f" -> Note : {note}/10  |  {justification[:80]}")
-                    cursor.execute(_UPDATE, (note, justification, eval_id))
-                    conn.commit()
-                    nb_evalues += 1
-                except Exception as e:
-                    print(f"[Erreur] Évaluation échouée pour eval_id={eval_id} : {e}")
+                criterion = _CRITERION.format(diagnostic_rca=diagnostic)
+                verdict = self._judge.score(criterion=criterion, question=texte_ticket, answer=reponse_ia)
+                if not verdict.ok:
+                    print(f"[Erreur] Évaluation échouée pour eval_id={eval_id} : {verdict.justification}")
+                    continue
+                note = int(round(verdict.score))
+                justification = verdict.justification
+                print(f" -> Note : {note}/10  |  {justification[:80]}")
+                cursor.execute(_UPDATE, (note, justification, eval_id))
+                conn.commit()
+                nb_evalues += 1
 
         print(f"\n[LLM Professor] {nb_evalues}/{len(lignes)} ticket(s) évalué(s).")
         return nb_evalues
@@ -149,7 +126,7 @@ class LLMProfessor:
 
 if __name__ == "__main__":
     import os
-    DB_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../data/databases/bibops.db"))
+    DB_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../data/databases/bibops.db"))
     prof = LLMProfessor(db_path=DB_PATH)
     resultat = prof.evaluer_reponse(
         ticket_id=0,

@@ -28,29 +28,23 @@ class QualityEvaluator:
         answer_text = str(sample.get("answer_text") or "")
         diagnostic_rca = str(sample.get("diagnostic_rca") or "Non disponible")
 
-        try:
-            result = self._judge.chain.invoke(
-                {
-                    "ticket": ticket_text,
-                    "reponse_agent": answer_text,
-                    "diagnostic_rca": diagnostic_rca,
-                    "format_instructions": self._judge.parser.get_format_instructions(),
-                }
-            )
-            note = float(result.get("note", 0))
-            note = max(0.0, min(10.0, note))
-            justification = str(result.get("justification", ""))
+        result = self._judge.evaluer_reponse(
+            ticket_id=0,
+            ticket_texte=ticket_text,
+            reponse_agent=answer_text,
+            modele_agent="evaluator",
+            temps_reponse=0.0,
+            diagnostic_rca=diagnostic_rca,
+        )
 
-            return {
-                "status": "ok",
-                "score": round(note, 2),
-                "justification": justification,
-                "error": "",
-            }
-        except Exception as exc:
-            return {
-                "status": "error",
-                "score": 0.0,
-                "justification": "",
-                "error": f"judge_error: {exc}",
-            }
+        if result is None:
+            return {"status": "error", "score": 0.0, "justification": "", "error": "judge_error: no result"}
+
+        note = float(result.get("note", 0))
+        note = max(0.0, min(10.0, note))
+        return {
+            "status": "ok",
+            "score": round(note, 2),
+            "justification": str(result.get("justification", "")),
+            "error": "",
+        }

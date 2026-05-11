@@ -16,11 +16,11 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.llm_professor.a2a_client import A2AAgentInfo, discover_agent, send_message
-from src.llm_professor.evaluator_registry import EvaluatorRegistry
-from src.llm_professor.llm_judge import LLMProfessor
-from src.llm_professor.quality_evaluator import QualityEvaluator
-from src.llm_professor.security_llminspector_adapter import SecurityLLMInspectorAdapter
+from src.bibops.adapters.a2a_client import A2AAgentInfo, discover_agent, send_message
+from src.bibops.evaluation.registry import EvaluatorRegistry
+from src.bibops.evaluation.judges.llm_professor import LLMProfessor
+from src.bibops.evaluation.quality_evaluator import QualityEvaluator
+from src.bibops.evaluation.security_evaluator import SecurityLLMInspectorAdapter
 
 
 DEFAULT_AGENTS = [f"https://a2a-{idx}.emottet.com" for idx in range(6, 15)]

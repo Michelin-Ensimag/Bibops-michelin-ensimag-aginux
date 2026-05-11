@@ -26,13 +26,13 @@ from src.agent.tools import (
     chercher_documentation_technique,
     verifier_statut_serveur,
 )
-from src.llm_professor.composite_policy import CompositePolicy
-from src.llm_professor.evaluator_registry import EvaluatorRegistry
-from src.llm_professor.greenops import calculate_carbon_footprint
-from src.llm_professor.llm_judge import LLMProfessor
-from src.llm_professor.quality_evaluator import QualityEvaluator
-from src.llm_professor.result_schema import build_benchmark_payload
-from src.llm_professor.security_llminspector_adapter import SecurityLLMInspectorAdapter
+from src.bibops.evaluation.metrics.composite import CompositePolicy
+from src.bibops.evaluation.registry import EvaluatorRegistry
+from src.bibops.evaluation.metrics.greenops import calculate_carbon_footprint
+from src.bibops.evaluation.judges.llm_professor import LLMProfessor
+from src.bibops.evaluation.quality_evaluator import QualityEvaluator
+from src.bibops.evaluation.result_schema import build_benchmark_payload
+from src.bibops.evaluation.security_evaluator import SecurityLLMInspectorAdapter
 
 DEFAULT_INPUT_CSV = PROJECT_ROOT / "data" / "raw" / "benchmark" / "tickets_scenario_1.csv"
 DEFAULT_OUTPUT_JSON = PROJECT_ROOT / "data" / "outputs" / "benchmark" / "comparison_results.json"

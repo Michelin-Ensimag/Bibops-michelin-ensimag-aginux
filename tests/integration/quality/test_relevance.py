@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import pytest
 
-from src.eval_bank.probes import load_probes
+from src.bibops.probes import load_probes
 
 PROBES = load_probes("quality/relevance")
 
