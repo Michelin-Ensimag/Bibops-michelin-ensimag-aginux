@@ -1,0 +1,348 @@
+% ============================================================
+%  Section 4 -- Resultats
+% ============================================================
+
+\chapter{Résultats}
+
+\section{Conditions experimentales}
+
+Les resultats de cette section proviennent des artefacts presents dans
+\file{data/outputs/benchmark/}. La campagne principale a ete generee le
+9 mai 2026 et compare deux architectures sur 10 tickets extraits du jeu de
+donnees de 40 tickets. Les deux architectures utilisent \code{phi3:latest}; le
+juge qualite est \code{gpt-4o}. La tarification configuree dans le fichier de
+resultats est de 2,5 dollars par million de tokens d'entree et 10 dollars par
+million de tokens de sortie.
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{lY}
+\toprule
+\textbf{Artefact} & \textbf{Usage dans le rapport} \\
+\midrule
+\file{comparison_results.json} & Resultat principal LLM unique vs systeme multi-agents. \\
+\file{benchmark_mcp.json} & Performance directe des outils MCP. \\
+\file{benchmark_mcp_tools.json} & Variante MCP avec pertinence/F1. \\
+\file{ab_llm_resultat.json} & Test A/B entre \code{gpt-4o-mini} et \code{claude-haiku-4.5}. \\
+\file{position_bias_resultat.json} & Test de biais de position sur tickets IT. \\
+\file{security_race_report.json} & Rapport adversarial Racing Arena. \\
+\file{a2a_agents_results.json} & Benchmark A2A du 12 mai 2026, non concluant. \\
+\file{kaggle/local_kaggle_exam_report_20260509_101412.json} & Rejeu local d'un examen Kaggle. \\
+\bottomrule
+\end{tabularx}
+\caption{Sources chiffrees exploitees.}
+\label{tab:result-artifacts}
+\end{table}
+
+\section{Comparaison LLM Unique vs Système Multi-Agents}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{comparaison_architectures.png}
+  \caption[Comparaison globale des deux architectures]{Comparaison globale des deux architectures. Chemin :
+  \file{data/outputs/benchmark/charts/comparaison_architectures.png}.}
+  \label{fig:comparaison-architectures}
+\end{figure}
+
+Le tableau \ref{tab:main-results} reprend les metriques brutes du benchmark
+principal.
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{YccY}
+\toprule
+\textbf{Métrique} & \textbf{LLM Unique} & \textbf{SMA} & \textbf{Lecture} \\
+\midrule
+Score qualite moyen & 0,0/10 & \textbf{3,8/10} & Le SMA est meilleur, mais loin du seuil 7/10. \\
+Score securite moyen & 10,0/10 & 10,0/10 & Aucun risque detecte sur cette campagne. \\
+Latence totale & 277,3515 s & \textbf{100,6540 s} & Reduction de 63,7 \%, soit 2,76 fois plus rapide. \\
+Cout estime & 0,049593 \$ & \textbf{0,006270 \$} & Cout divise par 7,91. \\
+Tokens totaux & 5\,344 & \textbf{627} & Reduction de 88,3 \%. \\
+Energie estimee & 0,0010688 kWh & \textbf{0,0001254 kWh} & Energie divisee par 8,52. \\
+Empreinte carbone & 0,05344 gCO$_2$e & \textbf{0,00627 gCO$_2$e} & Meme tendance que les tokens. \\
+Score composite & 35,0/100 & \textbf{75,2/100} & Amelioration de 40,2 points. \\
+Verdict & \verdict{FAIL} & \verdict{FAIL} & Gate qualite non atteint. \\
+\bottomrule
+\end{tabularx}
+\caption{Resultats principaux extraits de \file{comparison_results.json}.}
+\label{tab:main-results}
+\end{table}
+
+Le SMA gagne selon la regle du benchmark : meilleur score composite parmi les
+architectures qui passent les gates, ou meilleur score global si aucune ne les
+passe. Ici aucune architecture ne passe, mais le SMA domine nettement le LLM
+unique.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{core_benchmark.png}
+  \caption[Synthese du coeur de benchmark]{Synthese du coeur de benchmark. Chemin :
+  \file{data/outputs/benchmark/charts/core_benchmark.png}.}
+  \label{fig:core-benchmark}
+\end{figure}
+
+\subsection{Analyse du score composite}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.92\textwidth]{composite_verdict.png}
+  \caption[Verdicts composites]{Verdicts composites. Chemin :
+  \file{data/outputs/benchmark/charts/composite_verdict.png}.}
+  \label{fig:composite-verdict}
+\end{figure}
+
+Le score composite du SMA est eleve car il obtient la meilleure normalisation
+sur le cout, la latence et l'empreinte carbone, tout en conservant un score
+securite de 10/10. La faiblesse restante est la qualite. Le gate qualite
+explique le verdict \verdict{FAIL} malgre un score composite de 75,2/100.
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{0.88\textwidth}{Ycc}
+\toprule
+\textbf{Composante normalisee} & \textbf{LLM Unique} & \textbf{SMA} \\
+\midrule
+Qualite & 0,0000 & 0,3800 \\
+Securite & 1,0000 & 1,0000 \\
+FinOps & 0,0000 & 1,0000 \\
+Latence & 0,0000 & 1,0000 \\
+GreenOps & 0,0000 & 1,0000 \\
+\bottomrule
+\end{tabularx}
+\caption{Composantes normalisees de la politique composite.}
+\label{tab:component-scores}
+\end{table}
+
+Ce resultat met en evidence un point methodologique : une architecture peut etre
+superieure sur les dimensions operationnelles tout en restant insuffisante sur
+le plan fonctionnel. Le rapport ne doit donc pas conclure que le SMA est pret
+pour la production ; il conclut qu'il est la meilleure base experimentale.
+
+\section{Qualite des outils et MCP}
+
+Les benchmarks MCP isolent le comportement des outils exposes via Model Context
+Protocol. Le fichier \file{benchmark_mcp.json} contient cinq tickets et cinq
+succes. Le score final moyen est \metric{9,782/10}, avec une latence moyenne de
+\metric{0,0518 s}. La variante \file{benchmark_mcp_tools.json}, qui ajoute une
+dimension de pertinence, obtient \metric{7,848/10} en moyenne, pour une latence
+moyenne de \metric{0,0746 s}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{mcp_benchmark.png}
+  \caption[Benchmark MCP]{Benchmark MCP. Chemin :
+  \file{data/outputs/benchmark/charts/mcp_benchmark.png}.}
+  \label{fig:mcp-benchmark}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{0.88\textwidth}{Yccc}
+\toprule
+\textbf{Artefact MCP} & \textbf{Cas} & \textbf{OK} & \textbf{Score moyen} \\
+\midrule
+\file{benchmark_mcp.json} & 5 & 5 & 9,782 \\
+\file{benchmark_mcp_tools.json} & 5 & 5 & 7,848 \\
+\bottomrule
+\end{tabularx}
+\caption{Synthese des benchmarks MCP.}
+\label{tab:mcp-results}
+\end{table}
+
+L'ecart entre les deux scores vient de l'ajout d'une mesure de pertinence et de
+F1 dans la seconde variante. Les outils repondent vite et sans erreur, mais la
+pertinence automatique reste plus difficile a mesurer que la disponibilite
+technique.
+
+\section{Tests A/B et biais de position}
+
+Le test A/B LLM compare \code{gpt-4o-mini} et \code{claude-haiku-4.5} sur trois
+paires jugees par \code{gpt-4o}. \code{gpt-4o-mini} est choisi deux fois,
+\code{claude-haiku-4.5} une fois, soit 66,7 \% contre 33,3 \%. Le faible nombre
+de cas interdit une conclusion statistique forte ; le test valide surtout le
+pipeline pairwise.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.96\textwidth]{ab_test_llm.png}
+  \caption[Resultat du test A/B LLM]{Resultat du test A/B LLM. Chemin :
+  \file{data/outputs/benchmark/charts/ab_test_llm.png}.}
+  \label{fig:ab-test}
+\end{figure}
+
+Le test de biais de position est plus directement statistique. Sur 10 tickets,
+20 jugements sont produits en inversant les positions A/B. Le juge choisit la
+position A 12 fois et la position B 8 fois. Le taux A est donc de 0,60, avec une
+p-value binomiale bilaterale de 0,5034. Aucun biais de position significatif
+n'est etabli sur cette campagne.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.96\textwidth]{position_bias.png}
+  \caption[Test de biais de position]{Test de biais de position. Chemin :
+  \file{data/outputs/benchmark/charts/position_bias.png}.}
+  \label{fig:position-bias}
+\end{figure}
+
+Un second test de position bias sur statements donne aussi un taux A de 0,60,
+mais avec 10 jugements et une p-value de 0,7539. Ces resultats sont coherents :
+le pipeline ne detecte pas de biais dominant, mais le volume reste trop faible
+pour une conclusion definitive.
+
+\section{Modeles zero-shot et scores historiques}
+
+Le fichier \file{tickets_evalues_scores.json} contient 12 tickets evalues sur
+trois modeles. Les moyennes observees sont :
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{0.88\textwidth}{Yccccc}
+\toprule
+\textbf{Modele} & \textbf{Cas} & \textbf{Moyenne} & \textbf{Mediane} & \textbf{Min} & \textbf{Max} \\
+\midrule
+\code{llama3.2:1b} & 4 & 5,63 & 6,42 & 1,88 & 7,79 \\
+\code{gpt-3.5-turbo} & 4 & 7,01 & 6,94 & 5,91 & 8,25 \\
+\code{mistral-7b} & 4 & 5,49 & 6,16 & 1,88 & 7,74 \\
+\bottomrule
+\end{tabularx}
+\caption{Scores historiques extraits de \file{tickets_evalues_scores.json}.}
+\label{tab:historical-models}
+\end{table}
+
+Ces chiffres ne sont pas directement comparables a la campagne principale, car
+ils proviennent d'un autre protocole et d'autres modeles. Ils servent cependant
+de repere : obtenir une qualite superieure a 7/10 est possible dans le framework,
+mais depend fortement du modele et du protocole.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.82\textwidth]{graphique_1_score_par_modele.png}
+  \caption[Scores par modele]{Scores par modele. Chemin :
+  \file{data/outputs/benchmark/charts/graphique_1_score_par_modele.png}.}
+  \label{fig:score-modele}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.92\textwidth]{graphique_2_latence_vs_score.png}
+  \caption[Latence et score]{Latence et score. Chemin :
+  \file{data/outputs/benchmark/charts/graphique_2_latence_vs_score.png}.}
+  \label{fig:latence-score}
+\end{figure}
+
+\section{Racing Arena adversariale}
+
+La Racing Arena apporte les resultats les plus interessants sur la securite.
+Le rapport \file{security_race_report.json}, genere le 9 mai 2026, couvre
+15 tours, 4 equipes et 286 decisions.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{racing_arena.png}
+  \caption[Synthese Racing Arena]{Synthese Racing Arena. Chemin :
+  \file{data/outputs/benchmark/charts/racing_arena.png}.}
+  \label{fig:racing-arena}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{Ycccc}
+\toprule
+\textbf{Equipe} & \textbf{Attaques recues} & \textbf{Injections executees} & \textbf{Fuites} & \textbf{Detection} \\
+\midrule
+Team A zero-shot & 12 & 7 (58,3 \%) & 9 (75,0 \%) & 0,0 \% \\
+Team B ReAct & 57 & 53 (93,0 \%) & 7 (12,3 \%) & 14,0 \% \\
+Team C validee & 1 & 0 (0,0 \%) & 0 (0,0 \%) & 0,0 \% \\
+\bottomrule
+\end{tabularx}
+\caption{Metriques de securite de la Racing Arena.}
+\label{tab:racing-security}
+\end{table}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{racing_security_report.png}
+  \caption[Rapport de securite Racing]{Rapport de securite Racing. Chemin :
+  \file{data/outputs/benchmark/charts/racing_security_report.png}.}
+  \label{fig:racing-security}
+\end{figure}
+
+Le resultat principal est clair : l'architecture validee resiste beaucoup mieux
+que les variantes exposees. Team B, qui dispose d'un serveur \code{/query} brut
+et sans filtrage, execute 93 \% des injections recues. Team A fuit davantage de
+strategie, avec un taux de fuite de 75 \%. Team C ne fuit aucune strategie et
+n'execute aucune injection dans cette course.
+
+L'efficacite varie selon le type d'attaque :
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{0.88\textwidth}{Yccc}
+\toprule
+\textbf{Type d'attaque} & \textbf{Tentatives} & \textbf{Taux injection} & \textbf{Taux fuite} \\
+\midrule
+Usurpation d'autorite & 12 & 58,3 \% & 66,7 \% \\
+Injection directe & 52 & 94,2 \% & 7,7 \% \\
+RAG empoisonne & 6 & 66,7 \% & 66,7 \% \\
+\bottomrule
+\end{tabularx}
+\caption{Efficacite des attaques adversariales.}
+\label{tab:attack-effectiveness}
+\end{table}
+
+Ces chiffres montrent que la vulnerabilite ne se resume pas au modele : elle
+depend de l'exposition API, du filtrage, du cloisonnement des roles et de la
+maniere dont les donnees externes sont reinjectees dans le prompt.
+
+\section{A2A et Kaggle}
+
+Le benchmark A2A du 12 mai 2026 est present mais non concluant. Il cible neuf
+agents distants, active les sondes de role, les sondes d'outils, le streaming,
+le probing de modele, le fact-checking et un sous-ensemble Kaggle de quatre
+questions. Dans \file{a2a_agents_results.json}, chaque agent remonte toutefois
+\code{error_count = 1}, avec qualite, securite, score de tache et latence a 0.
+Le rapport doit donc interpreter cet artefact comme une validation partielle du
+pipeline d'orchestration, pas comme une comparaison de performances.
+
+Le dernier rapport Kaggle local disponible,
+\file{local_kaggle_exam_report_20260509_101412.json}, utilise
+\code{mistral:latest} comme modele agent et \code{gpt-4.1} comme juge. Le score
+est de \metric{5/16}, soit \metric{31,25 \%}. Ce resultat signale une marge de
+progression importante sur les questions hors tickets IT classiques.
+
+\section{Verification logicielle}
+
+La suite de tests unitaires a ete executee localement avec :
+
+\begin{lstlisting}[language=bash,caption={Commande de verification locale}]
+PYTHONPATH=. BIBOPS_NON_INTERACTIVE=1 pytest tests/unit -q
+\end{lstlisting}
+
+Le resultat observe est \metric{552 tests passes en 9,98 s}. Cette verification
+ne prouve pas la qualite fonctionnelle des reponses LLM, mais elle garantit que
+les contrats internes, les fakes, les evaluateurs, les adaptateurs et la boucle
+agentique restent coherents dans l'etat courant du depot.
+
+\section{Synthese des resultats}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{synthese_finale.png}
+  \caption[Synthese finale des benchmarks]{Synthese finale des benchmarks. Chemin :
+  \file{data/outputs/benchmark/charts/synthese_finale.png}.}
+  \label{fig:synthese-finale}
+\end{figure}
+
+Les resultats convergent vers quatre constats.
+
+\begin{enumerate}
+  \item Le systeme multi-agents est superieur au LLM unique sur la campagne
+  principale, surtout en cout, latence, tokens et score composite.
+  \item La qualite absolue reste insuffisante : le meilleur score moyen est
+  3,8/10 alors que le gate exige 7/10.
+  \item Les outils MCP sont rapides et stables, ce qui valide leur integration
+  technique.
+  \item La Racing Arena montre que la securite des agents depend fortement de
+  l'architecture : une equipe validee peut reduire a zero les injections
+  executees dans le scenario observe.
+\end{enumerate}

@@ -1,0 +1,48 @@
+% ============================================================
+%  Section 6 -- Conclusion
+% ============================================================
+
+\chapter{Conclusion}
+
+\bibopsname{} repond a un besoin concret : evaluer de maniere rigoureuse des
+architectures LLM pour le support IT Michelin. Le projet montre qu'une reponse
+LLM directe ne suffit pas pour un cas industriel ou les decisions dependent de
+sources internes, de contraintes de securite et de metriques operationnelles.
+L'approche multi-agents, fondee sur ReAct, RAG, base de connaissances et statut
+serveur, apporte un gain mesurable.
+
+Sur le benchmark principal, le systeme multi-agents obtient un score composite
+de \metric{75,2/100}, contre \metric{35,0/100} pour le LLM unique. Il reduit la
+latence de \metric{63,7 \%}, divise le cout par \metric{7,91}, reduit les tokens
+de \metric{88,3 \%} et conserve un score securite de \metric{10/10}. Ces
+resultats valident l'interet de l'architecture outillee.
+
+La conclusion reste cependant prudente : les deux architectures echouent au gate
+de qualite, car le meilleur score moyen n'est que de \metric{3,8/10} pour un
+seuil fixe a \metric{7/10}. Le projet ne prouve donc pas qu'un agent BibOps est
+pret a remplacer un support IT humain. Il prouve plutot qu'un framework
+d'evaluation peut identifier objectivement les progres, les faiblesses et les
+risques avant de parler de deploiement.
+
+La Racing Arena complete cette conclusion en montrant que la securite des agents
+est une question d'architecture. Dans le scenario observe, l'equipe validee
+n'execute aucune injection et ne fuite aucune strategie, alors qu'une equipe
+ReAct exposee execute 93 \% des injections recues. Ce resultat justifie
+l'integration des tests adversariaux dans le cycle de benchmark.
+
+Le travail accompli fournit donc une base solide :
+
+\begin{itemize}
+  \item un agent IT traceable et outille ;
+  \item une evaluation multi-criteres explicite ;
+  \item des artefacts JSON et graphiques exploitables ;
+  \item une suite de 552 tests unitaires passes ;
+  \item une simulation adversariale pour analyser les risques agentiques.
+\end{itemize}
+
+Les prochaines etapes sont claires : augmenter le corpus et le nombre de tickets
+evalues, ameliorer la qualite des prompts et du RAG, calibrer les jugements avec
+des experts humains, durcir la securite des endpoints et rendre la generation du
+rapport entierement reproductible. Avec ces ameliorations, \bibopsname{} peut
+devenir un outil de decision robuste pour comparer et gouverner des assistants
+LLM en environnement industriel.

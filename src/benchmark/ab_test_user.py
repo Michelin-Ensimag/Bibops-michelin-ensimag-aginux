@@ -25,7 +25,7 @@ from src.common.config import COPILOT_BASE_URL
 from src.common.text import _extraire_texte, charger_copilot_api_key
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
-INPUT_CSV = os.path.join(BASE_DIR, "data", "raw", "benchmark", "tickets_scenario_1.csv")
+INPUT_CSV = os.path.join(BASE_DIR, "data", "inputs", "benchmark", "tickets_scenario_1.csv")
 OUTPUT_JSON = os.path.join(BASE_DIR, "data", "outputs", "benchmark", "ab_user_resultat.json")
 
 DEFAULT_MODEL_A = "gpt-4o-mini"

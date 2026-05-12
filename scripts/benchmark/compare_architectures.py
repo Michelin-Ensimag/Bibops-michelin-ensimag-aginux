@@ -76,7 +76,7 @@ def _resolve_input_csv(path: Path) -> Path:
 
     legacy_rel = Path("data/benchmark/tickets_scenario_1.csv")
     if str(path).endswith(str(legacy_rel)):
-        fallback = PROJECT_ROOT / "data" / "raw" / "benchmark" / "tickets_scenario_1.csv"
+        fallback = PROJECT_ROOT / "data" / "inputs" / "benchmark" / "tickets_scenario_1.csv"
         if fallback.exists():
             print(f"[INFO] CSV legacy introuvable, fallback auto vers: {fallback}")
             return fallback

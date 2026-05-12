@@ -1,0 +1,182 @@
+% ============================================================
+%  Section 5 -- Discussion
+% ============================================================
+
+\chapter{Discussion}
+
+\section{Interpretation du resultat principal}
+
+Le resultat principal ne doit pas etre lu comme une victoire definitive du
+systeme multi-agents, mais comme une indication experimentale forte. Sur les
+10 tickets evalues, le SMA produit un meilleur score qualite, consomme beaucoup
+moins de tokens, coute moins cher, repond plus vite et obtient un score
+composite nettement superieur. Ces gains sont coherents avec l'intuition : un
+agent qui interroge directement une base de connaissances ou un statut serveur
+peut eviter de longues reponses generatives et fonder sa reponse sur un contexte
+plus cible.
+
+Cependant, le score qualite moyen de 3,8/10 reste faible. Le gate de qualite a
+donc joue son role : il empeche de transformer une amelioration relative en
+decision de deploiement. Dans un contexte industriel, cette rigueur est saine.
+Un agent moins mauvais que la reference n'est pas automatiquement exploitable par
+un support IT.
+
+\section{Pourquoi la qualite reste faible}
+
+Plusieurs hypotheses expliquent le score qualite observe.
+
+\subsection{Modele local limite}
+
+La campagne principale utilise \code{phi3:latest}. Ce choix est interessant pour
+l'execution locale, mais il peut limiter la capacite de synthese et de suivi
+d'instructions par rapport a des modeles plus puissants. Les scores historiques
+montrent que \code{gpt-3.5-turbo} atteint 7,01/10 sur un autre protocole, ce qui
+suggere que le modele est un facteur majeur.
+
+\subsection{Corpus et references incomplets}
+
+Une architecture RAG depend fortement de son corpus. Si les documents internes
+ne couvrent pas assez de cas, si les entrees KB sont trop courtes ou si les
+tickets demandent une reponse hors corpus, l'agent ne peut pas compenser par la
+seule structure ReAct. Les resultats MCP rapides mais moins bons en pertinence
+dans \file{benchmark_mcp_tools.json} vont dans ce sens : l'outil fonctionne, mais
+la pertinence mesuree reste perfectible.
+
+\subsection{Prompts et format de sortie}
+
+L'agent produit une reponse finale en francais, mais le prompt pourrait etre
+renforce pour imposer une structure plus proche des criteres du juge :
+diagnostic, cause probable, actions par priorite, verification, escalade et
+limites. La reponse structuree existe deja dans la trace, mais elle n'est pas
+necessairement exploitee comme format principal dans tous les benchmarks.
+
+\section{Apport de la politique composite}
+
+La politique composite est un point fort du projet car elle rend explicites les
+arbitrages. Une evaluation classique pourrait se limiter a un score de qualite
+ou a une preference humaine. \bibopsname{} ajoute des dimensions qui comptent
+pour l'exploitation : cout, latence, securite et GreenOps.
+
+Le poids de 35 \% donne a la securite est volontairement eleve. Pour un agent
+qui manipule des tickets internes, une bonne reponse fonctionnelle ne suffit pas
+si elle expose des donnees personnelles ou suit une instruction malveillante.
+La Racing Arena confirme cette priorite : une architecture ReAct peut etre
+performante fonctionnellement tout en executant massivement des injections si
+son endpoint brut n'est pas protege.
+
+La limite de cette politique est la calibration. Les poids actuels sont
+raisonnables pour un prototype, mais ils devraient etre valides avec les parties
+prenantes Michelin. Un service critique pourrait augmenter le poids de la
+securite ou imposer un gate plus strict ; un chatbot interne non critique
+pourrait accepter un compromis different.
+
+\section{Robustesse et securite agentique}
+
+La Racing Arena met en evidence une distinction importante entre securite de
+contenu et securite d'architecture. Les detecteurs de PII, secrets ou injection
+sont necessaires, mais ils ne suffisent pas si l'agent expose des routes faibles,
+relaie des prompts sans filtrage ou confond messages de donnees et instructions.
+
+Team B illustre ce risque : l'equipe dispose d'un comportement ReAct, mais son
+serveur \code{/query} appelle directement le LLM sur un payload externe. Dans la
+course observee, elle execute 93 \% des injections recues. Team C, au contraire,
+montre qu'une validation explicite peut supprimer les injections executees dans
+le scenario mesure.
+
+Ce resultat est utile au-dela de la simulation. Tout agent d'entreprise connecte
+a des outils doit traiter les sources externes comme non fiables par defaut :
+documents RAG, messages utilisateurs, evenements SSE, resultats d'API et traces
+d'autres agents. La separation entre instructions systeme et donnees doit etre
+maintenue par conception, pas seulement par consigne au modele.
+
+\section{Limites des benchmarks}
+
+\subsection{Taille des echantillons}
+
+La campagne principale porte sur 10 tickets et les tests A/B sur trois paires.
+Ces volumes suffisent pour valider le pipeline et observer des tendances, mais
+pas pour conclure statistiquement sur la performance generale. Le test de biais
+de position illustre bien cette limite : la p-value de 0,5034 ne montre pas de
+biais, mais l'echantillon reste trop petit pour garantir son absence.
+
+\subsection{Dependance aux juges LLM}
+
+Le juge \code{gpt-4o} apporte une evaluation scalable, mais il reste un modele.
+Il peut avoir ses propres biais, variations et preferences de style. Le projet
+reduit ce risque avec des tests de position et des criteres explicites, mais une
+validation humaine reste necessaire pour une evaluation finale de qualite IT.
+
+\subsection{Comparabilite des artefacts}
+
+Tous les fichiers de resultats ne proviennent pas du meme protocole, de la meme
+date ou des memes modeles. Par exemple, les scores historiques sur
+\code{llama3.2:1b}, \code{gpt-3.5-turbo} et \code{mistral-7b} ne doivent pas
+etre compares directement au benchmark \code{phi3:latest}. Ils servent de
+repere, pas de preuve.
+
+\subsection{Benchmark A2A non concluant}
+
+Le fichier \file{a2a_agents_results.json} montre que l'orchestration A2A est en
+place, mais chaque agent distant remonte une erreur. Le rapport ne peut donc pas
+utiliser ces chiffres comme mesure de performance. C'est une limite importante
+mais utile : elle indique que le pipeline doit mieux distinguer les erreurs de
+transport, d'authentification, de protocole et d'evaluation.
+
+\section{Qualite logicielle}
+
+Le depot est bien testable : les 552 tests unitaires passent localement et les
+LLM sont mocks dans les tests critiques. Cette decision est essentielle pour un
+projet agentique. Sans mocks, la suite de tests serait lente, couteuse et
+instable.
+
+Quelques points restent a surveiller :
+
+\begin{itemize}
+  \item certaines donnees runtime et bases locales apparaissent modifiees dans
+  l'arbre de travail ; il faut clarifier ce qui doit etre versionne ;
+  \item la commande \code{bibops eval} est documentee, mais l'implementation
+  locale semble s'appuyer sur un module historique \code{src.eval_bank} qui
+  merite une verification avant livraison ;
+  \item les artefacts de benchmark gagneraient a inclure systematiquement un
+  identifiant de commit, la graine aleatoire, la version des prompts et la
+  version exacte des modeles ;
+  \item les graphiques sont deja presents, mais leur generation devrait etre
+  incluse dans une commande unique de reproduction du rapport.
+\end{itemize}
+
+\section{Perspectives d'amelioration}
+
+Les ameliorations prioritaires sont les suivantes.
+
+\begin{enumerate}
+  \item \textbf{Augmenter le volume d'evaluation.} Passer de 10 tickets a la
+  totalite du jeu de 40 tickets, puis a un corpus plus large annote par des
+  experts support.
+
+  \item \textbf{Renforcer les prompts agentiques.} Imposer une reponse finale
+  structuree, avec sources, niveau de confiance, actions et escalade.
+
+  \item \textbf{Ameliorer le corpus RAG.} Ajouter des procedures internes plus
+  completes, nettoyer les chunks, tracer les citations et evaluer la pertinence
+  top-k.
+
+  \item \textbf{Calibrer les scores avec des humains.} Comparer le juge LLM a un
+  panel de correcteurs pour mesurer l'accord inter-juge.
+
+  \item \textbf{Durcir la securite agentique.} Ajouter filtrage d'entree,
+  sandbox d'outils, authentification des endpoints WeakProxy, separation claire
+  entre donnees et instructions, et tests adversariaux automatises.
+
+  \item \textbf{Industrialiser la reproductibilite.} Ajouter une commande de
+  rapport qui regenere benchmarks, graphiques et PDF en consignant l'environnement
+  d'execution.
+\end{enumerate}
+
+\section{Positionnement general}
+
+\bibopsname{} est plus proche d'un banc d'industrialisation que d'une simple
+demo LLM. C'est ce qui fait son interet. Le projet met en relation des themes
+souvent traites separement : agents outilles, RAG, evaluation LLM, securite,
+GreenOps, cout et simulation adversariale. Les resultats montrent que ces
+dimensions peuvent etre mesurees ensemble, meme si la qualite finale n'est pas
+encore au niveau requis.

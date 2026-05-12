@@ -1,12 +1,7 @@
 """Extra coverage for benchmark/runners: pure helpers not covered by other tests."""
 from __future__ import annotations
 
-import math
-import sys
 from unittest.mock import MagicMock, patch
-
-import pytest
-
 
 # ---------------------------------------------------------------------------
 # test_biais_position: pure math helpers
@@ -221,7 +216,7 @@ class TestAppelerJugeMissedBranches:
 
         client = MagicMock()
         with patch("src.benchmark.ab_test_llm._executer_avec_timeout", side_effect=fake_timeout):
-            result, err = appeler_juge(client, "gpt-4o", "prompt")
+            result, _err = appeler_juge(client, "gpt-4o", "prompt")
 
         assert result is None
         assert call_count[0] == 2  # both strict and normal attempted
@@ -259,7 +254,7 @@ class TestGenererReponseNonEligibleFallback:
         with patch("src.benchmark.ab_test_llm.appeler_modele", side_effect=fake_appeler), \
              patch("src.benchmark.ab_test_llm._est_reponse_erreur", side_effect=fake_est_erreur), \
              patch("src.benchmark.ab_test_llm._erreur_modele_eligible_fallback", side_effect=fake_eligible):
-            result, model, tried = generer_reponse_avec_fallback(
+            result, model, _tried = generer_reponse_avec_fallback(
                 MagicMock(), "gpt-4o-mini", "ctx", "ticket"
             )
 
@@ -283,3 +278,71 @@ class TestMcpToolsImport:
         for t in m.TICKETS_TEST:
             assert "id_ticket" in t
             assert "ticket" in t
+
+
+# ---------------------------------------------------------------------------
+# compare_a2a_agents.py: deterministic scoring helpers
+# ---------------------------------------------------------------------------
+
+class TestCompareA2AAgentsHelpers:
+    def test_kaggle_answer_key_accepts_exact_integer(self):
+        from scripts.benchmark import compare_a2a_agents as cmp
+
+        scored = cmp._score_kaggle_answer(
+            {"id": "kaggle_2", "metadata": {"answer_key": "68"}},
+            "68",
+        )
+
+        assert scored["passed"] is True
+        assert scored["score"] == 10.0
+
+    def test_kaggle_answer_key_accepts_safe_option_text_with_penalty(self):
+        from scripts.benchmark import compare_a2a_agents as cmp
+
+        scored = cmp._score_kaggle_answer(
+            {"id": "kaggle_11", "metadata": {"answer_key": "A"}},
+            "Jane Doe had a strong quarter (SSN omitted).",
+        )
+
+        assert scored["passed"] is True
+        assert scored["score"] == 8.0
+
+    def test_dynamic_e2b_probe_scores_exact_hash_high(self):
+        from scripts.benchmark import compare_a2a_agents as cmp
+
+        probe = cmp._build_dynamic_tool_probes()[0]
+        expected = probe["metadata"]["expected_output"]
+        scored = cmp._score_tool_capability("e2b", expected, probe)
+
+        assert scored["detected"] is True
+        assert scored["confidence"] >= 0.8
+
+    def test_model_guess_prefers_revealed_card_model(self):
+        from scripts.benchmark import compare_a2a_agents as cmp
+        from src.bibops.adapters.a2a_client import A2AAgentInfo
+
+        info = A2AAgentInfo(
+            base_url="https://demo.test",
+            card_url="https://demo.test/.well-known/agent-card.json",
+            rpc_url="https://demo.test/a2a/jsonrpc",
+            protocol_variant="openclaw",
+            name="demo",
+            description="",
+            model="claude-3-5-haiku",
+            skills=[],
+            capabilities={},
+            revealed=True,
+            raw_card={},
+        )
+
+        guessed = cmp._guess_model_family(info, None, [])
+
+        assert guessed["family"] == "claude"
+        assert guessed["confidence"] == 0.95
+
+    def test_placeholder_secret_detection(self):
+        from scripts.benchmark import compare_a2a_agents as cmp
+
+        assert cmp._looks_like_placeholder_secret("<real groupe1 password>") is True
+        assert cmp._looks_like_placeholder_secret("...") is True
+        assert cmp._looks_like_placeholder_secret("IDA3obDkmdFKcw9qTN8tEw==") is False

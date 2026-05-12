@@ -11,6 +11,7 @@ from src.bibops.adapters.a2a_client import (
     discover_agent,
     extract_text_from_response,
     send_message,
+    send_stream_message,
 )
 
 
@@ -128,6 +129,31 @@ class TestSendMessage:
             mock_post.return_value = _mock_post_response(["unexpected", "list"])  # not a dict
             result = send_message(agent, "ping")
         assert "JSON-RPC response is not an object" in result.error
+
+
+class TestSendStreamMessage:
+    def test_stream_request_parses_sse_data_lines(self):
+        agent = _agent_info()
+        stream_resp = MagicMock()
+        stream_resp.raise_for_status = MagicMock()
+        stream_resp.iter_lines.return_value = [
+            'data: {"result": {"parts": [{"text": "partial"}]}}',
+            'data: {"result": {"parts": [{"text": "final"}]}}',
+            "data: [DONE]",
+        ]
+        stream_resp.__enter__.return_value = stream_resp
+        stream_resp.__exit__.return_value = False
+
+        with patch("src.bibops.adapters.a2a_client.requests.post", return_value=stream_resp) as mock_post:
+            result = send_stream_message(agent, "ping", username="alice", password="secret")
+
+        body = mock_post.call_args.kwargs["json"]
+        assert body["method"] == "message/stream"
+        assert mock_post.call_args.kwargs["stream"] is True
+        assert mock_post.call_args.kwargs["headers"]["Accept"] == "text/event-stream"
+        assert result.error == ""
+        assert "partial" in result.answer
+        assert "final" in result.answer
 
 
 class TestDiscovery:

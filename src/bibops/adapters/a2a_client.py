@@ -56,6 +56,23 @@ class A2AAgentResult:
         return asdict(self)
 
 
+@dataclass
+class A2AStreamResult:
+    """Normalized response from one A2A streaming call."""
+
+    agent_url: str
+    agent_name: str
+    prompt: str
+    answer: str
+    latency_s: float
+    events: list[dict[str, Any]]
+    raw_lines: list[str]
+    error: str = ""
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
 def _clean_base_url(base_url: str) -> str:
     cleaned = (base_url or "").strip()
     if not cleaned:
@@ -259,7 +276,8 @@ class A2AFactChecker:
     against public sources, and returns a structured verdict
     (Accurate / Not Accurate / Partially Accurate / Not Applicable).
 
-    Credentials are read exclusively from env vars — no default password.
+    Credentials are read from fact-checker-specific env vars first, then the
+    generic A2A env vars for backward compatibility — no default password.
 
     Usage:
         checker = A2AFactChecker()
@@ -275,8 +293,8 @@ class A2AFactChecker:
         timeout_s: int = 60,
     ):
         self.a2a_url = (a2a_url or os.environ.get("A2A_FACTCHECKER_URL", _FACTCHECKER_A2A_URL)).rstrip("/") + "/"
-        self.username = username or os.environ.get("A2A_USERNAME") or ""
-        self.password = password or os.environ.get("A2A_PASSWORD") or ""
+        self.username = username or os.environ.get("A2A_FACTCHECKER_USERNAME") or os.environ.get("A2A_USERNAME") or ""
+        self.password = password or os.environ.get("A2A_FACTCHECKER_PASSWORD") or os.environ.get("A2A_PASSWORD") or ""
         self.timeout_s = timeout_s
 
     def _build_payload(self, answer_text: str, message_id: str = "fact-check-1") -> dict[str, Any]:
@@ -436,5 +454,123 @@ def send_message(
             answer="",
             latency_s=round(latency_s, 4),
             raw_response={},
+            error=str(exc),
+        )
+
+
+def _decode_sse_data_lines(lines: list[str]) -> list[dict[str, Any]]:
+    """Parse best-effort JSON payloads from SSE `data:` lines."""
+    events: list[dict[str, Any]] = []
+    for raw_line in lines:
+        line = raw_line.strip()
+        if not line.startswith("data:"):
+            continue
+        data = line[len("data:"):].strip()
+        if not data or data == "[DONE]":
+            continue
+        try:
+            payload = json.loads(data)
+            if isinstance(payload, dict):
+                events.append(payload)
+            else:
+                events.append({"data": payload})
+        except json.JSONDecodeError:
+            events.append({"text": data})
+    return events
+
+
+def _extract_text_from_stream_events(events: list[dict[str, Any]]) -> str:
+    """Collect human-readable text from common A2A stream event shapes."""
+    texts: list[str] = []
+    for event in events:
+        text = extract_text_from_response(event)
+        if text.strip():
+            texts.append(text.strip())
+            continue
+
+        result = event.get("result")
+        if isinstance(result, dict):
+            text = extract_text_from_response({"result": result})
+            if text.strip():
+                texts.append(text.strip())
+                continue
+
+        for key in ("text", "delta", "content"):
+            value = event.get(key)
+            if isinstance(value, str) and value.strip():
+                texts.append(value.strip())
+                break
+    return "\n\n".join(dict.fromkeys(texts)).strip()
+
+
+def send_stream_message(
+    agent: A2AAgentInfo,
+    prompt: str,
+    username: str | None = None,
+    password: str | None = None,
+    timeout_s: int = 120,
+) -> A2AStreamResult:
+    """
+    Send one A2A `message/stream` request and collect SSE events.
+
+    OpenClaw may expose intermediate tool activity through stream events. The
+    parser is intentionally permissive because A2A implementations differ in
+    event envelope shape.
+    """
+    message_id = f"bibops-stream-{uuid.uuid4()}"
+    payload = {
+        "jsonrpc": "2.0",
+        "id": message_id,
+        "method": "message/stream",
+        "params": {
+            "message": {
+                "role": "user",
+                "messageId": message_id,
+                "parts": _message_parts(prompt, agent.protocol_variant),
+            }
+        },
+    }
+
+    auth = HTTPBasicAuth(username, password) if username and password else None
+    start = time.perf_counter()
+    raw_lines: list[str] = []
+    try:
+        with requests.post(
+            agent.rpc_url,
+            json=payload,
+            headers={"Content-Type": "application/json", "Accept": "text/event-stream"},
+            auth=auth,
+            timeout=timeout_s,
+            stream=True,
+        ) as response:
+            response.raise_for_status()
+            for line in response.iter_lines(decode_unicode=True):
+                if isinstance(line, bytes):
+                    line = line.decode("utf-8", errors="replace")
+                if line is not None:
+                    raw_lines.append(str(line))
+
+        latency_s = time.perf_counter() - start
+        events = _decode_sse_data_lines(raw_lines)
+        answer = _extract_text_from_stream_events(events)
+        return A2AStreamResult(
+            agent_url=agent.base_url,
+            agent_name=agent.name,
+            prompt=prompt,
+            answer=answer,
+            latency_s=round(latency_s, 4),
+            events=events,
+            raw_lines=raw_lines,
+        )
+    except Exception as exc:
+        latency_s = time.perf_counter() - start
+        return A2AStreamResult(
+            agent_url=agent.base_url,
+            agent_name=agent.name,
+            prompt=prompt,
+            answer="",
+            latency_s=round(latency_s, 4),
+            events=[],
+            raw_lines=raw_lines,
             error=str(exc),
         )

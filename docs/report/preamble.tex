@@ -1,39 +1,41 @@
 % ============================================================
-%  BibOps — Preamble
-%  Projet de Spécialité Ensimag / Michelin - 2026
+%  BibOps -- preambule LaTeX
+%  Projet de specialite Ensimag x Michelin -- 2026
 % ============================================================
 
-% ----- Encodage & langue -----
+% ----- Encodage, langue, typographie -----
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[french]{babel}
-\usepackage{csquotes}
-
-% ----- Typographie -----
 \usepackage{microtype}
 \usepackage{lmodern}
 \usepackage{setspace}
+\usepackage{parskip}
 \onehalfspacing
+\sloppy
 
 % ----- Mise en page -----
 \usepackage[
   a4paper,
-  top=2.5cm, bottom=2.5cm,
-  left=3cm,  right=2.5cm,
-  headheight=14pt
+  top=2.5cm,
+  bottom=2.6cm,
+  left=3.0cm,
+  right=2.5cm,
+  headheight=15pt
 ]{geometry}
 \usepackage{fancyhdr}
-\usepackage{emptypage}
 \usepackage{titlesec}
-\usepackage{tocloft}
+\usepackage{caption}
+\captionsetup{font=small, labelfont=bf}
 
 % ----- Couleurs -----
 \usepackage[dvipsnames,table]{xcolor}
 \definecolor{michelinYellow}{RGB}{255, 210, 0}
-\definecolor{michelinBlue}{RGB}{  0,  74,155}
-\definecolor{codeGray}    {RGB}{248,248,248}
-\definecolor{accentRed}   {RGB}{200,  40, 40}
-\definecolor{darkGray}    {RGB}{ 60, 60, 60}
+\definecolor{michelinBlue}{RGB}{0, 74, 155}
+\definecolor{codeGray}{RGB}{248, 248, 248}
+\definecolor{accentRed}{RGB}{190, 38, 38}
+\definecolor{darkGray}{RGB}{55, 55, 55}
+\definecolor{softGray}{RGB}{238, 240, 242}
 
 % ----- Mathématiques -----
 \usepackage{amsmath, amssymb, bm}
@@ -45,18 +47,18 @@
 \usepackage{longtable}
 \usepackage{array}
 \usepackage{tabularx}
-\renewcommand{\arraystretch}{1.35}
+\renewcommand{\arraystretch}{1.25}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{C}{>{\centering\arraybackslash}X}
 
-% ----- Figures & sous-figures -----
+% ----- Figures -----
 \usepackage{graphicx}
 \usepackage{subcaption}
 \usepackage{float}
-\usepackage{wrapfig}
 \graphicspath{{../../data/outputs/benchmark/charts/}}
 
-% ----- Code -----
+% ----- Code et chemins -----
 \usepackage{listings}
-\usepackage{minted}   % optionnel : compile avec --shell-escape
 \lstset{
   backgroundcolor=\color{codeGray},
   basicstyle=\ttfamily\small,
@@ -82,45 +84,23 @@
 ]{hyperref}
 \usepackage{url}
 
-% ----- Bibliographie -----
-\usepackage[
-  backend=biber,
-  style=numeric,
-  sorting=none,
-  maxbibnames=4
-]{biblatex}
-\addbibresource{references.bib}
-
 % ----- Divers -----
 \usepackage{enumitem}
 \usepackage{pifont}
-\usepackage{todonotes}
-\usepackage{lipsum}
-\usepackage{parskip}
-\usepackage{soul}      % \hl{}
+\usepackage{ifthen}
 \usepackage{tikz}
 \usetikzlibrary{shapes.geometric, arrows.meta, positioning, fit, calc}
 
-% ----- En-têtes / pieds de page -----
+% ----- En-tetes / pieds de page -----
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[L]{\small\textcolor{darkGray}{\leftmark}}
 \fancyhead[R]{\small\textcolor{michelinBlue}{\textbf{BibOps}}}
 \fancyfoot[C]{\thepage}
 \renewcommand{\headrulewidth}{0.4pt}
+\setlength{\headheight}{15pt}
 
-% ----- Macro utilitaire -----
-\newcommand{\metric}[1]{\textbf{\textcolor{michelinBlue}{#1}}}
-\newcommand{\verdict}[1]{%
-  \ifthenelse{\equal{#1}{PASS}}%
-    {\textcolor{OliveGreen}{\bfseries PASS}}%
-    {\textcolor{accentRed}{\bfseries FAIL}}%
-}
-\usepackage{ifthen}
-
-\newcommand{\bibopsname}{\textsc{BibOps}}
-
-% Sections styling
+% ----- Titres -----
 \titleformat{\chapter}[hang]
   {\Large\bfseries\color{michelinBlue}}
   {\thechapter.}{0.8em}{}
@@ -130,3 +110,19 @@
 \titleformat{\subsection}[hang]
   {\normalsize\bfseries}
   {\thesubsection}{0.6em}{}
+\titleformat{\subsubsection}[hang]
+  {\normalsize\bfseries\itshape}
+  {\thesubsubsection}{0.6em}{}
+
+% ----- Macros projet -----
+\newcommand{\bibopsname}{\textsc{BibOps}}
+\newcommand{\metric}[1]{\textbf{\textcolor{michelinBlue}{#1}}}
+\DeclareRobustCommand{\code}[1]{\texttt{\detokenize{#1}}}
+\DeclareRobustCommand{\file}[1]{\nolinkurl{#1}}
+\newcommand{\ok}{\textcolor{OliveGreen}{\ding{51}}}
+\newcommand{\ko}{\textcolor{accentRed}{\ding{55}}}
+\newcommand{\verdict}[1]{%
+  \ifthenelse{\equal{#1}{PASS}}%
+    {\textcolor{OliveGreen}{\bfseries PASS}}%
+    {\textcolor{accentRed}{\bfseries FAIL}}%
+}

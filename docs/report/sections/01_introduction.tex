@@ -1,0 +1,106 @@
+% ============================================================
+%  Section 1 -- Introduction
+% ============================================================
+
+\chapter{Introduction}
+
+\section{Contexte industriel}
+
+Les assistants fondes sur les grands modeles de langue sont devenus des
+candidats naturels pour automatiser une partie du support informatique :
+diagnostic initial, recherche de procedure, reformulation de consignes ou
+orientation vers le bon niveau d'escalade. Dans un contexte industriel comme
+Michelin, cette promesse doit cependant etre confrontee a des contraintes
+strictes : fiabilite des reponses, tracabilite, protection des donnees internes,
+cout d'execution, latence acceptable et impact environnemental.
+
+Le risque principal n'est pas seulement qu'un modele reponde mal. Il est qu'une
+reponse plausible, non verifiee, soit integree dans un processus operationnel.
+Un ticket IT contient souvent des indices techniques incomplets, parfois des
+donnees sensibles, et peut necessiter une decision fondee sur un etat externe :
+statut d'un service, procedure interne, incident connu, documentation ou niveau
+d'urgence. Une architecture purement conversationnelle peut produire une reponse
+fluide mais deconnectee de ces sources.
+
+\bibopsname{} a ete concu pour etudier cette question sous forme experimentale.
+Le projet ne cherche pas uniquement a construire un agent, mais a construire un
+\emph{banc d'evaluation} capable de comparer plusieurs architectures et de
+produire des artefacts exploitables : fichiers JSON, graphiques, traces
+d'execution, scores composites et rapports de securite. Cette orientation MLOps
+est centrale : l'objectif est de rendre les decisions mesurables plutot que de
+se fier a une impression qualitative.
+
+\section{Objectifs du projet}
+
+Le projet fixe trois objectifs principaux.
+
+\begin{enumerate}[label=\textbf{O\arabic*.}]
+  \item \textbf{Comparer deux architectures de support IT.} La premiere est un
+  LLM unique, interroge sans outil. La seconde est un systeme multi-agents
+  simplifie, centre sur une boucle ReAct et trois outils : verification de
+  serveur, recherche dans une base de connaissances et recherche documentaire
+  vectorielle.
+
+  \item \textbf{Construire une evaluation multi-criteres.} Les sorties ne sont
+  pas jugees seulement sur leur qualite. Le framework agregue qualite,
+  securite, cout, latence et empreinte environnementale dans une politique
+  composite explicite.
+
+  \item \textbf{Tester les risques agentiques.} La Racing Arena simule un
+  environnement distribue dans lequel plusieurs agents recoivent des flux
+  temps reel et peuvent etre attaques. Elle sert a observer les effets de
+  l'outillage, des APIs faibles et des injections de prompt dans un contexte
+  dynamique.
+\end{enumerate}
+
+Ces objectifs expliquent la structure du depot. \file{src/agent/} contient
+l'agent IT, \file{src/bibops/evaluation/} contient le moteur d'evaluation,
+\file{src/benchmark/} et \file{scripts/benchmark/} orchestrent les campagnes, et
+\file{src/racing/} porte l'arene distribuee.
+
+\section{Perimetre du rapport}
+
+Le present rapport analyse le depot tel qu'il existe le 12 mai 2026. Les
+chiffres sont extraits des artefacts locaux deja produits :
+\file{comparison_results.json} pour la comparaison principale,
+\file{security_race_report.json} pour la Racing Arena,
+\file{benchmark_mcp.json} et \file{benchmark_mcp_tools.json} pour les outils
+MCP, ainsi que les rapports A/B, position bias, A2A et Kaggle.
+
+Le rapport suit le plan impose par l'ecole :
+
+\begin{itemize}
+  \item description conceptuelle du probleme ;
+  \item presentation de la solution ;
+  \item resultats experimentaux avec figures ;
+  \item discussion des limites ;
+  \item conclusion et perspectives.
+\end{itemize}
+
+La demarche reste volontairement factuelle. Lorsque les donnees disponibles ne
+permettent pas de conclure, le rapport le signale explicitement. C'est le cas,
+par exemple, du benchmark A2A du 12 mai 2026 : le pipeline est present et les
+artefacts existent, mais les neuf agents testes remontent chacun une erreur et
+ne permettent donc pas de tirer une conclusion de performance.
+
+\section{Apports principaux}
+
+Les apports de \bibopsname{} sont les suivants.
+
+\begin{itemize}
+  \item Un agent ReAct testable, dont les appels outils sont bornes par des
+  politiques de timeout et de retry.
+  \item Une separation claire entre production, recherche, benchmarks et tests.
+  \item Une evaluation composite explicite, avec poids et seuils visibles dans
+  le code.
+  \item Une instrumentation des traces, permettant de relier une reponse finale
+  a ses appels outils et a son niveau de confiance.
+  \item Une arene de securite agentique qui rend observables les injections, les
+  fuites et les comportements d'agents en temps reel.
+\end{itemize}
+
+Le resultat le plus important est nuance : l'architecture multi-agents est
+meilleure que le LLM unique sur la campagne principale, mais elle n'atteint pas
+encore le seuil de qualite absolu fixe par la politique de release. Le projet
+montre donc a la fois l'interet de l'approche outillee et la necessite d'un
+travail supplementaire avant industrialisation.

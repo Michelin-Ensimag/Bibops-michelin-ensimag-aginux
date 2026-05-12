@@ -1,0 +1,58 @@
+\documentclass[11pt,a4paper,oneside]{report}
+\input{preamble}
+
+\title{\bibopsname{} -- Rapport final\\Projet Ensimag x Michelin}
+\author{Mohammed Akram Lrhorfi\\Projet de specialite Ensimag / Michelin}
+\date{12 mai 2026}
+
+\begin{document}
+
+\begin{titlepage}
+  \centering
+  \vspace*{1.2cm}
+  {\Huge\bfseries\textcolor{michelinBlue}{\bibopsname{}}\par}
+  \vspace{0.35cm}
+  {\Large Banc d'evaluation LLM pour le support IT Michelin\par}
+  \vspace{0.9cm}
+  {\large Rapport final -- Projet Ensimag x Michelin\par}
+
+  \vfill
+  \begin{tabular}{rl}
+    \textbf{Auteur :} & Mohammed Akram Lrhorfi \\
+    \textbf{Partenaire industriel :} & Michelin \\
+    \textbf{Ecole :} & Ensimag \\
+    \textbf{Depot analyse :} & \file{BibOps-michelin-ensimag-aginux} \\
+    \textbf{Date :} & 12 mai 2026 \\
+  \end{tabular}
+  \vfill
+
+  \begin{minipage}{0.86\textwidth}
+    \small
+    Ce rapport est genere a partir du depot local et des artefacts produits par
+    les scripts de benchmark. Les chiffres cites proviennent en particulier de
+    \file{data/outputs/benchmark/comparison_results.json},
+    \file{data/outputs/benchmark/security_race_report.json},
+    \file{data/outputs/benchmark/benchmark_mcp.json} et des sorties de tests
+    unitaires executees localement.
+  \end{minipage}
+\end{titlepage}
+
+\pagenumbering{roman}
+\tableofcontents
+\listoffigures
+\listoftables
+\clearpage
+\pagenumbering{arabic}
+
+\input{sections/00_resume}
+\input{sections/01_introduction}
+\input{sections/02_description_probleme}
+\input{sections/03_solution}
+\input{sections/04_resultats}
+\input{sections/05_discussion}
+\input{sections/06_conclusion}
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}
