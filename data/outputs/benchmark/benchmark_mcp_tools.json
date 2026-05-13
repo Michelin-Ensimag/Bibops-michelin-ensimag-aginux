@@ -1,0 +1,102 @@
+[
+  {
+    "id_ticket": "MCP-001",
+    "ticket": "Mon VPN Cisco ne marche plus.",
+    "outil": "mcp_chercher_dans_kb",
+    "statut": "OK",
+    "temps_reponse_s": 0.008,
+    "scores": {
+      "score_erreur": 10.0,
+      "score_feedback": 10.0,
+      "score_vitesse": 10.0,
+      "score_efficacite_tokens": 9.45,
+      "score_pertinence": 5.0,
+      "f1_details": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "score_final": 8.17
+    }
+  },
+  {
+    "id_ticket": "MCP-002",
+    "ticket": "Est-ce que le service Mail est en ligne ?",
+    "outil": "mcp_verifier_statut_serveur",
+    "statut": "OK",
+    "temps_reponse_s": 0.012,
+    "scores": {
+      "score_erreur": 10.0,
+      "score_feedback": 10.0,
+      "score_vitesse": 10.0,
+      "score_efficacite_tokens": 10.0,
+      "score_pertinence": 5.0,
+      "f1_details": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "score_final": 8.25
+    }
+  },
+  {
+    "id_ticket": "MCP-003",
+    "ticket": "Comment récupérer ma clé Bitlocker ?",
+    "outil": "mcp_chercher_documentation_technique",
+    "statut": "OK",
+    "temps_reponse_s": 0.369,
+    "scores": {
+      "score_erreur": 10.0,
+      "score_feedback": 10.0,
+      "score_vitesse": 10.0,
+      "score_efficacite_tokens": 2.09,
+      "score_pertinence": 5.0,
+      "f1_details": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "score_final": 7.06
+    }
+  },
+  {
+    "id_ticket": "MCP-004",
+    "ticket": "Mon PC est très lent depuis ce matin.",
+    "outil": "mcp_chercher_dans_kb",
+    "statut": "OK",
+    "temps_reponse_s": 0.004,
+    "scores": {
+      "score_erreur": 10.0,
+      "score_feedback": 10.0,
+      "score_vitesse": 10.0,
+      "score_efficacite_tokens": 9.07,
+      "score_pertinence": 5.0,
+      "f1_details": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "score_final": 8.11
+    }
+  },
+  {
+    "id_ticket": "MCP-005",
+    "ticket": "Outlook crash au démarrage.",
+    "outil": "mcp_chercher_dans_kb",
+    "statut": "OK",
+    "temps_reponse_s": 0.003,
+    "scores": {
+      "score_erreur": 10.0,
+      "score_feedback": 10.0,
+      "score_vitesse": 10.0,
+      "score_efficacite_tokens": 9.12,
+      "score_pertinence": 5.0,
+      "f1_details": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "score_final": 8.12
+    }
+  }
+]

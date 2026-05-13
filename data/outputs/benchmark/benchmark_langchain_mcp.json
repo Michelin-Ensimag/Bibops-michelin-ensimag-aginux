@@ -1,0 +1,68 @@
+[
+  {
+    "modele": "gpt-4o-mini",
+    "ticket": "Mon VPN Cisco ne marche plus, j'ai un message 'connection timeout'.",
+    "reponse": "Voici les étapes à suivre pour résoudre le problème de connexion de votre VPN Cisco :\n\n1. **Vérifiez l'installation** : Assurez-vous que le client Cisco AnyConnect est installé (version 4.9 ou supérieure).\n2. **Vérifiez vos identifiants** : Utilisez les identifiants de votre session Windows.\n3. **Testez votre connexion Internet** : Ouvrez une invite de commande et exécutez `ping google.com` pour vérifier la connectivité.\n4. **Vérifiez le pare-feu** : Assurez-vous que le pare-feu Windows autorise Cisco AnyConnect.\n5. **Redémarrez le service** : \n   - Ouvrez `services.msc`.\n   - Trouvez \"Cisco AnyConnect\" et redémarrez le service.\n6. **Videz le cache DNS** : Ouvrez CMD en mode administrateur et exécutez `ipconfig /flushdns`.\n7. **Essayez le serveur de secours** : Connectez-vous à `vpn-backup.michelin.com` au lieu de `vpn.michelin.com`.\n8. **Réinstallez AnyConnect** : Si le problème persiste, désinstallez complètement AnyConnect, redémarrez votre PC, puis réinstallez-le depuis le portail intranet.\n9. **Vérifiez l'antivirus** : Assurez-vous que votre antivirus ne bloque pas la connexion VPN.\n\n**Note** : Le service VPN est actuellement hors ligne (Incident 4042). Si le problème persiste après ces étapes, veuillez ouvrir un ticket pour l'équipe réseau infrastructure.",
+    "outil_utilise": "auto (LangGraph)",
+    "temps_s": 3.93,
+    "tokens": 0,
+    "statut": "OK",
+    "scores": {
+      "score_erreur": 10.0,
+      "score_feedback": 10.0,
+      "score_vitesse": 6.2,
+      "score_efficacite_tokens": 8.79,
+      "score_pertinence": 6.08,
+      "f1_details": {
+        "precision": 0.5,
+        "recall": 0.776,
+        "f1": 0.608
+      },
+      "score_final": 7.88
+    }
+  },
+  {
+    "modele": "gpt-4o",
+    "ticket": "Mon VPN Cisco ne marche plus, j'ai un message 'connection timeout'.",
+    "reponse": "Voici les étapes pour résoudre le problème de \"connection timeout\" avec le VPN Cisco AnyConnect :\n\n### Diagnostic :\n1. Vérifiez que le client Cisco AnyConnect est installé (version 4.9 ou supérieure).\n2. Assurez-vous que vos identifiants sont corrects (utilisez ceux de votre session Windows).\n3. Testez votre connexion internet en exécutant `ping google.com` dans l'invite de commande.\n4. Vérifiez que le pare-feu Windows autorise Cisco AnyConnect.\n\n### Résolution :\n1. **Redémarrez le service Cisco AnyConnect** :\n   - Ouvrez `services.msc`.\n   - Recherchez \"Cisco AnyConnect\".\n   - Faites un clic droit et sélectionnez \"Redémarrer\".\n   \n2. **Videz le cache DNS** :\n   - Ouvrez l'invite de commande en tant qu'administrateur.\n   - Tapez `ipconfig /flushdns` et appuyez sur Entrée.\n\n3. **Essayez un serveur de secours** :\n   - Utilisez `vpn-backup.michelin.com` au lieu de `vpn.michelin.com`.\n\n4. **Réinstallez Cisco AnyConnect** :\n   - Désinstallez complètement le client.\n   - Redémarrez votre PC.\n   - Réinstallez le client depuis le portail intranet Michelin.\n\n5. **Vérifiez votre antivirus** :\n   - Assurez-vous que votre antivirus ne bloque pas la connexion VPN.\n\n### Escalade :\nSi le problème persiste, ouvrez un ticket de niveau 2 auprès de l'équipe réseau infrastructure.\n\n### Note :\n- Si vous êtes dans une zone géographique spécifique, utilisez le serveur correspondant (ex. `vpn-clermont.michelin.com` pour EMEA).\n- Assurez-vous que votre antivirus CrowdStrike et Windows Update sont à jour, car cela peut bloquer la connexion.",
+    "outil_utilise": "auto (LangGraph)",
+    "temps_s": 8.58,
+    "tokens": 0,
+    "statut": "OK",
+    "scores": {
+      "score_erreur": 10.0,
+      "score_feedback": 10.0,
+      "score_vitesse": 2.22,
+      "score_efficacite_tokens": 8.15,
+      "score_pertinence": 5.29,
+      "f1_details": {
+        "precision": 0.407,
+        "recall": 0.755,
+        "f1": 0.529
+      },
+      "score_final": 6.91
+    }
+  },
+  {
+    "modele": "claude-haiku-4.5",
+    "ticket": "Mon VPN Cisco ne marche plus, j'ai un message 'connection timeout'.",
+    "reponse": "Je vais rechercher une solution pour ce problème de connexion VPN Cisco.",
+    "outil_utilise": "auto (LangGraph)",
+    "temps_s": 2.57,
+    "tokens": 0,
+    "statut": "OK",
+    "scores": {
+      "score_erreur": 10.0,
+      "score_feedback": 10.0,
+      "score_vitesse": 7.65,
+      "score_efficacite_tokens": 10.0,
+      "score_pertinence": 1.07,
+      "f1_details": {
+        "precision": 0.429,
+        "recall": 0.061,
+        "f1": 0.107
+      },
+      "score_final": 6.52
+    }
+  }
+]
