@@ -45,6 +45,7 @@
 \newcolumntype{C}{>{\centering\arraybackslash}X}
 
 \usepackage{graphicx}
+\usepackage{pdflscape}
 \usepackage{subcaption}
 \usepackage{float}
 
@@ -148,4 +149,33 @@
     \caption{#3}
     \label{#4}
   \end{figure}
+}
+
+
+\newcommand{\plantumllandscape}[3]{%
+  \begin{landscape}
+  \begin{figure}[p]
+    \centering
+    \IfFileExists{diagrams/rendered/#1.png}{%
+      \includegraphics[
+        width=0.95\linewidth,
+        height=0.85\textheight,
+        keepaspectratio
+      ]{diagrams/rendered/#1.png}%
+    }{%
+      \fbox{%
+        \parbox{0.86\textwidth}{%
+          \centering
+          \vspace{0.4em}
+          \textbf{Diagramme PlantUML}\\
+          Source : \file{docs/report/diagrams/#1.puml}\\
+          Image rendue optionnelle : \file{docs/report/diagrams/rendered/#1.png}
+          \vspace{0.4em}
+        }%
+      }%
+    }%
+    \caption{#2}
+    \label{#3}
+  \end{figure}
+  \end{landscape}
 }

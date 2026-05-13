@@ -28,7 +28,7 @@ l'avantage d'être simple, mais elle présente trois limites.
   la messagerie est en panne dans l'environnement local.
   \item \textbf{Risque d'hallucination.} Le modèle peut proposer des procédures,
   numéros ou causes plausibles mais non vérifiées.
-  \item \textbf{Évaluation trompeuse.} Une réponse bien redigee peut être
+  \item \textbf{Évaluation trompeuse.} Une réponse bien rédigée peut être
   insuffisante si elle ne respecte pas les sources ou les contraintes de
   sécurité.
 \end{itemize}
@@ -71,11 +71,3 @@ Le score composite est complete par des gates bloquants : qualité minimale,
 sécurité minimale et seuils maximaux pour certains risques. Cette logique evite
 qu'une architecture rapide ou peu coûteuse soit validée si elle répond mal.
 
-\section{Problème de reproductibilité}
-
-Les LLM rendent l'experimentation fragile : les modèles changent, les APIs sont
-limitees par quota, les juges peuvent varier et les outils externes peuvent
-tomber en erreur. Le banc doit donc enregistrer les configurations, produire des
-artefacts JSON, générer des graphiques et separer les tests unitaires des appels
-réseau. Cette exigence justifie l'investissement dans une CLI, une structure de
-dépôt claire et un pipeline CI.

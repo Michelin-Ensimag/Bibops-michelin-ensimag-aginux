@@ -15,7 +15,6 @@ rectangle "BibOps" {
   usecase "Consulter rapports\nJSON et graphiques" as UC3
   usecase "Interroger agent\nA2A" as UC4
   usecase "Executer tests\nunitaires" as UC5
-  usecase "Generer rapport\nLaTeX" as UC6
   usecase "Simuler Racing\nArena adversariale" as UC7
   usecase "Mettre a jour KB\net RAG" as UC8
 }
@@ -23,12 +22,10 @@ rectangle "BibOps" {
 Dev --> UC1
 Dev --> UC4
 Dev --> UC5
-Dev --> UC6
 Dev --> UC7
 Dev --> UC8
 
 Mentor --> UC3
-Mentor --> UC6
 Support --> UC1
 A2A --> UC4
 CI --> UC5
@@ -37,5 +34,4 @@ CI --> UC2
 UC1 .> UC2 : <<include>>
 UC2 .> UC3 : <<include>>
 UC7 .> UC2 : <<include>>
-UC6 .> UC3 : <<include>>
 @enduml

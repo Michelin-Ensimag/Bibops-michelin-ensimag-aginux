@@ -10,9 +10,9 @@ class Ticket {
 }
 
 class AgentDecision {
-  +tool: str?
-  +argument: str?
-  +final_answer: str?
+  +tool: str
+  +argument: str
+  +final_answer: str
 }
 
 class SupportAgent {
