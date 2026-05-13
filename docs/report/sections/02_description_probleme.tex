@@ -2,19 +2,19 @@
 %  Section 2 -- Description conceptuelle du problème
 % ============================================================
 
-\chapter{Description conceptuelle du problème}
+\chapter{Problématique}
 
 \section{Nature des tickets de support IT}
 
-Un ticket IT est souvent court, incomplet et contextuel. Il peut decrire un
+Un ticket IT est souvent court, incomplet et contextuel. Il peut décrire un
 symptôme sans donner l'état réel du service, le message d'erreur exact ou le
 niveau d'urgence. Une bonne réponse doit donc rester prudente : identifier une
 cause probable, proposer des actions concrètes, demander les informations
 manquantes et escalader lorsque le problème dépend d'une infrastructure.
 
 Le jeu de données principal contient des tickets IT comme :
-\emph{Mon VPN Cisco ne marche plus}, \emph{Outlook crash au demarrage},
-\emph{Comment recuperer ma cle BitLocker ?} ou \emph{Mon PC redemarre en
+\emph{Mon VPN Cisco ne marche plus}, \emph{Outlook crash au démarrage},
+\emph{Comment récupérer ma clé BitLocker ?} ou \emph{Mon PC redémarre en
 boucle après une mise à jour Windows}. Ces tickets représentent bien un support
 de niveau 1 ou 2 : le modèle doit être utile sans inventer d'état interne.
 
@@ -48,26 +48,25 @@ l'outillage, la trace et la sécurité agentique, pas seulement la réponse fina
 
 \section{Critères d'évaluation}
 
-\bibopsname{} formalise l'évaluation comme un problème multicritere.
+\bibopsname{} formalise l'évaluation comme un problème multicritère.
 
-\begin{table}[H]
+\begin{table}[!htbp]
 \centering
 \begin{tabularx}{0.9\textwidth}{YcY}
 \toprule
 \textbf{Dimension} & \textbf{Poids} & \textbf{Rôle} \\
 \midrule
-Qualité & 40 \% & Pertinence, completude, clarte et utilite de la réponse. \\
-Sécurité & 35 \% & PII, secrets, injection, URLs suspectes, toxicite, refus. \\
+Qualité & 40 \% & Pertinence, complétude, clarté et utilité de la réponse. \\
+Sécurité & 35 \% & PII, secrets, injection, URLs suspectes, toxicité, refus. \\
 FinOps & 10 \% & Coût estimé à partir des tokens. \\
 Latence & 10 \% & Temps de réponse total. \\
 GreenOps & 5 \% & Énergie et empreinte carbone estimées. \\
 \bottomrule
 \end{tabularx}
-\caption{Ponderation de la politique composite.}
+\caption{Pondération de la politique composite.}
 \label{tab:problem-composite}
 \end{table}
 
-Le score composite est complete par des gates bloquants : qualité minimale,
-sécurité minimale et seuils maximaux pour certains risques. Cette logique evite
+Le score composite est complété par des gates bloquants : qualité minimale,
+sécurité minimale et seuils maximaux pour certains risques. Cette logique évite
 qu'une architecture rapide ou peu coûteuse soit validée si elle répond mal.
-

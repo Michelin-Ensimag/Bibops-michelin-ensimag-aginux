@@ -7,7 +7,7 @@ skinparam activity {
 
 start
 :Creer branche de travail;
-:Implementer fonctionnalite\nou benchmark;
+:Implémenter fonctionnalité\nou benchmark;
 :Lancer tests locaux\nruff + pytest;
 if (Tests locaux OK ?) then (oui)
   :Push Git;

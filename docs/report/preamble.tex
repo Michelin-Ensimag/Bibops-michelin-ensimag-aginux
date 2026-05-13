@@ -1,30 +1,34 @@
 % ============================================================
-%  BibOps -- preambule LaTeX
-%  Projet de specialite Ensimag x Michelin -- 2026
+%  BibOps -- préambule LaTeX
+%  Projet de spécialité Ensimag x Michelin -- 2026
 % ============================================================
 
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[french]{babel}
+\frenchsetup{SmallCapsFigTabCaptions=false}
 \usepackage{lmodern}
 \usepackage{microtype}
 \usepackage{setspace}
-\usepackage{parskip}
-\onehalfspacing
+\usepackage[skip=0.35em plus 0.1em minus 0.1em]{parskip}
+\setstretch{1.12}
 \sloppy
 
 \usepackage[
   a4paper,
-  top=2.4cm,
-  bottom=2.6cm,
-  left=2.8cm,
-  right=2.4cm,
+  top=2.0cm,
+  bottom=2.2cm,
+  left=2.4cm,
+  right=2.2cm,
   headheight=15pt
 ]{geometry}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
 \usepackage{caption}
-\captionsetup{font=small, labelfont=bf}
+\captionsetup{font=small, labelfont={bf,up}}
+\setlength{\textfloatsep}{0.75em plus 0.2em minus 0.2em}
+\setlength{\floatsep}{0.65em plus 0.2em minus 0.2em}
+\setlength{\intextsep}{0.65em plus 0.2em minus 0.2em}
 
 \usepackage[dvipsnames,table]{xcolor}
 \definecolor{michelinYellow}{RGB}{255, 210, 0}
@@ -40,7 +44,7 @@
 \usepackage{longtable}
 \usepackage{array}
 \usepackage{tabularx}
-\renewcommand{\arraystretch}{1.22}
+\renewcommand{\arraystretch}{1.08}
 \newcolumntype{Y}{>{\raggedright\arraybackslash}X}
 \newcolumntype{C}{>{\centering\arraybackslash}X}
 
@@ -94,12 +98,15 @@
 \titleformat{\chapter}[hang]
   {\Large\bfseries\color{michelinBlue}}
   {\thechapter.}{0.8em}{}
+\titlespacing*{\chapter}{0pt}{-0.35cm}{0.45cm}
 \titleformat{\section}[hang]
   {\large\bfseries\color{darkGray}}
   {\thesection}{0.7em}{}
+\titlespacing*{\section}{0pt}{0.45em}{0.25em}
 \titleformat{\subsection}[hang]
   {\normalsize\bfseries}
   {\thesubsection}{0.6em}{}
+\titlespacing*{\subsection}{0pt}{0.35em}{0.2em}
 \titleformat{\subsubsection}[hang]
   {\normalsize\bfseries\itshape}
   {\thesubsubsection}{0.6em}{}
@@ -117,7 +124,7 @@
 }
 
 \newcommand{\benchmarkfigure}[4][0.94\textwidth]{%
-  \begin{figure}[H]
+  \begin{figure}[!htbp]
     \centering
     \IfFileExists{../../data/outputs/benchmark/charts/#2}{%
       \includegraphics[width=#1]{../../data/outputs/benchmark/charts/#2}%
@@ -130,7 +137,7 @@
 }
 
 \newcommand{\plantumldiagram}[4][0.94\textwidth]{%
-  \begin{figure}[H]
+  \begin{figure}[!htbp]
     \centering
     \IfFileExists{diagrams/rendered/#2.png}{%
       \includegraphics[width=#1,height=0.78\textheight,keepaspectratio]{diagrams/rendered/#2.png}%

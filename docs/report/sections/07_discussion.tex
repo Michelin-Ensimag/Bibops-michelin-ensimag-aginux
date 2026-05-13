@@ -28,26 +28,14 @@ Plusieurs limites doivent être explicitées.
   tester le potentiel, mais cela doit être comparé à une configuration plus
   libre.
   \item \textbf{Juge LLM.} \code{gpt-5.2} apporte une évaluation scalable, mais
-  il peut avoir ses propres biais. Une validation humaine reste nécessaire.
+  il peut avoir ses propres biais, dont le biais de position et le biais de
+  verbosité décrits dans les travaux LLM-as-a-judge \cite{llmjudge2023}. Une
+  validation humaine reste nécessaire.
   \item \textbf{Artefacts hétérogènes.} Les campagnes A2A, Kaggle, MCP et
   Racing ne mesurent pas exactement le même objet.
   \item \textbf{Agents distants instables.} Quotas, timeouts et erreurs
   d'authentification affectent directement les résultats A2A.
 \end{itemize}
-
-\section{Apports méthodologiques}
-
-Le principal apport est la transformation d'un sujet LLM exploratoire en banc
-mesurable. Les résultats ne sont pas seulement des exemples de réponses ; ils
-sont stockés comme JSON, graphiques et traces. Le projet permet donc de comparer
-des versions de prompts, modèles et architectures dans le temps.
-
-L'autre apport est l'intégration de la sécurité dans la mesure. Les détecteurs
-déterministes et la Racing Arena montrent que les agents doivent être évalués
-sur leurs surfaces d'attaque. Un agent qui sait appeler des outils peut aussi
-agir de façon dangereuse si les données externes sont traitées comme des
-instructions fiables.
-
 
 
 \section{Perspectives}

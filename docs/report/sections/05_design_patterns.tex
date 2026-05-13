@@ -2,12 +2,12 @@
 %  Section 5 -- Design patterns
 % ============================================================
 
-\chapter{Patrons de conception }
+\chapter{Patrons de conception}
 
 \section{Choix de conception}
 
 Le choix le plus important est la séparation entre le raisonnement du modèle et
-les sources verifiees. Les outils retournent des données bornees, les décisions
+les sources vérifiées. Les outils retournent des données bornées, les décisions
 de l'agent sont structurées et les traces conservent les appels. Cette
 séparation rend l'évaluation possible : lorsqu'une réponse est mauvaise, on peut
 identifier si l'erreur vient du routage, de l'outil, du modèle ou du juge.
@@ -17,7 +17,7 @@ statut serveur, JSON suffit pour une knowledge base de prototype, ChromaDB
 permet le RAG sans infrastructure lourde, et Typer fournit une CLI claire. Cette
 sobriété réduit le nombre de composants à maintenir et facilite les tests.
 
-\begin{table}[H]
+\begin{table}[!htbp]
 \centering
 \begin{tabularx}{\textwidth}{lY}
 \toprule
@@ -26,9 +26,9 @@ sobriété réduit le nombre de composants à maintenir et facilite les tests.
 Adapter & Unifie les appels vers l'agent IT, les agents A2A et les APIs OpenAI-compatible. \\
 Strategy & Permet de changer d'évaluateur ou de politique de score sans réécrire les runners. \\
 Registry & Centralise les évaluateurs disponibles et les rend extensibles. \\
-Facade & La CLI \code{bibops} masque la complexite des modules internes. \\
+Facade & La CLI \code{bibops} masque la complexité des modules internes. \\
 Observer & La Racing Arena diffuse la télémétrie SSE à plusieurs équipes abonnées. \\
-Template Method & Les runners de benchmark partagent la sequence charger, exécuter, évaluer, exporter. \\
+Template Method & Les runners de benchmark partagent la séquence charger, exécuter, évaluer, exporter. \\
 \bottomrule
 \end{tabularx}
 \caption{Patrons de conception principaux.}
@@ -36,13 +36,12 @@ Template Method & Les runners de benchmark partagent la sequence charger, exécu
 \end{table}
 
 
-\section{Le système vise plusieurs acteurs : [Cas d'utilisation] } 
+\section{Le système vise plusieurs acteurs : [Cas d'utilisation]}
 
 \plantumldiagram{use_cases}{Diagramme des cas d'utilisation de \bibopsname{}.}{fig:use-cases}
 
-\section{Les concepts metier : [Diagramme de classes d'analyse]}
+\section{Les concepts métier : [Diagramme de classes d'analyse]}
 
 \plantumldiagram{classes_analyse}{Diagramme de classes d'analyse.}{fig:classes-analyse}
-
 
 

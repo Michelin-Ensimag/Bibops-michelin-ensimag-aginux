@@ -5,24 +5,24 @@
 \chapter{Conclusion}
 
 Le projet \bibopsname{} répond à un besoin concret : évaluer de façon rigoureuse
-des LLM et architectures agentiques pour le support IT. Le travail realise ne se
+des LLM et architectures agentiques pour le support IT. Le travail réalisé ne se
 limite pas à une démonstration conversationnelle. Il fournit une CLI, un agent
 outillé, des outils MCP, des adaptateurs A2A, un moteur d'évaluation
 multi-critères, une Racing Arena adversariale, des graphiques et une suite de
 tests.
 
-Le résultat principal est favorable à l'architecture agentique, l'agent ReAct atteint \metric{91,34/100} de score composite et
+Le résultat principal est favorable à l'architecture agentique : l'agent ReAct atteint \metric{91,34/100} de score composite et
 un verdict \verdict{PASS}, contre \metric{46,14/100} et \verdict{FAIL} pour le
-LLM unique. Il améliore la qualité moyenne, reduit le coût, la latence, les
+LLM unique. Il améliore la qualité moyenne, réduit le coût, la latence, les
 tokens et l'empreinte estimée. Ces gains montrent qu'un modèle plus petit peut
-devenir plus utile lorsqu'il est place dans un système outillé et mesurable.
+devenir plus utile lorsqu'il est placé dans un système outillé et mesurable.
 
 La conclusion reste prudente : les résultats dépendent du dataset, du juge, des
 prompts, du corpus RAG et de la configuration expérimentale. Avant toute
 industrialisation, il faut augmenter le corpus, introduire une évaluation
 humaine, renforcer la sécurité des endpoints et automatiser la régénération des
 rapports. La Racing Arena rappelle aussi qu'un agent utile est une surface
-d'attaque : les outils doivent être controles, traces et valides.
+d'attaque : les outils doivent être contrôlés, tracés et validés.
 
 Le projet pose donc une base solide pour la suite. Il permet de mesurer,
 comparer puis optimiser des LLM pour le support IT, avec une méthode

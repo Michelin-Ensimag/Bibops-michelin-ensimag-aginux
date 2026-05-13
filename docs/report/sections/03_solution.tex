@@ -12,14 +12,14 @@ architectures, évalue les réponses puis produit des artefacts exploitables.
 
 \plantumldiagram{architecture_overview}{Vue d'ensemble UML de l'architecture \bibopsname{}.}{fig:architecture-overview}
 
-\begin{table}[H]
+\begin{table}[!htbp]
 \centering
 \begin{tabularx}{\textwidth}{lY}
 \toprule
 \textbf{Module} & \textbf{Responsabilité} \\
 \midrule
 \file{src/agent/} & Agent IT ReAct, mémoire courte, outils, serveur MCP et RAG. \\
-\file{src/common/} & Configuration, clients LLM et fonctions texte partagees. \\
+\file{src/common/} & Configuration, clients LLM et fonctions texte partagées. \\
 \file{src/bibops/cli/} & CLI Typer : \code{bench}, \code{eval}, \code{dev}, \code{racing}, \code{copilot}, \code{test}, \code{config}, \code{report}. \\
 \file{src/bibops/benchmark/} & Runners de benchmark et validation des sorties. \\
 \file{src/bibops/evaluation/} & Juges, inspecteurs de sécurité, scores composites et seuils. \\
@@ -35,16 +35,18 @@ architectures, évalue les réponses puis produit des artefacts exploitables.
 \section{Agent de support IT}
 
 La fonction centrale est \code{lancer_agent()} dans \file{src/agent/maestro.py}.
-Elle exécute une boucle ReAct bornée par un nombre maximal d'iterations. A
-chaque tour, le LLM retourne une décision structuree : nom d'outil, argument et
-réponse finale eventuelle. Ce contrat evite de parser du texte libre et rend les
-tests unitaires plus fiables.
+Elle exécute une boucle ReAct bornée par un nombre maximal d'itérations. À
+chaque tour, le LLM retourne une décision structurée : nom d'outil, argument et
+réponse finale éventuelle. Ce contrat évite de parser du texte libre et rend les
+tests unitaires plus fiables. Cette approche rejoint les sorties structurées et
+les appels outils utilisés pour fiabiliser les workflows agentiques
+\cite{openaistructured2024}.
 
 \plantumldiagram{react_loop}{Boucle ReAct UML de l'agent de support IT.}{fig:react-loop}
 
-Les outils exposes sont volontairement simples.
+Les outils exposés sont volontairement simples.
 
-\begin{table}[H]
+\begin{table}[!htbp]
 \centering
 \begin{tabularx}{\textwidth}{lccY}
 \toprule
@@ -62,14 +64,16 @@ Les outils exposes sont volontairement simples.
 Un routage lexical fournit un indice initial : par exemple \code{vpn} oriente
 vers le statut serveur, tandis que \code{bitlocker} oriente vers la
 documentation. L'indice ne remplace pas la décision du modèle, mais il augmente
-la probabilite d'utiliser la bonne source.
+la probabilité d'utiliser la bonne source.
 
 \section{Évaluation}
 
 Le module \file{src/bibops/evaluation/} combine trois familles d'évaluation.
-\code{LLMJudge} fournit un score générique ; \code{LLMProfessor} specialise le
+\code{LLMJudge} fournit un score générique ; \code{LLMProfessor} spécialise le
 jugement pour les tickets IT ; les détecteurs déterministes identifient PII,
-secrets, prompt injection, toxicite, URLs suspectes et refus incorrects.
+secrets, prompt injection, toxicité, URLs suspectes et refus incorrects. Cette
+logique s'appuie sur le principe de LLM-as-a-judge \cite{llmjudge2023}, tout en
+gardant des contrôles déterministes pour les risques de sécurité.
 
 La politique composite calcule :
 
@@ -77,33 +81,36 @@ La politique composite calcule :
 S = 0{,}40 Q + 0{,}35 Sec + 0{,}10 F + 0{,}10 L + 0{,}05 G,
 \]
 
-ou \(Q\) est la qualité, \(Sec\) la sécurité, \(F\) le score FinOps, \(L\) la
-latence normalisee et \(G\) le score GreenOps. Le score est rapporte sur 100 et
-complete par un verdict \verdict{PASS} ou \verdict{FAIL}.
+où \(Q\) est la qualité, \(Sec\) la sécurité, \(F\) le score FinOps, \(L\) la
+latence normalisée et \(G\) le score GreenOps. Le score est rapporté sur 100 et
+complété par un verdict \verdict{PASS} ou \verdict{FAIL}.
 
 
 \section{A2A, MCP et Racing Arena}
 
-Les agents A2A sont utilises pour tester des assistants distants exposes par
-JSON-RPC. Le projet prend en compte les differences entre fact-checkers et
-agents OpenClaw : endpoint de decouverte, endpoint RPC, format des messages et
-presence possible d'outils comme \code{fetch}, \code{tavily}, \code{filesystem}
-ou \code{e2b}. Les secrets d'authentification restent hors rapport.
+Les agents A2A sont utilisés pour tester des assistants distants exposés par
+JSON-RPC. Le projet prend en compte les différences entre fact-checkers et
+agents OpenClaw : endpoint de découverte, endpoint RPC, format des messages et
+présence possible d'outils comme \code{fetch}, \code{tavily}, \code{filesystem}
+ou \code{e2b}. Les secrets d'authentification restent hors rapport. Le protocole
+A2A vise précisément l'interopérabilité entre agents opaques et hétérogènes
+\cite{a2aprotocol2025}.
 
 Le protocole MCP sert à exposer les outils de l'agent IT sous une interface
-standardisee \cite{mcp2024}. Cela permet de mesurer les outils independamment
+standardisée \cite{mcp2024}. Cela permet de mesurer les outils indépendamment
 du LLM et de préparer des intégrations plus larges.
 
 La Racing Arena est une extension exploratoire. Un hub FastAPI diffuse une
-telemetrie par SSE ; plusieurs équipes LLM prennent des décisions ; une équipe
-adversariale tente des prompt injections et fuites de stratégie. Cette arene
-teste la sécurité d'architecture, pas seulement la qualité textuelle.
+télémétrie par SSE ; plusieurs équipes LLM prennent des décisions ; une équipe
+adversariale tente des prompt injections et fuites de stratégie. Cette arène
+teste la sécurité d'architecture, pas seulement la qualité textuelle. Les
+scénarios adversariaux s'inscrivent dans les risques décrits par OWASP
+\cite{owasp2025} et par les travaux sur PromptInject \cite{promptinjection2023}.
 
-\plantumldiagram{racing_flux}{Flux UML de données de la Racing Arena.}{fig:racing-flux}
 
 \section{Reproductibilité}
 
-La reproductibilite repose sur quatre décisions :
+La reproductibilité repose sur quatre décisions :
 
 \begin{itemize}
   \item une CLI unique \code{bibops} pour lancer les campagnes ;
@@ -112,6 +119,6 @@ La reproductibilite repose sur quatre décisions :
   \item une séparation entre code source, données runtime et résultats générés.
 \end{itemize}
 
-Les commandes principales sont documentees dans le README et dans la
-documentation detaillee. La vérification locale actuelle passe par
+Les commandes principales sont documentées dans le README et dans la
+documentation détaillée. La vérification locale actuelle passe par
 \code{python -m pytest tests/unit -q}.

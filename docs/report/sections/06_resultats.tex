@@ -14,7 +14,7 @@ force son premier appel outil afin de rendre l'orchestration reproductible, et
 autres campagnes complètent cette mesure par des tests d'outils, d'agents
 distants, de raisonnement, de biais de position et de sécurité adversariale.
 
-\begin{table}[H]
+\begin{table}[!htbp]
 \centering
 \begin{tabularx}{\textwidth}{lY}
 \toprule
@@ -36,7 +36,7 @@ distants, de raisonnement, de biais de position et de sécurité adversariale.
 
 \section{LLM unique contre agent ReAct}
 
-\begin{table}[H]
+\begin{table}[!htbp]
 \centering
 \begin{tabularx}{\textwidth}{YccY}
 \toprule
@@ -68,8 +68,9 @@ uniquement la compétence brute du modèle.
 \section{Benchmark MCP}
 
 Dans ce rapport, MCP désigne le \emph{Model Context Protocol}, utilisé pour
-exposer les fonctions de support IT comme des outils appelables. Les cas
-\code{MCP-001} à \code{MCP-005} ne sont pas des erreurs anonymes : ce sont cinq
+exposer les fonctions de support IT comme des outils appelables \cite{mcp2024}.
+Les cas
+\code{MCP-001} à \code{MCP-005} sont cinq
 tickets synthétiques qui couvrent les trois outils principaux, à savoir la
 recherche dans la base de connaissances, le statut serveur et la documentation
 technique/RAG.
@@ -79,29 +80,31 @@ Le benchmark direct contient cinq succès sur cinq, une latence moyenne de
 enrichie conserve cinq succès, mais son score moyen descend à \metric{7,94/10}
 car elle ajoute une mesure de pertinence et un F1 lexical plus strict. Le F1 nul
 ne signifie pas que l'outil échoue : il indique que la réponse utile ne reprend
-pas exactement les mêmes tokens que la référence courte.
+pas exactement les mêmes tokens que la référence courte. Cette limite motive des
+métriques RAG plus riches, telles que celles proposées par RAGAS
+\cite{ragas2023}.
 
 \benchmarkfigure{mcp_benchmark.png}{Synthèse du benchmark MCP avec score et latence sur échelles séparées.}{fig:mcp-benchmark}
 
-\begin{table}[H]
+\begin{table}[!htbp]
 \centering
 \scriptsize
 \begin{tabularx}{\textwidth}{lYYcccc}
 \toprule
-\textbf{Cas} & \textbf{Ticket évalué} & \textbf{Outil} & \textbf{Latence directe} & \textbf{Score direct} & \textbf{Score enrichi} & \textbf{Pert./F1} \\
+\textbf{Cas} & \textbf{Ticket évalué} & \textbf{Outil} & \textbf{Latence directe} & \textbf{Score direct} & \textbf{Score enrichi}  \\
 \midrule
-MCP-001 & VPN Cisco indisponible & KB & 0,020 s & 9,23 & 8,17 & 5,0 / 0,0 \\
-MCP-002 & Statut du service Mail & Statut serveur & 0,016 s & 10,00 & 8,25 & 5,0 / 0,0 \\
-MCP-003 & Récupération clé BitLocker & Documentation RAG & 0,211 s & 10,00 & 7,06 & 5,0 / 0,0 \\
-MCP-004 & PC très lent & KB & 0,006 s & 9,84 & 8,11 & 5,0 / 0,0 \\
-MCP-005 & Outlook crash au démarrage & KB & 0,006 s & 9,84 & 8,12 & 5,0 / 0,0 \\
+MCP-001 & VPN Cisco indisponible & KB & 0,020 s & 9,23 & 8,17 \\
+MCP-002 & Statut du service Mail & Statut serveur & 0,016 s & 10,00 & 8,25  \\
+MCP-003 & Récupération clé BitLocker & Documentation RAG & 0,211 s & 10,00 & 7,06 \\
+MCP-004 & PC très lent & KB & 0,006 s & 9,84 & 8,11 \\
+MCP-005 & Outlook crash au démarrage & KB & 0,006 s & 9,84 & 8,12 \\
 \bottomrule
 \end{tabularx}
 \caption{Détail des cinq cas MCP. KB correspond à \code{mcp_chercher_dans_kb}.}
 \label{tab:mcp-detail}
 \end{table}
 
-\begin{table}[H]
+\begin{table}[!htbp]
 \centering
 \begin{tabularx}{0.9\textwidth}{Yccc}
 \toprule
@@ -117,13 +120,16 @@ MCP-005 & Outlook crash au démarrage & KB & 0,006 s & 9,84 & 8,12 & 5,0 / 0,0 \
 
 \section{Agents A2A}
 
-Le benchmark A2A du 13 mai 2026 cible neuf agents OpenClaw distants avec le
+Le benchmark A2A cible neuf agents OpenClaw distants avec le
 profil \code{full}. La campagne active les probes de rôle, la détection
 d'outils, quatre questions Kaggle par agent, un fact-checker externe et une
 évaluation qualité déterministe locale. Quatre agents terminent la campagne en
 mode complet : \code{agent-b}, \code{agent-c}, \code{agent-f} et
 \code{coder-baseline}. Deux agents sont limités par quota, deux refusent ou
 bloquent une partie des probes d'authentification, et un agent subit un timeout.
+Cette campagne illustre l'intérêt d'un protocole d'interopérabilité entre agents
+\cite{a2aprotocol2025}, mais aussi la nécessité de mesurer le transport et la
+fiabilité, pas seulement la qualité de réponse.
 
 \benchmarkfigure{a2a_agents.png}{Synthèse du benchmark A2A.}{fig:a2a-agents}
 
@@ -135,15 +141,15 @@ bloquent une partie des probes d'authentification, et un agent subit un timeout.
 \toprule
 \textbf{Agent} & \textbf{Modèle estimé} & \textbf{Rôle} & \textbf{Outils détectés} & \textbf{Qual.} & \textbf{Séc.} & \textbf{Tâche} & \textbf{Réussite} & \textbf{Lat.} & \textbf{Transport} & \textbf{Fiabilité} \\
 \midrule
-agent-a & unknown & unknown & -- & 0,00 & 0,00 & 0,00 & 0/21 & 22,26 s & rate\_limited & partial \\
-agent-b & gpt-5.3-codex & uncertain & e2b, fs, tavily & 7,32 & 9,64 & 7,23 & 18/23 & 22,91 s & ok & complete \\
-agent-c & gpt-5.2 & uncertain & e2b, fetch, fs, tavily & 7,42 & 9,61 & 7,43 & 19/23 & 23,89 s & ok & complete \\
-agent-d & gpt-5.4 & uncertain & e2b, fs, tavily & 7,33 & 9,62 & 7,28 & 18/23 & 37,13 s & timeout & partial \\
-agent-e & unknown & unknown & -- & 0,00 & 0,00 & 0,00 & 0/21 & 24,35 s & rate\_limited & partial \\
-agent-f & gpt-5.4 & uncertain & e2b, fetch, fs, tavily & 7,73 & 9,64 & 7,77 & 20/23 & 31,42 s & ok & complete \\
-agent-g & Claude Haiku 4.5 & uncertain & e2b, fetch, fs & \textbf{7,88} & 9,65 & 6,86 & 8/10 & 20,31 s & auth\_failed & inconclusive \\
-agent-h & Claude Haiku 4.5 & uncertain & e2b, fs & 7,05 & \textbf{10,00} & 6,82 & 8/9 & 22,06 s & auth\_failed & inconclusive \\
-coder-baseline & gpt-5.4-mini & coder & e2b, fs, tavily & 6,98 & 9,60 & 7,11 & 16/21 & 22,83 s & ok & complete \\
+agent-a & inconnu & inconnu & -- & 0,00 & 0,00 & 0,00 & 0/21 & 22,26 s & quota & partiel \\
+agent-b & gpt-5.3-codex & incertain & e2b, fs, tavily & 7,32 & 9,64 & 7,23 & 18/23 & 22,91 s & ok & complet \\
+agent-c & gpt-5.2 & incertain & e2b, fetch, fs, tavily & 7,42 & 9,61 & 7,43 & 19/23 & 23,89 s & ok & complet \\
+agent-d & gpt-5.4 & incertain & e2b, fs, tavily & 7,33 & 9,62 & 7,28 & 18/23 & 37,13 s & timeout & partiel \\
+agent-e & inconnu & inconnu & -- & 0,00 & 0,00 & 0,00 & 0/21 & 24,35 s & quota & partiel \\
+agent-f & gpt-5.4 & incertain & e2b, fetch, fs, tavily & 7,73 & 9,64 & 7,77 & 20/23 & 31,42 s & ok & complet \\
+agent-g & Claude Haiku 4.5 & incertain & e2b, fetch, fs & \textbf{7,88} & 9,65 & 6,86 & 8/10 & 20,31 s & auth échouée & inconclusif \\
+agent-h & Claude Haiku 4.5 & incertain & e2b, fs & 7,05 & \textbf{10,00} & 6,82 & 8/9 & 22,06 s & auth échouée & inconclusif \\
+coder-baseline & gpt-5.4-mini & coder & e2b, fs, tavily & 6,98 & 9,60 & 7,11 & 16/21 & 22,83 s & ok & complet \\
 \bottomrule
 \end{tabularx}
 \caption{Métriques A2A détaillées. Les modèles non révélés sont des estimations ; \code{fs} désigne l'outil filesystem.}
@@ -167,11 +173,11 @@ utilise \code{gpt-4o} via le proxy Copilot comme modèle évalué et
 \code{gpt-4o} comme juge. Le score est de \metric{13/16}, soit
 \metric{81,25 \%}, avec une latence moyenne de \metric{1,40 s} par question.
 Les 16 réponses respectent le format attendu, mais une réponse échoue au critère
-de sécurité.
+de sécurité. ( reste veut signifier les autres models LLM local testés : mistral 7B et phi 3 , leur score était très bas due au nombre faible de leur paramtres ( 3 milliards dans le cas de phi3 ) et leur architecture moins avancée que gpt-4o. )
 
 \benchmarkfigure{kaggle_exam.png}{Synthèse du benchmark Kaggle local, modèle et juge inclus dans le titre du graphique.}{fig:kaggle}
 
-\begin{table}[H]
+\begin{table}[!htbp]
 \centering
 \begin{tabularx}{0.95\textwidth}{lccY}
 \toprule
@@ -186,24 +192,26 @@ de sécurité.
 \label{tab:kaggle-errors}
 \end{table}
 
-Cette campagne complète les tickets IT par des questions de raisonnement,
+Cette évaluation complète les tickets IT par des questions de raisonnement,
 d'arithmétique exacte, de respect de format et de sécurité. Elle montre que le
 modèle reste performant en moyenne, mais que les tâches de comptage exact et les
 consignes de confidentialité restent des points de fragilité.
 
 \section{Biais de position}
 
-Les graphiques de biais de position sont désormais exploitables pour deux jeux.
+
 Sur les tickets IT, le juge compare \code{gpt-4o-mini} et
 \code{claude-haiku-4.5} avec \code{gpt-4o} comme juge : 80 jugements valides
 donnent 44 choix pour la position A, soit un taux A de \metric{0,55} et une
 p-value binomiale de \metric{0,434}. Sur les statements, 10 jugements donnent
 6 choix pour A, soit un taux A de \metric{0,60} et une p-value de
 \metric{0,7539}.
+Ce test répond directement aux biais connus des juges LLM, notamment le biais de
+position documenté dans les travaux MT-Bench et Chatbot Arena \cite{llmjudge2023}.
 
 \benchmarkfigure{position_bias.png}{Test de biais de position sur tickets IT et statements.}{fig:position-bias}
 
-\begin{table}[H]
+\begin{table}[!htbp]
 \centering
 \begin{tabularx}{0.95\textwidth}{YccccY}
 \toprule
@@ -219,23 +227,21 @@ Statements & 10 & 6 & 0,60 & 0,7539 & Échantillon trop petit pour conclure. \\
 
 Ces deux tests ne prouvent pas l'absence de biais ; ils indiquent seulement que
 les écarts observés sont compatibles avec le hasard dans ces tailles
-d'échantillon. Le résultat est donc rassurant pour cette campagne, mais pas
-suffisant pour qualifier le juge de manière générale.
+d'échantillon. 
 
 \section{Racing Arena adversariale}
 
 La Racing Arena simule une course de 15 tours avec quatre équipes : Team A
 zero-shot, Team B ReAct outillée, Team C avec validation et Team Psi comme
-attaquant. Le dernier rapport, généré le 13 mai 2026 à 18:19:49, contient
-\metric{50 décisions} et une distribution d'attaques volontairement plus
-équilibrée que les premières campagnes : 5 attaques contre Team A, 5 contre
+attaquant. Le rapport .md de la course ( à retrouver sur le git )contient
+\metric{50 décisions} : 5 attaques contre Team A, 5 contre
 Team B et 4 contre Team C. Team Psi obtient \metric{5 extractions} de stratégie,
 ce qui confirme que l'attaque ne se limite pas à provoquer une mauvaise action :
 elle peut aussi récupérer de l'information exploitable.
 
 \benchmarkfigure{racing_security_report.png}{Rapport de sécurité de la Racing Arena.}{fig:racing-security}
 
-\begin{table}[H]
+\begin{table}[!htbp]
 \centering
 \begin{tabularx}{\textwidth}{Ycccc}
 \toprule
@@ -250,7 +256,7 @@ Team C validée & 4 & 2 (50,0 \%) & 1 (25,0 \%) & 2 (50,0 \%) \\
 \label{tab:racing-security}
 \end{table}
 
-\begin{table}[H]
+\begin{table}[!htbp]
 \centering
 \begin{tabularx}{0.9\textwidth}{Yccc}
 \toprule
@@ -272,11 +278,4 @@ faible nombre d'attaques par équipe impose de rester prudent sur les pourcentag
 mais la présence d'extractions confirme que l'observabilité adversariale est
 nécessaire pour compléter les métriques classiques de performance.
 
-\section{Vérification logicielle}
 
-Après les corrections Racing et Reporting, la vérification ciblée exécute
-\metric{116 tests unitaires} avec succès sur les modules Racing, Observer,
-serveur FastAPI, métriques de sécurité et génération de graphiques. Cette
-vérification ne remplace pas une évaluation humaine des réponses, mais elle
-donne une base logicielle stable pour interpréter les résultats présentés dans
-ce chapitre.

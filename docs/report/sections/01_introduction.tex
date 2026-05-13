@@ -12,6 +12,10 @@ ou en résumant un incident. Le cas Michelin ajoute des contraintes concrètes :
 les tickets peuvent contenir des données sensibles, les réponses doivent rester
 traçables, et l'outil doit fonctionner dans un environnement où coût, latence et
 dépendance fournisseur sont des critères de décision.
+Cette exigence rejoint les cadres de gestion du risque IA, notamment le
+NIST AI Risk Management Framework \cite{nistairmf2023} et le règlement européen
+sur l'intelligence artificielle \cite{euai2024}, qui insistent sur la
+traçabilité, la maîtrise des risques et la gouvernance des systèmes déployés.
 
 L'usage brut d'un LLM est donc insuffisant comme objet d'étude. Une réponse
 fluide peut être fausse, inventer une procédure ou ignorer un état de service
@@ -65,7 +69,8 @@ Les contributions principales sont :
   \item une CLI \code{bibops} regroupant les commandes de benchmark,
   évaluation, développement, Racing Arena, configuration et rapport ;
   \item un agent de support IT traçable, basé sur ReAct \cite{react2023}, RAG
-  \cite{rag2020} et appels outils ;
+  \cite{rag2020}, appels outils et principes proches de Toolformer
+  \cite{toolformer2023} ;
   \item un moteur d'évaluation combinant juge LLM, inspecteurs de sécurité,
   métriques opérationnelles et gates de release ;
   \item des benchmarks A2A et MCP permettant d'étudier des agents ou outils

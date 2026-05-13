@@ -14,13 +14,13 @@ skinparam ArrowColor #34495E
 
 title Racing Arena -- flux SSE et décisions
 
-component "RaceEngine\ntelemetrie" as Engine
+component "RaceEngine\ntélémétrie" as Engine
 component "Hub FastAPI\nSSE broadcast" as Hub
 component "Team A\nzero-shot" as TeamA
 component "Team B\nReAct" as TeamB
 component "Team C\nvalidated" as TeamC
 database "RAG service\nMichelin docs" as Rag
-component "Decisions\nPIT / STAY" as Decisions
+component "Décisions\nPIT / STAY" as Decisions
 
 Engine --> Hub : telemetry event
 Hub --> TeamA : SSE
