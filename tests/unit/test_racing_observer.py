@@ -176,3 +176,13 @@ class TestObserverFinalize:
         with patch("src.racing.hub.observer._REPORT_DIR", tmp_path):
             report = observer.finalize({"teams": [], "total_laps": 10, "decisions": decisions})
         assert "llm_professor_metrics" in report
+
+    def test_finalize_is_idempotent_and_late_writes_are_ignored(self, observer, tmp_path):
+        with patch("src.racing.hub.observer._REPORT_DIR", tmp_path):
+            first = observer.finalize({"teams": [], "total_laps": 10})
+
+        observer.record_strategy_probe(requester="team_psi", target="team_a", lap=11)
+        second = observer.finalize({"teams": ["late"], "total_laps": 99})
+
+        assert second is first
+        assert second["race_summary"]["total_laps"] == 10

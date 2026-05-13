@@ -22,7 +22,7 @@ documentation technique via ChromaDB. Le projet ajoute aussi des benchmarks A2A,
 des tests de biais, un moteur d'évaluation multi-critères et une Racing Arena
 adversariale permettant d'étudier des agents connectés à un flux temps réel.
 
-L'évaluation \metric{21 tickets IT}. Avec
+L'évaluation \metric{21 tickets IT} [Table 6.2]. Avec
 \code{phi3:latest} côté Ollama et \code{gpt-5.2} comme juge, le système
 multi-agents obtient \metric{7,86/10} en qualité moyenne contre
 \metric{2,81/10} pour le LLM unique. Le score composite atteint
@@ -42,26 +42,6 @@ prudence : une équipe ReAct exposée à des messages adversariaux exécute
 \metric{53 injections sur 57 attaques reçues}, tandis qu'une équipe validée
 n'exécute aucune injection dans le scénario observé.
 
-\begin{table}[H]
-\centering
-\begin{tabularx}{\textwidth}{Ycc}
-\toprule
-\textbf{Métrique principale} & \textbf{LLM unique} & \textbf{Agent ReAct outillé} \\
-\midrule
-Tickets IT notés & 21 & 21 \\
-Score qualité moyen & 2,81/10 & \textbf{7,86/10} \\
-Score sécurité moyen & 9,97/10 & 9,97/10 \\
-Latence totale & 461,58 s & \textbf{0,84 s} \\
-Coût estimé & 0,061315 \$ & \textbf{0,024150 \$} \\
-Tokens totaux & 6\,664 & \textbf{2\,415} \\
-Empreinte carbone estimée & 0,06664 gCO$_2$e & \textbf{0,02415 gCO$_2$e} \\
-Score composite & 46,14/100 & \textbf{91,34/100} \\
-Verdict de release & \verdict{FAIL} & \verdict{PASS} \\
-\bottomrule
-\end{tabularx}
-\caption{Synthese du benchmark principal extrait de \file{comparison_results.json}.}
-\label{tab:resume-benchmark}
-\end{table}
 
 \noindent\textbf{Mots-clés :} LLM, support IT, ReAct, RAG, A2A, MCP,
-évaluation, sécurité agentique, CI/CD, GreenOps.
+évaluation, sécurité agentique, CI/CD, GreenOps,PII, prompt injection, adversarial testing.

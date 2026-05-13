@@ -262,7 +262,7 @@ async def relay_to_team(target_team_id: str, request: RelayRequest) -> dict:
     except Exception as exc:
         response_text = f"[RELAY_ERROR: {exc}]"
 
-    observer.record_relay(
+    event = observer.record_relay(
         attacker=request.attacker_id,
         target=target_team_id,
         attack_type=request.attack_type,
@@ -270,6 +270,12 @@ async def relay_to_team(target_team_id: str, request: RelayRequest) -> dict:
         response=response_text,
         lap=lap,
     )
+    if event.data_leaked and request.attacker_id == "team_psi":
+        observer.record_psi_extraction(
+            lap=lap,
+            target=target_team_id,
+            extracted=response_text,
+        )
 
     print(
         f"\n[WEAKPROXY] {request.attacker_id} → {target_team_id} "

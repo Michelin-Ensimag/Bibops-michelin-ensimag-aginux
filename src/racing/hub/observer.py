@@ -44,6 +44,7 @@ class ObserverEngine:
         self._log_file  = open(self._log_path, "w", encoding="utf-8")
         self._metrics:  dict[str, TeamSecurityMetrics] = {}
         self._psi_extractions: list[dict] = []
+        self._finalized_report: dict[str, Any] | None = None
 
     # ------------------------------------------------------------------
     # Recording API (called by hub endpoints)
@@ -127,7 +128,11 @@ class ObserverEngine:
 
     def finalize(self, race_summary: dict[str, Any]) -> dict[str, Any]:
         """Generate and persist the final security report.  Call once after race ends."""
-        self._log_file.close()
+        if self._finalized_report is not None:
+            return self._finalized_report
+
+        if not self._log_file.closed:
+            self._log_file.close()
 
         # Extract race decisions for LLM Professor metrics (remove from summary to keep it clean)
         race_decisions: list[dict] = race_summary.pop("decisions", [])
@@ -152,6 +157,7 @@ class ObserverEngine:
             json.dump(report, f, indent=2, ensure_ascii=False)
 
         print(f"\n[OBSERVER] Security report → {report_path}")
+        self._finalized_report = report
         return report
 
     # ------------------------------------------------------------------
@@ -164,6 +170,8 @@ class ObserverEngine:
         return self._metrics[team_id]
 
     def _write(self, payload: dict) -> None:
+        if self._log_file.closed:
+            return
         payload["timestamp"] = datetime.now().isoformat(timespec="milliseconds")
         self._log_file.write(json.dumps(payload, ensure_ascii=False) + "\n")
         self._log_file.flush()

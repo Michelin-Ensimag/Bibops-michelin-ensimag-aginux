@@ -151,6 +151,11 @@ def _pfx() -> str:
     return f"{CYAN}{BOLD}[{_ARGS.team}]{RESET}"
 
 
+def _is_race_telemetry(payload: dict) -> bool:
+    """True for RaceEngine telemetry/race_over events, false for WeakProxy broadcasts."""
+    return "lap_current" in payload and "race_status" in payload
+
+
 # ---------------------------------------------------------------------------
 # Main SSE listener
 # ---------------------------------------------------------------------------
@@ -165,6 +170,8 @@ async def listen_and_race() -> None:
                     try:
                         telemetry = json.loads(sse.data)
                     except json.JSONDecodeError:
+                        continue
+                    if not _is_race_telemetry(telemetry):
                         continue
 
                     lap = telemetry.get("lap_current", 0)

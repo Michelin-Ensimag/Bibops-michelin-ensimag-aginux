@@ -428,12 +428,20 @@ def chart_mcp(benchmark_dir: Path, charts_dir: Path, outputs: list[Path], warnin
         if labels:
             rows.append([sum(scores) / len(scores), sum(latency) / len(latency)])
             names.append(name)
-    x = range(len(names))
-    axes[2].bar([i - 0.18 for i in x], [row[0] for row in rows], width=0.36, label="score", color=COLORS["purple"])
-    axes[2].bar([i + 0.18 for i in x], [row[1] for row in rows], width=0.36, label="latence", color=COLORS["orange"])
-    axes[2].set_xticks(list(x), names)
-    axes[2].legend()
-    _style_axis(axes[2], "Moyennes")
+    x = list(range(len(names)))
+    score_values = [row[0] for row in rows]
+    latency_values = [row[1] for row in rows]
+    axes[2].bar([i - 0.18 for i in x], score_values, width=0.36, label="score", color=COLORS["purple"])
+    axes[2].set_ylim(0, 10.5)
+    axes[2].set_xticks(x, names)
+    _style_axis(axes[2], "Moyennes", "score /10")
+    latency_ax = axes[2].twinx()
+    latency_ax.plot([i + 0.18 for i in x], latency_values, marker="o", linewidth=2.0, label="latence", color=COLORS["orange"])
+    latency_ax.set_ylabel("latence moyenne (s)")
+    latency_ax.spines["top"].set_visible(False)
+    lines, labels = axes[2].get_legend_handles_labels()
+    twin_lines, twin_labels = latency_ax.get_legend_handles_labels()
+    axes[2].legend(lines + twin_lines, labels + twin_labels, loc="upper right")
     fig.suptitle("Benchmark MCP", fontsize=15, fontweight="bold")
     _save(fig, charts_dir / "mcp_benchmark.png", outputs)
 
@@ -563,18 +571,26 @@ def chart_racing(benchmark_dir: Path, charts_dir: Path, outputs: list[Path], war
         return
     metrics = data.get("security_metrics", {})
     llm_metrics = data.get("llm_professor_metrics", {})
-    teams = list(metrics)
+    preferred_order = ["team_a_zero_shot", "team_b_react", "team_c_validated", "team_psi"]
+    teams = [team for team in preferred_order if team in metrics]
+    teams.extend(team for team in metrics if team not in teams)
+    if not teams:
+        warnings.append(f"no security metrics in: {path}")
+        return
+    team_labels = [f"{team}\n(n={int(_float(metrics[team].get('attacks_received'))):d})" for team in teams]
 
     fig, axes = plt.subplots(2, 2, figsize=(13, 8))
-    axes[0, 0].bar(teams, [_float(metrics[t].get("attacks_received")) for t in teams], color=COLORS["orange"])
+    axes[0, 0].bar(team_labels, [_float(metrics[t].get("attacks_received")) for t in teams], color=COLORS["orange"])
     _style_axis(axes[0, 0], "Attaques recues", "count")
     axes[0, 0].tick_params(axis="x", rotation=20)
 
-    axes[0, 1].bar(teams, [_float(metrics[t].get("injection_execution_rate")) * 100 for t in teams], color=COLORS["red"])
+    axes[0, 1].bar(team_labels, [_float(metrics[t].get("injection_execution_rate")) * 100 for t in teams], color=COLORS["red"])
+    axes[0, 1].set_ylim(0, 105)
     _style_axis(axes[0, 1], "Taux injection executee", "%")
     axes[0, 1].tick_params(axis="x", rotation=20)
 
-    axes[1, 0].bar(teams, [_float(metrics[t].get("leakage_rate")) * 100 for t in teams], color=COLORS["purple"])
+    axes[1, 0].bar(team_labels, [_float(metrics[t].get("leakage_rate")) * 100 for t in teams], color=COLORS["purple"])
+    axes[1, 0].set_ylim(0, 105)
     _style_axis(axes[1, 0], "Taux fuite strategie", "%")
     axes[1, 0].tick_params(axis="x", rotation=20)
 
@@ -591,7 +607,8 @@ def chart_racing(benchmark_dir: Path, charts_dir: Path, outputs: list[Path], war
     ax.bar([i - width for i in x], [_float(metrics[t].get("injection_execution_rate")) * 100 for t in teams], width=width, label="injection", color=COLORS["red"])
     ax.bar(list(x), [_float(metrics[t].get("leakage_rate")) * 100 for t in teams], width=width, label="fuite", color=COLORS["purple"])
     ax.bar([i + width for i in x], [_float(metrics[t].get("detection_rate")) * 100 for t in teams], width=width, label="detection", color=COLORS["green"])
-    ax.set_xticks(list(x), teams)
+    ax.set_xticks(list(x), team_labels)
+    ax.set_ylim(0, 105)
     ax.tick_params(axis="x", rotation=20)
     ax.legend()
     _style_axis(ax, "Securite Racing par equipe", "%")
@@ -638,11 +655,16 @@ def chart_kaggle(benchmark_dir: Path, charts_dir: Path, outputs: list[Path], war
     fmt_ok = sum(1 for row in results if row.get("judge", {}).get("format_ok") is True)
     safety_ok = sum(1 for row in results if row.get("judge", {}).get("safety_ok") is True)
 
+    config = data.get("config", {})
+    agent_model = str(config.get("agent_model") or "modele inconnu")
+    judge_model = str(config.get("judge_model") or "juge inconnu")
+
     fig, axes = plt.subplots(1, 2, figsize=(11, 4.8))
     axes[0].bar(["score", "reste"], [_float(summary.get("score")), max(0, _float(summary.get("max_score")) - _float(summary.get("score")))], color=[COLORS["green"], COLORS["gray"]])
-    _style_axis(axes[0], f"Kaggle local - {latest.name}", "points")
+    _style_axis(axes[0], f"Score - {agent_model}", "points")
     axes[1].bar(["correct", "incorrect", "format_ok", "safety_ok"], [correct, incorrect, fmt_ok, safety_ok], color=[COLORS["green"], COLORS["red"], COLORS["blue"], COLORS["purple"]])
     _style_axis(axes[1], "Questions", "count")
+    fig.suptitle(f"Kaggle local - agent {agent_model} / juge {judge_model}", fontsize=15, fontweight="bold")
     _save(fig, charts_dir / "kaggle_exam.png", outputs)
 
 

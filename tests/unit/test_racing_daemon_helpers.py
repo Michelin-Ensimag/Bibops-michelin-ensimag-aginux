@@ -84,6 +84,10 @@ class TestTeamClientHelpers:
     def test_module_has_compiled_graph(self, mod):
         assert hasattr(mod, "compiled_graph")
 
+    def test_is_race_telemetry_filters_authority_message(self, mod):
+        assert mod._is_race_telemetry({"event_type": "authority_message"}) is False
+        assert mod._is_race_telemetry({"lap_current": 1, "race_status": "RUNNING"}) is True
+
 
 # ---------------------------------------------------------------------------
 # team_zero_shot/main.py
@@ -105,6 +109,10 @@ class TestTeamZeroShotHelpers:
         assert hasattr(mod._ARGS, "team")
         assert hasattr(mod._ARGS, "model")
 
+    def test_is_race_telemetry_filters_authority_message(self, mod):
+        assert mod._is_race_telemetry({"event_type": "authority_message"}) is False
+        assert mod._is_race_telemetry({"lap_current": 1, "race_status": "RUNNING"}) is True
+
 
 # ---------------------------------------------------------------------------
 # team_psi/main.py
@@ -125,9 +133,17 @@ class TestTeamPsiHelpers:
             t = mod._select_target(lap)
             assert t in targets
 
-    def test_select_target_adaptive_after_rotation(self, mod):
-        """After full rotation, picks highest-vulnerability target."""
+    def test_select_target_balanced_by_default_after_rotation(self, mod, monkeypatch):
         n = len(mod._TARGETS)
+        monkeypatch.setattr(mod, "_TARGETING_MODE", "balanced")
+        result = mod._select_target(n + 1)
+        assert result == mod._TARGETS[0]
+
+    def test_select_target_adaptive_after_warmup(self, mod, monkeypatch):
+        """Adaptive mode waits for balanced warm-up before exploiting the weakest target."""
+        n = len(mod._TARGETS)
+        monkeypatch.setattr(mod, "_TARGETING_MODE", "adaptive")
+        monkeypatch.setattr(mod, "_MIN_BALANCED_PROBES_PER_TARGET", 1)
         # Reset vulnerability scores
         for t in mod._TARGETS:
             mod._target_vulnerability[t] = 0
@@ -155,6 +171,10 @@ class TestTeamValidatedHelpers:
     def test_query_payload_model(self, mod):
         p = mod._QueryPayload(payload="test_query")
         assert p.payload == "test_query"
+
+    def test_is_race_telemetry_filters_authority_message(self, mod):
+        assert mod._is_race_telemetry({"event_type": "authority_message"}) is False
+        assert mod._is_race_telemetry({"lap_current": 1, "race_status": "RUNNING"}) is True
 
 
 # ---------------------------------------------------------------------------
@@ -190,6 +210,40 @@ class TestStartArena:
 
     def test_terminate_all_empty_list(self, mod):
         mod._terminate_all([])  # should not raise
+
+    def test_teams_alive_excludes_hub(self, mod):
+        hub = MagicMock()
+        hub.poll.return_value = None
+        team = MagicMock()
+        team.poll.return_value = None
+        stopped = MagicMock()
+        stopped.poll.return_value = 0
+
+        result = mod._teams_alive([("Hub", hub), ("team_a", team), ("team_b", stopped)])
+
+        assert result == [("team_a", team)]
+
+    def test_race_finished_true_on_finished_status(self, mod):
+        resp = MagicMock()
+        resp.status_code = 200
+        resp.json.return_value = {"race_status": "FINISHED"}
+
+        with patch("src.racing.start_arena.httpx.get", return_value=resp):
+            assert mod._race_finished() is True
+
+    def test_race_finished_false_on_connection_error(self, mod):
+        with patch("src.racing.start_arena.httpx.get", side_effect=RuntimeError("down")):
+            assert mod._race_finished() is False
+
+    def test_generate_security_report_success(self, mod, capsys):
+        resp = MagicMock()
+        resp.status_code = 200
+        resp.json.return_value = {"extractions": 3}
+
+        with patch("src.racing.start_arena.httpx.post", return_value=resp):
+            assert mod._generate_security_report() is True
+
+        assert "Rapport généré" in capsys.readouterr().out
 
 
 # ---------------------------------------------------------------------------

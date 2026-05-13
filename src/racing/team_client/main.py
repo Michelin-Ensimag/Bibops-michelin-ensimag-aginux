@@ -123,6 +123,11 @@ def _log_error(msg: str) -> None:
     print(f"{_pfx()}   {RED}✗ {msg}{RESET}")
 
 
+def _is_race_telemetry(payload: dict) -> bool:
+    """True for RaceEngine telemetry/race_over events, false for WeakProxy broadcasts."""
+    return "lap_current" in payload and "race_status" in payload
+
+
 # ---------------------------------------------------------------------------
 # Traitement d'un tour
 # ---------------------------------------------------------------------------
@@ -236,6 +241,8 @@ async def listen_and_race() -> None:
                     try:
                         telemetry = json.loads(sse.data)
                     except json.JSONDecodeError:
+                        continue
+                    if not _is_race_telemetry(telemetry):
                         continue
 
                     lap     = telemetry.get("lap_current", 0)

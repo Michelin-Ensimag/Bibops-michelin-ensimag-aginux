@@ -47,10 +47,12 @@ TEAMS = [
 
 HUB_STARTUP_WAIT = 5   # secondes avant de lancer les écuries
 TEAM_STAGGER     = 0.5  # secondes entre chaque lancement d'écurie
+POST_RACE_GRACE_SECONDS = 8
 
 LOG_DIR = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), "..", "..", "logs", "arena"
 )
+HUB_BASE_URL = os.environ.get("BIBOPS_RACING_HUB_URL", "http://localhost:8000")
 
 # ---------------------------------------------------------------------------
 # Couleurs ANSI
@@ -111,6 +113,23 @@ def _terminate_all(procs: list[tuple[str, subprocess.Popen]]) -> None:
             print(f"  {GREY}→ {name} arrêté{RESET}")
 
 
+def _race_finished() -> bool:
+    """Return True when the hub reports that the race reached its final lap."""
+    try:
+        resp = httpx.get(f"{HUB_BASE_URL}/status", timeout=2)
+        if resp.status_code != 200:
+            return False
+        data = resp.json()
+        return data.get("race_status") == "FINISHED"
+    except Exception:
+        return False
+
+
+def _teams_alive(procs: list[tuple[str, subprocess.Popen]]) -> list[tuple[str, subprocess.Popen]]:
+    """Return live team processes, excluding the hub."""
+    return [(name, proc) for name, proc in procs if name != "Hub" and proc.poll() is None]
+
+
 # ---------------------------------------------------------------------------
 # Lanceur principal
 # ---------------------------------------------------------------------------
@@ -169,34 +188,53 @@ def main() -> None:
     print(f"{'─' * 64}\n")
 
     # ── Surveillance ────────────────────────────────────────────────────
+    report_generated = False
+    race_finished_at: float | None = None
+
     try:
         while True:
+            if race_finished_at is None and _race_finished():
+                race_finished_at = time.time()
+                print(f"\n{GREEN}{BOLD}Course terminée côté Hub. Attente des décisions tardives...{RESET}")
+
+            if race_finished_at is not None:
+                grace_elapsed = time.time() - race_finished_at
+                if not _teams_alive(procs) or grace_elapsed >= POST_RACE_GRACE_SECONDS:
+                    report_generated = _generate_security_report()
+                    _terminate_all(procs)
+                    break
+
             alive = [(n, p) for n, p in procs if p.poll() is None]
             if not alive:
                 print(f"\n{GREEN}{BOLD}Tous les processus sont terminés.{RESET}")
-                _generate_security_report()
+                if not report_generated:
+                    report_generated = _generate_security_report()
                 break
             time.sleep(2)
 
     except KeyboardInterrupt:
+        # The observer lives inside the Hub, so finalize before terminating it.
+        report_generated = _generate_security_report()
         _terminate_all(procs)
-        _generate_security_report()
         sys.exit(0)
 
 
-def _generate_security_report() -> None:
+def _generate_security_report() -> bool:
     """Ask the hub ObserverEngine to finalize and write the security report."""
     print(f"\n{BOLD}Génération du rapport de sécurité...{RESET}")
     try:
-        resp = httpx.post("http://localhost:8000/observer/finalize", timeout=10)
+        resp = httpx.post(f"{HUB_BASE_URL}/observer/finalize", timeout=10)
         if resp.status_code == 200:
             data = resp.json()
             print(f"{GREEN}Rapport généré — extractions Team Psi : {data.get('extractions', 0)}{RESET}")
             print(f"{GREY}→ data/outputs/benchmark/security_race_report.json{RESET}")
+            return True
         else:
             print(f"{RED}Impossible de générer le rapport (hub déjà arrêté ?){RESET}")
+            return False
     except Exception as exc:
         print(f"{RED}Rapport non généré : {exc}{RESET}")
+        return False
 
 
 # ---------------------------------------------------------------------------

@@ -6,7 +6,7 @@
 
 \section{Interprétation des résultats}
 
-La campagne principale montre que l'agent outillé domine le LLM unique sur les
+Cette étude montre que l'agent outillé domine le LLM unique sur les
 dimensions fonctionnelles et opérationnelles. La différence vient de
 l'utilisation de sources structurées : l'agent peut vérifier un statut serveur
 ou retrouver une procédure au lieu de produire une réponse générique.
@@ -48,23 +48,7 @@ sur leurs surfaces d'attaque. Un agent qui sait appeler des outils peut aussi
 agir de façon dangereuse si les données externes sont traitées comme des
 instructions fiables.
 
-\section{Recommandations}
 
-Pour une intégration de type BibOps, les recommandations sont les suivantes.
-
-\begin{enumerate}
-  \item Utiliser un LLM unique seulement pour les tickets simples qui ne
-  dépendent pas de données internes.
-  \item Utiliser un agent outillé pour les tickets liés à un service, une
-  procédure ou une documentation.
-  \item Conserver des gates stricts sur la qualité et la sécurité, même si le
-  score composite est bon.
-  \item Tracer tous les appels outils et associer chaque réponse à ses sources.
-  \item Tester les endpoints agentiques contre des prompt injections et des
-  fuites de données.
-  \item Versionner les prompts, le corpus RAG, les modèles et les seuils de
-  scoring avec les artefacts.
-\end{enumerate}
 
 \section{Perspectives}
 
