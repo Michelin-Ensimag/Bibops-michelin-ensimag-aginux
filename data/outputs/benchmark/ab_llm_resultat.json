@@ -1,0 +1,337 @@
+{
+  "modeles": [
+    "gpt-4o-mini",
+    "claude-haiku-4.5"
+  ],
+  "juge": "gpt-4o",
+  "scores": {
+    "gpt-4o-mini": 25,
+    "claude-haiku-4.5": 15
+  },
+  "pourcentages": {
+    "gpt-4o-mini": 62.5,
+    "claude-haiku-4.5": 37.5
+  },
+  "details": [
+    {
+      "ticket_id": "1",
+      "question": "Mon VPN Cisco ne marche plus.",
+      "choix_llm": "B",
+      "meilleur_modele": "gpt-4o-mini",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse B est plus complète et inclut des étapes supplémentaires comme la mise à jour du logiciel et la vérification du pare-feu, ce qui la rend plus actionnable et adaptée à un contexte utilisateur varié."
+    },
+    {
+      "ticket_id": "2",
+      "question": "Combien de jours de congés me reste-t-il ?",
+      "choix_llm": "B",
+      "meilleur_modele": "claude-haiku-4.5",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse B est plus détaillée, actionnable et adaptée au contexte, car elle fournit des étapes claires et des sources spécifiques pour obtenir l'information demandée, tout en restant pertinente et concise."
+    },
+    {
+      "ticket_id": "3",
+      "question": "Mon imprimante affiche erreur 404.",
+      "choix_llm": "A",
+      "meilleur_modele": "gpt-4o-mini",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse A est plus complète, claire et actionnable, offrant des étapes détaillées et adaptées au contexte de l'erreur 404 sur une imprimante."
+    },
+    {
+      "ticket_id": "4",
+      "question": "Est-ce que je peux cumuler deux emplois ?",
+      "choix_llm": "A",
+      "meilleur_modele": "gpt-4o-mini",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse A est plus claire, structurée et complète, offrant des informations détaillées et actionnables sur les aspects légaux et contractuels du cumul d'emplois, ce qui est essentiel dans un contexte juridique."
+    },
+    {
+      "ticket_id": "5",
+      "question": "Je ne peux pas accéder à Outlook depuis ce matin, le client refuse de se connecter.",
+      "choix_llm": "B",
+      "meilleur_modele": "gpt-4o-mini",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse B est plus complète, claire et directement actionnable, offrant des étapes concrètes pour résoudre le problème sans s'interrompre comme la réponse A."
+    },
+    {
+      "ticket_id": "6",
+      "question": "Je suis en télétravail et ma connexion WiFi est très lente. Comment l'améliorer ?",
+      "choix_llm": "B",
+      "meilleur_modele": "gpt-4o-mini",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse B est plus complète, claire et actionnable, offrant des étapes précises et adaptées au contexte de télétravail, sans être interrompue."
+    },
+    {
+      "ticket_id": "7",
+      "question": "J'ai oublié mon mot de passe Windows. Comment faire pour le réinitialiser ?",
+      "choix_llm": "A",
+      "meilleur_modele": "claude-haiku-4.5",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse A est plus adaptée au contexte professionnel de Michelin, en mentionnant un portail interne spécifique pour la réinitialisation, ce qui est pertinent et actionnable pour l'utilisateur dans ce cadre."
+    },
+    {
+      "ticket_id": "8",
+      "question": "Je dois installer un logiciel pour mon projet (Python, Node.js, Docker). Qui autoriser ?",
+      "choix_llm": "B",
+      "meilleur_modele": "claude-haiku-4.5",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse B est plus structurée, actionnable et adaptée au contexte professionnel de Michelin, en fournissant des étapes claires et spécifiques pour soumettre une demande d'installation de logiciel."
+    },
+    {
+      "ticket_id": "9",
+      "question": "Quels sont les équipements que Michelin fournit pour une configuration de bureau à domicile ?",
+      "choix_llm": "A",
+      "meilleur_modele": "gpt-4o-mini",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse A est plus complète, claire et directement adaptée au contexte de Michelin, en listant des équipements spécifiques et en mentionnant la variabilité selon les pays et rôles, ce qui la rend plus pertinente et actionnable pour l'utilisateur."
+    },
+    {
+      "ticket_id": "10",
+      "question": "Quel est le montant maximal de remboursement pour un repas lors d'un déplacement professionnel ?",
+      "choix_llm": "A",
+      "meilleur_modele": "gpt-4o-mini",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse A est plus complète, claire et directement actionnable en orientant l'utilisateur vers des ressources spécifiques comme le guide des frais professionnels ou les services internes concernés."
+    },
+    {
+      "ticket_id": "11",
+      "question": "Mon compte Teams est connecté mais je ne vois plus mes canaux de projet.",
+      "choix_llm": "A",
+      "meilleur_modele": "gpt-4o-mini",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse A est plus complète et mieux structurée, offrant des étapes claires et adaptées au contexte, notamment en mentionnant les autorisations et les paramètres de l'équipe, ce qui est pertinent pour un problème lié aux canaux de projet."
+    },
+    {
+      "ticket_id": "12",
+      "question": "Mon PC redémarre en boucle après une mise à jour Windows.",
+      "choix_llm": "B",
+      "meilleur_modele": "gpt-4o-mini",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse B est plus complète et claire dans ses explications, tout en restant actionnable et adaptée au contexte utilisateur. Elle fournit des étapes concrètes et bien structurées pour résoudre le problème."
+    },
+    {
+      "ticket_id": "13",
+      "question": "Je ne peux pas imprimer en recto-verso, l'option n'apparaît plus.",
+      "choix_llm": "A",
+      "meilleur_modele": "gpt-4o-mini",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse A est plus complète et fournit des étapes claires et détaillées pour résoudre le problème, notamment en vérifiant les paramètres de l'imprimante et en mettant à jour les pilotes, ce qui est crucial dans ce contexte."
+    },
+    {
+      "ticket_id": "14",
+      "question": "J'ai un message 'boîte aux lettres pleine' dans Outlook.",
+      "choix_llm": "A",
+      "meilleur_modele": "gpt-4o-mini",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse A est plus complète et claire, offrant des étapes détaillées et actionnables pour résoudre le problème, tout en restant adaptée au contexte utilisateur."
+    },
+    {
+      "ticket_id": "15",
+      "question": "Le partage d'écran Teams est noir quand je présente un PowerPoint.",
+      "choix_llm": "B",
+      "meilleur_modele": "gpt-4o-mini",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse B est plus complète, claire et directement actionnable, en fournissant des étapes spécifiques pour résoudre le problème, notamment la désactivation de l'accélération matérielle et la mise à jour des logiciels concernés."
+    },
+    {
+      "ticket_id": "16",
+      "question": "Mon accès au dossier réseau \\u005c\\u005cfileserver\\projets est refusé.",
+      "choix_llm": "A",
+      "meilleur_modele": "claude-haiku-4.5",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse A est plus structurée, claire et adaptée au contexte professionnel de Michelin, avec des étapes spécifiques et actionnables pour diagnostiquer le problème d'accès au dossier réseau."
+    },
+    {
+      "ticket_id": "17",
+      "question": "Le VPN se connecte mais je n'accède à aucune application interne.",
+      "choix_llm": "A",
+      "meilleur_modele": "gpt-4o-mini",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse A est plus claire, structurée et actionnable pour un utilisateur non technique, tout en couvrant les étapes essentielles de dépannage adaptées au contexte."
+    },
+    {
+      "ticket_id": "18",
+      "question": "Mon clavier passe tout seul en QWERTY sur Windows 11.",
+      "choix_llm": "B",
+      "meilleur_modele": "gpt-4o-mini",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse B est plus claire et actionnable, avec des étapes bien structurées et adaptées au contexte utilisateur, même si elle est légèrement incomplète."
+    },
+    {
+      "ticket_id": "19",
+      "question": "Je ne reçois plus les notifications d'emails sur mobile Outlook.",
+      "choix_llm": "A",
+      "meilleur_modele": "claude-haiku-4.5",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse A est plus concise, bien structurée et se concentre directement sur les étapes essentielles, rendant l'action plus claire et rapide pour l'utilisateur."
+    },
+    {
+      "ticket_id": "20",
+      "question": "Le lecteur de carte badge USB n'est plus reconnu.",
+      "choix_llm": "A",
+      "meilleur_modele": "gpt-4o-mini",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse A est plus complète et claire, offrant des étapes détaillées et actionnables adaptées au contexte utilisateur, sans être interrompue comme la réponse B."
+    },
+    {
+      "ticket_id": "21",
+      "question": "Comment poser une demi-journée de congé dans l'outil RH ?",
+      "choix_llm": "B",
+      "meilleur_modele": "gpt-4o-mini",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse B est plus complète, claire et actionnable, offrant des étapes détaillées et adaptées au contexte de la demande utilisateur."
+    },
+    {
+      "ticket_id": "22",
+      "question": "Où trouver mon bulletin de paie des trois derniers mois ?",
+      "choix_llm": "B",
+      "meilleur_modele": "gpt-4o-mini",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse B est plus claire, mieux structurée et fournit des étapes concrètes et actionnables pour accéder aux bulletins de paie, tout en restant adaptée au contexte utilisateur."
+    },
+    {
+      "ticket_id": "23",
+      "question": "Quelle est la procédure pour déclarer un arrêt maladie ?",
+      "choix_llm": "A",
+      "meilleur_modele": "gpt-4o-mini",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse A est plus complète et claire, détaillant les étapes spécifiques à suivre, bien que la fin soit incomplète. Elle est plus adaptée au contexte utilisateur que la réponse B, qui est tronquée et manque de clarté."
+    },
+    {
+      "ticket_id": "24",
+      "question": "Comment mettre à jour mon adresse postale dans le portail employé ?",
+      "choix_llm": "A",
+      "meilleur_modele": "gpt-4o-mini",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse A est plus claire, mieux structurée et entièrement actionnable, sans digressions inutiles. Elle est adaptée au contexte en se concentrant uniquement sur le portail employé, ce qui correspond à la question posée."
+    },
+    {
+      "ticket_id": "25",
+      "question": "Quelle est la politique de télétravail actuelle pour les équipes IT ?",
+      "choix_llm": "B",
+      "meilleur_modele": "gpt-4o-mini",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse B est plus claire, concise et actionnable, en orientant directement l'utilisateur vers les ressources internes ou le département RH pour des informations précises, tout en restant adaptée au contexte."
+    },
+    {
+      "ticket_id": "26",
+      "question": "Puis-je enregistrer une réunion interne sans prévenir les participants ?",
+      "choix_llm": "A",
+      "meilleur_modele": "gpt-4o-mini",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse A est plus claire, mieux structurée, et fournit une explication juridique précise tout en offrant une recommandation actionnable adaptée au contexte de l'utilisateur."
+    },
+    {
+      "ticket_id": "27",
+      "question": "Quels risques juridiques si un collaborateur utilise un logiciel non licencié ?",
+      "choix_llm": "A",
+      "meilleur_modele": "gpt-4o-mini",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse A est plus claire, mieux structurée et fournit des informations pertinentes et actionnables sur les risques juridiques, tout en restant adaptée au contexte d'un juriste d'entreprise."
+    },
+    {
+      "ticket_id": "28",
+      "question": "Peut-on partager une base client avec un prestataire externe ?",
+      "choix_llm": "B",
+      "meilleur_modele": "claude-haiku-4.5",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse B est plus claire, structurée et actionnable, avec des points précis et des obligations détaillées, ce qui la rend mieux adaptée au contexte d'un juriste d'entreprise."
+    },
+    {
+      "ticket_id": "29",
+      "question": "Combien de temps conserver les logs d'accès VPN ?",
+      "choix_llm": "A",
+      "meilleur_modele": "claude-haiku-4.5",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse A est plus structurée, précise et fournit des informations légales claires et actionnables, adaptées au contexte d'un juriste d'entreprise."
+    },
+    {
+      "ticket_id": "30",
+      "question": "Faut-il une clause de confidentialité pour un stagiaire ?",
+      "choix_llm": "B",
+      "meilleur_modele": "gpt-4o-mini",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse B est plus complète, claire et structurée, offrant des raisons détaillées et actionnables pour inclure une clause de confidentialité dans le contrat de stage."
+    },
+    {
+      "ticket_id": "31",
+      "question": "Comment déclarer des frais de taxi après un déplacement professionnel ?",
+      "choix_llm": "A",
+      "meilleur_modele": "claude-haiku-4.5",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse A est plus adaptée car elle est spécifique au contexte de Michelin, mentionne l'accès à l'espace interne de notes de frais et utilise un format structuré et clair pour guider l'utilisateur dans la procédure."
+    },
+    {
+      "ticket_id": "32",
+      "question": "Quel justificatif est obligatoire pour un remboursement d'hôtel ?",
+      "choix_llm": "A",
+      "meilleur_modele": "claude-haiku-4.5",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse A est plus pertinente et adaptée au contexte professionnel chez Michelin, car elle détaille clairement les justificatifs obligatoires et complémentaires nécessaires pour un remboursement d'hôtel, tout en restant actionnable et structurée."
+    },
+    {
+      "ticket_id": "33",
+      "question": "Le repas d'affaires est-il remboursé si je n'ai pas la facture originale ?",
+      "choix_llm": "A",
+      "meilleur_modele": "claude-haiku-4.5",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse A est plus pertinente et actionnable car elle fournit des alternatives concrètes et des étapes claires à suivre en cas d'absence de facture originale, tout en étant adaptée au contexte professionnel chez Michelin."
+    },
+    {
+      "ticket_id": "34",
+      "question": "Quel plafond s'applique pour une nuitée à Paris ?",
+      "choix_llm": "A",
+      "meilleur_modele": "claude-haiku-4.5",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse A est plus adaptée au contexte professionnel de Michelin, car elle oriente clairement l'utilisateur vers les ressources internes spécifiques à l'entreprise, ce qui est essentiel pour obtenir des informations précises et à jour."
+    },
+    {
+      "ticket_id": "35",
+      "question": "Sous quel délai les notes de frais sont-elles remboursées ?",
+      "choix_llm": "B",
+      "meilleur_modele": "claude-haiku-4.5",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse B est plus adaptée au contexte spécifique de Michelin, fournit des actions concrètes et dirige l'utilisateur vers des ressources internes pertinentes pour obtenir une réponse précise."
+    },
+    {
+      "ticket_id": "36",
+      "question": "Le client SAP affiche une erreur de certificat expiré.",
+      "choix_llm": "B",
+      "meilleur_modele": "gpt-4o-mini",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse B est plus claire, actionnable et directement adaptée au problème signalé, en fournissant des étapes concrètes pour vérifier et résoudre l'erreur de certificat expiré dans SAP."
+    },
+    {
+      "ticket_id": "37",
+      "question": "Mon navigateur bloque l'accès à l'intranet pour cause de proxy.",
+      "choix_llm": "B",
+      "meilleur_modele": "gpt-4o-mini",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse B est plus complète, claire et actionnable, offrant des étapes précises et adaptées au contexte utilisateur, contrairement à la réponse A qui est incomplète et manque de clarté."
+    },
+    {
+      "ticket_id": "38",
+      "question": "J'ai perdu l'accès administrateur local après changement de poste.",
+      "choix_llm": "A",
+      "meilleur_modele": "claude-haiku-4.5",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse A est plus adaptée au contexte de Michelin, claire et actionnable, en fournissant une procédure spécifique et alignée avec les processus internes de l'entreprise."
+    },
+    {
+      "ticket_id": "39",
+      "question": "Le micro Bluetooth coupe toutes les 30 secondes en visio.",
+      "choix_llm": "A",
+      "meilleur_modele": "claude-haiku-4.5",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse A est plus claire, mieux structurée et propose des étapes concrètes et rapides adaptées au contexte d'un problème de micro Bluetooth en visio. Elle est également plus actionnable pour un utilisateur non technique."
+    },
+    {
+      "ticket_id": "40",
+      "question": "Le scanner réseau envoie les PDF vides dans ma boîte mail.",
+      "choix_llm": "A",
+      "meilleur_modele": "claude-haiku-4.5",
+      "juge_utilise": "gpt-4o",
+      "justification_juge": "La réponse A est plus structurée, claire et actionnable, avec des étapes spécifiques adaptées au contexte d'un scanner réseau chez Michelin. Elle est également mieux organisée pour guider l'utilisateur efficacement."
+    }
+  ]
+}

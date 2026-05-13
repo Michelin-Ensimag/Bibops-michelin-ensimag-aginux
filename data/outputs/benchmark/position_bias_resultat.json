@@ -1,0 +1,859 @@
+{
+  "summary": {
+    "models": {
+      "A": "gpt-4o-mini",
+      "B": "claude-haiku-4.5",
+      "judge": "gpt-4o"
+    },
+    "tickets_total": 40,
+    "valid_pairs": 40,
+    "total_judgments": 80,
+    "picks_A_position": 44,
+    "picks_B_position": 36,
+    "A_position_rate": 0.55,
+    "binomial_test_two_sided_pvalue": 0.4340422553454788,
+    "interpretation": "Pas d'evidence statistique forte de biais de position"
+  },
+  "details": [
+    {
+      "ticket_id": "1",
+      "question": "Mon VPN Cisco ne marche plus.",
+      "model_a_effectif": "gpt-4o-mini",
+      "model_b_effectif": "claude-haiku-4.5",
+      "jugement_normal": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus complète et couvre un éventail plus large de solutions possibles, tout en restant claire et actionnable pour l'utilisateur.",
+        "juge_utilise": "gpt-4o"
+      },
+      "jugement_inverse": {
+        "ok": true,
+        "erreur": "",
+        "choix": "B",
+        "justification": "La réponse B est plus complète et inclut des étapes supplémentaires comme la mise à jour du logiciel et la vérification du pare-feu, ce qui la rend plus actionnable et adaptée au contexte utilisateur.",
+        "juge_utilise": "gpt-4o"
+      },
+      "status": "ok"
+    },
+    {
+      "ticket_id": "2",
+      "question": "Combien de jours de congés me reste-t-il ?",
+      "model_a_effectif": "gpt-4o-mini",
+      "model_b_effectif": "claude-haiku-4.5",
+      "jugement_normal": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus concise, claire et directement actionnable, en orientant l'utilisateur vers les ressources appropriées sans ajouter d'informations superflues ou incomplètes.",
+        "juge_utilise": "gpt-4o"
+      },
+      "jugement_inverse": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus détaillée et propose plusieurs options concrètes pour obtenir l'information, ce qui la rend plus actionnable et adaptée au contexte utilisateur.",
+        "juge_utilise": "gpt-4o"
+      },
+      "status": "ok"
+    },
+    {
+      "ticket_id": "3",
+      "question": "Mon imprimante affiche erreur 404.",
+      "model_a_effectif": "gpt-4o-mini",
+      "model_b_effectif": "claude-haiku-4.5",
+      "jugement_normal": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus complète et fournit des étapes claires et détaillées pour résoudre le problème, ce qui la rend plus actionnable et adaptée au contexte utilisateur.",
+        "juge_utilise": "gpt-4o"
+      },
+      "jugement_inverse": {
+        "ok": true,
+        "erreur": "",
+        "choix": "B",
+        "justification": "La réponse B est plus complète et inclut des étapes supplémentaires comme la vérification du fichier à imprimer, ce qui la rend plus actionnable et adaptée au contexte de l'erreur 404 sur une imprimante.",
+        "juge_utilise": "gpt-4o"
+      },
+      "status": "ok"
+    },
+    {
+      "ticket_id": "4",
+      "question": "Est-ce que je peux cumuler deux emplois ?",
+      "model_a_effectif": "gpt-4o-mini",
+      "model_b_effectif": "claude-haiku-4.5",
+      "jugement_normal": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus complète, claire et actionnable, en détaillant les aspects légaux, contractuels et fiscaux du cumul d'emplois, tout en restant adaptée au contexte professionnel du juriste d'entreprise.",
+        "juge_utilise": "gpt-4o"
+      },
+      "jugement_inverse": {
+        "ok": true,
+        "erreur": "",
+        "choix": "B",
+        "justification": "La réponse B est plus claire, structurée et directement actionnable, tout en restant adaptée au contexte juridique. Elle couvre les points essentiels sans s'interrompre, contrairement à la réponse A qui est incomplète et moins fluide.",
+        "juge_utilise": "gpt-4o"
+      },
+      "status": "ok"
+    },
+    {
+      "ticket_id": "5",
+      "question": "Je ne peux pas accéder à Outlook depuis ce matin, le client refuse de se connecter.",
+      "model_a_effectif": "gpt-4o-mini",
+      "model_b_effectif": "claude-haiku-4.5",
+      "jugement_normal": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus complète et propose des étapes claires et actionnables, adaptées au problème de connexion à Outlook mentionné par l'utilisateur.",
+        "juge_utilise": "gpt-4o"
+      },
+      "jugement_inverse": {
+        "ok": true,
+        "erreur": "",
+        "choix": "B",
+        "justification": "La réponse B est plus complète, claire et propose des étapes actionnables adaptées au problème signalé, notamment en vérifiant le mode hors connexion et les mises à jour, ce qui est pertinent pour Outlook.",
+        "juge_utilise": "gpt-4o"
+      },
+      "status": "ok"
+    },
+    {
+      "ticket_id": "6",
+      "question": "Je suis en télétravail et ma connexion WiFi est très lente. Comment l'améliorer ?",
+      "model_a_effectif": "gpt-4o-mini",
+      "model_b_effectif": "claude-haiku-4.5",
+      "jugement_normal": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus complète et structurée, offrant des conseils pratiques et actionnables adaptés au contexte de télétravail, tout en restant claire et pertinente.",
+        "juge_utilise": "gpt-4o"
+      },
+      "jugement_inverse": {
+        "ok": true,
+        "erreur": "",
+        "choix": "B",
+        "justification": "La réponse B est plus complète, claire et actionnable, avec des conseils spécifiques adaptés au contexte du télétravail, comme l'utilisation de la bande 5 GHz et la gestion des interférences.",
+        "juge_utilise": "gpt-4o"
+      },
+      "status": "ok"
+    },
+    {
+      "ticket_id": "7",
+      "question": "J'ai oublié mon mot de passe Windows. Comment faire pour le réinitialiser ?",
+      "model_a_effectif": "gpt-4o-mini",
+      "model_b_effectif": "claude-haiku-4.5",
+      "jugement_normal": {
+        "ok": true,
+        "erreur": "",
+        "choix": "B",
+        "justification": "La réponse B est plus adaptée au contexte professionnel de Michelin, en proposant des solutions spécifiques et en orientant clairement l'utilisateur vers le support IT interne si nécessaire.",
+        "juge_utilise": "gpt-4o"
+      },
+      "jugement_inverse": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus adaptée au contexte professionnel de Michelin, car elle propose des solutions spécifiques et inclut une procédure claire pour contacter le support IT interne, ce qui est essentiel dans un environnement d'entreprise.",
+        "juge_utilise": "gpt-4o"
+      },
+      "status": "ok"
+    },
+    {
+      "ticket_id": "8",
+      "question": "Je dois installer un logiciel pour mon projet (Python, Node.js, Docker). Qui autoriser ?",
+      "model_a_effectif": "gpt-4o-mini",
+      "model_b_effectif": "claude-haiku-4.5",
+      "jugement_normal": {
+        "ok": true,
+        "erreur": "",
+        "choix": "B",
+        "justification": "La réponse B est plus claire, structurée et adaptée au contexte de Michelin, en fournissant des étapes précises et actionnables pour l'utilisateur, tout en tenant compte des processus internes spécifiques comme le portail IT.",
+        "juge_utilise": "gpt-4o"
+      },
+      "jugement_inverse": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus structurée, spécifique au contexte de Michelin, et fournit des étapes claires et actionnables adaptées à l'utilisateur.",
+        "juge_utilise": "gpt-4o"
+      },
+      "status": "ok"
+    },
+    {
+      "ticket_id": "9",
+      "question": "Quels sont les équipements que Michelin fournit pour une configuration de bureau à domicile ?",
+      "model_a_effectif": "gpt-4o-mini",
+      "model_b_effectif": "claude-haiku-4.5",
+      "jugement_normal": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus complète, claire et directement actionnable, en listant des équipements spécifiques que Michelin pourrait fournir, ce qui répond mieux à la question posée par l'utilisateur.",
+        "juge_utilise": "gpt-4o"
+      },
+      "jugement_inverse": {
+        "ok": true,
+        "erreur": "",
+        "choix": "B",
+        "justification": "La réponse B est plus claire, pertinente et actionnable car elle fournit une liste détaillée et spécifique des équipements couramment fournis par Michelin, répondant directement à la question de l'utilisateur.",
+        "juge_utilise": "gpt-4o"
+      },
+      "status": "ok"
+    },
+    {
+      "ticket_id": "10",
+      "question": "Quel est le montant maximal de remboursement pour un repas lors d'un déplacement professionnel ?",
+      "model_a_effectif": "gpt-4o-mini",
+      "model_b_effectif": "claude-haiku-4.5",
+      "jugement_normal": {
+        "ok": true,
+        "erreur": "",
+        "choix": "B",
+        "justification": "La réponse B est plus structurée, claire et actionnable, avec des étapes concrètes pour trouver l'information, ce qui est mieux adapté au contexte professionnel de l'utilisateur.",
+        "juge_utilise": "gpt-4o"
+      },
+      "jugement_inverse": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus actionnable et claire, fournissant des étapes concrètes pour accéder aux informations nécessaires, tout en restant adaptée au contexte de l'utilisateur chez Michelin.",
+        "juge_utilise": "gpt-4o"
+      },
+      "status": "ok"
+    },
+    {
+      "ticket_id": "11",
+      "question": "Mon compte Teams est connecté mais je ne vois plus mes canaux de projet.",
+      "model_a_effectif": "gpt-4o-mini",
+      "model_b_effectif": "claude-haiku-4.5",
+      "jugement_normal": {
+        "ok": true,
+        "erreur": "",
+        "choix": "B",
+        "justification": "La réponse B est plus structurée, claire et actionnable grâce à l'utilisation de sections bien définies et des raccourcis spécifiques adaptés au contexte utilisateur.",
+        "juge_utilise": "gpt-4o"
+      },
+      "jugement_inverse": {
+        "ok": true,
+        "erreur": "",
+        "choix": "B",
+        "justification": "La réponse B est plus complète, claire et actionnable, avec des étapes détaillées et adaptées au contexte utilisateur, contrairement à la réponse A qui est incomplète et coupée en milieu d'explication.",
+        "juge_utilise": "gpt-4o"
+      },
+      "status": "ok"
+    },
+    {
+      "ticket_id": "12",
+      "question": "Mon PC redémarre en boucle après une mise à jour Windows.",
+      "model_a_effectif": "gpt-4o-mini",
+      "model_b_effectif": "claude-haiku-4.5",
+      "jugement_normal": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus complète, claire et actionnable, offrant des étapes détaillées pour résoudre le problème, notamment le démarrage en mode sans échec et la désinstallation de la mise à jour problématique.",
+        "juge_utilise": "gpt-4o"
+      },
+      "jugement_inverse": {
+        "ok": true,
+        "erreur": "",
+        "choix": "B",
+        "justification": "La réponse B est plus complète, claire et actionnable, offrant des étapes détaillées et adaptées au problème décrit, contrairement à la réponse A qui est incomplète et coupée.",
+        "juge_utilise": "gpt-4o"
+      },
+      "status": "ok"
+    },
+    {
+      "ticket_id": "13",
+      "question": "Je ne peux pas imprimer en recto-verso, l'option n'apparaît plus.",
+      "model_a_effectif": "gpt-4o-mini",
+      "model_b_effectif": "claude-haiku-4.5",
+      "jugement_normal": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus complète et fournit des étapes claires et détaillées pour résoudre le problème, ce qui la rend plus actionnable et adaptée au contexte utilisateur.",
+        "juge_utilise": "gpt-4o"
+      },
+      "jugement_inverse": {
+        "ok": true,
+        "erreur": "",
+        "choix": "B",
+        "justification": "La réponse B est plus complète, claire et actionnable, car elle détaille les étapes spécifiques pour vérifier les paramètres de l'imprimante et les pilotes, tout en restant adaptée au problème décrit par l'utilisateur.",
+        "juge_utilise": "gpt-4o"
+      },
+      "status": "ok"
+    },
+    {
+      "ticket_id": "14",
+      "question": "J'ai un message 'boîte aux lettres pleine' dans Outlook.",
+      "model_a_effectif": "gpt-4o-mini",
+      "model_b_effectif": "claude-haiku-4.5",
+      "jugement_normal": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus complète et fournit des étapes claires et détaillées pour résoudre le problème, ce qui la rend plus actionnable et adaptée au contexte utilisateur.",
+        "juge_utilise": "gpt-4o"
+      },
+      "jugement_inverse": {
+        "ok": true,
+        "erreur": "",
+        "choix": "B",
+        "justification": "La réponse B est plus complète, claire et actionnable, offrant des étapes concrètes et adaptées au contexte utilisateur pour résoudre le problème de boîte aux lettres pleine.",
+        "juge_utilise": "gpt-4o"
+      },
+      "status": "ok"
+    },
+    {
+      "ticket_id": "15",
+      "question": "Le partage d'écran Teams est noir quand je présente un PowerPoint.",
+      "model_a_effectif": "gpt-4o-mini",
+      "model_b_effectif": "claude-haiku-4.5",
+      "jugement_normal": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus claire et mieux structurée, avec des étapes précises et actionnables adaptées au problème spécifique de l'utilisateur. Elle inclut également des détails techniques pertinents comme la désactivation de l'accélération matérielle.",
+        "juge_utilise": "gpt-4o"
+      },
+      "jugement_inverse": {
+        "ok": true,
+        "erreur": "",
+        "choix": "B",
+        "justification": "La réponse B est plus complète et actionnable, notamment en incluant une étape spécifique pour désactiver l'accélération matérielle, ce qui est une solution courante pour ce type de problème. Elle est également claire et bien structurée pour l'utilisateur.",
+        "juge_utilise": "gpt-4o"
+      },
+      "status": "ok"
+    },
+    {
+      "ticket_id": "16",
+      "question": "Mon accès au dossier réseau \\u005c\\u005cfileserver\\projets est refusé.",
+      "model_a_effectif": "gpt-4o-mini",
+      "model_b_effectif": "claude-haiku-4.5",
+      "jugement_normal": {
+        "ok": true,
+        "erreur": "",
+        "choix": "B",
+        "justification": "La réponse B est plus structurée, spécifique au contexte Michelin (mention du VPN), et propose des étapes claires et actionnables pour résoudre le problème.",
+        "juge_utilise": "gpt-4o"
+      },
+      "jugement_inverse": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus structurée, claire et actionnable, avec des étapes détaillées adaptées au contexte utilisateur, notamment en mentionnant le VPN Michelin et des vérifications spécifiques.",
+        "juge_utilise": "gpt-4o"
+      },
+      "status": "ok"
+    },
+    {
+      "ticket_id": "17",
+      "question": "Le VPN se connecte mais je n'accède à aucune application interne.",
+      "model_a_effectif": "gpt-4o-mini",
+      "model_b_effectif": "claude-haiku-4.5",
+      "jugement_normal": {
+        "ok": true,
+        "erreur": "",
+        "choix": "B",
+        "justification": "La réponse B est plus structurée, claire et actionnable avec des étapes précises et adaptées au contexte technique, facilitant le diagnostic pour l'utilisateur.",
+        "juge_utilise": "gpt-4o"
+      },
+      "jugement_inverse": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus structurée, spécifique et actionnable, avec des étapes claires adaptées au contexte technique du problème VPN et des applications internes.",
+        "juge_utilise": "gpt-4o"
+      },
+      "status": "ok"
+    },
+    {
+      "ticket_id": "18",
+      "question": "Mon clavier passe tout seul en QWERTY sur Windows 11.",
+      "model_a_effectif": "gpt-4o-mini",
+      "model_b_effectif": "claude-haiku-4.5",
+      "jugement_normal": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus complète, claire et actionnable, avec des étapes détaillées adaptées au contexte utilisateur, contrairement à la réponse B qui est incomplète et manque de clarté dans les instructions.",
+        "juge_utilise": "gpt-4o"
+      },
+      "jugement_inverse": {
+        "ok": true,
+        "erreur": "",
+        "choix": "B",
+        "justification": "La réponse B est plus claire et actionnable, avec des étapes précises et adaptées au contexte utilisateur, sans être interrompue ou incomplète comme la réponse A.",
+        "juge_utilise": "gpt-4o"
+      },
+      "status": "ok"
+    },
+    {
+      "ticket_id": "19",
+      "question": "Je ne reçois plus les notifications d'emails sur mobile Outlook.",
+      "model_a_effectif": "gpt-4o-mini",
+      "model_b_effectif": "claude-haiku-4.5",
+      "jugement_normal": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus complète et claire, offrant des étapes détaillées et actionnables pour résoudre le problème, tout en restant adaptée au contexte utilisateur.",
+        "juge_utilise": "gpt-4o"
+      },
+      "jugement_inverse": {
+        "ok": true,
+        "erreur": "",
+        "choix": "B",
+        "justification": "La réponse B est plus complète et claire, offrant des étapes détaillées et actionnables pour résoudre le problème, tout en restant adaptée au contexte utilisateur.",
+        "juge_utilise": "gpt-4o"
+      },
+      "status": "ok"
+    },
+    {
+      "ticket_id": "20",
+      "question": "Le lecteur de carte badge USB n'est plus reconnu.",
+      "model_a_effectif": "gpt-4o-mini",
+      "model_b_effectif": "claude-haiku-4.5",
+      "jugement_normal": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus complète et claire, offrant des étapes détaillées et actionnables adaptées au contexte utilisateur, sans être interrompue comme la réponse B.",
+        "juge_utilise": "gpt-4o"
+      },
+      "jugement_inverse": {
+        "ok": true,
+        "erreur": "",
+        "choix": "B",
+        "justification": "La réponse B est plus concise, claire et actionnable, tout en couvrant les étapes essentielles de dépannage adaptées au contexte utilisateur.",
+        "juge_utilise": "gpt-4o"
+      },
+      "status": "ok"
+    },
+    {
+      "ticket_id": "21",
+      "question": "Comment poser une demi-journée de congé dans l'outil RH ?",
+      "model_a_effectif": "gpt-4o-mini",
+      "model_b_effectif": "claude-haiku-4.5",
+      "jugement_normal": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus complète, claire et actionnable, car elle détaille les étapes spécifiques pour poser une demi-journée de congé, ce qui est directement pertinent pour l'utilisateur.",
+        "juge_utilise": "gpt-4o"
+      },
+      "jugement_inverse": {
+        "ok": true,
+        "erreur": "",
+        "choix": "B",
+        "justification": "La réponse B est plus complète, claire et actionnable, car elle détaille les étapes spécifiques pour poser une demi-journée de congé, contrairement à A qui est incomplète et s'arrête en milieu de procédure.",
+        "juge_utilise": "gpt-4o"
+      },
+      "status": "ok"
+    },
+    {
+      "ticket_id": "22",
+      "question": "Où trouver mon bulletin de paie des trois derniers mois ?",
+      "model_a_effectif": "gpt-4o-mini",
+      "model_b_effectif": "claude-haiku-4.5",
+      "jugement_normal": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus détaillée, claire et actionnable, offrant plusieurs options concrètes et étapes précises pour accéder aux bulletins de paie, ce qui est mieux adapté au contexte utilisateur.",
+        "juge_utilise": "gpt-4o"
+      },
+      "jugement_inverse": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus structurée, claire et adaptée au contexte Michelin, en fournissant des étapes précises et des options spécifiques comme le portail RH et l'intranet, sans inclure d'informations potentiellement non pertinentes comme les emails.",
+        "juge_utilise": "gpt-4o"
+      },
+      "status": "ok"
+    },
+    {
+      "ticket_id": "23",
+      "question": "Quelle est la procédure pour déclarer un arrêt maladie ?",
+      "model_a_effectif": "gpt-4o-mini",
+      "model_b_effectif": "claude-haiku-4.5",
+      "jugement_normal": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus complète et claire, fournissant des étapes détaillées et actionnables pour déclarer un arrêt maladie, ce qui est essentiel dans un contexte RH chez Michelin.",
+        "juge_utilise": "gpt-4o"
+      },
+      "jugement_inverse": {
+        "ok": true,
+        "erreur": "",
+        "choix": "B",
+        "justification": "La réponse B est plus complète, claire et actionnable, fournissant toutes les étapes nécessaires pour déclarer un arrêt maladie, tout en restant adaptée au contexte professionnel chez Michelin.",
+        "juge_utilise": "gpt-4o"
+      },
+      "status": "ok"
+    },
+    {
+      "ticket_id": "24",
+      "question": "Comment mettre à jour mon adresse postale dans le portail employé ?",
+      "model_a_effectif": "gpt-4o-mini",
+      "model_b_effectif": "claude-haiku-4.5",
+      "jugement_normal": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus détaillée, claire et actionnable, avec des étapes précises adaptées au contexte utilisateur, contrairement à la réponse B qui reste générique et moins structurée.",
+        "juge_utilise": "gpt-4o"
+      },
+      "jugement_inverse": {
+        "ok": true,
+        "erreur": "",
+        "choix": "B",
+        "justification": "La réponse B est plus claire, mieux structurée et directement actionnable, avec des étapes précises adaptées au contexte utilisateur chez Michelin.",
+        "juge_utilise": "gpt-4o"
+      },
+      "status": "ok"
+    },
+    {
+      "ticket_id": "25",
+      "question": "Quelle est la politique de télétravail actuelle pour les équipes IT ?",
+      "model_a_effectif": "gpt-4o-mini",
+      "model_b_effectif": "claude-haiku-4.5",
+      "jugement_normal": {
+        "ok": true,
+        "erreur": "",
+        "choix": "B",
+        "justification": "La réponse B est plus structurée, claire et actionnable, offrant des étapes concrètes et des ressources spécifiques pour obtenir des informations précises sur la politique de télétravail chez Michelin.",
+        "juge_utilise": "gpt-4o"
+      },
+      "jugement_inverse": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus structurée, claire et actionnable, offrant des étapes concrètes et des ressources spécifiques pour obtenir des informations précises, ce qui la rend mieux adaptée au contexte utilisateur.",
+        "juge_utilise": "gpt-4o"
+      },
+      "status": "ok"
+    },
+    {
+      "ticket_id": "26",
+      "question": "Puis-je enregistrer une réunion interne sans prévenir les participants ?",
+      "model_a_effectif": "gpt-4o-mini",
+      "model_b_effectif": "claude-haiku-4.5",
+      "jugement_normal": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus complète, claire et actionnable, fournissant des références légales précises et des recommandations concrètes adaptées au contexte de l'utilisateur.",
+        "juge_utilise": "gpt-4o"
+      },
+      "jugement_inverse": {
+        "ok": true,
+        "erreur": "",
+        "choix": "B",
+        "justification": "La réponse B est plus claire, directement actionnable et fournit des références légales précises, tout en restant adaptée au contexte de la question posée.",
+        "juge_utilise": "gpt-4o"
+      },
+      "status": "ok"
+    },
+    {
+      "ticket_id": "27",
+      "question": "Quels risques juridiques si un collaborateur utilise un logiciel non licencié ?",
+      "model_a_effectif": "gpt-4o-mini",
+      "model_b_effectif": "claude-haiku-4.5",
+      "jugement_normal": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus claire, mieux structurée et fournit des informations complètes sur les risques juridiques, tout en restant adaptée au contexte professionnel du juriste d'entreprise.",
+        "juge_utilise": "gpt-4o"
+      },
+      "jugement_inverse": {
+        "ok": true,
+        "erreur": "",
+        "choix": "B",
+        "justification": "La réponse B est plus claire, mieux structurée et fournit des informations directement liées aux risques juridiques, tout en restant concise et adaptée au contexte.",
+        "juge_utilise": "gpt-4o"
+      },
+      "status": "ok"
+    },
+    {
+      "ticket_id": "28",
+      "question": "Peut-on partager une base client avec un prestataire externe ?",
+      "model_a_effectif": "gpt-4o-mini",
+      "model_b_effectif": "claude-haiku-4.5",
+      "jugement_normal": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus complète, claire et structurée, abordant les aspects juridiques essentiels comme le RGPD, la base légale et le contrat avec le prestataire, tout en restant adaptée au contexte d'un juriste d'entreprise.",
+        "juge_utilise": "gpt-4o"
+      },
+      "jugement_inverse": {
+        "ok": true,
+        "erreur": "",
+        "choix": "B",
+        "justification": "La réponse B est plus claire et structurée, tout en couvrant les aspects essentiels comme le RGPD, la base légale et le contrat avec le prestataire, ce qui la rend plus actionnable et adaptée au contexte juridique.",
+        "juge_utilise": "gpt-4o"
+      },
+      "status": "ok"
+    },
+    {
+      "ticket_id": "29",
+      "question": "Combien de temps conserver les logs d'accès VPN ?",
+      "model_a_effectif": "gpt-4o-mini",
+      "model_b_effectif": "claude-haiku-4.5",
+      "jugement_normal": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus complète, claire et adaptée au contexte juridique en expliquant les facteurs légaux, internes et les meilleures pratiques, ce qui est essentiel pour un juriste d'entreprise. La réponse B est incomplète et manque de clarté dans sa structure et ses recommandations.",
+        "juge_utilise": "gpt-4o"
+      },
+      "jugement_inverse": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus structurée, précise et fournit des durées concrètes adaptées à différents contextes, ce qui la rend plus actionnable et pertinente pour un juriste d'entreprise.",
+        "juge_utilise": "gpt-4o"
+      },
+      "status": "ok"
+    },
+    {
+      "ticket_id": "30",
+      "question": "Faut-il une clause de confidentialité pour un stagiaire ?",
+      "model_a_effectif": "gpt-4o-mini",
+      "model_b_effectif": "claude-haiku-4.5",
+      "jugement_normal": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus complète, claire et directement actionnable, offrant des raisons précises et structurées pour inclure une clause de confidentialité dans le contrat de stage.",
+        "juge_utilise": "gpt-4o"
+      },
+      "jugement_inverse": {
+        "ok": true,
+        "erreur": "",
+        "choix": "B",
+        "justification": "La réponse B est plus claire, concise et directement actionnable, tout en couvrant les points essentiels de manière adaptée au contexte utilisateur.",
+        "juge_utilise": "gpt-4o"
+      },
+      "status": "ok"
+    },
+    {
+      "ticket_id": "31",
+      "question": "Comment déclarer des frais de taxi après un déplacement professionnel ?",
+      "model_a_effectif": "gpt-4o-mini",
+      "model_b_effectif": "claude-haiku-4.5",
+      "jugement_normal": {
+        "ok": true,
+        "erreur": "",
+        "choix": "B",
+        "justification": "La réponse B est plus adaptée car elle est spécifique au contexte de Michelin, mentionne le portail interne et fournit des étapes claires et actionnables pour l'utilisateur.",
+        "juge_utilise": "gpt-4o"
+      },
+      "jugement_inverse": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus adaptée car elle est spécifique au contexte de Michelin, fournit des détails précis sur les documents requis et les étapes à suivre, ce qui la rend plus actionnable et pertinente pour l'utilisateur.",
+        "juge_utilise": "gpt-4o"
+      },
+      "status": "ok"
+    },
+    {
+      "ticket_id": "32",
+      "question": "Quel justificatif est obligatoire pour un remboursement d'hôtel ?",
+      "model_a_effectif": "gpt-4o-mini",
+      "model_b_effectif": "claude-haiku-4.5",
+      "jugement_normal": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus claire, concise et directement adaptée à la question posée, en se concentrant uniquement sur le justificatif principal requis pour le remboursement d'hôtel.",
+        "juge_utilise": "gpt-4o"
+      },
+      "jugement_inverse": {
+        "ok": true,
+        "erreur": "",
+        "choix": "B",
+        "justification": "La réponse B est plus claire, concise et directement actionnable pour l'utilisateur, tout en restant adaptée au contexte de remboursement d'hôtel chez Michelin.",
+        "juge_utilise": "gpt-4o"
+      },
+      "status": "ok"
+    },
+    {
+      "ticket_id": "33",
+      "question": "Le repas d'affaires est-il remboursé si je n'ai pas la facture originale ?",
+      "model_a_effectif": "gpt-4o-mini",
+      "model_b_effectif": "claude-haiku-4.5",
+      "jugement_normal": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus complète, claire et actionnable, offrant des alternatives concrètes et des étapes à suivre en cas d'absence de facture originale, tout en restant adaptée au contexte professionnel.",
+        "juge_utilise": "gpt-4o"
+      },
+      "jugement_inverse": {
+        "ok": true,
+        "erreur": "",
+        "choix": "B",
+        "justification": "La réponse B est plus claire, directement actionnable et fournit des alternatives concrètes comme le relevé de carte de crédit ou une note explicative, tout en restant adaptée au contexte professionnel.",
+        "juge_utilise": "gpt-4o"
+      },
+      "status": "ok"
+    },
+    {
+      "ticket_id": "34",
+      "question": "Quel plafond s'applique pour une nuitée à Paris ?",
+      "model_a_effectif": "gpt-4o-mini",
+      "model_b_effectif": "claude-haiku-4.5",
+      "jugement_normal": {
+        "ok": true,
+        "erreur": "",
+        "choix": "B",
+        "justification": "La réponse B est plus adaptée au contexte interne de Michelin, car elle oriente l'utilisateur vers des ressources spécifiques et actionnables comme l'intranet ou le contact direct, ce qui est essentiel pour obtenir des informations précises et à jour sur les politiques internes.",
+        "juge_utilise": "gpt-4o"
+      },
+      "jugement_inverse": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus adaptée au contexte interne de Michelin, elle oriente clairement l'utilisateur vers les ressources spécifiques de l'entreprise pour obtenir une information précise et à jour.",
+        "juge_utilise": "gpt-4o"
+      },
+      "status": "ok"
+    },
+    {
+      "ticket_id": "35",
+      "question": "Sous quel délai les notes de frais sont-elles remboursées ?",
+      "model_a_effectif": "gpt-4o-mini",
+      "model_b_effectif": "claude-haiku-4.5",
+      "jugement_normal": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus complète, claire et directement actionnable en expliquant les étapes nécessaires pour éviter des retards, tout en restant générique et applicable au contexte de l'utilisateur.",
+        "juge_utilise": "gpt-4o"
+      },
+      "jugement_inverse": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus actionnable et adaptée au contexte Michelin, car elle propose des étapes concrètes comme consulter l'intranet de l'entreprise, ce qui est pertinent pour un employé cherchant une réponse spécifique à Michelin.",
+        "juge_utilise": "gpt-4o"
+      },
+      "status": "ok"
+    },
+    {
+      "ticket_id": "36",
+      "question": "Le client SAP affiche une erreur de certificat expiré.",
+      "model_a_effectif": "gpt-4o-mini",
+      "model_b_effectif": "claude-haiku-4.5",
+      "jugement_normal": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus complète, claire et actionnable, avec des étapes précises adaptées au contexte de l'utilisateur. La réponse B est incomplète et manque de clarté dans les solutions proposées.",
+        "juge_utilise": "gpt-4o"
+      },
+      "jugement_inverse": {
+        "ok": true,
+        "erreur": "",
+        "choix": "B",
+        "justification": "La réponse B est plus claire, actionnable et adaptée au contexte utilisateur, en fournissant des étapes concrètes et compréhensibles pour résoudre le problème de certificat expiré.",
+        "juge_utilise": "gpt-4o"
+      },
+      "status": "ok"
+    },
+    {
+      "ticket_id": "37",
+      "question": "Mon navigateur bloque l'accès à l'intranet pour cause de proxy.",
+      "model_a_effectif": "gpt-4o-mini",
+      "model_b_effectif": "claude-haiku-4.5",
+      "jugement_normal": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus complète, claire et directement actionnable, avec des étapes précises adaptées au problème de proxy mentionné par l'utilisateur. La réponse B est incomplète et manque de clarté dans les solutions proposées.",
+        "juge_utilise": "gpt-4o"
+      },
+      "jugement_inverse": {
+        "ok": true,
+        "erreur": "",
+        "choix": "B",
+        "justification": "La réponse B est plus claire, directement actionnable et adaptée au contexte en fournissant des étapes concrètes pour résoudre le problème de proxy, tout en mentionnant la possibilité de contacter l'administrateur réseau si nécessaire.",
+        "juge_utilise": "gpt-4o"
+      },
+      "status": "ok"
+    },
+    {
+      "ticket_id": "38",
+      "question": "J'ai perdu l'accès administrateur local après changement de poste.",
+      "model_a_effectif": "gpt-4o-mini",
+      "model_b_effectif": "claude-haiku-4.5",
+      "jugement_normal": {
+        "ok": true,
+        "erreur": "",
+        "choix": "B",
+        "justification": "La réponse B est plus structurée, spécifique au contexte de Michelin, et fournit des étapes claires et actionnables pour résoudre le problème rapidement, en incluant les informations nécessaires à préparer.",
+        "juge_utilise": "gpt-4o"
+      },
+      "jugement_inverse": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus adaptée au contexte professionnel de Michelin, car elle est structurée, précise et fournit des étapes claires et spécifiques à suivre, incluant des informations pertinentes à préparer pour accélérer le traitement.",
+        "juge_utilise": "gpt-4o"
+      },
+      "status": "ok"
+    },
+    {
+      "ticket_id": "39",
+      "question": "Le micro Bluetooth coupe toutes les 30 secondes en visio.",
+      "model_a_effectif": "gpt-4o-mini",
+      "model_b_effectif": "claude-haiku-4.5",
+      "jugement_normal": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus complète et couvre un éventail plus large de solutions possibles, tout en restant claire et actionnable pour l'utilisateur.",
+        "juge_utilise": "gpt-4o"
+      },
+      "jugement_inverse": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus claire, mieux structurée et propose des étapes actionnables dans un ordre logique. Elle est également plus adaptée au contexte utilisateur avec des vérifications basiques en priorité.",
+        "juge_utilise": "gpt-4o"
+      },
+      "status": "ok"
+    },
+    {
+      "ticket_id": "40",
+      "question": "Le scanner réseau envoie les PDF vides dans ma boîte mail.",
+      "model_a_effectif": "gpt-4o-mini",
+      "model_b_effectif": "claude-haiku-4.5",
+      "jugement_normal": {
+        "ok": true,
+        "erreur": "",
+        "choix": "A",
+        "justification": "La réponse A est plus complète et fournit des étapes claires et actionnables pour diagnostiquer le problème, bien qu'elle soit légèrement incomplète à la fin. La réponse B est coupée et manque de clarté, ce qui la rend moins utile dans ce contexte.",
+        "juge_utilise": "gpt-4o"
+      },
+      "jugement_inverse": {
+        "ok": true,
+        "erreur": "",
+        "choix": "B",
+        "justification": "La réponse B est plus complète, claire et actionnable, offrant des étapes concrètes et adaptées au contexte utilisateur, contrairement à la réponse A qui est incomplète et s'interrompt brusquement.",
+        "juge_utilise": "gpt-4o"
+      },
+      "status": "ok"
+    }
+  ]
+}
