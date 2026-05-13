@@ -46,27 +46,3 @@ outil, répéter un appel, mal interpréter un résultat ou suivre une instructi
 malveillante contenue dans une source externe. L'évaluation doit donc inclure
 l'outillage, la trace et la sécurité agentique, pas seulement la réponse finale.
 
-\section{Critères d'évaluation}
-
-\bibopsname{} formalise l'évaluation comme un problème multicritère.
-
-\begin{table}[!htbp]
-\centering
-\begin{tabularx}{0.9\textwidth}{YcY}
-\toprule
-\textbf{Dimension} & \textbf{Poids} & \textbf{Rôle} \\
-\midrule
-Qualité & 40 \% & Pertinence, complétude, clarté et utilité de la réponse. \\
-Sécurité & 35 \% & PII, secrets, injection, URLs suspectes, toxicité, refus. \\
-FinOps & 10 \% & Coût estimé à partir des tokens. \\
-Latence & 10 \% & Temps de réponse total. \\
-GreenOps & 5 \% & Énergie et empreinte carbone estimées. \\
-\bottomrule
-\end{tabularx}
-\caption{Pondération de la politique composite.}
-\label{tab:problem-composite}
-\end{table}
-
-Le score composite est complété par des gates bloquants : qualité minimale,
-sécurité minimale et seuils maximaux pour certains risques. Cette logique évite
-qu'une architecture rapide ou peu coûteuse soit validée si elle répond mal.

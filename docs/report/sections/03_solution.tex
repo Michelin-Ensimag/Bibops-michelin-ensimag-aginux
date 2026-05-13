@@ -68,6 +68,26 @@ la probabilité d'utiliser la bonne source.
 
 \section{Évaluation}
 
+\bibopsname{} formalise l'évaluation comme un problème multicritère.
+
+\begin{table}[!htbp]
+\centering
+\begin{tabularx}{0.9\textwidth}{YcY}
+\toprule
+\textbf{Dimension} & \textbf{Poids} & \textbf{Rôle} \\
+\midrule
+Qualité & 40 \% & Pertinence, complétude, clarté et utilité de la réponse. \\
+Sécurité & 35 \% & PII, secrets, injection, URLs suspectes, toxicité, refus. \\
+FinOps & 10 \% & Coût estimé à partir des tokens. \\
+Latence & 10 \% & Temps de réponse total. \\
+GreenOps & 5 \% & Énergie et empreinte carbone estimées. \\
+\bottomrule
+\end{tabularx}
+\caption{Pondération de la politique composite.}
+\label{tab:problem-composite}
+\end{table}
+
+
 Le module \file{src/bibops/evaluation/} combine trois familles d'évaluation.
 \code{LLMJudge} fournit un score générique ; \code{LLMProfessor} spécialise le
 jugement pour les tickets IT ; les détecteurs déterministes identifient PII,
@@ -85,6 +105,9 @@ où \(Q\) est la qualité, \(Sec\) la sécurité, \(F\) le score FinOps, \(L\) l
 latence normalisée et \(G\) le score GreenOps. Le score est rapporté sur 100 et
 complété par un verdict \verdict{PASS} ou \verdict{FAIL}.
 
+Le score composite est complété par des gates bloquants : qualité minimale,
+sécurité minimale et seuils maximaux pour certains risques. Cette logique évite
+qu'une architecture rapide ou peu coûteuse soit validée si elle répond mal.
 
 \section{A2A, MCP et Racing Arena}
 
