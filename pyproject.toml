@@ -3,6 +3,32 @@ name = "bibops"
 version = "0.1.0"
 description = "BibOps - Agent IA de support IT Michelin"
 requires-python = ">=3.10"
+dependencies = [
+    "chromadb",
+    "fastapi",
+    "httpx",
+    "httpx-sse",
+    "langchain-core",
+    "langchain-openai",
+    "langgraph",
+    "matplotlib",
+    "mcp",
+    "ollama",
+    "openai",
+    "pydantic",
+    "PyYAML",
+    "requests",
+    "typer",
+    "uvicorn",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-cov",
+    "ruff",
+    "vulture",
+]
 
 [project.scripts]
 bibops = "src.bibops.cli.main:app"
@@ -30,17 +56,13 @@ markers = [
 branch = true
 source = ["src"]
 omit = [
-    # Compatibility shim packages — re-export only, no logic to cover
-    "src/llm_professor/*",
-    "src/eval_bank/*",
     # Research / experimental code — explicitly excluded from gates
     "src/bibops/research/*",
-    # CLI is a thin Typer + subprocess shell — exercised by --help smoke and end-to-end runs
+    # CLI is Typer glue around importable runners — exercised by --help smoke and end-to-end runs
     "src/bibops/cli/*",
     "src/bibops/__main__.py",
     # Test infrastructure
     "tests/*",
-    "scripts/*",
 ]
 
 [tool.coverage.report]
@@ -64,8 +86,6 @@ extend-exclude = [
     "data",
     "logs",
     ".claude",
-    "src/llm_professor",
-    "src/eval_bank",
 ]
 
 [tool.ruff.lint]
@@ -84,11 +104,13 @@ ignore = [
     "S101",   # asserts in test code are fine
     "S110",   # try-except-pass — used intentionally in degraded-mode guards
     "S112",   # try-except-continue — same rationale
+    "S311",   # pseudo-random is used for benchmark shuffling/simulation, not crypto
     "S603",   # subprocess with controlled inputs (CLI helpers)
     "S607",   # subprocess shell-False resolved binary
     "S608",   # SQL with %s placeholders (parameterised, not concatenated)
     "B008",   # function-call in default arg (Typer relies on this)
     "B027",   # empty method without @abstractmethod (Adapter lifecycle hooks)
+    "RUF001", # ambiguous unicode in strings — French accents and symbols are intentional
     "RUF002", # ambiguous unicode in docstring — French accents are intentional
     "RUF003", # ambiguous unicode in comment — French accents are intentional
     "RUF005", # collection literal concat — readability over perf here
@@ -97,5 +119,7 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**/*.py" = ["S", "B"]      # tests can use asserts, subprocess, etc.
-"scripts/**/*.py" = ["S"]
 "src/bibops/research/**/*.py" = ["E", "F", "B", "I", "UP", "RUF"]   # experimental sandbox
+"src/racing/team_client/main.py" = ["E402"]       # model/team globals are set before graph import
+"src/racing/team_validated/main.py" = ["E402"]    # model globals are set before graph import
+"src/racing/team_validated/nodes.py" = ["E402"]   # imports team_client node globals after re-exports

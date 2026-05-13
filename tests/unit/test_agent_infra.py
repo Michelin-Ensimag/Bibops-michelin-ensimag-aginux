@@ -2,11 +2,7 @@
 from __future__ import annotations
 
 import sqlite3
-from pathlib import Path
 from unittest.mock import MagicMock, patch
-
-import pytest
-
 
 # ---------------------------------------------------------------------------
 # database.py
@@ -47,12 +43,14 @@ class TestMCPServer:
 
     def test_mcp_has_three_tools(self):
         import asyncio
+
         from src.agent.mcp_server import mcp
         tools = asyncio.run(mcp.list_tools())
         assert len(tools) == 3
 
     def test_tool_names_registered(self):
         import asyncio
+
         from src.agent.mcp_server import mcp
         tools = asyncio.run(mcp.list_tools())
         names = {t.name for t in tools}
@@ -64,6 +62,7 @@ class TestMCPServer:
         """The MCP tool function body is covered via call_tool."""
         import asyncio
         from unittest.mock import patch
+
         from src.agent.mcp_server import mcp
 
         with patch("src.agent.mcp_server.verifier_statut_serveur", return_value="OK"):
@@ -73,6 +72,7 @@ class TestMCPServer:
     def test_mcp_chercher_dans_kb_delegates_to_tool(self):
         import asyncio
         from unittest.mock import patch
+
         from src.agent.mcp_server import mcp
 
         with patch("src.agent.mcp_server.chercher_dans_kb", return_value="KB result"):

@@ -1,0 +1,57 @@
+@startuml
+skinparam shadowing false
+skinparam componentStyle rectangle
+
+package "Facade CLI" {
+  component "bibops CLI" as CLI
+}
+
+package "Adapters" {
+  interface "AgentAdapter" as Adapter
+  component "ItSupportAdapter" as IT
+  component "A2AClientAdapter" as A2AC
+  component "OpenAICompatAdapter" as OAI
+}
+
+package "Strategies d'évaluation" {
+  interface "Evaluator" as Eval
+  component "QualityEvaluator" as QE
+  component "SecurityEvaluator" as SE
+  component "CompositePolicy" as CP
+  component "EvaluatorRegistry" as Reg
+}
+
+package "Observer Racing" {
+  component "RaceEngine" as Engine
+  queue "SSE stream" as SSE
+  component "Team Client" as Team
+}
+
+CLI --> Adapter
+CLI --> Reg
+IT ..|> Adapter
+A2AC ..|> Adapter
+OAI ..|> Adapter
+
+QE ..|> Eval
+SE ..|> Eval
+Reg --> Eval : registry
+CP --> QE
+CP --> SE
+
+Engine --> SSE : publish telemetry
+SSE --> Team : subscribe
+Team --> Engine : décisions
+
+note right of Adapter
+Adapter pattern:
+normalise les appels
+LLM local, Copilot et A2A.
+end note
+
+note right of CP
+Strategy pattern:
+la politique de score peut
+changer sans modifier les runners.
+end note
+@enduml

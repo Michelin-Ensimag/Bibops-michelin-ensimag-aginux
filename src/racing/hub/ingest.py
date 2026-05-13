@@ -13,8 +13,8 @@ Embeddings : OllamaEmbeddings → modèle configurable via EMBED_MODEL
                ollama pull nomic-embed-text
 
 Usage :
-    python -m src.racing.hub.ingest_racing
-    python -m src.racing.hub.ingest_racing --reset   # repart de zéro
+    python -m src.racing.hub.ingest
+    python -m src.racing.hub.ingest --reset   # repart de zéro
 """
 
 from __future__ import annotations

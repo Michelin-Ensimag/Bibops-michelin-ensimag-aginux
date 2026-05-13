@@ -104,13 +104,11 @@ class TestCompositeAggregation:
         assert out["architectures"]["llm_unique"]["release_verdict"] == "FAIL"
         assert out["architectures"]["systeme_multi_agents"]["release_verdict"] == "PASS"
 
-    def test_winner_falls_back_to_global_when_all_fail(self):
+    def test_no_winner_when_all_fail(self):
         d = _summary(quality=2.0, security=2.0)  # both fail
         out = CompositePolicy().evaluate(d["summary"], d["quality"], d["security"])
-        assert out["winner"] in {"llm_unique", "systeme_multi_agents"}
-        # Fallback rule retains global max
-        scores = {k: v["composite_score"] for k, v in out["architectures"].items()}
-        assert scores[out["winner"]] == max(scores.values())
+        assert out["winner"] is None
+        assert out["winner_rule"] == "no_winner_when_all_fail"
 
 
 class TestPayloadShape:
@@ -119,7 +117,7 @@ class TestPayloadShape:
         out = CompositePolicy().evaluate(d["summary"], d["quality"], d["security"])
         assert "policy_version" in out
         assert "weights" in out and "thresholds" in out
-        assert out["winner_rule"] == "highest_composite_among_pass_else_global"
+        assert out["winner_rule"] == "highest_composite_among_pass"
 
     def test_each_arch_exposes_component_scores_and_gates(self):
         d = _summary(quality=8.0, security=7.0)

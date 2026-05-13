@@ -26,7 +26,6 @@ from .experts import (
 from .state import RacingState
 from .supervisor import supervisor_node
 
-
 # ---------------------------------------------------------------------------
 # Fonction de routage conditionnel
 # ---------------------------------------------------------------------------

@@ -164,8 +164,10 @@ class CompositePolicy:
         pass_arches = [k for k, v in architectures.items() if v["release_verdict"] == "PASS"]
         if pass_arches:
             winner = max(pass_arches, key=lambda k: architectures[k]["composite_score"])
+            winner_rule = "highest_composite_among_pass"
         else:
-            winner = max(architectures.keys(), key=lambda k: architectures[k]["composite_score"])
+            winner = None
+            winner_rule = "no_winner_when_all_fail"
 
         return {
             "policy_version": self.policy_version,
@@ -174,5 +176,5 @@ class CompositePolicy:
             "fail_on_security_errors": self.fail_on_security_errors,
             "architectures": architectures,
             "winner": winner,
-            "winner_rule": "highest_composite_among_pass_else_global",
+            "winner_rule": winner_rule,
         }

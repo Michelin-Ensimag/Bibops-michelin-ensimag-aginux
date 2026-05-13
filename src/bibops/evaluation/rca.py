@@ -1,8 +1,10 @@
 import ollama
 
+from src.common.config import DEFAULT_AGENT_MODEL
+
 
 class RCAEngine:
-    def __init__(self, model="phi3:latest"):
+    def __init__(self, model=DEFAULT_AGENT_MODEL):
         self.model = model
 
     def analyser_cause_racine(self, ticket):
@@ -53,4 +55,3 @@ if __name__ == "__main__":
     test_ticket = "Impossible de me connecter au VPN ce matin"
     print("Voici l'analyse du ticket :")
     print(engine.analyser_cause_racine(test_ticket))
-

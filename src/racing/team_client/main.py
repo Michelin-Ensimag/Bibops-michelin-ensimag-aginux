@@ -55,8 +55,8 @@ _nodes_module.MODEL      = _ARGS.model
 _tools_module.TEAM_ID    = _ARGS.team
 
 # Import du graphe compilé (après config des globaux)
-from .graph import compiled_graph  # noqa: E402
-from .state_tools import HUB_BASE_URL, TeamState  # noqa: E402
+from .graph import compiled_graph
+from .state_tools import HUB_BASE_URL, TeamState
 
 # ---------------------------------------------------------------------------
 # Couleurs ANSI

@@ -16,7 +16,6 @@ Produces:
 from __future__ import annotations
 
 import json
-from dataclasses import asdict
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -174,8 +173,8 @@ class ObserverEngine:
         Applies SecurityLLMInspectorAdapter + GreenOps to each team's race decision
         reasoning texts. No LLM judge required — uses deterministic rule-based scoring.
         """
-        from src.bibops.evaluation.security_evaluator import SecurityLLMInspectorAdapter
         from src.bibops.evaluation.metrics.greenops import calculate_carbon_footprint
+        from src.bibops.evaluation.security_evaluator import SecurityLLMInspectorAdapter
 
         security = SecurityLLMInspectorAdapter()
         by_team: dict[str, list[dict]] = {}

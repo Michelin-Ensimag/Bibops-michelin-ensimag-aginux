@@ -1,0 +1,42 @@
+@startuml
+skinparam shadowing false
+skinparam defaultFontName Helvetica
+skinparam sequence {
+  ArrowColor #34495E
+  LifeLineBorderColor #506780
+  ParticipantBackgroundColor #F7FAFF
+  ParticipantBorderColor #506780
+}
+
+title Boucle ReAct de l'agent IT
+
+actor "Ticket IT" as Ticket
+participant "lancer_agent()" as Maestro
+participant "Keyword routing" as Router
+participant "LLM provider\nOllama / Copilot" as LLM
+participant "Tool registry" as Registry
+participant "Outil IT\nKB / SQLite / RAG" as Tool
+database "Trace JSONL" as Trace
+
+Ticket -> Maestro : question + contexte
+Maestro -> Router : détecter indice outil
+Router --> Maestro : outil recommande optionnel
+
+loop max_iterations
+  Maestro -> LLM : messages + contexte + schema AgentDecision
+  LLM --> Maestro : AgentDecision(tool, argument, final_answer)
+  alt tool est renseigne
+    Maestro -> Registry : vérifier outil autorisé
+    Registry --> Maestro : ToolPolicy(timeout, retry)
+    Maestro -> Tool : exécute(argument)
+    Tool --> Maestro : ToolResult
+    Maestro -> Trace : enregistrer appel outil
+    Maestro -> Maestro : injecter résultat en mémoire courte
+  else final_answer disponible
+    Maestro -> Trace : enregistrer réponse finale
+    Maestro --> Ticket : réponse finale + trace
+  end
+end
+
+Maestro --> Ticket : réponse de secours si limite atteinte
+@enduml

@@ -19,9 +19,8 @@ Paramètres de simulation :
 import asyncio
 import json
 import random
+from collections.abc import AsyncGenerator
 from dataclasses import dataclass, field
-from typing import AsyncGenerator
-
 
 # ---------------------------------------------------------------------------
 # Modèle d'état de la course

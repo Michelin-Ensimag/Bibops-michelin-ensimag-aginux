@@ -4,12 +4,16 @@ from __future__ import annotations
 import json
 import re
 from dataclasses import dataclass
+from datetime import datetime, timezone
 
 from openai import OpenAI
+
+from src.common.config import DEFAULT_JUDGE_MODEL
 
 _JUDGE_SYSTEM = (
     "You are an impartial evaluator. Given a criterion, a question, and an answer, "
     "score the answer from 0 to 10 (decimals allowed) based ONLY on the criterion. "
+    "Use the current evaluation date supplied in the user message when judging time-sensitive claims. "
     "Be strict but fair. Reply with strict JSON only, no prose, no code fences."
 )
 
@@ -47,10 +51,11 @@ class LLMJudge:
     Wraps a Copilot OpenAI client to produce structured 0-10 verdicts.
 
     Use it inside any test that needs semantic judgement (relevance, tone,
-    factual accuracy, etc.). For deterministic checks, use src.eval_bank.checks.
+    factual accuracy, etc.). For deterministic checks, use
+    src.bibops.evaluation.checks.
     """
 
-    def __init__(self, client: OpenAI, model: str = "gpt-4o", timeout: int = 30):
+    def __init__(self, client: OpenAI, model: str = DEFAULT_JUDGE_MODEL, timeout: int = 30):
         self.client = client
         self.model = model
         self.timeout = timeout
@@ -63,7 +68,10 @@ class LLMJudge:
         answer: str,
         scale: int = 10,
     ) -> JudgeVerdict:
+        current_date_utc = datetime.now(timezone.utc).date().isoformat()
         user_msg = (
+            f"Current evaluation date (UTC): {current_date_utc}.\n"
+            "Do not treat timestamps on this date as future-dated solely because your training data is older.\n\n"
             f"Criterion:\n{criterion}\n\n"
             f"Question:\n{question}\n\n"
             f"Answer:\n{answer}\n\n"

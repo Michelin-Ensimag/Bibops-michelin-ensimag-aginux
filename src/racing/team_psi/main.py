@@ -26,7 +26,6 @@ import json
 import os
 import re
 import sys
-import time
 
 import httpx
 import uvicorn
@@ -232,8 +231,9 @@ async def _run_attack(lap: int, client: httpx.AsyncClient) -> None:
     # Step 4 — Authority broadcast (every 5 laps, inject RAG poison into SSE stream)
     if lap % 5 == 0:
         try:
-            from src.racing.shared.attack_payloads import RAG_POISON
             import random
+
+            from src.racing.shared.attack_payloads import RAG_POISON
             poison = random.Random(lap).choice(RAG_POISON)
             await client.post(
                 f"{HUB_BASE_URL}/authority-broadcast",

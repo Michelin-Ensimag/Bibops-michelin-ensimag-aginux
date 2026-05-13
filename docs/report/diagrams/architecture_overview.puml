@@ -1,0 +1,81 @@
+@startuml
+skinparam shadowing false
+skinparam componentStyle rectangle
+skinparam packageStyle rectangle
+skinparam defaultFontName Helvetica
+skinparam ArrowColor #34495E
+skinparam component {
+  BackgroundColor #F7FAFF
+  BorderColor #506780
+}
+skinparam database {
+  BackgroundColor #FFF8DF
+  BorderColor #8A6D1D
+}
+
+title Architecture globale BibOps
+
+actor "Développeur /\nÉvaluateur" as User
+
+package "CLI BibOps" {
+  component "bibops bench" as Bench
+  component "bibops eval" as EvalCli
+  component "bibops dev" as Dev
+  component "bibops racing" as RacingCli
+}
+
+package "Sources" {
+  database "Tickets CSV\nsupport IT" as Tickets
+  database "Knowledge Base\nJSON" as KB
+  database "SQLite\nstatuts serveurs" as SQLite
+  database "ChromaDB\nRAG docs" as Chroma
+}
+
+package "Architectures évaluées" {
+  component "LLM unique\nzero-shot" as Single
+  component "Agent ReAct\noutille" as Agent
+  component "Agents A2A\ndistants" as A2A
+  component "Racing Arena\nSSE + teams" as Arena
+}
+
+package "Évaluation" {
+  component "LLMJudge /\nLLMProfessor" as Judge
+  component "Security\nInspector" as Security
+  component "CompositePolicy\nquality/security/cost/latency" as Policy
+}
+
+package "Artefacts" {
+  database "JSON results" as Json
+  database "Charts PNG" as Charts
+  database "Rapport LaTeX" as Latex
+}
+
+User --> Bench
+User --> EvalCli
+User --> Dev
+User --> RacingCli
+
+Bench --> Tickets
+Bench --> Single
+Bench --> Agent
+Bench --> A2A
+RacingCli --> Arena
+
+Agent --> KB
+Agent --> SQLite
+Agent --> Chroma
+Dev --> SQLite
+Dev --> Chroma
+
+Single --> Judge
+Agent --> Judge
+A2A --> Judge
+Arena --> Security
+Judge --> Policy
+Security --> Policy
+
+Policy --> Json
+Json --> Charts
+Json --> Latex
+Charts --> Latex
+@enduml

@@ -1,0 +1,36 @@
+@startuml
+skinparam shadowing false
+skinparam defaultFontName Helvetica
+skinparam componentStyle rectangle
+skinparam component {
+  BackgroundColor #F7FAFF
+  BorderColor #506780
+}
+skinparam database {
+  BackgroundColor #FFF8DF
+  BorderColor #8A6D1D
+}
+skinparam ArrowColor #34495E
+
+title Racing Arena -- flux SSE et décisions
+
+component "RaceEngine\ntelemetrie" as Engine
+component "Hub FastAPI\nSSE broadcast" as Hub
+component "Team A\nzero-shot" as TeamA
+component "Team B\nReAct" as TeamB
+component "Team C\nvalidated" as TeamC
+database "RAG service\nMichelin docs" as Rag
+component "Decisions\nPIT / STAY" as Decisions
+
+Engine --> Hub : telemetry event
+Hub --> TeamA : SSE
+Hub --> TeamB : SSE
+Hub --> TeamC : SSE
+
+TeamB --> Rag : query docs
+TeamC --> Rag : query docs
+
+TeamA --> Decisions : post décision
+TeamB --> Decisions : post décision
+TeamC --> Decisions : post décision
+@enduml

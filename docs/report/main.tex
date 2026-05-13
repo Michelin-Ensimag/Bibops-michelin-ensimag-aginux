@@ -1,42 +1,43 @@
 \documentclass[11pt,a4paper,oneside]{report}
 \input{preamble}
 
-\title{\bibopsname{} -- Rapport final\\Projet Ensimag x Michelin}
-\author{Mohammed Akram Lrhorfi\\Projet de specialite Ensimag / Michelin}
-\date{12 mai 2026}
+\title{\bibopsname{} -- Rapport final\\Banc d'évaluation et d'optimisation de LLM pour le support IT}
+\author{Équipe projet : Mohammed Akram Lrhorfi, Widad, Ayoub\\Projet de spécialité S8 -- Ensimag / Michelin}
+\date{13 mai 2026}
 
 \begin{document}
 
+\hypersetup{pageanchor=false}
 \begin{titlepage}
   \centering
-  \vspace*{1.2cm}
+  \vspace*{1.0cm}
   {\Huge\bfseries\textcolor{michelinBlue}{\bibopsname{}}\par}
   \vspace{0.35cm}
-  {\Large Banc d'evaluation LLM pour le support IT Michelin\par}
-  \vspace{0.9cm}
-  {\large Rapport final -- Projet Ensimag x Michelin\par}
+  {\Large Banc d'évaluation et d'optimisation de LLM pour le support IT\par}
+  \vspace{0.5cm}
+  {\large Comparaison LLM unique, agent ReAct outillé, agents A2A et évaluation adversariale\par}
 
   \vfill
   \begin{tabular}{rl}
-    \textbf{Auteur :} & Mohammed Akram Lrhorfi \\
-    \textbf{Partenaire industriel :} & Michelin \\
-    \textbf{Ecole :} & Ensimag \\
-    \textbf{Depot analyse :} & \file{BibOps-michelin-ensimag-aginux} \\
-    \textbf{Date :} & 12 mai 2026 \\
+    \textbf{Équipe :} & Mohammed Akram Lrhorfi, Widad, Ayoub \\
+    \textbf{Encadrant industriel :} & Emilien Mottet, IT Expert / SRE, Michelin \\
+    \textbf{École :} & Ensimag \\
+    \textbf{Module :} & Projet de spécialité S8 \\
+    \textbf{Dépôt :} & \file{BibOps-michelin-ensimag-aginux} \\
+    \textbf{Date :} & 13 mai 2026 \\
   \end{tabular}
   \vfill
 
   \begin{minipage}{0.86\textwidth}
     \small
-    Ce rapport est genere a partir du depot local et des artefacts produits par
-    les scripts de benchmark. Les chiffres cites proviennent en particulier de
-    \file{data/outputs/benchmark/comparison_results.json},
-    \file{data/outputs/benchmark/security_race_report.json},
-    \file{data/outputs/benchmark/benchmark_mcp.json} et des sorties de tests
-    unitaires executees localement.
+    Ce rapport est produit à partir du dépôt local et des artefacts générés par
+    les campagnes de benchmark. Les identifiants fournis pour les agents A2A ne
+    sont pas reproduits dans le rapport afin d'éviter toute diffusion de secrets.
   \end{minipage}
 \end{titlepage}
 
+\clearpage
+\hypersetup{pageanchor=true}
 \pagenumbering{roman}
 \tableofcontents
 \listoffigures
@@ -48,9 +49,11 @@
 \input{sections/01_introduction}
 \input{sections/02_description_probleme}
 \input{sections/03_solution}
-\input{sections/04_resultats}
-\input{sections/05_discussion}
-\input{sections/06_conclusion}
+\input{sections/04_organisation_equipe}
+\input{sections/05_design_patterns}
+\input{sections/06_resultats}
+\input{sections/07_discussion}
+\input{sections/08_conclusion}
 
 \bibliographystyle{plain}
 \bibliography{references}

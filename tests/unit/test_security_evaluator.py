@@ -5,13 +5,12 @@ import pytest
 
 from src.bibops.evaluation.security_evaluator import (
     SecurityLLMInspectorAdapter,
-    _RiskPack,
     _clamp,
     _contains_any,
     _extract_urls,
+    _RiskPack,
 )
 from src.bibops.evaluation.security_profile import SecurityProfile
-
 
 # ---------------------------------------------------------------------------
 # Module-level helpers

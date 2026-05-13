@@ -8,7 +8,7 @@ Modèle : claude-sonnet-4.6 via proxy Copilot → http://localhost:4141/v1
 
 from __future__ import annotations
 
-from typing import Literal, Optional
+from typing import Literal
 
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, ToolMessage
 from langchain_openai import ChatOpenAI
@@ -55,11 +55,11 @@ class FinalDecision(BaseModel):
     action: Literal["STAY OUT", "BOX BOX"] = Field(
         description="'BOX BOX' pour rentrer aux stands, 'STAY OUT' pour rester en piste."
     )
-    tires: Optional[str] = Field(
+    tires: str | None = Field(
         default=None,
         description="Composé cible si BOX BOX (ex: 'WET', 'INTERMEDIATE', 'SOFT').",
     )
-    fuel_added: Optional[str] = Field(
+    fuel_added: str | None = Field(
         default=None,
         description="Carburant à ajouter si BOX BOX (ex: 'full', 'partial', 'none').",
     )

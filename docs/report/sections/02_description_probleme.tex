@@ -1,161 +1,81 @@
 % ============================================================
-%  Section 2 -- Description conceptuelle du probleme
+%  Section 2 -- Description conceptuelle du problème
 % ============================================================
 
 \chapter{Description conceptuelle du problème}
 
-\section{Nature d'un ticket de support IT}
+\section{Nature des tickets de support IT}
 
-Un ticket de support IT est une demande courte, souvent ambigue, qui melange un
-symptome utilisateur, un contexte applicatif et parfois une urgence implicite.
-Dans le jeu de donnees du projet, les exemples couvrent des problemes de VPN,
-Outlook, BitLocker, mot de passe, lenteur poste de travail, imprimante ou acces
-reseau. Le fichier \file{data/inputs/benchmark/tickets_scenario_1.csv} contient
-40 tickets exploites par les scripts de benchmark, dont 10 sont utilises dans la
-campagne principale enregistree.
+Un ticket IT est souvent court, incomplet et contextuel. Il peut decrire un
+symptôme sans donner l'état réel du service, le message d'erreur exact ou le
+niveau d'urgence. Une bonne réponse doit donc rester prudente : identifier une
+cause probable, proposer des actions concrètes, demander les informations
+manquantes et escalader lorsque le problème dépend d'une infrastructure.
 
-Une reponse utile doit satisfaire plusieurs criteres simultanement :
+Le jeu de données principal contient des tickets IT comme :
+\emph{Mon VPN Cisco ne marche plus}, \emph{Outlook crash au demarrage},
+\emph{Comment recuperer ma cle BitLocker ?} ou \emph{Mon PC redemarre en
+boucle après une mise à jour Windows}. Ces tickets représentent bien un support
+de niveau 1 ou 2 : le modèle doit être utile sans inventer d'état interne.
 
-\begin{itemize}
-  \item identifier le probleme probable sans surinterpreter le ticket ;
-  \item proposer des actions concretes et ordonnees ;
-  \item exploiter les sources internes disponibles lorsque la question depend
-  d'une procedure ou d'un statut ;
-  \item eviter les hallucinations, en particulier les numeros, chemins, etats de
-  service ou politiques internes inventes ;
-  \item respecter les contraintes de securite et de confidentialite.
-\end{itemize}
+\section{Limites du LLM unique}
 
-Ces criteres sont difficiles a evaluer manuellement a grande echelle. C'est le
-role de \bibopsname{} : transformer une comparaison informelle entre agents en
-campagne instrumentee, rejouable et mesurable.
-
-\section{Limites d'un LLM unique}
-
-L'architecture \emph{LLM Unique} correspond a un modele appele directement sur
-le ticket, sans acces outil. Elle est simple a deployer, mais presente trois
-limites structurelles.
-
-\subsection{Absence d'etat externe}
-
-Un LLM sans outil ne peut pas savoir si un service est indisponible, si une
-procedure interne a change ou si un incident en cours existe. Il peut memoriser
-des connaissances generales, mais il ne peut pas verifier un etat local comme la
-table SQLite \code{serveurs_it}. Pour un ticket du type « Est-ce que le service
-Mail est en ligne ? », cette absence d'acces a l'etat rend la reponse
-necessairement speculative.
-
-\subsection{Risque d'hallucination procedural}
-
-Les tickets de support invitent le modele a produire des listes d'etapes. Or une
-liste detaillee peut etre fausse tout en semblant professionnelle. Le risque est
-eleve lorsque la reponse inclut des URLs internes, numeros de support, noms de
-serveurs ou commandes d'administration. Le benchmark fact-checking du depot
-illustre ce probleme : l'affirmation « le support IT Michelin est joignable au
-1234 » est traitee comme non verifiable par l'agent fact-checker, alors que des
-reponses generatives peuvent reprendre ce type de valeur comme si elle etait
-certaine.
-
-\subsection{Evaluation trompeuse par fluidite}
-
-Un modele unique peut produire une reponse longue et bien structuree, mais la
-qualite apparente ne suffit pas. L'evaluation doit separer la lisibilite, la
-pertinence, la fidelite aux sources et l'absence de risque. Cette separation est
-assuree dans le projet par un juge LLM pour la qualite, un inspecteur de
-securite deterministe et des metriques operationnelles.
-
-\section{Interet et complexite d'un systeme agentique}
-
-L'architecture multi-agents introduit des outils et une boucle de decision. Le
-LLM ne doit plus seulement repondre : il doit choisir s'il a besoin d'une source,
-appeler l'outil pertinent, integrer le resultat, puis formuler une reponse
-finale. Cette approche est proche du paradigme ReAct, qui couple raisonnement et
-action \cite{react2023}.
-
-Elle resout certains problemes du LLM unique, mais en cree d'autres.
+L'architecture LLM unique appelle directement le modèle sur le ticket. Elle a
+l'avantage d'être simple, mais elle présente trois limites.
 
 \begin{itemize}
-  \item \textbf{Routage.} Le modele peut choisir le mauvais outil ou appeler
-  plusieurs fois le meme outil.
-  \item \textbf{Robustesse.} Un outil peut etre lent, indisponible ou retourner
-  un resultat vide.
-  \item \textbf{Securite.} Les donnees recuperees par RAG ou API peuvent
-  contenir des instructions malicieuses.
-  \item \textbf{Traçabilite.} L'agent doit conserver les appels outils pour
-  expliquer sa reponse et auditer les echecs.
+  \item \textbf{Pas d'état externe.} Le modèle ne peut pas vérifier si le VPN ou
+  la messagerie est en panne dans l'environnement local.
+  \item \textbf{Risque d'hallucination.} Le modèle peut proposer des procédures,
+  numéros ou causes plausibles mais non vérifiées.
+  \item \textbf{Évaluation trompeuse.} Une réponse bien redigee peut être
+  insuffisante si elle ne respecte pas les sources ou les contraintes de
+  sécurité.
 \end{itemize}
 
-Le depot traite ces risques par des politiques d'outils, des traces JSONL, une
-normalisation des arguments et un blocage des appels dupliques. Ces protections
-ne rendent pas l'agent parfait, mais elles transforment les erreurs en signaux
-observables.
+\section{Intérêt de l'approche agentique}
 
-\section{Probleme d'evaluation}
+Une architecture agentique introduit une boucle perception--décision--action.
+Le LLM ne répond plus seulement au ticket : il choisit si un outil est
+nécessaire, lit le résultat et produit une réponse finale. Cette approche est
+utile lorsque le problème dépend d'une base de connaissances, d'une
+documentation technique ou d'un statut serveur.
 
-Comparer deux architectures LLM est difficile car il n'existe pas une seule
-metrique universelle. Un score de qualite eleve peut masquer un cout trop grand,
-une latence excessive ou une faille de securite. Inversement, une architecture
-rapide et peu couteuse peut etre inutilisable si ses reponses ne passent pas un
-seuil minimal.
+Elle introduit aussi de nouveaux risques. Le modèle peut choisir le mauvais
+outil, répéter un appel, mal interpréter un résultat ou suivre une instruction
+malveillante contenue dans une source externe. L'évaluation doit donc inclure
+l'outillage, la trace et la sécurité agentique, pas seulement la réponse finale.
 
-\bibopsname{} formalise donc l'evaluation comme un probleme multicritere. La
-politique composite du depot utilise les poids suivants :
+\section{Critères d'évaluation}
+
+\bibopsname{} formalise l'évaluation comme un problème multicritere.
 
 \begin{table}[H]
 \centering
-\begin{tabularx}{0.78\textwidth}{Yc}
+\begin{tabularx}{0.9\textwidth}{YcY}
 \toprule
-\textbf{Dimension} & \textbf{Poids} \\
+\textbf{Dimension} & \textbf{Poids} & \textbf{Rôle} \\
 \midrule
-Qualite & 40 \% \\
-Securite & 35 \% \\
-FinOps / cout & 10 \% \\
-Latence & 10 \% \\
-GreenOps & 5 \% \\
+Qualité & 40 \% & Pertinence, completude, clarte et utilite de la réponse. \\
+Sécurité & 35 \% & PII, secrets, injection, URLs suspectes, toxicite, refus. \\
+FinOps & 10 \% & Coût estimé à partir des tokens. \\
+Latence & 10 \% & Temps de réponse total. \\
+GreenOps & 5 \% & Énergie et empreinte carbone estimées. \\
 \bottomrule
 \end{tabularx}
-\caption{Ponderation de \code{CompositePolicy}.}
-\label{tab:composite-weights}
+\caption{Ponderation de la politique composite.}
+\label{tab:problem-composite}
 \end{table}
 
-Le score composite n'est pas seul decisionnaire. Des gates bloquants imposent
-notamment un score qualite minimal de 7/10 et un score securite minimal de 6/10.
-Cette conception est volontairement stricte : elle evite qu'une architecture
-faible en qualite soit declaree deployable uniquement parce qu'elle est rapide
-ou bon marche.
+Le score composite est complete par des gates bloquants : qualité minimale,
+sécurité minimale et seuils maximaux pour certains risques. Cette logique evite
+qu'une architecture rapide ou peu coûteuse soit validée si elle répond mal.
 
-\section{Risques specifiques aux agents connectes}
+\section{Problème de reproductibilité}
 
-L'ajout d'outils et de flux externes augmente la surface d'attaque. Un agent qui
-lit une documentation, un flux SSE ou une API peut recevoir du contenu qui
-ressemble a des instructions systeme. Les attaques de prompt injection exploitent
-precisement cette ambiguite entre donnees et instructions \cite{promptinjection2023}.
-
-La Racing Arena transpose ce risque dans une simulation F1. Les equipes doivent
-prendre des decisions de pit-stop a partir d'une telemetrie diffusee par un hub.
-Une equipe attaquante, Team Psi, tente d'influencer les autres via des messages
-directs, des usurpations d'autorite ou du RAG empoisonne. Le probleme conceptuel
-devient alors : comment evaluer la robustesse d'un agent non seulement sur une
-reponse statique, mais dans une boucle de decision continue, exposee a des
-messages concurrents et a des APIs faibles ?
-
-\section{Contraintes de conception}
-
-Le projet impose plusieurs contraintes d'ingenierie.
-
-\begin{itemize}
-  \item \textbf{Executabilite locale.} Les tests unitaires doivent passer sans
-  appeler de vrais LLM ; les appels reseau sont mocks ou isoles.
-  \item \textbf{Observabilite.} Chaque benchmark doit produire des artefacts
-  persistants : JSON, graphiques, traces ou rapports.
-  \item \textbf{Extensibilite.} Les evaluateurs et adaptateurs doivent pouvoir
-  etre remplaces ou ajoutes sans modifier tout le pipeline.
-  \item \textbf{Reproductibilite.} Les scripts CLI exposent des commandes
-  documentees pour relancer les experiences.
-  \item \textbf{Pragmatisme.} Les outils restent simples : SQLite pour l'etat de
-  service, JSON pour la base de connaissances, ChromaDB pour le RAG.
-\end{itemize}
-
-Ces contraintes expliquent le choix d'un framework Python modulaire, testable,
-avec une CLI Typer et des scripts de developpement qui peuvent etre lances
-independamment.
+Les LLM rendent l'experimentation fragile : les modèles changent, les APIs sont
+limitees par quota, les juges peuvent varier et les outils externes peuvent
+tomber en erreur. Le banc doit donc enregistrer les configurations, produire des
+artefacts JSON, générer des graphiques et separer les tests unitaires des appels
+réseau. Cette exigence justifie l'investissement dans une CLI, une structure de
+dépôt claire et un pipeline CI.

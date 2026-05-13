@@ -1,0 +1,76 @@
+% ============================================================
+%  Section 7 -- Discussion
+% ============================================================
+
+\chapter{Discussion}
+
+\section{Interprétation des résultats}
+
+La campagne principale montre que l'agent outillé domine le LLM unique sur les
+dimensions fonctionnelles et opérationnelles. La différence vient de
+l'utilisation de sources structurées : l'agent peut vérifier un statut serveur
+ou retrouver une procédure au lieu de produire une réponse générique.
+
+Ce résultat confirme l'intérêt des petits modèles lorsqu'ils sont couplés à des
+outils. \code{phi3:latest} seul obtient une qualité faible, mais la même famille
+de modèle placée dans un pipeline agentique passe le gate de release. Le gain ne
+vient donc pas uniquement du modèle ; il vient de l'architecture.
+
+\section{Limites}
+
+Plusieurs limites doivent être explicitées.
+
+\begin{itemize}
+  \item \textbf{Dataset limité.} Les 21 tickets IT notés ne suffisent pas pour
+  généraliser à tous les cas Michelin.
+  \item \textbf{Configuration favorable à l'agent.} Le premier outil forcé et
+  la synthèse déterministe réduisent la latence et les tokens. C'est utile pour
+  tester le potentiel, mais cela doit être comparé à une configuration plus
+  libre.
+  \item \textbf{Juge LLM.} \code{gpt-5.2} apporte une évaluation scalable, mais
+  il peut avoir ses propres biais. Une validation humaine reste nécessaire.
+  \item \textbf{Artefacts hétérogènes.} Les campagnes A2A, Kaggle, MCP et
+  Racing ne mesurent pas exactement le même objet.
+  \item \textbf{Agents distants instables.} Quotas, timeouts et erreurs
+  d'authentification affectent directement les résultats A2A.
+\end{itemize}
+
+\section{Apports méthodologiques}
+
+Le principal apport est la transformation d'un sujet LLM exploratoire en banc
+mesurable. Les résultats ne sont pas seulement des exemples de réponses ; ils
+sont stockés comme JSON, graphiques et traces. Le projet permet donc de comparer
+des versions de prompts, modèles et architectures dans le temps.
+
+L'autre apport est l'intégration de la sécurité dans la mesure. Les détecteurs
+déterministes et la Racing Arena montrent que les agents doivent être évalués
+sur leurs surfaces d'attaque. Un agent qui sait appeler des outils peut aussi
+agir de façon dangereuse si les données externes sont traitées comme des
+instructions fiables.
+
+\section{Recommandations}
+
+Pour une intégration de type BibOps, les recommandations sont les suivantes.
+
+\begin{enumerate}
+  \item Utiliser un LLM unique seulement pour les tickets simples qui ne
+  dépendent pas de données internes.
+  \item Utiliser un agent outillé pour les tickets liés à un service, une
+  procédure ou une documentation.
+  \item Conserver des gates stricts sur la qualité et la sécurité, même si le
+  score composite est bon.
+  \item Tracer tous les appels outils et associer chaque réponse à ses sources.
+  \item Tester les endpoints agentiques contre des prompt injections et des
+  fuites de données.
+  \item Versionner les prompts, le corpus RAG, les modèles et les seuils de
+  scoring avec les artefacts.
+\end{enumerate}
+
+\section{Perspectives}
+
+Les perspectives prioritaires sont l'augmentation du dataset, l'annotation par
+des experts support, la calibration du juge LLM, l'amélioration du RAG, la
+génération automatique du rapport PDF depuis la CLI et l'ajout d'un tableau de
+bord de suivi des régressions. Une autre piste consiste à router dynamiquement
+les tickets : LLM unique pour les cas simples, agent outillé pour les cas
+dépendants des sources, modèle plus fort pour les tickets critiques.

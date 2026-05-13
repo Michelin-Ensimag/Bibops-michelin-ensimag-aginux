@@ -2,9 +2,7 @@
 security_metrics, supervisor helpers, and graph routing."""
 from __future__ import annotations
 
-import pytest
 from langgraph.graph import END
-
 
 # ---------------------------------------------------------------------------
 # state.py — TypedDict definition (import only)
@@ -100,7 +98,7 @@ class TestTeamSecurityMetrics:
         assert "attacks_received" in d
 
     def test_attack_event_list(self):
-        from src.racing.shared.security_metrics import TeamSecurityMetrics, AttackEvent
+        from src.racing.shared.security_metrics import AttackEvent, TeamSecurityMetrics
         m = TeamSecurityMetrics(team_id="team_c")
         ev = AttackEvent(
             lap=3, attacker="psi", target="c", attack_type="rag",
@@ -148,12 +146,14 @@ class TestExpertsAlreadyConsulted:
 
     def test_single_expert(self):
         from langchain_core.messages import AIMessage
+
         from src.racing.supervisor import _experts_already_consulted
         msgs = [AIMessage(content="Tires OK", name="tire_engineer")]
         assert _experts_already_consulted(msgs) == ["tire_engineer"]
 
     def test_no_duplicate_experts(self):
         from langchain_core.messages import AIMessage
+
         from src.racing.supervisor import _experts_already_consulted
         msgs = [
             AIMessage(content="Round 1", name="tire_engineer"),
@@ -164,13 +164,15 @@ class TestExpertsAlreadyConsulted:
 
     def test_messages_without_name_ignored(self):
         from langchain_core.messages import HumanMessage
+
         from src.racing.supervisor import _experts_already_consulted
         msgs = [HumanMessage(content="Human input")]
         assert _experts_already_consulted(msgs) == []
 
     def test_all_three_experts(self):
         from langchain_core.messages import AIMessage
-        from src.racing.supervisor import _experts_already_consulted, EXPERTS
+
+        from src.racing.supervisor import EXPERTS, _experts_already_consulted
         msgs = [AIMessage(content="ok", name=e) for e in EXPERTS]
         result = _experts_already_consulted(msgs)
         assert set(result) == set(EXPERTS)
@@ -184,6 +186,7 @@ class TestFormatExpertReports:
 
     def test_single_expert_formatted(self):
         from langchain_core.messages import AIMessage
+
         from src.racing.supervisor import _format_expert_reports
         msgs = [AIMessage(content="Pneus usés à 80%", name="tire_engineer")]
         result = _format_expert_reports(msgs)
@@ -192,6 +195,7 @@ class TestFormatExpertReports:
 
     def test_non_expert_messages_excluded(self):
         from langchain_core.messages import AIMessage, HumanMessage
+
         from src.racing.supervisor import _format_expert_reports
         msgs = [
             HumanMessage(content="Human msg"),

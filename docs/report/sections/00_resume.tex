@@ -1,77 +1,67 @@
 % ============================================================
-%  Section 0 -- Resume
+%  Section 0 -- Résumé
 % ============================================================
 
 \chapter*{Résumé}
 \addcontentsline{toc}{chapter}{Résumé}
 \markboth{Résumé}{Résumé}
 
-\bibopsname{} est un framework d'evaluation de grands modeles de langue
-applique au support informatique Michelin. Le projet repond a une question
-operationnelle simple : comment comparer de maniere reproductible une reponse
-LLM directe et une architecture agentique outillee, tout en tenant compte de la
-qualite, de la securite, du cout, de la latence et de l'impact environnemental ?
+Les grands modèles de langage sont aujourd'hui utilisables pour assister le
+support informatique : classification de tickets, aide au diagnostic, recherche
+dans une base de connaissances ou rédaction de réponses utilisateur. Dans un
+contexte industriel comme Michelin, cette promesse doit cependant être évaluée
+avec rigueur. La qualité apparente d'une réponse ne suffit pas : il faut aussi
+mesurer la sécurité, la latence, le coût, la dépendance fournisseur et
+l'empreinte environnementale.
 
-Le depot etudie contient deux volets. Le premier est un banc de benchmark pour
-tickets IT : il oppose un \emph{LLM Unique}, utilise en zero-shot, a un
-\emph{Systeme Multi-Agents} fonde sur une boucle ReAct, une base de
-connaissances JSON, une recherche documentaire RAG avec ChromaDB et une base
-SQLite de statuts serveur. Le second volet est la \emph{Racing Arena}, une
-simulation distribuee dans laquelle plusieurs equipes LLM prennent des decisions
-de course en temps reel via SSE, y compris dans un scenario adversarial de
-prompt injection.
+Le projet \bibopsname{} construit un banc d'évaluation reproductible pour ce
+problème. Il compare une architecture \emph{LLM unique}, appelée directement sur
+un ticket, à un agent ReAct outillé. L'agent peut vérifier un statut serveur
+dans SQLite, chercher dans une base de connaissances JSON et interroger une
+documentation technique via ChromaDB. Le projet ajoute aussi des benchmarks A2A,
+des tests de biais, un moteur d'évaluation multi-critères et une Racing Arena
+adversariale permettant d'étudier des agents connectés à un flux temps réel.
 
-Le projet comprend \metric{11\,182 lignes Python} dans \file{src/},
-\metric{3\,209 lignes} de scripts, \metric{5\,935 lignes} de tests et
-\metric{285 fichiers suivis} par Git. La campagne de verification locale du
-12 mai 2026 a execute \metric{552 tests unitaires}, tous passes en
-\metric{9,98 s}. Les benchmarks principaux sont produits sous
-\file{data/outputs/benchmark/}; les figures integrees au rapport proviennent du
-dossier \file{data/outputs/benchmark/charts/}.
+La campagne principale du 13 mai 2026 évalue \metric{21 tickets IT}. Avec
+\code{phi3:latest} côté Ollama et \code{gpt-5.2} comme juge, le système
+multi-agents obtient \metric{7,86/10} en qualité moyenne contre
+\metric{2,81/10} pour le LLM unique. Le score composite atteint
+\metric{91,34/100} avec un verdict \verdict{PASS}, contre \metric{46,14/100} et
+\verdict{FAIL} pour le LLM unique. L'architecture agentique reduit aussi la
+latence totale de \metric{99,8 \%}, le coût estimé de \metric{60,6 \%} et le
+nombre de tokens de \metric{63,8 \%}. Ces chiffres valident l'intérêt d'une
+architecture outillée pour les tickets qui dépendent d'un état ou d'une
+procédure interne.
+
+Le résultat doit rester nuancé. La faible latence de l'agent est obtenue dans
+une configuration expérimentale où le premier outil est forcé et où certaines
+réponses sont synthétisées de façon déterministe à partir du résultat outil. Le
+rapport conclut donc que l'approche est prometteuse et mesurable, pas qu'elle
+peut remplacer telle quelle un support IT humain. La Racing Arena renforce cette
+prudence : une équipe ReAct exposée à des messages adversariaux exécute
+\metric{53 injections sur 57 attaques reçues}, tandis qu'une équipe validée
+n'exécute aucune injection dans le scénario observé.
 
 \begin{table}[H]
 \centering
 \begin{tabularx}{\textwidth}{Ycc}
 \toprule
-\textbf{Métrique vérifiée} & \textbf{LLM Unique} & \textbf{Système Multi-Agents} \\
+\textbf{Métrique principale} & \textbf{LLM unique} & \textbf{Agent ReAct outillé} \\
 \midrule
-Tickets evalues & 10 & 10 \\
-Modele agent / zero-shot & \code{phi3:latest} & \code{phi3:latest} \\
-Juge qualite & \multicolumn{2}{c}{\code{gpt-4o}} \\
-Score qualite moyen (0--10) & 0,0 & \textbf{3,8} \\
-Score securite moyen (0--10) & 10,0 & 10,0 \\
-Latence totale & 277,35 s & \textbf{100,65 s} \\
-Cout estime & 0,049593 \$ & \textbf{0,006270 \$} \\
-Tokens totaux & 5\,344 & \textbf{627} \\
-Energie estimee & 0,0010688 kWh & \textbf{0,0001254 kWh} \\
-Empreinte carbone & 0,05344 gCO$_2$e & \textbf{0,00627 gCO$_2$e} \\
-Score composite (0--100) & 35,0 & \textbf{75,2} \\
-Verdict de release & \verdict{FAIL} & \verdict{FAIL} \\
+Tickets IT notés & 21 & 21 \\
+Score qualité moyen & 2,81/10 & \textbf{7,86/10} \\
+Score sécurité moyen & 9,97/10 & 9,97/10 \\
+Latence totale & 461,58 s & \textbf{0,84 s} \\
+Coût estimé & 0,061315 \$ & \textbf{0,024150 \$} \\
+Tokens totaux & 6\,664 & \textbf{2\,415} \\
+Empreinte carbone estimée & 0,06664 gCO$_2$e & \textbf{0,02415 gCO$_2$e} \\
+Score composite & 46,14/100 & \textbf{91,34/100} \\
+Verdict de release & \verdict{FAIL} & \verdict{PASS} \\
 \bottomrule
 \end{tabularx}
 \caption{Synthese du benchmark principal extrait de \file{comparison_results.json}.}
 \label{tab:resume-benchmark}
 \end{table}
 
-Le systeme multi-agents obtient le meilleur score composite : \metric{75,2/100}
-contre \metric{35,0/100} pour le LLM unique. Il reduit la latence totale de
-\metric{63,7 \%}, divise le cout estime par \metric{7,91} et diminue les tokens
-de \metric{88,3 \%}. Le verdict final reste cependant \verdict{FAIL} pour les
-deux architectures, car la politique de gate impose un score qualite minimal de
-7/10 et le meilleur score observe n'est que de 3,8/10. Cette distinction est
-importante : \bibopsname{} montre une amelioration relative nette, mais le
-resultat absolu n'est pas encore suffisant pour une mise en production sans
-amelioration du modele, des prompts et du corpus de reference.
-
-La Racing Arena complete ce diagnostic par un banc de securite dynamique. Sur
-une course de 15 tours, le rapport de securite enregistre
-\metric{286 decisions}. L'equipe ReAct exposee aux attaques execute
-\metric{53 injections sur 57 attaques recues} (93 \%), tandis que l'equipe
-validee n'execute aucune injection et ne fuite aucune strategie. Ce second volet
-montre que l'evaluation d'agents ne doit pas se limiter a la qualite moyenne :
-la resistance aux attaques, les surfaces d'API et la gouvernance des outils sont
-des criteres de conception a part entiere.
-
-\bigskip
-\noindent\textbf{Mots-clés :} LLM, multi-agents, ReAct, RAG, MLOps,
-support IT, prompt injection, GreenOps, benchmark, Michelin.
+\noindent\textbf{Mots-clés :} LLM, support IT, ReAct, RAG, A2A, MCP,
+évaluation, sécurité agentique, CI/CD, GreenOps.

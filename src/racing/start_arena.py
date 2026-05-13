@@ -39,9 +39,9 @@ import httpx
 #   team_psi          — adversarial attacker
 
 TEAMS = [
-    ("team_a_zero_shot", "src.racing.team_zero_shot.main",  "gpt-4.1", 8011),
-    ("team_b_react",     "src.racing.team_client.main",     "gpt-4.1", 8012),
-    ("team_c_validated", "src.racing.team_validated.main",  "gpt-4.1", 8013),
+    ("team_a_zero_shot", "src.racing.team_zero_shot.main",  "gpt-4o", 8011),
+    ("team_b_react",     "src.racing.team_client.main",     "gpt-4o", 8012),
+    ("team_c_validated", "src.racing.team_validated.main",  "gpt-4o", 8013),
     ("team_psi",         "src.racing.team_psi.main",        "gpt-4o",  8014),
 ]
 
@@ -162,7 +162,7 @@ def main() -> None:
     print(f"  Snapshot course      : {CYAN}curl http://localhost:8000/status{RESET}")
     print(f"  Stratégie d'écurie   : {CYAN}curl http://localhost:8000/team/team_a_zero_shot/strategy{RESET}")
     print(f"  Historique complet   : {CYAN}curl http://localhost:8000/race-history{RESET}")
-    print(f"\n  Suivre une écurie :")
+    print("\n  Suivre une écurie :")
     for team, _, _, _ in TEAMS:
         print(f"    {GREY}tail -f {_log_path(f'team_{team}')}{RESET}")
     print(f"\n  {YELLOW}Ctrl+C pour arrêter toute l'arène.{RESET}")

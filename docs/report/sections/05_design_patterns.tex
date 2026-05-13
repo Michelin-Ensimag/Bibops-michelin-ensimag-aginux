@@ -1,0 +1,60 @@
+% ============================================================
+%  Section 5 -- Design patterns
+% ============================================================
+
+\chapter{Patrons de conception et modèles d'analyse}
+
+\section{Cas d'utilisation}
+
+Le système vise plusieurs acteurs : l'étudiant ou développeur qui lance les
+benchmarks, l'encadrant qui analyse les résultats, le support IT cible, les
+agents distants A2A et le pipeline CI. Les principaux cas d'utilisation sont
+representes ci-dessous.
+
+\plantumldiagram{use_cases}{Diagramme des cas d'utilisation de \bibopsname{}.}{fig:use-cases}
+
+\section{Diagramme de classes d'analyse}
+
+Le diagramme d'analyse se concentre sur les concepts metier : ticket, agent,
+outil, trace, évaluateur, résultat de benchmark et politique composite. Il ne
+cherche pas à représenter chaque classe Python, mais les responsabilités qui
+structurent la solution.
+
+\plantumldiagram{classes_analyse}{Diagramme de classes d'analyse.}{fig:classes-analyse}
+
+\section{Patrons identifiés}
+
+Plusieurs patrons de conception apparaissent dans le dépôt.
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{lY}
+\toprule
+\textbf{Patron} & \textbf{Usage dans le projet} \\
+\midrule
+Adapter & Unifie les appels vers l'agent IT, les agents A2A et les APIs OpenAI-compatible. \\
+Strategy & Permet de changer d'évaluateur ou de politique de score sans réécrire les runners. \\
+Registry & Centralise les évaluateurs disponibles et les rend extensibles. \\
+Facade & La CLI \code{bibops} masque la complexite des modules internes. \\
+Observer & La Racing Arena diffuse la télémétrie SSE à plusieurs équipes abonnées. \\
+Template Method & Les runners de benchmark partagent la sequence charger, exécuter, évaluer, exporter. \\
+\bottomrule
+\end{tabularx}
+\caption{Patrons de conception principaux.}
+\label{tab:patterns}
+\end{table}
+
+\plantumldiagram{design_patterns}{Vue PlantUML des patrons de conception.}{fig:design-patterns}
+
+\section{Choix de conception}
+
+Le choix le plus important est la séparation entre le raisonnement du modèle et
+les sources verifiees. Les outils retournent des données bornees, les décisions
+de l'agent sont structurées et les traces conservent les appels. Cette
+séparation rend l'évaluation possible : lorsqu'une réponse est mauvaise, on peut
+identifier si l'erreur vient du routage, de l'outil, du modèle ou du juge.
+
+Le second choix est le recours à des contrats simples. SQLite suffit pour un
+statut serveur, JSON suffit pour une knowledge base de prototype, ChromaDB
+permet le RAG sans infrastructure lourde, et Typer fournit une CLI claire. Cette
+sobriété réduit le nombre de composants à maintenir et facilite les tests.

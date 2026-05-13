@@ -1,16 +1,10 @@
-"""Tests for src/benchmark/core.py — pure helpers + mocked ollama benchmark loop."""
+"""Tests for src.bibops.benchmark.core — pure helpers + mocked ollama benchmark loop."""
 from __future__ import annotations
 
 import csv
-import os
-import sys
-import textwrap
 from pathlib import Path
 from types import SimpleNamespace
-from unittest.mock import MagicMock, patch
-
-import pytest
-
+from unittest.mock import patch
 
 # ---------------------------------------------------------------------------
 # Helpers (no LLM needed)
@@ -19,12 +13,12 @@ import pytest
 class TestIsNonInteractiveMode:
     def test_env_var_set(self, monkeypatch):
         monkeypatch.setenv("BIBOPS_NON_INTERACTIVE", "1")
-        from src.benchmark.core import _is_non_interactive_mode
+        from src.bibops.benchmark.core import _is_non_interactive_mode
         assert _is_non_interactive_mode() is True
 
     def test_env_var_not_set(self, monkeypatch):
         monkeypatch.delenv("BIBOPS_NON_INTERACTIVE", raising=False)
-        from src.benchmark.core import _is_non_interactive_mode
+        from src.bibops.benchmark.core import _is_non_interactive_mode
         # stdin may or may not be tty, just check it returns a bool
         result = _is_non_interactive_mode()
         assert isinstance(result, bool)
@@ -33,90 +27,90 @@ class TestIsNonInteractiveMode:
 class TestDefaultFeedbackChoice:
     def test_default_is_two(self, monkeypatch):
         monkeypatch.delenv("BIBOPS_DEFAULT_FEEDBACK", raising=False)
-        from src.benchmark.core import _default_feedback_choice
+        from src.bibops.benchmark.core import _default_feedback_choice
         assert _default_feedback_choice() == "2"
 
     def test_env_var_key(self, monkeypatch):
         monkeypatch.setenv("BIBOPS_DEFAULT_FEEDBACK", "1")
-        from src.benchmark.core import _default_feedback_choice
+        from src.bibops.benchmark.core import _default_feedback_choice
         assert _default_feedback_choice() == "1"
 
     def test_env_var_label_utile(self, monkeypatch):
         monkeypatch.setenv("BIBOPS_DEFAULT_FEEDBACK", "Utile")
-        from src.benchmark.core import _default_feedback_choice
+        from src.bibops.benchmark.core import _default_feedback_choice
         assert _default_feedback_choice() == "1"
 
     def test_invalid_env_falls_back_to_two(self, monkeypatch):
         monkeypatch.setenv("BIBOPS_DEFAULT_FEEDBACK", "invalid")
-        from src.benchmark.core import _default_feedback_choice
+        from src.bibops.benchmark.core import _default_feedback_choice
         assert _default_feedback_choice() == "2"
 
 
 class TestLireChamp:
     def test_reads_from_dict(self):
-        from src.benchmark.core import _lire_champ
+        from src.bibops.benchmark.core import _lire_champ
         assert _lire_champ({"key": "value"}, "key") == "value"
 
     def test_missing_dict_key_returns_none(self):
-        from src.benchmark.core import _lire_champ
+        from src.bibops.benchmark.core import _lire_champ
         assert _lire_champ({}, "missing") is None
 
     def test_reads_from_object(self):
-        from src.benchmark.core import _lire_champ
+        from src.bibops.benchmark.core import _lire_champ
         obj = SimpleNamespace(name="test")
         assert _lire_champ(obj, "name") == "test"
 
     def test_missing_object_attr_returns_none(self):
-        from src.benchmark.core import _lire_champ
+        from src.bibops.benchmark.core import _lire_champ
         obj = SimpleNamespace()
         assert _lire_champ(obj, "missing") is None
 
 
 class TestExtraireTexteReponse:
     def test_dict_format(self):
-        from src.benchmark.core import extraire_texte_reponse
+        from src.bibops.benchmark.core import extraire_texte_reponse
         resp = {"message": {"content": "Hello world"}}
         assert extraire_texte_reponse(resp) == "Hello world"
 
     def test_object_format(self):
-        from src.benchmark.core import extraire_texte_reponse
+        from src.bibops.benchmark.core import extraire_texte_reponse
         msg = SimpleNamespace(content="Test content")
         resp = SimpleNamespace(message=msg)
         assert extraire_texte_reponse(resp) == "Test content"
 
     def test_missing_message_returns_empty(self):
-        from src.benchmark.core import extraire_texte_reponse
+        from src.bibops.benchmark.core import extraire_texte_reponse
         assert extraire_texte_reponse({}) == ""
 
     def test_non_string_content_returns_empty(self):
-        from src.benchmark.core import extraire_texte_reponse
+        from src.bibops.benchmark.core import extraire_texte_reponse
         assert extraire_texte_reponse({"message": {"content": None}}) == ""
 
 
 class TestExtraireCompteursTokens:
     def test_ollama_native_format(self):
-        from src.benchmark.core import extraire_compteurs_tokens
+        from src.bibops.benchmark.core import extraire_compteurs_tokens
         resp = {"prompt_eval_count": 10, "eval_count": 20}
         tokens, source = extraire_compteurs_tokens(resp)
         assert tokens == 30
         assert source == "ollama_native"
 
     def test_usage_total_tokens(self):
-        from src.benchmark.core import extraire_compteurs_tokens
+        from src.bibops.benchmark.core import extraire_compteurs_tokens
         resp = {"usage": {"total_tokens": 50}}
         tokens, source = extraire_compteurs_tokens(resp)
         assert tokens == 50
         assert source == "usage_total_tokens"
 
     def test_usage_prompt_plus_completion(self):
-        from src.benchmark.core import extraire_compteurs_tokens
+        from src.bibops.benchmark.core import extraire_compteurs_tokens
         resp = {"usage": {"prompt_tokens": 15, "completion_tokens": 25}}
         tokens, source = extraire_compteurs_tokens(resp)
         assert tokens == 40
         assert source == "usage_prompt_plus_completion"
 
     def test_no_token_info(self):
-        from src.benchmark.core import extraire_compteurs_tokens
+        from src.bibops.benchmark.core import extraire_compteurs_tokens
         tokens, source = extraire_compteurs_tokens({})
         assert tokens is None
         assert source == "native_tokens_absents"
@@ -126,7 +120,7 @@ class TestDemanderFeedbackUtilisateur:
     def test_non_interactive_returns_default(self, monkeypatch):
         monkeypatch.setenv("BIBOPS_NON_INTERACTIVE", "1")
         monkeypatch.setenv("BIBOPS_DEFAULT_FEEDBACK", "2")
-        from src.benchmark.core import demander_feedback_utilisateur
+        from src.bibops.benchmark.core import demander_feedback_utilisateur
         result = demander_feedback_utilisateur()
         assert result == "Partiellement utile"
 
@@ -158,10 +152,10 @@ class TestRunBenchmark:
             "eval_count": 20,
         }
 
-        with patch("src.benchmark.core.INPUT_CSV", str(csv_file)), \
-             patch("src.benchmark.core.OUTPUT_JSON", str(output_json)), \
-             patch("src.benchmark.core.ollama.chat", return_value=fake_response):
-            from src.benchmark.core import run_benchmark
+        with patch("src.bibops.benchmark.core.INPUT_CSV", str(csv_file)), \
+             patch("src.bibops.benchmark.core.OUTPUT_JSON", str(output_json)), \
+             patch("src.bibops.benchmark.core.ollama.chat", return_value=fake_response):
+            from src.bibops.benchmark.core import run_benchmark
             run_benchmark(model_names=["phi3:latest"])
 
         import json as _json
@@ -178,10 +172,10 @@ class TestRunBenchmark:
 
         fake_response = {"message": {"content": "ok"}, "prompt_eval_count": 5, "eval_count": 5}
 
-        with patch("src.benchmark.core.INPUT_CSV", str(csv_file)), \
-             patch("src.benchmark.core.OUTPUT_JSON", str(output_json)), \
-             patch("src.benchmark.core.ollama.chat", return_value=fake_response):
-            from src.benchmark.core import run_benchmark
+        with patch("src.bibops.benchmark.core.INPUT_CSV", str(csv_file)), \
+             patch("src.bibops.benchmark.core.OUTPUT_JSON", str(output_json)), \
+             patch("src.bibops.benchmark.core.ollama.chat", return_value=fake_response):
+            from src.bibops.benchmark.core import run_benchmark
             run_benchmark(model_names=["phi3:latest"])
 
         import json as _json
@@ -193,10 +187,10 @@ class TestRunBenchmark:
         output_json = tmp_path / "out.json"
         monkeypatch.setenv("BIBOPS_NON_INTERACTIVE", "1")
 
-        with patch("src.benchmark.core.INPUT_CSV", str(csv_file)), \
-             patch("src.benchmark.core.OUTPUT_JSON", str(output_json)), \
-             patch("src.benchmark.core.ollama.chat", side_effect=RuntimeError("Ollama unavailable")):
-            from src.benchmark.core import run_benchmark
+        with patch("src.bibops.benchmark.core.INPUT_CSV", str(csv_file)), \
+             patch("src.bibops.benchmark.core.OUTPUT_JSON", str(output_json)), \
+             patch("src.bibops.benchmark.core.ollama.chat", side_effect=RuntimeError("Ollama unavailable")):
+            from src.bibops.benchmark.core import run_benchmark
             run_benchmark(model_names=["phi3:latest"])
 
         import json as _json

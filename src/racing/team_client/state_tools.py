@@ -6,12 +6,11 @@ Définit l'état partagé du graphe LangGraph et l'outil RAG vers le Hub.
 from __future__ import annotations
 
 import operator
-from typing import Annotated, Optional
+from typing import Annotated, TypedDict
 
 import httpx
 from langchain_core.messages import BaseMessage
 from langchain_core.tools import tool
-from typing_extensions import TypedDict
 
 # ---------------------------------------------------------------------------
 # URL du Hub (source unique de vérité)
@@ -36,7 +35,7 @@ class TeamState(TypedDict):
     """
     telemetry:      dict
     messages:       Annotated[list[BaseMessage], operator.add]
-    final_decision: Optional[dict]
+    final_decision: dict | None
     next_node:      str
 
 

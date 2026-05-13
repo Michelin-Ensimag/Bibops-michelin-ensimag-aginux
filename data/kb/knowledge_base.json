@@ -265,6 +265,598 @@
       "priorite": "haute",
       "temps_resolution_moyen": "10 minutes",
       "taux_resolution": "90%"
+    },
+    {
+      "id": "KB-009",
+      "categorie": "Collaboration",
+      "probleme": "Teams : canaux de projet absents",
+      "mots_cles": [
+        "teams",
+        "canaux",
+        "canal",
+        "projet",
+        "canaux absents",
+        "canaux de projet",
+        "canal masqué",
+        "tenant"
+      ],
+      "solution": {
+        "diagnostic": [
+          "Vérifier que l'utilisateur est connecté au bon tenant et au bon compte professionnel",
+          "Demander si l'équipe ou le canal a été masqué, archivé ou supprimé",
+          "Vérifier si les droits de l'utilisateur sur l'équipe projet ont changé"
+        ],
+        "resolution": [
+          "Dans Teams, rechercher l'équipe puis vérifier les canaux masqués via 'Afficher'",
+          "Déconnecter puis reconnecter Teams, puis vider le cache Teams si les canaux restent absents",
+          "Vérifier dans Teams Web si les canaux apparaissent pour distinguer cache local et problème de droits",
+          "Demander au propriétaire de l'équipe de confirmer l'appartenance au canal privé si le canal est privé",
+          "Mettre à jour Teams depuis le portail logiciel Michelin"
+        ],
+        "escalade": "Si les droits d'équipe sont absents : ticket niveau 2 (collaboration Microsoft 365)",
+        "documentation": "https://intranet.michelin.com/it/teams-support"
+      },
+      "priorite": "moyenne",
+      "temps_resolution_moyen": "10-20 minutes",
+      "taux_resolution": "80%"
+    },
+    {
+      "id": "KB-010",
+      "categorie": "Windows",
+      "probleme": "Windows redémarre en boucle après mise à jour",
+      "mots_cles": [
+        "windows",
+        "redémarre",
+        "redemarre",
+        "boucle",
+        "mise à jour",
+        "update",
+        "boot loop",
+        "mode sans échec"
+      ],
+      "solution": {
+        "diagnostic": [
+          "Identifier si le poste affiche un écran bleu, une réparation automatique ou un retour immédiat au démarrage",
+          "Demander l'heure de la mise à jour et le modèle du poste",
+          "Vérifier si BitLocker demande une clé de récupération avant toute manipulation avancée"
+        ],
+        "resolution": [
+          "Forcer l'environnement de récupération Windows après trois démarrages interrompus",
+          "Choisir Options avancées -> Dépannage -> Désinstaller la dernière mise à jour qualité",
+          "Essayer le mode sans échec puis redémarrer normalement",
+          "Lancer une restauration système si un point de restauration est disponible",
+          "Si BitLocker bloque, récupérer la clé via le portail support avant intervention"
+        ],
+        "escalade": "Si le poste ne démarre toujours pas : ticket niveau 2 poste de travail",
+        "documentation": "https://intranet.michelin.com/it/windows-recovery"
+      },
+      "priorite": "haute",
+      "temps_resolution_moyen": "30-60 minutes",
+      "taux_resolution": "70%"
+    },
+    {
+      "id": "KB-011",
+      "categorie": "Messagerie",
+      "probleme": "Outlook : client refuse de se connecter",
+      "mots_cles": [
+        "outlook",
+        "connexion",
+        "client refuse",
+        "refuse de se connecter",
+        "connecter",
+        "email",
+        "messagerie",
+        "outlook web"
+      ],
+      "solution": {
+        "diagnostic": [
+          "Tester Outlook Web pour distinguer un problème compte d'un problème client local",
+          "Vérifier le mode hors connexion, les identifiants enregistrés et l'état du service Outlook",
+          "Noter le message d'erreur exact et l'heure d'apparition"
+        ],
+        "resolution": [
+          "Redémarrer Outlook puis tester https://outlook.office.com avec le compte Michelin",
+          "Désactiver le mode hors connexion : Envoyer/Recevoir -> Travailler hors connexion",
+          "Supprimer les identifiants Office obsolètes dans le Gestionnaire d'identification Windows",
+          "Créer un nouveau profil Outlook si le client local échoue mais Outlook Web fonctionne",
+          "Lancer une réparation rapide Office si le nouveau profil ne suffit pas"
+        ],
+        "escalade": "Si Outlook Web échoue aussi : ticket niveau 2 messagerie",
+        "documentation": "https://intranet.michelin.com/it/outlook-support"
+      },
+      "priorite": "moyenne",
+      "temps_resolution_moyen": "10-25 minutes",
+      "taux_resolution": "85%"
+    },
+    {
+      "id": "KB-012",
+      "categorie": "Impression",
+      "probleme": "Imprimante : erreur 404",
+      "mots_cles": [
+        "imprimante",
+        "erreur 404",
+        "404",
+        "interface web imprimante",
+        "url imprimante",
+        "adresse ip imprimante"
+      ],
+      "solution": {
+        "diagnostic": [
+          "Préciser si l'erreur vient de l'interface Web de l'imprimante, du pilote ou de l'application",
+          "Vérifier l'adresse IP ou l'URL utilisée pour accéder à l'imprimante",
+          "Tester si l'imprimante répond au ping depuis le poste"
+        ],
+        "resolution": [
+          "Pour erreur 404, vérifier l'adresse IP/URL de l'interface Web et redémarrer l'imprimante",
+          "Supprimer l'imprimante puis la réinstaller depuis le portail d'impression Michelin si le pilote pointe vers une mauvaise adresse",
+          "Vider la file d'attente puis redémarrer le spouleur d'impression",
+          "Tester l'impression depuis une autre application pour vérifier si l'erreur vient du pilote ou de l'application"
+        ],
+        "escalade": "Si anomalie matérielle ou firmware : ticket maintenance imprimante/scanner",
+        "documentation": "https://intranet.michelin.com/it/print-scan"
+      },
+      "priorite": "basse",
+      "temps_resolution_moyen": "10-30 minutes",
+      "taux_resolution": "80%"
+    },
+    {
+      "id": "KB-013",
+      "categorie": "Réseau applicatif",
+      "probleme": "Navigateur bloque l'accès intranet à cause du proxy",
+      "mots_cles": [
+        "proxy",
+        "intranet",
+        "navigateur",
+        "bloque",
+        "configuration proxy",
+        "pac",
+        "proxy navigateur"
+      ],
+      "solution": {
+        "diagnostic": [
+          "Vérifier si l'accès intranet fonctionne dans un autre navigateur ou en navigation privée",
+          "Contrôler que le poste utilise la configuration proxy automatique Michelin",
+          "Tester l'accès avec le VPN connecté si l'utilisateur est hors site"
+        ],
+        "resolution": [
+          "Vérifier la configuration proxy automatique Michelin dans les paramètres réseau",
+          "Désactiver les extensions navigateur qui modifient le proxy puis relancer le navigateur",
+          "Vider le cache DNS : ipconfig /flushdns puis relancer le navigateur",
+          "Réinitialiser les paramètres réseau du navigateur si le proxy reste bloqué",
+          "Noter l'URL intranet, le message proxy exact et le réseau utilisé avant escalade"
+        ],
+        "escalade": "Si le proxy d'entreprise bloque toujours l'intranet : ticket niveau 2 réseau/applicatif",
+        "documentation": "https://intranet.michelin.com/it/network-apps"
+      },
+      "priorite": "haute",
+      "temps_resolution_moyen": "15-40 minutes",
+      "taux_resolution": "75%"
+    },
+    {
+      "id": "KB-014",
+      "categorie": "Poste de travail",
+      "probleme": "Droits administrateur local ou installation de logiciel",
+      "mots_cles": [
+        "administrateur local",
+        "admin local",
+        "installation logiciel",
+        "installer un logiciel",
+        "python",
+        "node.js",
+        "docker",
+        "droits admin",
+        "changement de poste"
+      ],
+      "solution": {
+        "diagnostic": [
+          "Vérifier si le besoin est ponctuel ou permanent et s'il est lié à un projet validé",
+          "Identifier le poste, le compte utilisateur et le logiciel demandé",
+          "Contrôler si le logiciel est disponible dans le portail logiciel Michelin"
+        ],
+        "resolution": [
+          "Demander l'installation via le portail logiciel ou le catalogue IT",
+          "Joindre la justification projet, le manager approbateur et la durée du besoin",
+          "Pour Docker ou outils développeur, demander une validation sécurité si des droits élevés sont nécessaires",
+          "Après changement de poste, demander la réaffectation du profil ou du groupe AD correspondant",
+          "Éviter d'accorder des droits admin permanents si une installation packagée est disponible"
+        ],
+        "escalade": "Si droits admin nécessaires : ticket niveau 2 poste de travail + validation manager/sécurité",
+        "documentation": "https://intranet.michelin.com/it/software-catalog"
+      },
+      "priorite": "moyenne",
+      "temps_resolution_moyen": "1-3 jours ouvrés",
+      "taux_resolution": "75%"
+    },
+    {
+      "id": "KB-015",
+      "categorie": "Périphériques",
+      "probleme": "Lecteur de carte badge USB non reconnu",
+      "mots_cles": [
+        "badge usb",
+        "lecteur de carte",
+        "lecteur badge",
+        "usb",
+        "carte badge",
+        "périphérique non reconnu",
+        "non reconnu"
+      ],
+      "solution": {
+        "diagnostic": [
+          "Tester le périphérique sur un autre port USB ou un autre poste",
+          "Vérifier le Gestionnaire de périphériques pour les erreurs pilote",
+          "Distinguer si le problème vient du lecteur USB ou de la carte badge"
+        ],
+        "resolution": [
+          "Débrancher puis rebrancher le lecteur sur un autre port USB",
+          "Redémarrer le poste si le lecteur reste absent",
+          "Mettre à jour ou réinstaller le pilote depuis le portail logiciel Michelin",
+          "Désactiver l'économie d'énergie sur le périphérique dans le Gestionnaire de périphériques",
+          "Tester le lecteur sur un autre poste pour confirmer une panne matérielle"
+        ],
+        "escalade": "Si le périphérique échoue sur plusieurs postes : ticket remplacement matériel",
+        "documentation": "https://intranet.michelin.com/it/device-support"
+      },
+      "priorite": "basse",
+      "temps_resolution_moyen": "10-20 minutes",
+      "taux_resolution": "80%"
+    },
+    {
+      "id": "KB-016",
+      "categorie": "Collaboration",
+      "probleme": "Teams : écran noir lors du partage PowerPoint",
+      "mots_cles": [
+        "teams",
+        "partage d'écran",
+        "partage ecran",
+        "écran noir",
+        "ecran noir",
+        "powerpoint",
+        "présentation powerpoint"
+      ],
+      "solution": {
+        "diagnostic": [
+          "Vérifier si l'écran noir apparaît en partageant la fenêtre PowerPoint ou l'écran complet",
+          "Contrôler que Teams et PowerPoint sont à jour",
+          "Identifier si le poste utilise une carte graphique ou un pilote récemment mis à jour"
+        ],
+        "resolution": [
+          "Essayer le partage d'écran complet au lieu du partage de fenêtre PowerPoint",
+          "Présenter le fichier directement dans Teams avec l'option PowerPoint Live si disponible",
+          "Désactiver l'accélération matérielle dans Teams et Office puis relancer les applications",
+          "Mettre à jour Teams, Office et le pilote graphique depuis le portail logiciel Michelin",
+          "Tester la présentation depuis Teams Web pour isoler le client local"
+        ],
+        "escalade": "Si l'écran noir persiste sur plusieurs modes de partage : ticket niveau 2 collaboration Microsoft 365",
+        "documentation": "https://intranet.michelin.com/it/teams-screen-share"
+      },
+      "priorite": "moyenne",
+      "temps_resolution_moyen": "10-20 minutes",
+      "taux_resolution": "80%"
+    },
+    {
+      "id": "KB-017",
+      "categorie": "Messagerie",
+      "probleme": "Outlook : boîte aux lettres pleine",
+      "mots_cles": [
+        "boîte aux lettres",
+        "boite aux lettres",
+        "pleine",
+        "quota outlook",
+        "mailbox full",
+        "outlook pleine"
+      ],
+      "solution": {
+        "diagnostic": [
+          "Vérifier le quota de boîte aux lettres dans Outlook ou Outlook Web",
+          "Identifier les dossiers les plus volumineux et les emails avec grosses pièces jointes",
+          "Confirmer que les éléments supprimés sont bien vidés côté serveur"
+        ],
+        "resolution": [
+          "Supprimer ou archiver les emails volumineux et les pièces jointes inutiles",
+          "Vider les dossiers Éléments supprimés et Courrier indésirable",
+          "Utiliser le nettoyage de boîte aux lettres dans Outlook pour trouver les messages les plus lourds",
+          "Déplacer les archives autorisées vers l'emplacement prévu par la politique messagerie",
+          "Relancer Outlook et vérifier que le quota a diminué"
+        ],
+        "escalade": "Si le quota reste bloqué ou insuffisant : ticket niveau 2 messagerie pour analyse quota",
+        "documentation": "https://intranet.michelin.com/it/outlook-quota"
+      },
+      "priorite": "moyenne",
+      "temps_resolution_moyen": "10-20 minutes",
+      "taux_resolution": "85%"
+    },
+    {
+      "id": "KB-018",
+      "categorie": "Messagerie",
+      "probleme": "Outlook mobile : notifications email absentes",
+      "mots_cles": [
+        "notifications",
+        "notification email",
+        "outlook mobile",
+        "mobile outlook",
+        "ne reçois plus",
+        "ne recois plus"
+      ],
+      "solution": {
+        "diagnostic": [
+          "Vérifier si les emails arrivent dans Outlook mobile mais sans notification",
+          "Contrôler les autorisations de notification du téléphone pour Outlook",
+          "Vérifier le mode Ne pas déranger, Focus et l'économie de batterie"
+        ],
+        "resolution": [
+          "Activer les notifications dans Outlook mobile pour le compte professionnel et les dossiers utiles",
+          "Autoriser les notifications Outlook dans les paramètres iOS ou Android",
+          "Désactiver l'économie de batterie ou autoriser Outlook en arrière-plan",
+          "Vérifier que le mode Ne pas déranger ou Focus ne filtre pas Outlook",
+          "Supprimer puis réajouter le compte Outlook mobile si la synchronisation reste bloquée"
+        ],
+        "escalade": "Si les emails ne se synchronisent plus du tout : ticket niveau 2 messagerie mobile",
+        "documentation": "https://intranet.michelin.com/it/outlook-mobile"
+      },
+      "priorite": "moyenne",
+      "temps_resolution_moyen": "10-20 minutes",
+      "taux_resolution": "85%"
+    },
+    {
+      "id": "KB-019",
+      "categorie": "Impression",
+      "probleme": "Option recto-verso absente",
+      "mots_cles": [
+        "recto-verso",
+        "recto verso",
+        "option n'apparaît plus",
+        "option n'apparait plus",
+        "duplex",
+        "imprimer recto-verso"
+      ],
+      "solution": {
+        "diagnostic": [
+          "Vérifier que le modèle d'imprimante possède bien une unité recto-verso",
+          "Contrôler si le pilote installé est un pilote constructeur ou un pilote générique",
+          "Tester depuis une autre application pour distinguer pilote et application"
+        ],
+        "resolution": [
+          "Ouvrir les propriétés de l'imprimante et vérifier que l'unité recto-verso est installée/activée",
+          "Supprimer puis réinstaller l'imprimante depuis le portail d'impression Michelin",
+          "Installer le pilote constructeur recommandé si un pilote générique est utilisé",
+          "Redémarrer le spouleur d'impression puis relancer l'application",
+          "Tester l'impression recto-verso avec un document simple"
+        ],
+        "escalade": "Si l'option reste absente avec le bon pilote : ticket maintenance imprimante",
+        "documentation": "https://intranet.michelin.com/it/duplex-print"
+      },
+      "priorite": "basse",
+      "temps_resolution_moyen": "10-20 minutes",
+      "taux_resolution": "85%"
+    },
+    {
+      "id": "KB-020",
+      "categorie": "Impression",
+      "probleme": "Scanner réseau envoie des PDF vides par email",
+      "mots_cles": [
+        "scanner",
+        "pdf vide",
+        "pdf vides",
+        "scan to mail",
+        "boîte mail",
+        "boite mail",
+        "scanner réseau"
+      ],
+      "solution": {
+        "diagnostic": [
+          "Tester une numérisation vers clé USB ou dossier réseau pour isoler scanner vs email",
+          "Vérifier si le PDF est vide dès la sortie du scanner ou seulement après envoi email",
+          "Contrôler les réglages de format, résolution, contraste et chargeur de documents"
+        ],
+        "resolution": [
+          "Nettoyer la vitre et le chargeur automatique du scanner",
+          "Tester un scan en noir et blanc puis en couleur avec un format PDF standard",
+          "Réinitialiser les paramètres de numérisation vers les valeurs par défaut",
+          "Tester l'envoi vers une autre adresse email professionnelle",
+          "Redémarrer le scanner et vérifier si une mise à jour firmware est disponible"
+        ],
+        "escalade": "Si les PDF restent vides après test local : ticket maintenance scanner",
+        "documentation": "https://intranet.michelin.com/it/scan-to-mail"
+      },
+      "priorite": "basse",
+      "temps_resolution_moyen": "15-30 minutes",
+      "taux_resolution": "75%"
+    },
+    {
+      "id": "KB-021",
+      "categorie": "Réseau applicatif",
+      "probleme": "SAP GUI : certificat expiré",
+      "mots_cles": [
+        "sap",
+        "certificat",
+        "certificat expiré",
+        "certificat expire",
+        "sap gui",
+        "erreur de certificat"
+      ],
+      "solution": {
+        "diagnostic": [
+          "Vérifier la date et l'heure du poste car un décalage peut déclencher une erreur de certificat",
+          "Identifier si l'erreur vient du client SAP GUI, du navigateur SSO ou du serveur SAP",
+          "Noter le nom du système SAP et le message exact du certificat"
+        ],
+        "resolution": [
+          "Corriger la date, l'heure et le fuseau horaire du poste puis relancer SAP GUI",
+          "Mettre à jour SAP GUI depuis le portail logiciel Michelin",
+          "Importer la chaîne de certificats validée uniquement si le support PKI/SAP la fournit",
+          "Tester l'accès SAP depuis un autre poste pour distinguer poste local et certificat serveur",
+          "Transmettre le message exact et le système SAP à l'équipe applicative"
+        ],
+        "escalade": "Si le certificat serveur est réellement expiré : ticket niveau 2 SAP/PKI",
+        "documentation": "https://intranet.michelin.com/it/sap-certificate"
+      },
+      "priorite": "haute",
+      "temps_resolution_moyen": "15-40 minutes",
+      "taux_resolution": "75%"
+    },
+    {
+      "id": "KB-022",
+      "categorie": "Partage de fichiers",
+      "probleme": "Accès refusé au dossier réseau fileserver",
+      "mots_cles": [
+        "dossier réseau",
+        "dossier reseau",
+        "fileserver",
+        "accès refusé",
+        "acces refuse",
+        "\\\\fileserver\\projets",
+        "partage réseau"
+      ],
+      "solution": {
+        "diagnostic": [
+          "Vérifier que le chemin réseau est exact et accessible depuis le réseau Michelin ou le VPN",
+          "Confirmer que l'utilisateur utilise son compte professionnel Windows",
+          "Vérifier si l'accès fonctionne pour d'autres dossiers réseau"
+        ],
+        "resolution": [
+          "Tester le chemin complet depuis Win+R : \\\\fileserver\\projets",
+          "Se reconnecter au VPN si l'utilisateur est hors site",
+          "Supprimer les anciens identifiants dans le Gestionnaire d'identification Windows",
+          "Redémarrer le poste puis retester l'accès au partage",
+          "Demander au propriétaire du dossier de valider l'appartenance au groupe AD nécessaire"
+        ],
+        "escalade": "Si les droits sont absents : ticket niveau 2 gestion des droits AD",
+        "documentation": "https://intranet.michelin.com/it/file-access"
+      },
+      "priorite": "moyenne",
+      "temps_resolution_moyen": "10-30 minutes",
+      "taux_resolution": "80%"
+    },
+    {
+      "id": "KB-023",
+      "categorie": "Périphériques",
+      "probleme": "Micro Bluetooth coupe en visioconférence",
+      "mots_cles": [
+        "micro bluetooth",
+        "bluetooth",
+        "micro",
+        "visio",
+        "coupe toutes les 30 secondes",
+        "coupure micro",
+        "teams audio"
+      ],
+      "solution": {
+        "diagnostic": [
+          "Vérifier si la coupure se produit dans Teams, Zoom et l'enregistreur vocal",
+          "Contrôler le niveau de batterie, la distance et les interférences Bluetooth",
+          "Vérifier le périphérique audio sélectionné dans l'application de visio"
+        ],
+        "resolution": [
+          "Désappairer puis réappairer le micro Bluetooth",
+          "Sélectionner explicitement le bon micro dans Teams ou Zoom",
+          "Désactiver l'économie d'énergie Bluetooth dans le Gestionnaire de périphériques",
+          "Mettre à jour le pilote Bluetooth et le firmware du casque si disponible",
+          "Tester avec un casque filaire pour confirmer si le Bluetooth est en cause"
+        ],
+        "escalade": "Si le micro coupe sur plusieurs postes : ticket remplacement périphérique",
+        "documentation": "https://intranet.michelin.com/it/bluetooth-audio"
+      },
+      "priorite": "basse",
+      "temps_resolution_moyen": "10-20 minutes",
+      "taux_resolution": "80%"
+    },
+    {
+      "id": "KB-024",
+      "categorie": "Windows",
+      "probleme": "Clavier bascule en QWERTY sur Windows 11",
+      "mots_cles": [
+        "clavier",
+        "qwerty",
+        "azerty",
+        "windows 11",
+        "langue clavier",
+        "disposition clavier"
+      ],
+      "solution": {
+        "diagnostic": [
+          "Vérifier la disposition active dans la barre de langue Windows",
+          "Identifier si le changement arrive après le raccourci Win+Espace ou Alt+Shift",
+          "Contrôler les langues installées dans Windows 11"
+        ],
+        "resolution": [
+          "Utiliser Win+Espace pour revenir à Français - AZERTY",
+          "Ouvrir Paramètres -> Heure et langue -> Langue et région -> Options de langue",
+          "Supprimer la disposition QWERTY si elle n'est pas nécessaire",
+          "Désactiver ou modifier le raccourci de changement de langue si le basculement est accidentel",
+          "Redémarrer la session et vérifier que Français - AZERTY reste par défaut"
+        ],
+        "escalade": "Si la disposition revient après stratégie entreprise : ticket niveau 2 poste de travail",
+        "documentation": "https://intranet.michelin.com/it/windows-keyboard"
+      },
+      "priorite": "basse",
+      "temps_resolution_moyen": "5-10 minutes",
+      "taux_resolution": "90%"
+    },
+    {
+      "id": "KB-025",
+      "categorie": "Réseau",
+      "probleme": "WiFi lent en télétravail",
+      "mots_cles": [
+        "wifi lent",
+        "connexion wifi lente",
+        "télétravail",
+        "teletravail",
+        "débit",
+        "debit",
+        "latence"
+      ],
+      "solution": {
+        "diagnostic": [
+          "Comparer le débit WiFi avec un test en câble Ethernet si possible",
+          "Vérifier si d'autres appareils saturent la connexion domestique",
+          "Tester la qualité du signal près de la box puis à l'emplacement de travail"
+        ],
+        "resolution": [
+          "Se rapprocher de la box ou utiliser un câble Ethernet pour les visioconférences importantes",
+          "Redémarrer la box internet et le poste",
+          "Utiliser le réseau 5 GHz si disponible et éviter les zones avec signal faible",
+          "Fermer les téléchargements, sauvegardes cloud ou vidéos sur les autres appareils",
+          "Oublier puis reconnecter le réseau WiFi sur le poste"
+        ],
+        "escalade": "Si le débit reste anormal sur plusieurs appareils : contacter le fournisseur internet ou le support IT pour analyse VPN",
+        "documentation": "https://intranet.michelin.com/it/remote-wifi"
+      },
+      "priorite": "moyenne",
+      "temps_resolution_moyen": "10-20 minutes",
+      "taux_resolution": "80%"
+    },
+    {
+      "id": "KB-026",
+      "categorie": "Réseau",
+      "probleme": "VPN connecté mais applications internes inaccessibles",
+      "mots_cles": [
+        "vpn connecté",
+        "vpn connecte",
+        "applications internes",
+        "aucune application interne",
+        "split tunneling",
+        "dns vpn",
+        "routes vpn"
+      ],
+      "solution": {
+        "diagnostic": [
+          "Vérifier que le VPN est bien connecté avec une adresse IP VPN attribuée",
+          "Tester une application interne connue et noter le message d'erreur exact",
+          "Vérifier si le problème touche DNS, proxy ou routage VPN"
+        ],
+        "resolution": [
+          "Déconnecter puis reconnecter le VPN Cisco AnyConnect",
+          "Vider le cache DNS avec ipconfig /flushdns puis relancer le navigateur",
+          "Tester l'accès à une application interne avec son nom DNS puis avec l'URL officielle",
+          "Désactiver temporairement les proxys personnels ou extensions réseau non autorisées",
+          "Collecter l'heure, l'adresse IP VPN, l'application testée et le message d'erreur"
+        ],
+        "escalade": "Si plusieurs applications internes restent inaccessibles : ticket niveau 2 réseau VPN",
+        "documentation": "https://intranet.michelin.com/it/vpn-internal-apps"
+      },
+      "priorite": "haute",
+      "temps_resolution_moyen": "15-30 minutes",
+      "taux_resolution": "75%"
     }
   ]
 }

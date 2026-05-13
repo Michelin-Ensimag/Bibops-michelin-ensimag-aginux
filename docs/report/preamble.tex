@@ -3,24 +3,22 @@
 %  Projet de specialite Ensimag x Michelin -- 2026
 % ============================================================
 
-% ----- Encodage, langue, typographie -----
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[french]{babel}
-\usepackage{microtype}
 \usepackage{lmodern}
+\usepackage{microtype}
 \usepackage{setspace}
 \usepackage{parskip}
 \onehalfspacing
 \sloppy
 
-% ----- Mise en page -----
 \usepackage[
   a4paper,
-  top=2.5cm,
+  top=2.4cm,
   bottom=2.6cm,
-  left=3.0cm,
-  right=2.5cm,
+  left=2.8cm,
+  right=2.4cm,
   headheight=15pt
 ]{geometry}
 \usepackage{fancyhdr}
@@ -28,7 +26,6 @@
 \usepackage{caption}
 \captionsetup{font=small, labelfont=bf}
 
-% ----- Couleurs -----
 \usepackage[dvipsnames,table]{xcolor}
 \definecolor{michelinYellow}{RGB}{255, 210, 0}
 \definecolor{michelinBlue}{RGB}{0, 74, 155}
@@ -37,28 +34,27 @@
 \definecolor{darkGray}{RGB}{55, 55, 55}
 \definecolor{softGray}{RGB}{238, 240, 242}
 
-% ----- Mathématiques -----
-\usepackage{amsmath, amssymb, bm}
-\usepackage{mathtools}
-
-% ----- Tableaux -----
+\usepackage{amsmath, amssymb}
 \usepackage{booktabs}
 \usepackage{multirow}
 \usepackage{longtable}
 \usepackage{array}
 \usepackage{tabularx}
-\renewcommand{\arraystretch}{1.25}
+\renewcommand{\arraystretch}{1.22}
 \newcolumntype{Y}{>{\raggedright\arraybackslash}X}
 \newcolumntype{C}{>{\centering\arraybackslash}X}
 
-% ----- Figures -----
 \usepackage{graphicx}
 \usepackage{subcaption}
 \usepackage{float}
-\graphicspath{{../../data/outputs/benchmark/charts/}}
 
-% ----- Code et chemins -----
 \usepackage{listings}
+\lstdefinelanguage{PlantUML}{
+  morekeywords={@startuml,@enduml,@startgantt,@endgantt,actor,boundary,control,entity,database,collections,component,package,class,interface,enum,abstract,skinparam,rectangle,usecase,participant,queue,node,artifact,cloud,legend,title,caption,note,left,right,of,as,on,starts,lasts,Project,starts,end,style,ganttDiagram},
+  sensitive=false,
+  morecomment=[l]{'},
+  morestring=[b]",
+}
 \lstset{
   backgroundcolor=\color{codeGray},
   basicstyle=\ttfamily\small,
@@ -74,7 +70,6 @@
   xleftmargin=1em,
 }
 
-% ----- Hyperliens -----
 \usepackage[
   colorlinks=true,
   linkcolor=michelinBlue,
@@ -84,23 +79,17 @@
 ]{hyperref}
 \usepackage{url}
 
-% ----- Divers -----
 \usepackage{enumitem}
 \usepackage{pifont}
 \usepackage{ifthen}
-\usepackage{tikz}
-\usetikzlibrary{shapes.geometric, arrows.meta, positioning, fit, calc}
 
-% ----- En-tetes / pieds de page -----
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[L]{\small\textcolor{darkGray}{\leftmark}}
 \fancyhead[R]{\small\textcolor{michelinBlue}{\textbf{BibOps}}}
 \fancyfoot[C]{\thepage}
 \renewcommand{\headrulewidth}{0.4pt}
-\setlength{\headheight}{15pt}
 
-% ----- Titres -----
 \titleformat{\chapter}[hang]
   {\Large\bfseries\color{michelinBlue}}
   {\thechapter.}{0.8em}{}
@@ -114,7 +103,6 @@
   {\normalsize\bfseries\itshape}
   {\thesubsubsection}{0.6em}{}
 
-% ----- Macros projet -----
 \newcommand{\bibopsname}{\textsc{BibOps}}
 \newcommand{\metric}[1]{\textbf{\textcolor{michelinBlue}{#1}}}
 \DeclareRobustCommand{\code}[1]{\texttt{\detokenize{#1}}}
@@ -125,4 +113,39 @@
   \ifthenelse{\equal{#1}{PASS}}%
     {\textcolor{OliveGreen}{\bfseries PASS}}%
     {\textcolor{accentRed}{\bfseries FAIL}}%
+}
+
+\newcommand{\benchmarkfigure}[4][0.94\textwidth]{%
+  \begin{figure}[H]
+    \centering
+    \IfFileExists{../../data/outputs/benchmark/charts/#2}{%
+      \includegraphics[width=#1]{../../data/outputs/benchmark/charts/#2}%
+    }{%
+      \fbox{\parbox{0.85\textwidth}{Figure attendue : \file{data/outputs/benchmark/charts/#2}}}%
+    }%
+    \caption{#3}
+    \label{#4}
+  \end{figure}
+}
+
+\newcommand{\plantumldiagram}[4][0.94\textwidth]{%
+  \begin{figure}[H]
+    \centering
+    \IfFileExists{diagrams/rendered/#2.png}{%
+      \includegraphics[width=#1,height=0.78\textheight,keepaspectratio]{diagrams/rendered/#2.png}%
+    }{%
+      \fbox{%
+        \parbox{0.86\textwidth}{%
+          \centering
+          \vspace{0.4em}
+          \textbf{Diagramme PlantUML}\\
+          Source : \file{docs/report/diagrams/#2.puml}\\
+          Image rendue optionnelle : \file{docs/report/diagrams/rendered/#2.png}
+          \vspace{0.4em}
+        }%
+      }%
+    }%
+    \caption{#3}
+    \label{#4}
+  \end{figure}
 }

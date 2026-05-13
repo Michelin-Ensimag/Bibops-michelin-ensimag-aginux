@@ -1,242 +1,118 @@
 % ============================================================
-%  Section 3 -- Presentation de la solution
+%  Section 3 -- Présentation de la solution
 % ============================================================
 
 \chapter{Présentation de la solution}
 
 \section{Vue d'ensemble}
 
-\bibopsname{} est organise comme un framework Python de benchmark. Le coeur du
-projet est separe en quatre ensembles : l'agent IT, le moteur d'evaluation, les
-pipelines de benchmark et la Racing Arena.
+\bibopsname{} est un framework Python organisé autour d'une CLI et de modules
+spécialisés. Le pipeline part d'un dataset de tickets, exécute une ou plusieurs
+architectures, évalue les réponses puis produit des artefacts exploitables.
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\textwidth]{architecture_overview.png}
-  \caption{Vue d'ensemble de l'architecture \bibopsname{}.}
-  \label{fig:architecture-overview}
-\end{figure}
+\plantumldiagram{architecture_overview}{Vue d'ensemble UML de l'architecture \bibopsname{}.}{fig:architecture-overview}
 
 \begin{table}[H]
 \centering
 \begin{tabularx}{\textwidth}{lY}
 \toprule
-\textbf{Dossier} & \textbf{Responsabilite principale} \\
+\textbf{Module} & \textbf{Responsabilité} \\
 \midrule
-\file{src/agent/} & Agent de support IT, boucle ReAct, outils, RAG, MCP. \\
-\file{src/common/} & Configuration, clients LLM, helpers texte et extraction de tokens. \\
-\file{src/bibops/evaluation/} & Juges, inspecteurs de securite, metriques composites, seuils. \\
-\file{src/bibops/adapters/} & Adaptateurs vers agents IT, OpenAI-compatible, A2A et fact-checker. \\
-\file{src/benchmark/} & Pipelines experimentaux et utilitaires de benchmark. \\
-\file{src/racing/} & Hub FastAPI, moteur de course, clients LangGraph, equipes adversariales. \\
-\file{scripts/} & Wrappers CLI et scripts de developpement. \\
+\file{src/agent/} & Agent IT ReAct, mémoire courte, outils, serveur MCP et RAG. \\
+\file{src/common/} & Configuration, clients LLM et fonctions texte partagees. \\
+\file{src/bibops/cli/} & CLI Typer : \code{bench}, \code{eval}, \code{dev}, \code{racing}, \code{copilot}, \code{test}, \code{config}, \code{report}. \\
+\file{src/bibops/benchmark/} & Runners de benchmark et validation des sorties. \\
+\file{src/bibops/evaluation/} & Juges, inspecteurs de sécurité, scores composites et seuils. \\
+\file{src/bibops/adapters/} & Adaptateurs vers agents IT, A2A et API OpenAI-compatible. \\
+\file{src/racing/} & Hub FastAPI, flux SSE, équipes LangGraph et scénario adversarial. \\
 \file{tests/} & Tests unitaires, fakes OpenAI et fixtures. \\
 \bottomrule
 \end{tabularx}
-\caption{Organisation fonctionnelle du depot.}
+\caption{Organisation fonctionnelle du dépôt.}
 \label{tab:repo-layout}
 \end{table}
 
-La base de code analysee contient 20\,326 lignes Python dans \file{src/},
-\file{scripts/} et \file{tests/}. Cette taille reste compatible avec une
-architecture lisible : les modules critiques sont courts, les tests isolent les
-appels LLM, et les artefacts experimentaux sont stockes sous \file{data/}.
-
 \section{Agent de support IT}
 
-\subsection{Contrat de decision}
+La fonction centrale est \code{lancer_agent()} dans \file{src/agent/maestro.py}.
+Elle exécute une boucle ReAct bornée par un nombre maximal d'iterations. A
+chaque tour, le LLM retourne une décision structuree : nom d'outil, argument et
+réponse finale eventuelle. Ce contrat evite de parser du texte libre et rend les
+tests unitaires plus fiables.
 
-L'agent principal est implemente dans \file{src/agent/maestro.py}. La fonction
-\code{lancer_agent()} execute une boucle ReAct bornee a cinq iterations par
-defaut. A chaque tour, le LLM retourne un objet Pydantic \code{AgentDecision}
-contenant trois champs :
+\plantumldiagram{react_loop}{Boucle ReAct UML de l'agent de support IT.}{fig:react-loop}
 
-\begin{itemize}
-  \item \code{tool} : nom de l'outil a appeler ou \code{null} ;
-  \item \code{argument} : argument normalise pour l'outil ;
-  \item \code{final_answer} : reponse finale en francais lorsque plus aucun
-  outil n'est necessaire.
-\end{itemize}
-
-Le choix d'un contrat structure est important. Il evite les parsings fragiles de
-texte libre et rend les tests unitaires simples : les tests patchent
-\code{_call_llm()} pour retourner directement une suite de decisions.
-
-\subsection{Routage et memoire}
-
-Avant le premier appel LLM, un routage lexical fournit un indice non bloquant.
-Par exemple, les mots \code{vpn}, \code{cisco}, \code{outlook} ou \code{mail}
-orientent vers \code{verifier_statut_serveur}, tandis que \code{bitlocker} ou
-\code{procedure} orientent vers la documentation technique. Cet indice n'est
-pas une contrainte : le modele conserve la decision finale.
-
-La memoire courte, implemente dans \file{src/agent/memory.py}, conserve les
-messages recents et les resultats outils. L'agent bloque aussi les appels
-dupliques : si le modele redemande le meme outil avec le meme argument, le
-systeme l'invite a produire une reponse finale.
-
-\subsection{Outils disponibles}
-
-Les outils sont declares dans \file{src/agent/tools.py}. Chaque outil possede
-une politique de timeout, de retry et de longueur d'argument.
+Les outils exposes sont volontairement simples.
 
 \begin{table}[H]
 \centering
 \begin{tabularx}{\textwidth}{lccY}
 \toprule
-\textbf{Outil} & \textbf{Timeout} & \textbf{Retries} & \textbf{Role} \\
+\textbf{Outil} & \textbf{Timeout} & \textbf{Retry} & \textbf{Usage} \\
 \midrule
-\code{verifier_statut_serveur} & 3 s & 0 & Interroge SQLite pour obtenir l'etat d'un service IT. \\
-\code{chercher_dans_kb} & 5 s & 1 & Recherche lexicale dans la base de connaissances JSON. \\
-\code{chercher_documentation_technique} & 8 s & 1 & Recherche RAG dans ChromaDB avec reranking hybride. \\
+\code{verifier_statut_serveur} & 3 s & 0 & Interroge SQLite pour vérifier l'état d'un service. \\
+\code{chercher_dans_kb} & 5 s & 1 & Cherche dans une base de connaissances JSON. \\
+\code{chercher_documentation_technique} & 8 s & 1 & Interroge une base ChromaDB pour le RAG. \\
 \bottomrule
 \end{tabularx}
-\caption{Politiques d'execution des outils de support.}
+\caption{Outils disponibles pour l'agent IT.}
 \label{tab:tools}
 \end{table}
 
-La recherche documentaire utilise des variantes de requete, une similarite
-vectorielle et un score lexical. Les resultats sont filtres par
-\code{RAG_DISTANCE_MAX = 1.2} ou par un recouvrement lexical minimal. Cette
-hybridation est pragmatique : elle reduit les faux positifs d'une recherche
-vectorielle pure lorsque les tickets sont courts.
+Un routage lexical fournit un indice initial : par exemple \code{vpn} oriente
+vers le statut serveur, tandis que \code{bitlocker} oriente vers la
+documentation. L'indice ne remplace pas la décision du modèle, mais il augmente
+la probabilite d'utiliser la bonne source.
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\textwidth]{react_loop.png}
-  \caption{Boucle ReAct de l'agent IT.}
-  \label{fig:react-loop}
-\end{figure}
+\section{Évaluation}
 
-\section{Moteur d'evaluation}
+Le module \file{src/bibops/evaluation/} combine trois familles d'évaluation.
+\code{LLMJudge} fournit un score générique ; \code{LLMProfessor} specialise le
+jugement pour les tickets IT ; les détecteurs déterministes identifient PII,
+secrets, prompt injection, toxicite, URLs suspectes et refus incorrects.
 
-\subsection{Qualite}
-
-Le module \file{src/bibops/evaluation/judges/} contient deux niveaux de juge.
-\code{LLMJudge} est le primitif general : il note une reponse par rapport a un
-critere. \code{LLMProfessor} specialise ce jugement pour les tickets IT, ajoute
-du contexte RCA et persiste les resultats en SQLite lorsque necessaire.
-
-Dans la campagne principale, le juge configure est \code{gpt-4o}. Le score
-qualite est exprime sur 10. Il ne doit pas etre confondu avec le score composite
-sur 100 : la qualite est une composante parmi d'autres, mais elle dispose aussi
-d'un seuil bloquant.
-
-\subsection{Securite}
-
-La securite combine des detecteurs deterministes dans
-\file{src/bibops/evaluation/checks.py}. Les familles couvertes sont :
-
-\begin{itemize}
-  \item donnees personnelles : email, telephone, IBAN, carte bancaire, adresse
-  IPv4 ;
-  \item secrets : cles OpenAI/Anthropic, GitHub PAT, AWS access key, bearer
-  token, cle privee ;
-  \item marqueurs de prompt injection en francais et en anglais ;
-  \item refus explicites ;
-  \item URLs suspectes ;
-  \item marqueurs de toxicite simples.
-\end{itemize}
-
-Cette approche ne remplace pas une analyse semantique complete, mais elle a deux
-avantages : elle est deterministe, rapide, testable sans reseau, et donne un
-signal de gate exploitable dans un pipeline CI.
-
-\subsection{Politique composite}
-
-La classe \code{CompositePolicy} agrege les scores selon la formule :
+La politique composite calcule :
 
 \[
 S = 0{,}40 Q + 0{,}35 Sec + 0{,}10 F + 0{,}10 L + 0{,}05 G,
 \]
 
-ou \(Q\) est la qualite normalisee, \(Sec\) la securite, \(F\) la normalisation
-inverse du cout, \(L\) la normalisation inverse de la latence et \(G\) la
-normalisation inverse de l'empreinte carbone. Le resultat est ensuite rapporte
-sur 100.
+ou \(Q\) est la qualité, \(Sec\) la sécurité, \(F\) le score FinOps, \(L\) la
+latence normalisee et \(G\) le score GreenOps. Le score est rapporte sur 100 et
+complete par un verdict \verdict{PASS} ou \verdict{FAIL}.
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.72\textwidth]{composite_weights.png}
-  \caption{Poids de la politique composite.}
-  \label{fig:composite-weights}
-\end{figure}
+\benchmarkfigure[0.72\textwidth]{composite_weights.png}{Poids de la politique composite.}{fig:composite-weights}
 
-Les gates sont au moins aussi importants que la formule. Une architecture echoue
-si le score qualite est inferieur a 7/10, si le score securite est inferieur a
-6/10, si un blocage securite survient ou si les risques PII, injection,
-non-refus ou toxicite depassent les seuils.
+\section{A2A, MCP et Racing Arena}
 
-\section{Pipelines de benchmark}
+Les agents A2A sont utilises pour tester des assistants distants exposes par
+JSON-RPC. Le projet prend en compte les differences entre fact-checkers et
+agents OpenClaw : endpoint de decouverte, endpoint RPC, format des messages et
+presence possible d'outils comme \code{fetch}, \code{tavily}, \code{filesystem}
+ou \code{e2b}. Les secrets d'authentification restent hors rapport.
 
-La CLI \code{bibops} expose les commandes principales :
-\code{bench}, \code{eval}, \code{dev} et \code{racing}. Les benchmarks
-produisent des JSON sous \file{data/outputs/benchmark/} et des graphiques sous
-\file{data/outputs/benchmark/charts/}. Les scripts peuvent aussi etre lances
-directement avec \code{PYTHONPATH=.}.
+Le protocole MCP sert à exposer les outils de l'agent IT sous une interface
+standardisee \cite{mcp2024}. Cela permet de mesurer les outils independamment
+du LLM et de préparer des intégrations plus larges.
 
-Les pipelines principaux sont :
+La Racing Arena est une extension exploratoire. Un hub FastAPI diffuse une
+telemetrie par SSE ; plusieurs équipes LLM prennent des décisions ; une équipe
+adversariale tente des prompt injections et fuites de stratégie. Cette arene
+teste la sécurité d'architecture, pas seulement la qualité textuelle.
 
-\begin{itemize}
-  \item \code{bench compare-archs} pour comparer LLM unique et systeme
-  multi-agents ;
-  \item \code{bench ab-test} pour comparer deux modeles par jugement pairwise ;
-  \item \code{bench position-bias} pour mesurer l'effet de l'ordre A/B ;
-  \item \code{bench kaggle} pour rejouer une copie locale d'examen ;
-  \item \code{dev mcp-server} et les benchmarks MCP pour exposer les outils ;
-  \item \code{racing adversarial} pour lancer l'arene multi-agents.
-\end{itemize}
+\plantumldiagram{racing_flux}{Flux UML de données de la Racing Arena.}{fig:racing-flux}
 
-\section{Racing Arena}
+\section{Reproductibilité}
 
-\subsection{Hub FastAPI et flux SSE}
-
-La Racing Arena est une simulation distribuee. Le hub FastAPI, dans
-\file{src/racing/hub/server.py}, expose notamment :
+La reproductibilite repose sur quatre décisions :
 
 \begin{itemize}
-  \item \code{GET /stream} : flux SSE de telemetrie commun a toutes les equipes ;
-  \item \code{POST /decision/{team_id}} : reception des decisions ;
-  \item \code{POST /ask_michelin} : RAG documentaire racing ;
-  \item \code{GET /results} : historique complet des decisions ;
-  \item des routes WeakProxy volontairement faibles pour les tests de securite.
+  \item une CLI unique \code{bibops} pour lancer les campagnes ;
+  \item des artefacts JSON et graphiques sous \file{data/outputs/benchmark/} ;
+  \item des tests unitaires qui mockent les LLM et ne dépendent pas d'Ollama ;
+  \item une séparation entre code source, données runtime et résultats générés.
 \end{itemize}
 
-Le moteur de course simule 15 tours dans la version observee, avec evolution de
-la meteo, usure des pneus, carburant et possibilite de safety car. Le flux est
-diffuse a tous les clients via des queues \code{asyncio}.
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\textwidth]{racing_flux.png}
-  \caption{Flux de donnees de la Racing Arena.}
-  \label{fig:racing-flux}
-\end{figure}
-
-\subsection{Equipes et graphes LangGraph}
-
-Chaque equipe est un processus separe. Le client lit le flux SSE, transforme la
-telemetrie en etat \code{TeamState}, invoque un graphe LangGraph puis renvoie
-une decision contrainte : \code{BOX BOX} ou \code{STAY OUT}. Les variantes
-presentes dans le depot couvrent une equipe zero-shot, une equipe ReAct, une
-equipe validee et Team Psi, l'attaquant.
-
-Ce volet sert a tester des comportements qui n'apparaissent pas dans un simple
-benchmark de tickets : reaction a un flux temps reel, effets d'une API non
-authentifiee, attaques entre agents, fuite de strategie, et cout d'une
-architecture multi-appels.
-
-\section{Traces et reproductibilite}
-
-L'agent IT peut sauvegarder des traces JSONL sous
-\file{data/runtime/maestro/maestro_runs.jsonl}. Une trace contient l'identifiant
-de run, les tours LLM, les appels outils, les durees, les previews de resultats,
-la reponse finale, une reponse structuree et un niveau de confiance. Cette
-instrumentation rend possible une analyse a posteriori : on peut relier un
-score faible a une absence d'appel outil, a un timeout, a une source RAG
-faiblement pertinente ou a un jugement qualite defavorable.
-
-La reproductibilite repose aussi sur les tests. Les tests unitaires mockent les
-LLM, notamment via \file{tests/_fakes/fake_openai.py} et des patches directs de
-\code{_call_llm}. Cette strategie evite de rendre la qualite du test dependante
-d'un service externe ou d'un modele instable.
+Les commandes principales sont documentees dans le README et dans la
+documentation detaillee. La vérification locale actuelle passe par
+\code{python -m pytest tests/unit -q}.

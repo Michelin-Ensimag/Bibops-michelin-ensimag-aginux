@@ -1,5 +1,5 @@
 """
-src/bibops/llm_professor/discriminator.py
+src/bibops/research/discriminator.py
 
 DiscriminatorLLM — évaluateur multi-métriques RAGAS-inspired pour la boucle GAN.
 

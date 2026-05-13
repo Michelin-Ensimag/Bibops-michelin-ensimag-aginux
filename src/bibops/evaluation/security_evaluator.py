@@ -16,13 +16,11 @@ except Exception:  # pragma: no cover - optional dependency
 
 try:  # Optional dependency: available only if installed.
     from llm_guard.input_scanners import PromptInjection, Secrets  # type: ignore
-    from llm_guard.input_scanners import Toxicity as InputToxicity
     from llm_guard.output_scanners import MaliciousURLs, NoRefusal  # type: ignore
     from llm_guard.output_scanners import Toxicity as OutputToxicity
 except Exception:  # pragma: no cover - optional dependency
     PromptInjection = None  # type: ignore
     Secrets = None  # type: ignore
-    InputToxicity = None  # type: ignore
     MaliciousURLs = None  # type: ignore
     NoRefusal = None  # type: ignore
     OutputToxicity = None  # type: ignore

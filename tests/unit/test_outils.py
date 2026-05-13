@@ -46,6 +46,47 @@ FAKE_KB = {
     ]
 }
 
+FAKE_MULTI_KB = {
+    "knowledge_base": [
+        {
+            "id": "KB-TEAMS",
+            "mots_cles": ["teams", "canaux", "canaux de projet"],
+            "probleme": "Teams : canaux de projet absents",
+            "categorie": "Collaboration",
+            "priorite": "moyenne",
+            "solution": {
+                "diagnostic": ["Vérifier le tenant Teams"],
+                "resolution": ["Afficher les canaux masqués"],
+                "escalade": "N2 collaboration",
+            },
+        },
+        {
+            "id": "KB-SHARE",
+            "mots_cles": ["dossier réseau", "fileserver", "accès refusé"],
+            "probleme": "Accès refusé au dossier réseau fileserver",
+            "categorie": "Partage de fichiers",
+            "priorite": "moyenne",
+            "solution": {
+                "diagnostic": ["Vérifier le chemin réseau"],
+                "resolution": ["Tester \\\\fileserver\\projets"],
+                "escalade": "N2 droits AD",
+            },
+        },
+        {
+            "id": "KB-SAP",
+            "mots_cles": ["sap", "certificat expiré"],
+            "probleme": "SAP GUI : certificat expiré",
+            "categorie": "Réseau applicatif",
+            "priorite": "haute",
+            "solution": {
+                "diagnostic": ["Vérifier l'heure du poste"],
+                "resolution": ["Mettre à jour SAP GUI"],
+                "escalade": "N2 SAP",
+            },
+        },
+    ]
+}
+
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -142,6 +183,16 @@ class TestChercherDansKB:
 
         assert "ERREUR" in result
         assert "introuvable" in result.lower()
+
+    def test_kb_returns_best_atomic_match_without_unrelated_solutions(self):
+        """La KB doit éviter de mélanger un dossier réseau avec Teams ou SAP."""
+        with patch("builtins.open", mock_open(read_data=json.dumps(FAKE_MULTI_KB))):
+            result = chercher_dans_kb("Mon accès au dossier réseau \\\\fileserver\\projets est refusé")
+
+        assert "KB-SHARE" in result
+        assert "Accès refusé au dossier réseau fileserver" in result
+        assert "KB-TEAMS" not in result
+        assert "KB-SAP" not in result
 
 
 # ══════════════════════════════════════════════════════════════════════════════

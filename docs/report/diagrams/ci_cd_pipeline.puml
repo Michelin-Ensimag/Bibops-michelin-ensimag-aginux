@@ -1,0 +1,31 @@
+@startuml
+skinparam shadowing false
+skinparam activity {
+  BackgroundColor LightBlue
+  BorderColor SteelBlue
+}
+
+start
+:Creer branche de travail;
+:Implementer fonctionnalite\nou benchmark;
+:Lancer tests locaux\nruff + pytest;
+if (Tests locaux OK ?) then (oui)
+  :Push Git;
+  :Ouvrir Pull Request;
+  :GitHub Actions CI;
+  :Installer requirements\nruntime + dev;
+  :Ruff check src/tests;
+  :Tests unitaires mockes;
+  :Coverage gates;
+  if (CI OK ?) then (oui)
+    :Review et merge;
+    :Synchroniser branche principale;
+    :Regenerer artefacts\nJSON, charts, rapport;
+  else (non)
+    :Corriger regression;
+  endif
+else (non)
+  :Corriger localement;
+endif
+stop
+@enduml

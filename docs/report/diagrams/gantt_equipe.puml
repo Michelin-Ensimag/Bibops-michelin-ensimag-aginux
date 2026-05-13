@@ -1,0 +1,66 @@
+@startgantt
+Project starts 2026-02-06
+
+<style>
+ganttDiagram {
+  task {
+    BackGroundColor LightBlue
+    LineColor Blue
+    unstarted {
+      BackGroundColor LightGrey
+      LineColor Grey
+    }
+  }
+}
+</style>
+
+-- SEMAINE 1-2 : Fondations et POC --
+[Analyse Sujet, Planning & Setup Git] lasts 14 days
+[Demo HTTP/Ollama & Framework Rust] lasts 7 days
+[Demo HTTP/Ollama & Framework Rust] starts at 2026-02-13
+
+-- SEMAINE 3-4 : Memoire, KB et Moteur MCP --
+[Gestion Memoire Courte & Vectorisation ChromaDB] on {Akram} lasts 14 days
+[Gestion Memoire Courte & Vectorisation ChromaDB] starts at [Analyse Sujet, Planning & Setup Git]'s end
+
+[UI d'Évaluation & Gestion de la Knowledge Base] on {Widad} lasts 14 days
+[UI d'Évaluation & Gestion de la Knowledge Base] starts at [Analyse Sujet, Planning & Setup Git]'s end
+
+[Recherche KB & Implémentation Serveur MCP] on {Ayoub} lasts 14 days
+[Recherche KB & Implémentation Serveur MCP] starts at [Analyse Sujet, Planning & Setup Git]'s end
+
+-- SEMAINE 5-7 : Évaluation Avancée et Agents --
+[Liaison Base Vectorielle Agent & LangChain] on {Akram} lasts 14 days
+[Liaison Base Vectorielle Agent & LangChain] starts at [Gestion Memoire Courte & Vectorisation ChromaDB]'s end
+
+[Moteur d'évaluation hybride & A/B Testing] on {Widad} lasts 21 days
+[Moteur d'évaluation hybride & A/B Testing] starts at [UI d'Évaluation & Gestion de la Knowledge Base]'s end
+
+[Client MCP & Intégration Copilot API] on {Ayoub} lasts 14 days
+[Client MCP & Intégration Copilot API] starts at [Recherche KB & Implémentation Serveur MCP]'s end
+
+-- SEMAINE 8-9 : A2A, Sécurité et Fiabilité --
+[Tests Kaggle, Modèle GAN & Sécurité (LLMInspector)] on {Akram} lasts 14 days
+[Tests Kaggle, Modèle GAN & Sécurité (LLMInspector)] starts at [Liaison Base Vectorielle Agent & LangChain]'s end
+
+[Fact-checking automatisé & Biais de position] on {Widad} lasts 14 days
+[Fact-checking automatisé & Biais de position] starts at [Moteur d'évaluation hybride & A/B Testing]'s end
+
+[Restructuration A2A, Protocole & Correction MCP] on {Ayoub} lasts 14 days
+[Restructuration A2A, Protocole & Correction MCP] starts at [Client MCP & Intégration Copilot API]'s end
+
+-- SEMAINE 10 : Finalisation et Rendu --
+[Refactoring Git & Déploiement GitHub Pages] on {Akram} lasts 7 days
+[Refactoring Git & Déploiement GitHub Pages] starts at [Tests Kaggle, Modèle GAN & Sécurité (LLMInspector)]'s end
+
+[Leaderboard & Consolidation Scores] on {Widad} lasts 7 days
+[Leaderboard & Consolidation Scores] starts at [Fact-checking automatisé & Biais de position]'s end
+
+[Documentation A2A & Preparation Soutenance] on {Ayoub} lasts 7 days
+[Documentation A2A & Preparation Soutenance] starts at [Restructuration A2A, Protocole & Correction MCP]'s end
+
+[Rendu Final & Soutenance] lasts 3 days
+[Rendu Final & Soutenance] starts at [Refactoring Git & Déploiement GitHub Pages]'s end
+[Rendu Final & Soutenance] starts at [Leaderboard & Consolidation Scores]'s end
+[Rendu Final & Soutenance] starts at [Documentation A2A & Preparation Soutenance]'s end
+@endgantt

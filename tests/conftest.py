@@ -4,8 +4,9 @@ Eval Bank fixtures.
 These fixtures are only instantiated when a test requests them, so existing
 unrelated tests (test_maestro.py, test_outils.py, ...) are unaffected.
 
-Environment variables (set by `python -m src.eval_bank` CLI):
+Environment variables (set by `bibops eval suite`):
     EVAL_BANK_ADAPTER         — adapter name (default: it_support)
+    EVAL_BANK_AGENT_PROVIDER  — optional provider override for it_support
     EVAL_BANK_AGENT_MODEL     — optional model override
     EVAL_BANK_THRESHOLD_PROFILE — threshold profile (default | strict | permissive)
 """
@@ -38,11 +39,18 @@ def agent_model() -> str | None:
 
 
 @pytest.fixture(scope="session")
-def agent_adapter(adapter_name, agent_model):
+def agent_provider() -> str | None:
+    return os.environ.get("EVAL_BANK_AGENT_PROVIDER") or None
+
+
+@pytest.fixture(scope="session")
+def agent_adapter(adapter_name, agent_provider, agent_model):
     """Instantiated agent adapter — the agent under test."""
     from src.bibops.adapters.registry import load_adapter
 
     kwargs = {}
+    if agent_provider and adapter_name == "it_support":
+        kwargs["provider"] = agent_provider
     if agent_model:
         kwargs["model"] = agent_model
     return load_adapter(adapter_name, **kwargs)
@@ -69,7 +77,9 @@ def copilot_client(copilot_available):
 @pytest.fixture(scope="session")
 def llm_judge(copilot_client):
     from src.bibops.evaluation.judges.llm_judge import LLMJudge
-    return LLMJudge(client=copilot_client, model="gpt-4o")
+    from src.common.config import DEFAULT_JUDGE_MODEL
+
+    return LLMJudge(client=copilot_client, model=DEFAULT_JUDGE_MODEL)
 
 
 # ---------------------------------------------------------------------------

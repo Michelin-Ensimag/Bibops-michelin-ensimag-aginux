@@ -2,6 +2,7 @@ import json
 import os
 import re
 import sqlite3
+import unicodedata
 from dataclasses import asdict, dataclass
 from typing import Any
 
@@ -27,6 +28,20 @@ TOOL_POLICIES: dict[str, ToolPolicy] = {
 RAG_DISTANCE_MAX = 1.2
 RAG_N_RESULTS_PER_QUERY = 3
 RAG_MAX_CITATIONS = 3
+KB_MAX_RESULTS = 2
+KB_MIN_SCORE = 4
+
+KB_STOPWORDS = {
+    "a", "ai", "au", "aux", "avec", "ce", "ces", "cet", "cette", "comment", "d", "de", "des", "du",
+    "elle", "en", "est", "et", "faire", "il", "j", "je", "l", "la", "le", "les", "ma", "me", "mes",
+    "mon", "ne", "nous", "ou", "pas", "peux", "plus", "pour", "qu", "que", "qui", "s", "se", "suis",
+    "sur", "un", "une", "vous",
+}
+
+KB_GENERIC_PRODUCT_TERMS = {
+    "outlook", "teams", "windows", "imprimante", "printer", "scanner", "vpn", "wifi", "sap", "proxy",
+    "usb", "bluetooth", "micro", "cisco",
+}
 
 
 try:
@@ -63,6 +78,71 @@ def normaliser_argument_outil(tool_name: str, argument: str) -> str:
 
 def _tokenize_query(text: str) -> list[str]:
     return [tok for tok in re.findall(r"[a-zA-Z0-9]+", text.lower()) if len(tok) >= 3]
+
+
+def _normalize_search_text(text: str) -> str:
+    decomposed = unicodedata.normalize("NFKD", text or "")
+    without_accents = "".join(ch for ch in decomposed if not unicodedata.combining(ch))
+    return without_accents.lower()
+
+
+def _kb_tokens(text: str) -> set[str]:
+    normalized = _normalize_search_text(text)
+    return {
+        tok
+        for tok in re.findall(r"[a-z0-9]+", normalized)
+        if len(tok) >= 3 and tok not in KB_STOPWORDS
+    }
+
+
+def _keyword_match_score(keyword: str, normalized_query: str, query_tokens: set[str]) -> int:
+    keyword_tokens = _kb_tokens(keyword)
+    if not keyword_tokens:
+        return 0
+
+    normalized_keyword = _normalize_search_text(keyword).strip()
+    single_generic = len(keyword_tokens) == 1 and next(iter(keyword_tokens)) in KB_GENERIC_PRODUCT_TERMS
+
+    if normalized_keyword and normalized_keyword in normalized_query:
+        return 2 if single_generic else 10 + len(keyword_tokens)
+
+    if keyword_tokens <= query_tokens:
+        return 2 if single_generic else 7 + len(keyword_tokens)
+
+    overlap = keyword_tokens & query_tokens
+    if not overlap:
+        return 0
+    return len(overlap) if single_generic else 3 * len(overlap)
+
+
+def _score_kb_entry(requete: str, entry: dict[str, Any]) -> int:
+    normalized_query = _normalize_search_text(requete)
+    query_tokens = _kb_tokens(requete)
+    if not query_tokens:
+        return 0
+
+    keyword_score = sum(
+        _keyword_match_score(str(keyword), normalized_query, query_tokens)
+        for keyword in entry.get("mots_cles", [])
+    )
+    problem_overlap = len(query_tokens & _kb_tokens(str(entry.get("probleme", ""))))
+    category_overlap = len(query_tokens & _kb_tokens(str(entry.get("categorie", ""))))
+
+    if keyword_score == 0 and problem_overlap < 2:
+        return 0
+
+    return keyword_score + (2 * problem_overlap) + category_overlap
+
+
+def _priority_rank(priority: str) -> int:
+    normalized = _normalize_search_text(priority)
+    if "haute" in normalized:
+        return 3
+    if "moyenne" in normalized:
+        return 2
+    if "basse" in normalized:
+        return 1
+    return 0
 
 
 def _generate_query_variants(query: str) -> list[str]:
@@ -143,7 +223,21 @@ def verifier_statut_serveur(nom_serveur: str) -> str:
             cursor.execute("SELECT nom, statut FROM serveurs_it WHERE nom = ?", (nom_serveur.upper(),))
             row = cursor.fetchone()
             if row:
-                return f"Statut : Le service {row[0]} est {row[1]}."
+                nom, statut = row
+                statut_upper = statut.upper()
+                if "HORS LIGNE" in statut_upper:
+                    return (
+                        f"Statut : Le service {nom} est {statut}.\n"
+                        "Diagnostic : incident côté service probable, les manipulations locales ne suffisent probablement pas.\n"
+                        "Actions : informer l'utilisateur de l'incident, proposer de réessayer plus tard ou d'utiliser le service de secours si disponible, "
+                        "puis escalader à l'équipe infrastructure avec l'ID d'incident."
+                    )
+                return (
+                    f"Statut : Le service {nom} est {statut}.\n"
+                    "Diagnostic : aucune panne globale détectée sur ce service.\n"
+                    "Actions : poursuivre le diagnostic local (poste, réseau, cache, droits, client applicatif), collecter le message d'erreur exact, "
+                    "puis consulter la KB ou escalader si le problème persiste."
+                )
 
             mots = nom_serveur.upper().replace("_", " ").split()
             placeholders = " OR ".join("nom = ?" for _ in mots)
@@ -151,7 +245,10 @@ def verifier_statut_serveur(nom_serveur: str) -> str:
             rows = cursor.fetchall()
             if rows:
                 lignes = "\n".join(f"- {nom} : {statut}" for nom, statut in rows)
-                return f"Services correspondants :\n{lignes}"
+                return (
+                    f"Services correspondants :\n{lignes}\n"
+                    "Actions : sélectionner le service le plus proche du ticket, puis compléter avec un diagnostic KB si le service est en ligne."
+                )
             return f"Service inconnu : Aucun serveur nommé {nom_serveur}."
     except Exception as e:
         return f"Erreur SQL : {e}"
@@ -169,24 +266,30 @@ def chercher_dans_kb(requete: str) -> str:
     except json.JSONDecodeError:
         return "ERREUR : Knowledge Base corrompue."
 
-    requete_lower = requete.lower()
     scored = []
     for entry in kb:
-        score = sum(2 for mot in entry["mots_cles"] if mot.lower() in requete_lower)
-        if any(mot in entry["probleme"].lower() for mot in requete_lower.split()):
-            score += 1
-        if score > 0:
+        score = _score_kb_entry(requete, entry)
+        if score >= KB_MIN_SCORE:
             scored.append((score, entry))
 
-    scored.sort(key=lambda x: x[0], reverse=True)
-    top = scored[:3]
+    scored.sort(key=lambda x: (x[0], _priority_rank(str(x[1].get("priorite", "")))), reverse=True)
 
-    if not top:
+    if not scored:
         return f"Aucune solution trouvée pour '{requete}'. Recommandation : créer un ticket support."
 
+    best_score = scored[0][0]
+    top = [(score, entry) for score, entry in scored if score == best_score][:KB_MAX_RESULTS]
+
     reponse = f"{len(top)} solution(s) trouvée(s) :\n\n"
-    for idx, (_, entry) in enumerate(top, 1):
-        reponse += f"--- SOLUTION {idx} ---\nProblème : {entry['probleme']}\nCatégorie : {entry['categorie']}\nPriorité : {entry['priorite']}\n\n"
+    for idx, (score, entry) in enumerate(top, 1):
+        reponse += (
+            f"--- SOLUTION {idx} ---\n"
+            f"ID : {entry.get('id', f'KB-{idx}')}\n"
+            f"Score KB : {score}\n"
+            f"Problème : {entry['probleme']}\n"
+            f"Catégorie : {entry['categorie']}\n"
+            f"Priorité : {entry['priorite']}\n\n"
+        )
         if entry["solution"].get("diagnostic"):
             reponse += "DIAGNOSTIC :\n" + "".join(f"  - {s}\n" for s in entry["solution"]["diagnostic"]) + "\n"
         reponse += "RÉSOLUTION :\n" + "".join(f"  {i}. {s}\n" for i, s in enumerate(entry["solution"]["resolution"], 1)) + "\n"

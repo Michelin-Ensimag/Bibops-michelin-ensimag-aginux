@@ -43,10 +43,11 @@ _ARGS = _parse_args()
 
 # Set model before importing graph (nodes.py reads from team_client.nodes.MODEL via re-export)
 import src.racing.team_client.nodes as _tc_nodes
+
 _tc_nodes.MODEL = _ARGS.model
 
-from .graph import compiled_graph  # noqa: E402
-from .state_tools import HUB_BASE_URL, TeamState  # noqa: E402
+from .graph import compiled_graph
+from .state_tools import TeamState
 
 HUB_BASE_URL = "http://localhost:8000"
 _security    = SecurityLLMInspectorAdapter()

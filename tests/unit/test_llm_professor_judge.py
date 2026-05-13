@@ -2,11 +2,7 @@
 from __future__ import annotations
 
 import sqlite3
-import tempfile
-from pathlib import Path
 from unittest.mock import patch
-
-import pytest
 
 from src.bibops.evaluation.judges.llm_judge import JudgeVerdict
 from src.bibops.evaluation.judges.llm_professor import LLMProfessor
@@ -14,8 +10,9 @@ from src.bibops.evaluation.judges.llm_professor import LLMProfessor
 
 def _make_professor(db_path: str, verdict: JudgeVerdict) -> LLMProfessor:
     """Build a LLMProfessor whose internal LLMJudge is replaced with a mock."""
-    from tests._fakes.fake_openai import FakeOpenAI, make_response
     import json
+
+    from tests._fakes.fake_openai import FakeOpenAI, make_response
 
     content = json.dumps({"score": verdict.score, "justification": verdict.justification})
     fake_client = FakeOpenAI(make_response(content))

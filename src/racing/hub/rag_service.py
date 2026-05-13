@@ -21,7 +21,7 @@ import chromadb
 from langchain_ollama import OllamaEmbeddings
 
 # ---------------------------------------------------------------------------
-# Configuration (doit correspondre à ingest_racing.py)
+# Configuration (doit correspondre à ingest.py)
 # ---------------------------------------------------------------------------
 
 _BASE = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
@@ -76,11 +76,11 @@ class RacingRAG:
         if not docs:
             return (
                 f'[RAG vide] Aucun résultat dans la collection "{COLLECTION_NAME}".\n'
-                "Lancez d'abord : python -m src.racing.hub.ingest_racing"
+                "Lancez d'abord : python -m src.racing.hub.ingest"
             )
 
         sections = []
-        for i, (text, meta) in enumerate(zip(docs, metadatas), 1):
+        for i, (text, meta) in enumerate(zip(docs, metadatas, strict=False), 1):
             source = meta.get("source", "inconnu") if meta else "inconnu"
             page   = meta.get("page", "") if meta else ""
             ref    = os.path.basename(str(source)) + (f" p.{page}" if page != "" else "")

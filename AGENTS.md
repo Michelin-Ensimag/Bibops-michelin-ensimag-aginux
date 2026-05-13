@@ -15,14 +15,14 @@ It also includes a **Racing Arena**: a distributed multi-agent system where LLM-
 ### Setup (one-time)
 ```bash
 pip install -r requirements.txt
-python scripts/dev/init_sqlite.py          # Create SQLite schema
-python scripts/dev/build_it_vector_db.py   # Ingest KB into ChromaDB (requires Ollama)
+bibops dev init-db                         # Create SQLite schema
+bibops dev build-vectordb                  # Ingest KB into ChromaDB (requires Ollama)
 ```
 
 ### Tests
 ```bash
-PYTHONPATH=. pytest tests/                   # Full test suite (no Ollama needed — LLM is mocked)
-PYTHONPATH=. pytest tests/unit/test_maestro.py  # Single file
+bibops test all                              # Full test suite (no Ollama needed — LLM is mocked)
+bibops test unit tests/unit/test_maestro.py  # Single file
 ```
 
 ### CLI (`bibops` — installed via `pip install -e .`)
@@ -30,11 +30,17 @@ PYTHONPATH=. pytest tests/unit/test_maestro.py  # Single file
 bibops --help                                 # Top-level command tree
 
 # Benchmarks (requires Ollama + Copilot proxy: npx copilot-api@latest start)
-bibops bench compare-archs --max-tickets 10 --zero-shot-model phi3:latest --judge-model gpt-4o
+bibops bench compare-archs --max-tickets 10 --zero-shot-provider ollama --zero-shot-model phi3:latest --agent-provider ollama --agent-model phi3:latest --agent-max-iterations 3 --judge-model gpt-4o
+bibops bench core mistral:latest
 bibops bench ab-test --mode llm
 bibops bench position-bias --max-tickets 10
 bibops bench validate --input data/outputs/benchmark/comparison_results.json
-bibops bench kaggle --judge-model gpt-4o
+bibops bench kaggle --agent-provider ollama --agent-model mistral:latest --judge-model gpt-4o
+
+# Model/provider config
+bibops config models
+bibops config show
+bibops config check --judge-model gpt-5.2 --agent-provider copilot --agent-model gpt-5.2
 
 # Evaluation
 bibops eval pending --db data/databases/bibops.db
@@ -44,18 +50,31 @@ bibops eval process --input data/inputs/benchmark/tickets_evalues_fake.json
 bibops dev init-db
 bibops dev build-vectordb
 bibops dev mcp-server
+bibops dev coverage-gates
+
+# Copilot tools
+bibops copilot smoke-test
+bibops copilot agent-mcp
+
+# Tests
+bibops test unit
+bibops test all
+bibops test coverage
+
+# Report charts
+bibops report charts
 
 # Racing Arena
 bibops racing demo            # Standalone demo (no hub needed)
-bibops racing arena           # Hub + 3 legacy teams in parallel processes
+bibops racing arena           # Hub + teams in parallel processes
 bibops racing adversarial     # 4 teams: A=zero-shot, B=ReAct, C=validated, Psi=attacker
 ```
 
-### Direct script fallback (PYTHONPATH=. required)
+### Direct module fallback (PYTHONPATH=. required)
 ```bash
 # MCP benchmark (requires MCP server in another terminal)
-PYTHONPATH=. python scripts/dev/run_mcp_server.py   # Terminal 1
-PYTHONPATH=. python -m src.benchmark.mcp_tools       # Terminal 2
+PYTHONPATH=. python -m src.agent.mcp_server         # Terminal 1
+PYTHONPATH=. python -m src.bibops.benchmark.mcp_tools  # Terminal 2
 ```
 
 ### Racing Arena monitoring
@@ -70,12 +89,18 @@ curl http://localhost:8000/results
 | Variable | Effect |
 |----------|--------|
 | `BIBOPS_NON_INTERACTIVE=1` | Skip interactive feedback prompts |
+| `BIBOPS_JUDGE_MODEL` | Default Copilot/OpenAI-compatible judge model (default `gpt-4o`) |
+| `BIBOPS_AGENT_PROVIDER` | Default agent provider: `ollama` or `copilot` |
+| `BIBOPS_AGENT_MODEL` | Default multi-agent model (default `phi3:latest`) |
+| `BIBOPS_ZERO_SHOT_PROVIDER` | Default zero-shot provider: `ollama` or `copilot` |
+| `BIBOPS_ZERO_SHOT_MODEL` | Default zero-shot model (default `phi3:latest`) |
+| `EVAL_BANK_AGENT_PROVIDER` | Optional provider override for integration evaluation suites |
 | `BIBOPS_MAX_TICKETS=5` | Limit tickets processed in benchmarks |
 | `BIBOPS_DEFAULT_FEEDBACK=2` | Default feedback choice in non-interactive mode |
 | `BIBOPS_POSITION_MAX_TICKETS=2` | Default ticket count for position bias test |
 | `COPILOT_API_URL` | Override Copilot proxy URL (default: `http://localhost:4141/v1`) |
 | `A2A_USERNAME` / `A2A_PASSWORD` | Basic Auth for A2A agent evaluation |
-| `PYTHONPATH=.` | Required when running scripts directly from repo root |
+| `PYTHONPATH=.` | Required when running Python modules directly from repo root |
 
 ## Architecture
 
@@ -83,7 +108,10 @@ curl http://localhost:8000/results
 ```
 src/
   bibops/           — Production namespace package
-    cli/            — Typer CLI (main.py, commands/{bench,eval,dev,racing}.py)
+    cli/            — Typer CLI (main.py, commands/{bench,eval,dev,racing,copilot,test,config,report}.py)
+    benchmark/      — CLI-backed benchmark runners formerly hosted in scripts/
+    copilot/        — Copilot proxy smoke tests
+    dev/            — Developer utilities such as coverage gates
     evaluation/     — Evaluation engine
       judges/       — llm_judge.py (LLMJudge, JudgeVerdict) + llm_professor.py (LLMProfessor) + rule_engine.py
       metrics/      — composite.py, greenops.py, consistency.py
@@ -92,14 +120,13 @@ src/
       checks.py     — PII, injection, secrets, toxicity, URL, refusal detectors
     adapters/       — Agent adapters (registry, it_support, a2a_client, openai_compat)
     probes/         — Probe loader (load_probes, list_categories, Probe schema)
+    reporting/      — Report chart generator (`bibops report charts`)
     research/       — Experimental code (excluded from coverage gates)
   agent/            — IT support ReAct agent (maestro.py, tools.py, mcp_server.py, rag.py)
-  common/           — Shared constants (config.py), text helpers (text.py), LLM clients (llm_clients.py)
-  benchmark/        — Benchmark pipelines and A/B testing
+  common/           — Shared constants (config.py), provider-aware chat calls (chat_models.py), text helpers (text.py), LLM clients (llm_clients.py)
   racing/           — Distributed F1 racing arena
     hub/            — FastAPI server + race engine + RAG service
     team_client/    — LangGraph-based team agent (runs as separate process)
-scripts/            — Thin wrappers that call src/ modules
 data/
   inputs/benchmark/ — Input CSVs (tickets_scenario_1.csv, 40 tickets)
   databases/        — bibops.db (SQLite) + vectordb/ (ChromaDB)
@@ -114,7 +141,7 @@ tests/
 ### IT Support agent (`src/agent/`)
 
 `maestro.py::lancer_agent()` is the core ReAct loop. It:
-1. Calls `_call_llm()` which returns an `AgentDecision` Pydantic model (`tool`, `argument`, `final_answer`) via the Ollama OpenAI-compatible endpoint with JSON mode — no regex parsing
+1. Calls `_call_llm()` which returns an `AgentDecision` Pydantic model (`tool`, `argument`, `final_answer`) through the configured provider (`ollama` or `copilot`) with JSON mode — no regex parsing
 2. If `tool` is set, looks up the function in `outils_disponibles` and executes it under `ThreadPoolExecutor` with per-tool timeouts from `TOOL_POLICIES`
 3. Injects the result back into `MemoCourTerme` and loops (max 5 iterations by default)
 4. Returns `{"reponse_finale": str, "trace": MaestroRunTrace}` when `tool` is None
@@ -130,15 +157,16 @@ All tools share the frozen `ToolPolicy` dataclass and are exposed as MCP tools i
 
 ### Common utilities (`src/common/`)
 
-- **`config.py`** — Project-wide constants: `COPILOT_BASE_URL`, `DEFAULT_JUDGE_MODEL`, `DEFAULT_AGENT_MODEL`, `DEFAULT_ZERO_SHOT_MODEL`, `MODEL_REQUEST_TIMEOUT_S`, `OLLAMA_OPTIONS`, `INPUT_CSV`, `OUTPUT_DIR`
+- **`config.py`** — Project-wide constants: `COPILOT_BASE_URL`, supported providers/models, `DEFAULT_JUDGE_MODEL`, `DEFAULT_AGENT_PROVIDER`, `DEFAULT_AGENT_MODEL`, `DEFAULT_ZERO_SHOT_PROVIDER`, `DEFAULT_ZERO_SHOT_MODEL`, `MODEL_REQUEST_TIMEOUT_S`, `OLLAMA_OPTIONS`, `INPUT_CSV`, `OUTPUT_DIR`
+- **`chat_models.py`** — Provider-aware `call_chat_model(provider, model, messages, ...)` abstraction for Ollama and Copilot/OpenAI-compatible chat calls
 - **`text.py`** — Shared text/response helpers: `charger_copilot_api_key()`, `extraire_texte_reponse()`, `extraire_compteurs_tokens()`, and error-classification helpers
 - **`llm_clients.py`** — Singleton `get_copilot_client()` (OpenAI-compatible), `is_copilot_available()` (TCP probe)
 
-`src/benchmark/_llm_utils.py` still holds `appeler_modele()` — prefer importing shared utilities from `src.common.text` and `src.common.config` in new code.
+Benchmark runners live under `src/bibops/benchmark/`; prefer importing shared utilities from `src.common.text` and `src.common.config` in new code.
 
 ### LLM access pattern
 
-All LLM calls use **Ollama** for local models (`ollama.chat(model=..., messages=...)`) or **OpenAI-compatible API** via the Copilot proxy at `http://localhost:4141/v1` (for gpt-4o, gpt-4o-mini, gpt-4.1, claude-haiku-4.5). There is no direct Anthropic SDK usage — Claude models are accessed through the OpenAI-compatible endpoint.
+LLM calls use an explicit provider/model pair. Local chat models use **Ollama** (`provider=ollama`, e.g. `phi3:latest`, `mistral:latest`). Remote chat and judge models use the **OpenAI-compatible API** via the Copilot proxy at `http://localhost:4141/v1` (`provider=copilot`, e.g. `gpt-4o`, `gpt-5.2`, `claude-haiku-4.5`, Gemini/Grok proxy models). There is no direct Anthropic SDK usage — Claude models are accessed through the OpenAI-compatible endpoint.
 
 Only GPT models work for Racing Arena teams — Claude models return `400 model_not_supported` from the proxy backend.
 

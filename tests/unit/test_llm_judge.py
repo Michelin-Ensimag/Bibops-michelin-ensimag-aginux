@@ -74,6 +74,7 @@ class TestRequestShape:
         roles = [m["role"] for m in call["messages"]]
         assert roles == ["system", "user"]
         assert "REL" in call["messages"][1]["content"]
+        assert "Current evaluation date (UTC):" in call["messages"][1]["content"]
         assert "What time is it?" in call["messages"][1]["content"]
         assert "3pm" in call["messages"][1]["content"]
         assert call["temperature"] == 0

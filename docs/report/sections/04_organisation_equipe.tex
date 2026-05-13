@@ -1,0 +1,57 @@
+% ============================================================
+%  Section 4 -- Organisation équipe et CI/CD
+% ============================================================
+
+\chapter{Organisation de l'équipe et synchronisation Git}
+
+\section{Répartition du travail}
+
+Le projet a été conduit par trois personnes avec une répartition par domaines.
+Akram a principalement pris en charge l'agent, la vectorisation, la sécurité
+expérimentale et le refactoring final. Widad a porté l'interface d'évaluation,
+la knowledge base, le moteur de scoring, les tests A/B et la consolidation des
+scores. Ayoub a travaillé sur la recherche KB, le serveur et client MCP,
+l'intégration Copilot API, le protocole A2A et la preparation de la soutenance.
+
+\plantumldiagram{gantt_équipe}{Planification Gantt du projet sous PlantUML.}{fig:gantt-équipe}
+
+Cette répartition a permis de paralléliser les sujets tout en gardant un point
+de convergence hebdomadaire : chaque fonctionnalite devait produire soit une
+commande CLI, soit un artefact de benchmark, soit un test automatisable.
+
+\section{Méthode de collaboration}
+
+Le dépôt Git a servi de point de synchronisation. Les branches de travail
+étaient associées aux lots fonctionnels : évaluation, RAG, MCP, A2A, Racing
+Arena, documentation et refactoring. Les merges étaient accompagnés de tests
+unitaires afin d'éviter les régressions sur les contrats internes.
+
+La logique suivie est proche d'un cycle court :
+
+\begin{enumerate}
+  \item créer ou choisir un ticket de travail ;
+  \item développer sur une branche dédiée ;
+  \item lancer les tests et les linters localement ;
+  \item ouvrir une demande de merge ;
+  \item corriger les retours et synchroniser avec la branche principale ;
+  \item regenerer les artefacts de benchmark lorsque le comportement change.
+\end{enumerate}
+
+\section{Pipeline CI/CD}
+
+Le pipeline CI/CD GitHub Actions sert d'assurance qualité. Il installe les
+dépendances runtime et développement, exécute Ruff, lance les tests unitaires et
+vérifie les seuils de couverture. Les artefacts lourds ou générés ne sont pas
+faits pour être versionnés directement : ils doivent être régénérables à partir
+des commandes du projet.
+
+\plantumldiagram{ci_cd_pipeline}{Pipeline Git, CI/CD et production des artefacts.}{fig:ci-cd}
+
+\section{Rôle du CI dans la synchronisation}
+
+Le CI a joué trois rôles pratiques. D'abord, il force une définition commune du
+minimum acceptable : style, imports, tests unitaires et gates. Ensuite, il
+détecte rapidement les conflits implicites entre travaux paralleles, par exemple
+lorsqu'une modification du contrat de l'agent casse un test de benchmark. Enfin,
+il documente l'état du projet au moment des rendus : les résultats du rapport
+s'appuient sur une base testée, pas sur une exécution manuelle isolée.

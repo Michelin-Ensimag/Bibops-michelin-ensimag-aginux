@@ -6,101 +6,80 @@
 
 \section{Contexte industriel}
 
-Les assistants fondes sur les grands modeles de langue sont devenus des
-candidats naturels pour automatiser une partie du support informatique :
-diagnostic initial, recherche de procedure, reformulation de consignes ou
-orientation vers le bon niveau d'escalade. Dans un contexte industriel comme
-Michelin, cette promesse doit cependant etre confrontee a des contraintes
-strictes : fiabilite des reponses, tracabilite, protection des donnees internes,
-cout d'execution, latence acceptable et impact environnemental.
+Les assistants fondés sur des LLM peuvent accélérer le support IT en produisant
+un diagnostic initial, en reformulant une procédure, en suggérant une escalade
+ou en résumant un incident. Le cas Michelin ajoute des contraintes concrètes :
+les tickets peuvent contenir des données sensibles, les réponses doivent rester
+traçables, et l'outil doit fonctionner dans un environnement où coût, latence et
+dépendance fournisseur sont des critères de décision.
 
-Le risque principal n'est pas seulement qu'un modele reponde mal. Il est qu'une
-reponse plausible, non verifiee, soit integree dans un processus operationnel.
-Un ticket IT contient souvent des indices techniques incomplets, parfois des
-donnees sensibles, et peut necessiter une decision fondee sur un etat externe :
-statut d'un service, procedure interne, incident connu, documentation ou niveau
-d'urgence. Une architecture purement conversationnelle peut produire une reponse
-fluide mais deconnectee de ces sources.
+L'usage brut d'un LLM est donc insuffisant comme objet d'étude. Une réponse
+fluide peut être fausse, inventer une procédure ou ignorer un état de service
+local. À l'inverse, un modèle plus petit peut devenir acceptable s'il est
+correctement outillé, cadré par des prompts robustes et évalué dans un pipeline
+reproductible. C'est l'hypothèse centrale du projet.
 
-\bibopsname{} a ete concu pour etudier cette question sous forme experimentale.
-Le projet ne cherche pas uniquement a construire un agent, mais a construire un
-\emph{banc d'evaluation} capable de comparer plusieurs architectures et de
-produire des artefacts exploitables : fichiers JSON, graphiques, traces
-d'execution, scores composites et rapports de securite. Cette orientation MLOps
-est centrale : l'objectif est de rendre les decisions mesurables plutot que de
-se fier a une impression qualitative.
+\section{Problématique}
 
-\section{Objectifs du projet}
+La question traitée est la suivante :
 
-Le projet fixe trois objectifs principaux.
+\begin{quote}
+Comment concevoir un banc d'évaluation reproductible permettant de comparer des
+LLM et des architectures agentiques pour des cas d'usage de support IT, tout en
+tenant compte de la qualité, de la sécurité, de la latence, du coût et de
+l'impact environnemental ?
+\end{quote}
+
+Cette question impose de travailler à deux niveaux. Le premier est fonctionnel :
+le système doit répondre à des tickets IT. Le second est méthodologique : les
+résultats doivent être quantifiés, historisés et comparables d'une campagne à
+l'autre.
+
+\section{Objectifs}
+
+Le projet s'organise autour de quatre objectifs.
 
 \begin{enumerate}[label=\textbf{O\arabic*.}]
-  \item \textbf{Comparer deux architectures de support IT.} La premiere est un
-  LLM unique, interroge sans outil. La seconde est un systeme multi-agents
-  simplifie, centre sur une boucle ReAct et trois outils : verification de
-  serveur, recherche dans une base de connaissances et recherche documentaire
-  vectorielle.
+  \item \textbf{Construire un jeu de benchmark support IT.} Les tickets couvrent
+  des demandes comme VPN, Outlook, imprimante, BitLocker, Teams, poste lent ou
+  accès réseau.
 
-  \item \textbf{Construire une evaluation multi-criteres.} Les sorties ne sont
-  pas jugees seulement sur leur qualite. Le framework agregue qualite,
-  securite, cout, latence et empreinte environnementale dans une politique
-  composite explicite.
+  \item \textbf{Comparer plusieurs architectures.} Le banc oppose un LLM unique
+  zero-shot, un agent ReAct outillé, des agents A2A distants et des variantes de
+  Racing Arena.
 
-  \item \textbf{Tester les risques agentiques.} La Racing Arena simule un
-  environnement distribue dans lequel plusieurs agents recoivent des flux
-  temps reel et peuvent etre attaques. Elle sert a observer les effets de
-  l'outillage, des APIs faibles et des injections de prompt dans un contexte
-  dynamique.
+  \item \textbf{Évaluer selon plusieurs dimensions.} Les sorties sont notées
+  par qualité, sécurité, coût, latence, tokens et GreenOps. Ces dimensions sont
+  combinées dans une politique composite explicite.
+
+  \item \textbf{Rendre le projet maintenable.} Le dépôt expose une CLI, des
+  tests unitaires mocks, une organisation modulaire et une intégration Git/CI
+  pour synchroniser les tâches de l'équipe.
 \end{enumerate}
 
-Ces objectifs expliquent la structure du depot. \file{src/agent/} contient
-l'agent IT, \file{src/bibops/evaluation/} contient le moteur d'evaluation,
-\file{src/benchmark/} et \file{scripts/benchmark/} orchestrent les campagnes, et
-\file{src/racing/} porte l'arene distribuee.
+\section{Contributions}
 
-\section{Perimetre du rapport}
-
-Le present rapport analyse le depot tel qu'il existe le 12 mai 2026. Les
-chiffres sont extraits des artefacts locaux deja produits :
-\file{comparison_results.json} pour la comparaison principale,
-\file{security_race_report.json} pour la Racing Arena,
-\file{benchmark_mcp.json} et \file{benchmark_mcp_tools.json} pour les outils
-MCP, ainsi que les rapports A/B, position bias, A2A et Kaggle.
-
-Le rapport suit le plan impose par l'ecole :
+Les contributions principales sont :
 
 \begin{itemize}
-  \item description conceptuelle du probleme ;
-  \item presentation de la solution ;
-  \item resultats experimentaux avec figures ;
-  \item discussion des limites ;
-  \item conclusion et perspectives.
+  \item une CLI \code{bibops} regroupant les commandes de benchmark,
+  évaluation, développement, Racing Arena, configuration et rapport ;
+  \item un agent de support IT traçable, basé sur ReAct \cite{react2023}, RAG
+  \cite{rag2020} et appels outils ;
+  \item un moteur d'évaluation combinant juge LLM, inspecteurs de sécurité,
+  métriques opérationnelles et gates de release ;
+  \item des benchmarks A2A et MCP permettant d'étudier des agents ou outils
+  externes ;
+  \item une Racing Arena avec flux SSE et agents adversariaux ;
+  \item une suite de tests unitaires permettant de vérifier le code sans
+  dépendance à un modèle LLM réel.
 \end{itemize}
 
-La demarche reste volontairement factuelle. Lorsque les donnees disponibles ne
-permettent pas de conclure, le rapport le signale explicitement. C'est le cas,
-par exemple, du benchmark A2A du 12 mai 2026 : le pipeline est present et les
-artefacts existent, mais les neuf agents testes remontent chacun une erreur et
-ne permettent donc pas de tirer une conclusion de performance.
+\section{Périmètre du rapport}
 
-\section{Apports principaux}
-
-Les apports de \bibopsname{} sont les suivants.
-
-\begin{itemize}
-  \item Un agent ReAct testable, dont les appels outils sont bornes par des
-  politiques de timeout et de retry.
-  \item Une separation claire entre production, recherche, benchmarks et tests.
-  \item Une evaluation composite explicite, avec poids et seuils visibles dans
-  le code.
-  \item Une instrumentation des traces, permettant de relier une reponse finale
-  a ses appels outils et a son niveau de confiance.
-  \item Une arene de securite agentique qui rend observables les injections, les
-  fuites et les comportements d'agents en temps reel.
-\end{itemize}
-
-Le resultat le plus important est nuance : l'architecture multi-agents est
-meilleure que le LLM unique sur la campagne principale, mais elle n'atteint pas
-encore le seuil de qualite absolu fixe par la politique de release. Le projet
-montre donc a la fois l'interet de l'approche outillee et la necessite d'un
-travail supplementaire avant industrialisation.
+Le rapport decrit le dépôt dans son état du 13 mai 2026. Les résultats sont
+extraits des artefacts présents sous \file{data/outputs/benchmark/}. Ils
+incluent la campagne principale \file{comparison_results.json}, les benchmarks
+MCP, les campagnes A2A, les tests Kaggle locaux, les tests de biais de position
+et le rapport adversarial de la Racing Arena. Les identifiants d'acces aux
+agents externes ne sont pas reproduits.

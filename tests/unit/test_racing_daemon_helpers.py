@@ -10,10 +10,9 @@ from __future__ import annotations
 import asyncio
 import importlib
 import sys
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import MagicMock, patch
 
 import pytest
-
 
 # ---------------------------------------------------------------------------
 # Helpers: import a daemon module with clean argv
@@ -303,7 +302,7 @@ class TestRacingRAG:
         assert "indisponible" in result or "Cause" in result
 
     def test_constants_accessible(self):
-        from src.racing.hub.rag_service import COLLECTION_NAME, EMBED_MODEL, TOP_K
+        from src.racing.hub.rag_service import COLLECTION_NAME, TOP_K
         assert COLLECTION_NAME == "racing_kb"
         assert isinstance(TOP_K, int) and TOP_K > 0
 
@@ -318,8 +317,9 @@ class TestTeamValidatedGraph:
         assert compiled_graph is not None
 
     def test_route_finish_to_end(self):
-        from src.racing.team_validated.graph import _route_from_telemetry_validator
         from langgraph.graph import END
+
+        from src.racing.team_validated.graph import _route_from_telemetry_validator
         state = {"telemetry": {}, "messages": [], "next_node": "FINISH", "final_decision": None}
         assert _route_from_telemetry_validator(state) == END
 
@@ -331,7 +331,7 @@ class TestTeamValidatedGraph:
 
 class TestTeamValidatedStateTools:
     def test_constants_accessible(self):
-        from src.racing.team_validated.state_tools import HUB_BASE_URL, TEAM_ID, TeamState
+        from src.racing.team_validated.state_tools import HUB_BASE_URL, TEAM_ID
         assert "localhost" in HUB_BASE_URL or "http" in HUB_BASE_URL
         assert isinstance(TEAM_ID, str)
 

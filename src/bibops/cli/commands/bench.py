@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import typer
 
-from src.bibops.cli._shell import run_module, run_script
+from src.bibops.cli._shell import run_argparse_main, run_async_main
 
 PASSTHROUGH = {"allow_extra_args": True, "ignore_unknown_options": True}
 
@@ -17,7 +17,17 @@ app = typer.Typer(
 @app.command("compare-archs", context_settings=PASSTHROUGH)
 def compare_archs(ctx: typer.Context) -> None:
     """LLM Unique vs Multi-Agents architecture comparison."""
-    run_script("scripts/benchmark/compare_architectures.py", ctx.args)
+    from src.bibops.benchmark import compare_architectures
+
+    run_argparse_main(compare_architectures.main, ctx.args, "bibops bench compare-archs")
+
+
+@app.command("core", context_settings=PASSTHROUGH)
+def core(ctx: typer.Context) -> None:
+    """Historical local Ollama benchmark producing tickets_evalues.json."""
+    from src.bibops.benchmark import core as core_benchmark
+
+    run_argparse_main(core_benchmark.main, ctx.args, "bibops bench core")
 
 
 @app.command("ab-test", context_settings=PASSTHROUGH)
@@ -31,11 +41,17 @@ def ab_test(
 ) -> None:
     """A/B test between two models / agents."""
     if mode == "llm":
-        run_module("src.benchmark.ab_test_llm", ctx.args)
+        from src.bibops.benchmark import ab_test_llm
+
+        run_argparse_main(ab_test_llm.main, ctx.args, "bibops bench ab-test")
     elif mode == "user":
-        run_module("src.benchmark.ab_test_user", ctx.args)
+        from src.bibops.benchmark import ab_test_user
+
+        run_argparse_main(ab_test_user.main, ctx.args, "bibops bench ab-test")
     elif mode == "statements":
-        run_script("scripts/benchmark/ab_test_llm_statements.py", ctx.args)
+        from src.bibops.benchmark import ab_test_llm_statements
+
+        run_argparse_main(ab_test_llm_statements.main, ctx.args, "bibops bench ab-test --mode statements")
     else:
         raise typer.BadParameter(f"Unknown --mode: {mode}. Use 'llm', 'user', or 'statements'.")
 
@@ -51,9 +67,13 @@ def position_bias(
 ) -> None:
     """Detect order-dependent bias in the LLM judge."""
     if mode == "tickets":
-        run_module("src.benchmark.test_biais_position", ctx.args)
+        from src.bibops.benchmark import position_bias
+
+        run_argparse_main(position_bias.main, ctx.args, "bibops bench position-bias")
     elif mode == "statements":
-        run_script("scripts/benchmark/test_biais_position_statements.py", ctx.args)
+        from src.bibops.benchmark import position_bias_statements
+
+        run_argparse_main(position_bias_statements.main, ctx.args, "bibops bench position-bias --mode statements")
     else:
         raise typer.BadParameter(f"Unknown --mode: {mode}. Use 'tickets' or 'statements'.")
 
@@ -61,22 +81,30 @@ def position_bias(
 @app.command("kaggle", context_settings=PASSTHROUGH)
 def kaggle(ctx: typer.Context) -> None:
     """Local Kaggle SAE exam (judge-scored)."""
-    run_script("scripts/benchmark/run_local_kaggle_exam.py", ctx.args)
+    from src.bibops.benchmark import local_kaggle_exam
+
+    run_argparse_main(local_kaggle_exam.main, ctx.args, "bibops bench kaggle")
 
 
 @app.command("a2a", context_settings=PASSTHROUGH)
 def a2a(ctx: typer.Context) -> None:
     """Evaluate external A2A agents through the BibOps evaluator stack."""
-    run_script("scripts/benchmark/compare_a2a_agents.py", ctx.args)
+    from src.bibops.benchmark import compare_a2a_agents
+
+    run_argparse_main(compare_a2a_agents.main, ctx.args, "bibops bench a2a")
 
 
 @app.command("mcp-tools", context_settings=PASSTHROUGH)
 def mcp_tools(ctx: typer.Context) -> None:
     """MCP tools benchmark (requires MCP server running in another terminal)."""
-    run_module("src.benchmark.mcp_tools", ctx.args)
+    from src.bibops.benchmark import mcp_tools
+
+    run_async_main(mcp_tools.main)
 
 
 @app.command("validate", context_settings=PASSTHROUGH)
 def validate(ctx: typer.Context) -> None:
     """Validate a benchmark output JSON against the BibOps schema."""
-    run_script("scripts/benchmark/validate_benchmark_output.py", ctx.args)
+    from src.bibops.benchmark import validate_benchmark_output
+
+    run_argparse_main(validate_benchmark_output.main, ctx.args, "bibops bench validate")

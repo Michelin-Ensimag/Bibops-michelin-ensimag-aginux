@@ -4,15 +4,55 @@
 # Fichiers IDE
 .idea/
 .vscode/
+.claude/
+.junie/
 
 # Fichiers de cache
 __pycache__/
 .pytest_cache/
-
 *.pyc
 .ruff_cache/
+.mypy_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Packaging local
+bibops.egg-info/
+*.egg-info/
+
+# Logs et traces runtime
 logs/
-.claude/
-.claude/
+data/runtime/**/*.json
+data/runtime/**/*.jsonl
+
+# Bases locales et vector stores générés
+data/databases/*.db
+data/databases/vectordb/
+src/data/
+
+# Artefacts de benchmark générés
+data/outputs/coverage.json
+data/outputs/benchmark/*.json
+data/outputs/benchmark/*.md
+data/outputs/benchmark/charts/
+data/outputs/benchmark/kaggle/
+data/outputs/eval_bank/
+
+# Artefacts LaTeX générés
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.lof
+*.log
+*.lot
+*.out
+*.toc
+docs/report/*.pdf
+
+# Graphiques benchmark dupliqués hors dossier charts/
+data/outputs/benchmark/*.png
+
 CLAUDE.md
-.claude/

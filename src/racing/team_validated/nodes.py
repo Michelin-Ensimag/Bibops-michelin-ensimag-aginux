@@ -28,11 +28,8 @@ import json
 
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI
-from pydantic import Field
-from pydantic import BaseModel
-from typing import Literal, Optional
 
-from langchain_core.messages import ToolMessage
+from src.bibops.evaluation.security_evaluator import SecurityLLMInspectorAdapter
 
 # Re-use expert nodes and helpers from team_client (no modification needed)
 from src.racing.team_client.nodes import (
@@ -40,21 +37,19 @@ from src.racing.team_client.nodes import (
     FinalDecision,
     RoutingDecision,
     _experts_consulted,
-    _execute_tool_calls,
     fuel_expert_node,
     tire_expert_node,
 )
-from src.bibops.evaluation.security_evaluator import SecurityLLMInspectorAdapter
 
-from .state_tools import TeamState, ask_michelin_engineer
+from .state_tools import TeamState
 
 __all__ = [
-    "telemetry_validator_node",
-    "team_principal_routing_node",
-    "team_principal_decision_node",
     "expert_validator_node",
-    "tire_expert_node",
     "fuel_expert_node",
+    "team_principal_decision_node",
+    "team_principal_routing_node",
+    "telemetry_validator_node",
+    "tire_expert_node",
 ]
 
 _security            = SecurityLLMInspectorAdapter()

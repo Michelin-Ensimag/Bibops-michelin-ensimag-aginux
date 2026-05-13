@@ -1,0 +1,178 @@
+% ============================================================
+%  Section 6 -- Résultats
+% ============================================================
+
+\chapter{Résultats}
+
+\section{Conditions expérimentales}
+
+Les résultats principaux proviennent des artefacts locaux sous
+\file{data/outputs/benchmark/}. La campagne principale a été générée le
+13 mai 2026. Elle cible le domaine IT, utilise \code{phi3:latest} via Ollama
+pour le LLM unique et l'agent, active un premier outil force pour l'agent et
+emploie \code{gpt-5.2} comme juge qualité.
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{lY}
+\toprule
+\textbf{Artefact} & \textbf{Usage} \\
+\midrule
+\file{comparison_results.json} & Comparaison LLM unique vs agent ReAct outillé. \\
+\file{benchmark_mcp.json} & Évaluation directe des outils MCP. \\
+\file{benchmark_mcp_tools.json} & Variante avec score de pertinence et F1. \\
+\file{a2a_agents_results.json} & Exploration des agents A2A OpenClaw. \\
+\file{security_race_report.json} & Analyse adversariale de la Racing Arena. \\
+\file{kaggle/local_kaggle_exam_report_20260513_130503.json} & Rejeu local Kaggle, 16 questions. \\
+\file{position_bias_statements_result.json} & Test de biais de position sur fact-checking. \\
+\bottomrule
+\end{tabularx}
+\caption{Sources chiffrees exploitees.}
+\label{tab:artifacts}
+\end{table}
+
+\section{LLM unique contre agent ReAct}
+
+\benchmarkfigure{comparaison_architectures.png}{Comparaison globale des deux architectures.}{fig:comparaison-architectures}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{YccY}
+\toprule
+\textbf{Métrique} & \textbf{LLM unique} & \textbf{Agent ReAct} & \textbf{Lecture} \\
+\midrule
+Score qualité moyen & 2,81/10 & \textbf{7,86/10} & Gain fonctionnel net. \\
+Score sécurité moyen & 9,97/10 & 9,97/10 & Sécurité stable dans cette campagne. \\
+Latence totale & 461,58 s & \textbf{0,84 s} & Reduction de 99,8 \%. \\
+Coût estimé & 0,061315 \$ & \textbf{0,024150 \$} & Coût divise par 2,54. \\
+Tokens totaux & 6\,664 & \textbf{2\,415} & Reduction de 63,8 \%. \\
+Énergie estimée & 0,0013328 kWh & \textbf{0,0004830 kWh} & Reduction coherente avec les tokens. \\
+Empreinte carbone & 0,06664 gCO$_2$e & \textbf{0,02415 gCO$_2$e} & Reduction de 63,8 \%. \\
+Score composite & 46,14/100 & \textbf{91,34/100} & +45,20 points. \\
+Verdict & \verdict{FAIL} & \verdict{PASS} & Seul l'agent passe les gates. \\
+\bottomrule
+\end{tabularx}
+\caption{Résultats principaux de \file{comparison_results.json}.}
+\label{tab:main-results}
+\end{table}
+
+Le résultat le plus fort est le passage du gate qualité. Le LLM unique echoue
+principalement avec \code{quality_score < 7.0}, tandis que l'agent atteint
+7,86/10. Le gain opérationnel est aussi important, mais il doit être interprete
+avec la configuration : l'agent est autorisé à forcer l'outil initial et à
+synthesiser certaines réponses depuis les résultats outils.
+
+\benchmarkfigure[0.86\textwidth]{composite_verdict.png}{Verdicts composites des architectures.}{fig:composite-verdict}
+
+\section{Benchmark MCP}
+
+Le benchmark MCP isole les outils. La premiere variante contient cinq cas, cinq
+succes, une latence moyenne de \metric{0,0518 s} et un score final moyen de
+\metric{9,78/10}. La variante enrichie avec pertinence et F1 conserve cinq
+succes, mais son score descend a \metric{7,94/10}. Cela montre que les outils
+sont disponibles et rapides, tandis que la mesure de pertinence reste plus
+exigeante.
+
+\benchmarkfigure{mcp_benchmark.png}{Synthese du benchmark MCP.}{fig:mcp-benchmark}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{0.9\textwidth}{Yccc}
+\toprule
+\textbf{Artefact} & \textbf{Cas} & \textbf{Succes} & \textbf{Score moyen} \\
+\midrule
+\file{benchmark_mcp.json} & 5 & 5 & 9,78/10 \\
+\file{benchmark_mcp_tools.json} & 5 & 5 & 7,94/10 \\
+\bottomrule
+\end{tabularx}
+\caption{Synthese des benchmarks MCP.}
+\label{tab:mcp}
+\end{table}
+
+\section{Agents A2A}
+
+Le benchmark A2A du 13 mai 2026 cible neuf agents OpenClaw. Quatre agents sont
+complets et joignables, deux sont limites par quota, deux remontent une erreur
+d'authentification et un subit un timeout. Les agents complets obtiennent des
+scores de tâche autour de 7/10 ; le meilleur est \code{agent-f} avec
+\metric{7,77} de score de tâche moyen et \metric{7,73} de qualité moyenne.
+
+\benchmarkfigure{a2a_agents.png}{Synthese du benchmark A2A.}{fig:a2a-agents}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{lccccY}
+\toprule
+\textbf{Agent} & \textbf{Qualité} & \textbf{Sécurité} & \textbf{Tache} & \textbf{Latence} & \textbf{Transport} \\
+\midrule
+agent-b & 7,32 & 9,64 & 7,23 & 22,91 s & ok \\
+agent-c & 7,42 & 9,61 & 7,43 & 23,89 s & ok \\
+agent-f & \textbf{7,73} & 9,64 & \textbf{7,77} & 31,42 s & ok \\
+coder-baseline & 6,98 & 9,60 & 7,11 & 22,83 s & ok \\
+\bottomrule
+\end{tabularx}
+\caption{Agents A2A avec transport complet.}
+\label{tab:a2a}
+\end{table}
+
+Ce résultat valide le pipeline d'exploration A2A, mais il montre aussi la
+fragilité opérationnelle des agents distants : quotas, timeouts et erreurs
+d'authentification doivent être traites comme des résultats de benchmark.
+
+\section{Kaggle local}
+
+Le dernier rapport Kaggle local utilise \code{gpt-4o} via le proxy Copilot et
+\code{gpt-4o} comme juge. Le score est de \metric{13/16}, soit
+\metric{81,25 \%}. Les erreurs restantes portent notamment sur le comptage
+exact de lettres, un piege logique et un cas de fuite de SSN. Cette campagne
+complete les tickets IT par des questions de raisonnement, format strict et
+sécurité.
+
+\benchmarkfigure{kaggle_exam.png}{Synthese du benchmark Kaggle local.}{fig:kaggle}
+
+\section{Biais de position}
+
+Le test de position bias sur tickets IT n'est pas exploitable dans l'état le
+plus recent, car un modèle candidat remonte des erreurs de quota et aucun pair
+valide n'est disponible. Le test sur statements reste exploitable : 10 jugements,
+6 choix pour la position A, soit un taux A de 0,60 et une p-value binomiale de
+0,7539. Il n'y a donc pas d'évidence statistique forte de biais de position sur
+ce petit echantillon.
+
+\benchmarkfigure{position_bias.png}{Test de biais de position.}{fig:position-bias}
+
+\section{Racing Arena adversariale}
+
+La Racing Arena couvre 15 tours, 4 équipes et 286 décisions. Le résultat le plus
+important concerne la sécurité : Team B, exposée via une route brute, exécute
+53 injections sur 57 attaques reçues ; Team C, validée, n'exécute aucune
+injection dans le scénario observé.
+
+\benchmarkfigure{racing_security_report.png}{Rapport de sécurité de la Racing Arena.}{fig:racing-security}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{Ycccc}
+\toprule
+\textbf{Équipe} & \textbf{Attaques} & \textbf{Injections} & \textbf{Fuites} & \textbf{Detection} \\
+\midrule
+Team A zero-shot & 12 & 7 (58,3 \%) & 9 (75,0 \%) & 0,0 \% \\
+Team B ReAct & 57 & 53 (93,0 \%) & 7 (12,3 \%) & 14,0 \% \\
+Team C validée & 1 & 0 (0,0 \%) & 0 (0,0 \%) & 0,0 \% \\
+\bottomrule
+\end{tabularx}
+\caption{Metriques de sécurité adversariale.}
+\label{tab:racing-security}
+\end{table}
+
+Ces résultats montrent que la sécurité ne dépend pas seulement du modèle. Elle
+dépend des endpoints exposes, du filtrage, de la séparation entre données et
+instructions et de la validation avant action.
+
+\section{Vérification logicielle}
+
+La vérification locale finale exécute \metric{578 tests unitaires} avec succes.
+Les commandes complementaires \code{python -m ruff check src tests},
+\code{python -m src.bibops.cli.main --help} et un smoke test d'import des
+modules modifies passent egalement. Cette vérification ne remplace pas une
+évaluation humaine des réponses, mais elle donne une base logicielle stable.

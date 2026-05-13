@@ -1,0 +1,80 @@
+@startuml
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+
+class Ticket {
+  +id: str
+  +domain: str
+  +texte: str
+  +contexte: str
+}
+
+class AgentDecision {
+  +tool: str?
+  +argument: str?
+  +final_answer: str?
+}
+
+class SupportAgent {
+  +lancer_agent(ticket)
+  +choisir_outil()
+  +produire_réponse()
+}
+
+class Tool {
+  +name: str
+  +timeout_s: int
+  +exécute(argument)
+}
+
+class ToolResult {
+  +status: str
+  +content: str
+  +duration_ms: int
+}
+
+class MaestroRunTrace {
+  +run_id: str
+  +turns: list
+  +tool_calls: list
+  +final_answer: str
+}
+
+interface Evaluator {
+  +evaluate(question, answer)
+}
+
+class QualityEvaluator
+class SecurityEvaluator
+class CompositePolicy {
+  +weights: dict
+  +thresholds: dict
+  +evaluate(results)
+}
+
+class BenchmarkRun {
+  +config: dict
+  +details: list
+  +summary: dict
+}
+
+class BenchmarkResult {
+  +quality_score: float
+  +security_score: float
+  +latency_s: float
+  +cost_usd: float
+  +verdict: str
+}
+
+Ticket --> SupportAgent
+SupportAgent --> AgentDecision
+SupportAgent --> Tool
+Tool --> ToolResult
+SupportAgent --> MaestroRunTrace
+QualityEvaluator ..|> Evaluator
+SecurityEvaluator ..|> Evaluator
+Evaluator --> BenchmarkResult
+CompositePolicy --> BenchmarkResult
+BenchmarkRun o-- BenchmarkResult
+BenchmarkRun o-- Ticket
+@enduml

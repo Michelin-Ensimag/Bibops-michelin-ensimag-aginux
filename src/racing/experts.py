@@ -4,9 +4,8 @@ Trois ingénieurs spécialisés, chacun analysant un aspect critique de la strat
 Chaque nœud reçoit le RacingState complet et retourne un dict de mise à jour.
 """
 
-from langchain_core.messages import AIMessage, SystemMessage, HumanMessage
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI
-
 
 # ---------------------------------------------------------------------------
 # LLM partagé (proxy Copilot local)

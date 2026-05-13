@@ -1,4 +1,4 @@
-"""Pure unit tests for src.eval_bank.checks (no network, no agent)."""
+"""Pure unit tests for src.bibops.evaluation.checks (no network, no agent)."""
 from __future__ import annotations
 
 from src.bibops.evaluation.checks import (

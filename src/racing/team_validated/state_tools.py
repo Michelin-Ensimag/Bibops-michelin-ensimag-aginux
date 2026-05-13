@@ -2,12 +2,11 @@
 from __future__ import annotations
 
 import operator
-from typing import Annotated, Optional
+from typing import Annotated, TypedDict
 
 import httpx
 from langchain_core.messages import BaseMessage
 from langchain_core.tools import tool
-from typing_extensions import TypedDict
 
 HUB_BASE_URL = "http://localhost:8000"
 TEAM_ID      = "team_c_validated"
@@ -16,7 +15,7 @@ TEAM_ID      = "team_c_validated"
 class TeamState(TypedDict):
     telemetry:      dict
     messages:       Annotated[list[BaseMessage], operator.add]
-    final_decision: Optional[dict]
+    final_decision: dict | None
     next_node:      str
 
 

@@ -4,7 +4,7 @@ TypedDict unique traversant tout le graphe LangGraph.
 """
 
 import operator
-from typing import Annotated, List, TypedDict
+from typing import Annotated, TypedDict
 
 from langchain_core.messages import BaseMessage
 
@@ -35,7 +35,7 @@ class RacingState(TypedDict):
       lap_time_seconds (float) — meilleur temps au tour récent
     """
 
-    messages: Annotated[List[BaseMessage], operator.add]
+    messages: Annotated[list[BaseMessage], operator.add]
     """
     Historique complet des messages échangés entre agents.
     L'annotation operator.add garantit l'accumulation sans écrasement.

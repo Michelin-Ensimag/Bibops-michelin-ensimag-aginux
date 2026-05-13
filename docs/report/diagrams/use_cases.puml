@@ -1,0 +1,41 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+actor "Développeur / Etudiant" as Dev
+actor "Encadrant Michelin" as Mentor
+actor "Support IT cible" as Support
+actor "Agent A2A distant" as A2A
+actor "Pipeline CI" as CI
+
+rectangle "BibOps" {
+  usecase "Lancer benchmark\nLLM unique vs agent" as UC1
+  usecase "Evaluer qualité\net sécurité" as UC2
+  usecase "Consulter rapports\nJSON et graphiques" as UC3
+  usecase "Interroger agent\nA2A" as UC4
+  usecase "Executer tests\nunitaires" as UC5
+  usecase "Generer rapport\nLaTeX" as UC6
+  usecase "Simuler Racing\nArena adversariale" as UC7
+  usecase "Mettre a jour KB\net RAG" as UC8
+}
+
+Dev --> UC1
+Dev --> UC4
+Dev --> UC5
+Dev --> UC6
+Dev --> UC7
+Dev --> UC8
+
+Mentor --> UC3
+Mentor --> UC6
+Support --> UC1
+A2A --> UC4
+CI --> UC5
+CI --> UC2
+
+UC1 .> UC2 : <<include>>
+UC2 .> UC3 : <<include>>
+UC7 .> UC2 : <<include>>
+UC6 .> UC3 : <<include>>
+@enduml

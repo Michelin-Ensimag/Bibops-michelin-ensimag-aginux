@@ -28,7 +28,6 @@ from .observer import ObserverEngine
 from .race_engine import RaceEngine
 from .rag_service import RacingRAG
 
-
 # ---------------------------------------------------------------------------
 # Application
 # ---------------------------------------------------------------------------
@@ -122,8 +121,7 @@ async def stream_telemetry() -> StreamingResponse:
 @app.post("/decision/{team_id}", summary="Soumettre une décision stratégique")
 async def receive_decision(team_id: str, decision: TeamDecision) -> dict:
     """Reçoit la décision d'une écurie et applique l'effet sur la simulation."""
-    lap     = engine.state.lap_current
-    weather = engine.state.weather
+    lap = engine.state.lap_current
 
     if lap == 0:
         raise HTTPException(

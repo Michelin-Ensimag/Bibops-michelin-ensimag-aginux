@@ -3,8 +3,7 @@
 __all__ = [
     "agent",
     "benchmark",
+    "bibops",
     "common",
-    "eval_bank",
-    "llm_professor",
     "racing",
 ]

@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import typer
 
-from src.bibops.cli._shell import run_script
+from src.bibops.cli._shell import run_argv_main
 
 PASSTHROUGH = {"allow_extra_args": True, "ignore_unknown_options": True}
 
@@ -17,16 +17,30 @@ app = typer.Typer(
 @app.command("init-db", context_settings=PASSTHROUGH)
 def init_db(ctx: typer.Context) -> None:
     """Initialise the SQLite schema (servers + KB metadata)."""
-    run_script("scripts/dev/init_sqlite.py", ctx.args)
+    from src.agent.database import initialiser_base_de_donnees
+
+    initialiser_base_de_donnees()
 
 
 @app.command("build-vectordb", context_settings=PASSTHROUGH)
 def build_vectordb(ctx: typer.Context) -> None:
     """Ingest the knowledge base into ChromaDB (requires Ollama)."""
-    run_script("scripts/dev/build_it_vector_db.py", ctx.args)
+    from src.agent.rag import initialiser_documentation
+
+    initialiser_documentation()
 
 
 @app.command("mcp-server", context_settings=PASSTHROUGH)
 def mcp_server(ctx: typer.Context) -> None:
     """Run the MCP tool server (stdio transport)."""
-    run_script("scripts/dev/run_mcp_server.py", ctx.args)
+    from src.agent.mcp_server import mcp
+
+    mcp.run(transport="stdio")
+
+
+@app.command("coverage-gates", context_settings=PASSTHROUGH)
+def coverage_gates_cmd(ctx: typer.Context) -> None:
+    """Check coverage.json against configured coverage gates."""
+    from src.bibops.dev import coverage_gates
+
+    run_argv_main(coverage_gates.main, ctx.args)

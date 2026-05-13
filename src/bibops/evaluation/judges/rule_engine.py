@@ -74,12 +74,12 @@ class EvaluationEngine:
 
     def _extraire_termes_reference(self, fiche_kb: dict) -> set:
         sol = fiche_kb.get("solution", {})
-        parts = (
-            fiche_kb.get("mots_cles", [])
-            + [fiche_kb.get("probleme", "")]
-            + sol.get("diagnostic", [])
-            + sol.get("resolution", [])
-        )
+        parts = [
+            *fiche_kb.get("mots_cles", []),
+            fiche_kb.get("probleme", ""),
+            *sol.get("diagnostic", []),
+            *sol.get("resolution", []),
+        ]
         return self._tokeniser(" ".join(parts))
 
     def score_pertinence(self, reponse: str, ticket: str) -> dict[str, float]:

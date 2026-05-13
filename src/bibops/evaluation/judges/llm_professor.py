@@ -10,6 +10,7 @@ import sqlite3
 
 from src.bibops.evaluation.judges.llm_judge import LLMJudge
 from src.bibops.evaluation.rca import RCAEngine
+from src.common.config import DEFAULT_JUDGE_MODEL
 from src.common.llm_clients import get_copilot_client
 
 try:
@@ -41,7 +42,7 @@ class LLMProfessor:
     Wraps LLMJudge with an IT-support-specific prompt, RCA context, and SQLite persistence.
     """
 
-    def __init__(self, db_path: str, modele_juge: str = "gpt-4o", client: "_OpenAI | None" = None):
+    def __init__(self, db_path: str, modele_juge: str = DEFAULT_JUDGE_MODEL, client: _OpenAI | None = None):
         self.db_path = db_path
         self._judge = LLMJudge(
             client=client if client is not None else get_copilot_client(),
@@ -63,7 +64,7 @@ class LLMProfessor:
         if not verdict.ok:
             print(f"[Erreur LLM Professor] Évaluation échouée : {verdict.justification}")
             return None
-        note = int(round(verdict.score))
+        note = round(verdict.score)
         justification = verdict.justification
         print(f" -> Note        : {note}/10")
         print(f" -> Justification : {justification}")
@@ -104,7 +105,7 @@ class LLMProfessor:
                 if not verdict.ok:
                     print(f"[Erreur] Évaluation échouée pour eval_id={eval_id} : {verdict.justification}")
                     continue
-                note = int(round(verdict.score))
+                note = round(verdict.score)
                 justification = verdict.justification
                 print(f" -> Note : {note}/10  |  {justification[:80]}")
                 cursor.execute(_UPDATE, (note, justification, eval_id))
