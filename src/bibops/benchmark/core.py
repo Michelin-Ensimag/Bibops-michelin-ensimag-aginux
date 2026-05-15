@@ -11,6 +11,7 @@ import ollama
 from src.common.config import BASE_DIR as PROJECT_ROOT
 from src.common.config import DEFAULT_AGENT_MODEL, OLLAMA_OPTIONS, OUTPUT_DIR
 from src.common.config import INPUT_CSV as DEFAULT_INPUT_CSV
+from src.common.text import extraire_compteurs_tokens, extraire_texte_reponse
 
 BASE_DIR = str(PROJECT_ROOT)
 INPUT_CSV = str(DEFAULT_INPUT_CSV)
@@ -63,45 +64,6 @@ def demander_feedback_utilisateur():
 
         print("Choix invalide. Merci de saisir 1, 2 ou 3.")
 
-
-def _lire_champ(objet, cle):
-    """Lit un champ depuis un dict ou un objet (attribut)."""
-    if isinstance(objet, dict):
-        return objet.get(cle)
-    return getattr(objet, cle, None)
-
-
-def extraire_texte_reponse(reponse_ollama):
-    """Extrait le texte de reponse sans supposer un format unique."""
-    message = _lire_champ(reponse_ollama, "message")
-    contenu = _lire_champ(message, "content") if message is not None else None
-    if isinstance(contenu, str):
-        return contenu
-    return ""
-
-
-def extraire_compteurs_tokens(reponse_ollama):
-    """Compte les tokens via metadonnees natives Ollama, sans approximation."""
-    # Format Ollama chat classique
-    prompt_eval_count = _lire_champ(reponse_ollama, "prompt_eval_count")
-    eval_count = _lire_champ(reponse_ollama, "eval_count")
-    if isinstance(prompt_eval_count, int) and isinstance(eval_count, int):
-        return prompt_eval_count + eval_count, "ollama_native"
-
-    # Format type usage (compatibilite clients/API differents)
-    usage = _lire_champ(reponse_ollama, "usage")
-    if isinstance(usage, dict):
-        total_tokens = usage.get("total_tokens")
-        if isinstance(total_tokens, int):
-            return total_tokens, "usage_total_tokens"
-
-        prompt_tokens = usage.get("prompt_tokens")
-        completion_tokens = usage.get("completion_tokens")
-        if isinstance(prompt_tokens, int) and isinstance(completion_tokens, int):
-            return prompt_tokens + completion_tokens, "usage_prompt_plus_completion"
-
-    # Cas ou l'API ne fournit pas de compteur fiable pour cette requete.
-    return None, "native_tokens_absents"
 
 def run_benchmark(model_names=None):
     if model_names is None:

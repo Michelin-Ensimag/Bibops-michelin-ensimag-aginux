@@ -23,10 +23,9 @@ import os
 import random
 from typing import Any
 
-from openai import OpenAI
-
 from src.bibops.benchmark import ab_test_llm as core
 from src.common.config import validate_judge_model
+from src.common.llm_clients import get_copilot_client
 
 OUTPUT_JSON = os.path.join(core.BASE_DIR, "data", "outputs", "benchmark", "position_bias_resultat.json")
 DEFAULT_MAX_TICKETS = int(os.environ.get("BIBOPS_POSITION_MAX_TICKETS", "2"))
@@ -64,8 +63,7 @@ def main() -> None:
     except ValueError as exc:
         parser.error(str(exc))
 
-    api_key = core.charger_copilot_api_key()
-    client = OpenAI(api_key=api_key, base_url=core.COPILOT_BASE_URL, timeout=20, max_retries=0)
+    client = get_copilot_client()
 
     rng = random.Random(args.seed)
 

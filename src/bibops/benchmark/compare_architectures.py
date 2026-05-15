@@ -6,7 +6,6 @@ from __future__ import annotations
 import argparse
 import csv
 import json
-import re
 import statistics
 import time
 from dataclasses import dataclass
@@ -27,6 +26,7 @@ from src.bibops.evaluation.registry import EvaluatorRegistry
 from src.bibops.evaluation.result_schema import build_benchmark_payload
 from src.bibops.evaluation.security_evaluator import SecurityLLMInspectorAdapter
 from src.common.chat_models import call_chat_model
+from src.common.text import contains_timeout
 from src.common.config import (
     DEFAULT_AGENT_MODEL,
     DEFAULT_AGENT_PROVIDER,
@@ -99,10 +99,6 @@ def _resolve_input_csv(path: Path) -> Path:
     raise FileNotFoundError(f"CSV introuvable: {path}")
 
 
-def _count_tokens_fallback(text: str) -> int:
-    return len(re.findall(r"\S+", text or ""))
-
-
 def _classify_domain(contexte: str, ticket: str) -> str:
     text = f"{contexte} {ticket}".lower()
     if "technicien support it" in text or "support it" in text:
@@ -132,11 +128,6 @@ def _filter_by_domain(rows: list[dict[str, str]], selected_domain: str) -> list[
         elif domain == selected_domain:
             filtered.append(row)
     return filtered
-
-
-def _contains_timeout(text: str) -> bool:
-    lowered = (text or "").lower()
-    return "timeout" in lowered or "timed out" in lowered
 
 
 def _count_statuses(tool_calls: list[dict[str, Any]]) -> dict[str, int]:
@@ -337,8 +328,8 @@ def _build_domain_summary(details: list[dict[str, Any]]) -> dict[str, dict[str, 
             "zero_shot_timeout_count": sum(
                 1
                 for row in rows
-                if _contains_timeout(str(row["llm_unique"].get("error", "")))
-                or _contains_timeout(str(row["llm_unique"].get("answer", "")))
+                if contains_timeout(str(row["llm_unique"].get("error", "")))
+                or contains_timeout(str(row["llm_unique"].get("answer", "")))
             ),
         }
     return output
@@ -355,13 +346,13 @@ def _build_diagnostics(details: list[dict[str, Any]]) -> dict[str, Any]:
     zs_timeout_count = sum(
         1
         for item in details
-        if _contains_timeout(str(item["llm_unique"].get("error", "")))
-        or _contains_timeout(str(item["llm_unique"].get("answer", "")))
+        if contains_timeout(str(item["llm_unique"].get("error", "")))
+        or contains_timeout(str(item["llm_unique"].get("answer", "")))
     )
     ag_timeout_count = sum(
         1
         for item in details
-        if _contains_timeout(str(item["multi_agents"].get("error", "")))
+        if contains_timeout(str(item["multi_agents"].get("error", "")))
         or "timeout" in str(item["multi_agents"].get("trace_outcome", ""))
     )
     agent_tool_ticket_count = sum(1 for item in details if int(item["multi_agents"].get("tool_calls", 0)) > 0)
@@ -569,8 +560,7 @@ def main() -> None:
             zs_answer = f"ERREUR_ZERO_SHOT: {exc}"
 
         if (zs_prompt_tokens + zs_completion_tokens) == 0:
-            fallback = _count_tokens_fallback(ticket_text) + _count_tokens_fallback(zs_answer)
-            zs_completion_tokens = max(0, fallback)
+            zs_completion_tokens = max(0, len(ticket_text.split()) + len(zs_answer.split()))
 
         llm_unique.total_latency_s += zs_latency_s
         llm_unique.prompt_tokens += zs_prompt_tokens
@@ -616,8 +606,7 @@ def main() -> None:
             ag_answer = f"ERREUR_AGENTIQUE: {exc}"
 
         if (ag_prompt_tokens + ag_completion_tokens) == 0:
-            fallback = _count_tokens_fallback(ticket_text) + _count_tokens_fallback(ag_answer)
-            ag_completion_tokens = max(0, fallback)
+            ag_completion_tokens = max(0, len(ticket_text.split()) + len(ag_answer.split()))
 
         multi_agents.total_latency_s += ag_latency_s
         multi_agents.prompt_tokens += ag_prompt_tokens

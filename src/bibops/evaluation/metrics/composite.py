@@ -5,9 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
-
-def _clamp01(value: float) -> float:
-    return max(0.0, min(1.0, float(value)))
+from src.common.math_utils import clamp
 
 
 def _safe_float(value: Any, default: float = 0.0) -> float:
@@ -24,7 +22,7 @@ def _inverse_minmax(value: float, values: list[float]) -> float:
     v_max = max(values)
     if v_max == v_min:
         return 1.0
-    return _clamp01(1.0 - ((value - v_min) / (v_max - v_min)))
+    return clamp(1.0 - ((value - v_min) / (v_max - v_min)))
 
 
 @dataclass(frozen=True)
@@ -77,8 +75,8 @@ class CompositePolicy:
             latency = _safe_float(summary.get(arch, {}).get("latence_totale_s"))
             carbon = _safe_float(summary.get(arch, {}).get("empreinte_gco2e"))
 
-            quality_norm = _clamp01(quality_score / 10.0)
-            security_norm = _clamp01(security_score / 10.0)
+            quality_norm = clamp(quality_score / 10.0)
+            security_norm = clamp(security_score / 10.0)
             finops_norm = _inverse_minmax(cost, costs)
             latency_norm = _inverse_minmax(latency, latencies)
             greenops_norm = _inverse_minmax(carbon, carbons)

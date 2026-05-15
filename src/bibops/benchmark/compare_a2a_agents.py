@@ -25,6 +25,8 @@ from src.bibops.adapters.a2a_client import (
 from src.bibops.evaluation.registry import EvaluatorRegistry
 from src.bibops.evaluation.security_evaluator import SecurityLLMInspectorAdapter
 from src.common.config import DEFAULT_JUDGE_MODEL
+from src.common.math_utils import clamp
+from src.common.text import contains_timeout as _is_timeout_text
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 
@@ -573,10 +575,6 @@ def _mean(values: list[float]) -> float:
     return round(statistics.mean(values), 2) if values else 0.0
 
 
-def _clamp(value: float, low: float = 0.0, high: float = 10.0) -> float:
-    return max(low, min(high, value))
-
-
 def _normalize_quality(outputs: dict[str, dict[str, Any]]) -> dict[str, Any]:
     quality = outputs.get("quality", {})
     try:
@@ -585,7 +583,7 @@ def _normalize_quality(outputs: dict[str, dict[str, Any]]) -> dict[str, Any]:
         score = 0.0
     return {
         "status": str(quality.get("status", "skipped")),
-        "score": round(_clamp(score), 2),
+        "score": round(clamp(score, 0.0, 10.0), 2),
         "justification": str(quality.get("justification", "")),
         "error": str(quality.get("error", "")),
     }
@@ -605,7 +603,7 @@ def _normalize_security(outputs: dict[str, dict[str, Any]]) -> dict[str, Any]:
         findings = []
     return {
         "status": str(security.get("status", "error")),
-        "security_score": round(_clamp(score), 2),
+        "security_score": round(clamp(score, 0.0, 10.0), 2),
         "blocked": bool(security.get("blocked", False)),
         "risk_avg": round(float(security.get("risk_avg", 1.0)), 4),
         "risks": risks,
@@ -898,8 +896,8 @@ def _score_role_response(
 
     return {
         "role": role,
-        "score": round(_clamp(score), 2),
-        "confidence": round(_clamp(score) / 10.0, 2),
+        "score": round(clamp(score, 0.0, 10.0), 2),
+        "confidence": round(clamp(score, 0.0, 10.0) / 10.0, 2),
         "keyword_hits": hits,
         "evidence": evidence or ["weak role-specific evidence"],
     }
@@ -926,7 +924,7 @@ def _score_security_probe(probe: dict[str, Any], answer: str, security: dict[str
 def _generic_quality_from_task(task: dict[str, Any], answer: str) -> dict[str, Any]:
     if not (answer or "").strip():
         return {"status": "ok", "score": 0.0, "justification": "empty answer", "error": ""}
-    score = round(_clamp(float(task.get("score", 0.0))), 2)
+    score = round(clamp(float(task.get("score", 0.0)), 0.0, 10.0), 2)
     evidence = "; ".join(str(item) for item in task.get("evidence", [])[:3])
     return {
         "status": "ok",
@@ -1081,10 +1079,6 @@ def _is_backend_auth_unavailable(text: str) -> bool:
     lowered = (text or "").lower()
     return "auth_unavailable" in lowered or "no auth available" in lowered
 
-
-def _is_timeout_text(text: str) -> bool:
-    lowered = (text or "").lower()
-    return "timed out" in lowered or "read timeout" in lowered or "timeout" in lowered
 
 
 def _is_rate_limit_text(text: str) -> bool:
@@ -1472,7 +1466,7 @@ def _infer_role(
         card_bonus = min(2.0, len(card_hits) * 0.75)
         if card_hits:
             evidence[role].append("agent-card markers=" + ", ".join(card_hits[:5]))
-        role_scores[role] = round(_clamp(base_score + card_bonus), 2)
+        role_scores[role] = round(clamp(base_score + card_bonus, 0.0, 10.0), 2)
 
     ranked = sorted(role_scores.items(), key=lambda pair: pair[1], reverse=True)
     best_role, best_score = ranked[0]

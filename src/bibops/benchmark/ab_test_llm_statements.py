@@ -19,9 +19,8 @@ import re
 import time
 from pathlib import Path
 
-from openai import OpenAI
-
-from src.common.config import COPILOT_BASE_URL, DEFAULT_JUDGE_MODEL
+from src.common.config import DEFAULT_JUDGE_MODEL
+from src.common.llm_clients import get_copilot_client
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 INPUT_PATH = PROJECT_ROOT / "data" / "inputs" / "benchmark" / "statements_abtest_bibops.json"
@@ -58,7 +57,7 @@ def _extract_choice(result: str) -> tuple[str, str]:
 
 def main() -> None:
     random.seed(RANDOM_SEED)
-    client = OpenAI(base_url=COPILOT_BASE_URL, api_key="sk-no-key-required")
+    client = get_copilot_client()
 
     with open(INPUT_PATH, encoding="utf-8") as f:
         data = json.load(f)

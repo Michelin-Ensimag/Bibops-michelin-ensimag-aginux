@@ -48,22 +48,22 @@ class TestDefaultFeedbackChoice:
 
 class TestLireChamp:
     def test_reads_from_dict(self):
-        from src.bibops.benchmark.core import _lire_champ
-        assert _lire_champ({"key": "value"}, "key") == "value"
+        from src.common.text import _get_attr
+        assert _get_attr({"key": "value"}, "key") == "value"
 
     def test_missing_dict_key_returns_none(self):
-        from src.bibops.benchmark.core import _lire_champ
-        assert _lire_champ({}, "missing") is None
+        from src.common.text import _get_attr
+        assert _get_attr({}, "missing") is None
 
     def test_reads_from_object(self):
-        from src.bibops.benchmark.core import _lire_champ
+        from src.common.text import _get_attr
         obj = SimpleNamespace(name="test")
-        assert _lire_champ(obj, "name") == "test"
+        assert _get_attr(obj, "name") == "test"
 
     def test_missing_object_attr_returns_none(self):
-        from src.bibops.benchmark.core import _lire_champ
+        from src.common.text import _get_attr
         obj = SimpleNamespace()
-        assert _lire_champ(obj, "missing") is None
+        assert _get_attr(obj, "missing") is None
 
 
 class TestExtraireTexteReponse:

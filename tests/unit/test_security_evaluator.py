@@ -3,14 +3,14 @@ from __future__ import annotations
 
 import pytest
 
+from src.bibops.evaluation.checks import extract_urls as _extract_urls
 from src.bibops.evaluation.security_evaluator import (
     SecurityLLMInspectorAdapter,
-    _clamp,
     _contains_any,
-    _extract_urls,
     _RiskPack,
 )
 from src.bibops.evaluation.security_profile import SecurityProfile
+from src.common.math_utils import clamp as _clamp
 
 # ---------------------------------------------------------------------------
 # Module-level helpers

@@ -125,20 +125,3 @@ class LLMProfessor:
         print("[DB] Évaluation sauvegardée dans la table 'evaluations'.")
 
 
-if __name__ == "__main__":
-    import os
-    DB_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../data/databases/bibops.db"))
-    prof = LLMProfessor(db_path=DB_PATH)
-    resultat = prof.evaluer_reponse(
-        ticket_id=0,
-        ticket_texte="Mon VPN Cisco ne marche plus depuis ce matin.",
-        reponse_agent="Le service VPN est HORS LIGNE (Incident 4042). Redémarrez le client Cisco AnyConnect et réessayez.",
-        modele_agent="test-proxy",
-        temps_reponse=1.0,
-        diagnostic_rca="Le VPN Cisco est la cause probable (tunnel sécurisé inaccessible).",
-    )
-    if resultat:
-        print(f"\n[OK] Note : {resultat.get('note')}/10")
-        print(f"     Justification : {resultat.get('justification')}")
-    else:
-        print("\n[ERREUR] Aucune réponse du proxy. Vérifiez localhost:4141")

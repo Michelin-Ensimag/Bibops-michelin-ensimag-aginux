@@ -1,4 +1,4 @@
-"""Unit tests for src.common.text helpers."""
+"""Unit tests for src.common.text helpers and the A/B-pipeline helpers that live in ab_test_llm."""
 from __future__ import annotations
 
 from concurrent.futures import TimeoutError as FuturesTimeoutError
@@ -6,6 +6,7 @@ from concurrent.futures import TimeoutError as FuturesTimeoutError
 import pytest
 
 from src.common import text as T
+from src.bibops.benchmark import ab_test_llm as AB
 from tests._fakes.fake_openai import FakeOpenAI, make_response
 
 # ---------------------------------------------------------------------------
@@ -56,25 +57,25 @@ class TestExtraireTexte:
 
 class TestExtractJSON:
     def test_strict_json(self):
-        assert T._extraire_json_depuis_texte('{"a": 1}') == {"a": 1}
+        assert AB._extraire_json_depuis_texte('{"a": 1}') == {"a": 1}
 
     def test_json_in_code_fence(self):
-        out = T._extraire_json_depuis_texte('```json\n{"k": "v"}\n```')
+        out = AB._extraire_json_depuis_texte('```json\n{"k": "v"}\n```')
         assert out == {"k": "v"}
 
     def test_json_with_leading_prose(self):
-        out = T._extraire_json_depuis_texte('Verdict: {"choix": "A"} done.')
+        out = AB._extraire_json_depuis_texte('Verdict: {"choix": "A"} done.')
         assert out == {"choix": "A"}
 
     def test_returns_none_on_no_json(self):
-        assert T._extraire_json_depuis_texte("just text, nothing here") is None
+        assert AB._extraire_json_depuis_texte("just text, nothing here") is None
 
     def test_returns_none_on_empty(self):
-        assert T._extraire_json_depuis_texte("") is None
+        assert AB._extraire_json_depuis_texte("") is None
 
     def test_picks_first_valid_object(self):
         # Two candidates; the parser must return one valid dict.
-        out = T._extraire_json_depuis_texte('{"a": 1} and also {"b": 2}')
+        out = AB._extraire_json_depuis_texte('{"a": 1} and also {"b": 2}')
         assert isinstance(out, dict)
 
 
@@ -84,41 +85,41 @@ class TestExtractJSON:
 
 class TestChoiceNormaliser:
     def test_uppercases_a_and_b(self):
-        assert T._normaliser_choix("a") == "A"
-        assert T._normaliser_choix(" B ") == "B"
+        assert AB._normaliser_choix("a") == "A"
+        assert AB._normaliser_choix(" B ") == "B"
 
     def test_rejects_other_letters(self):
-        assert T._normaliser_choix("C") is None
+        assert AB._normaliser_choix("C") is None
 
     def test_rejects_non_string(self):
-        assert T._normaliser_choix(None) is None
-        assert T._normaliser_choix(42) is None
+        assert AB._normaliser_choix(None) is None
+        assert AB._normaliser_choix(42) is None
 
 
 class TestErrorClassifiers:
     def test_est_reponse_erreur_true(self):
-        assert T._est_reponse_erreur("[ERREUR_MODELE foo] timed out")
-        assert not T._est_reponse_erreur("normal answer")
+        assert AB._est_reponse_erreur("[ERREUR_MODELE foo] timed out")
+        assert not AB._est_reponse_erreur("normal answer")
 
     def test_quota_free_epuise_detection(self):
-        assert T._est_quota_free_epuise("free-models-per-day quota exceeded")
-        assert not T._est_quota_free_epuise("any other error")
+        assert AB._est_quota_free_epuise("free-models-per-day quota exceeded")
+        assert not AB._est_quota_free_epuise("any other error")
 
     def test_message_erreur_court_humanizes_known_signatures(self):
-        assert "Quota OpenRouter" in T._message_erreur_court("free-models-per-day reached")
-        assert "rate-limited" in T._message_erreur_court("temporarily rate-limited")
-        assert "Aucun endpoint" in T._message_erreur_court("no endpoints found")
-        assert "Delai depasse" in T._message_erreur_court("timeout")
-        assert "JSON" in T._message_erreur_court("json invalide")
+        assert "Quota OpenRouter" in AB._message_erreur_court("free-models-per-day reached")
+        assert "rate-limited" in AB._message_erreur_court("temporarily rate-limited")
+        assert "Aucun endpoint" in AB._message_erreur_court("no endpoints found")
+        assert "Delai depasse" in AB._message_erreur_court("timeout")
+        assert "JSON" in AB._message_erreur_court("json invalide")
 
     def test_message_erreur_court_passes_through_unknown(self):
-        assert T._message_erreur_court("weird error") == "weird error"
+        assert AB._message_erreur_court("weird error") == "weird error"
 
     def test_eligible_fallback_for_known_transients(self):
-        assert T._erreur_modele_eligible_fallback("rate limit reached")
-        assert T._erreur_modele_eligible_fallback("timeout")
-        assert T._erreur_modele_eligible_fallback("Developer instruction is not enabled")
-        assert not T._erreur_modele_eligible_fallback("syntax error in code")
+        assert AB._erreur_modele_eligible_fallback("rate limit reached")
+        assert AB._erreur_modele_eligible_fallback("timeout")
+        assert AB._erreur_modele_eligible_fallback("Developer instruction is not enabled")
+        assert not AB._erreur_modele_eligible_fallback("syntax error in code")
 
 
 # ---------------------------------------------------------------------------
@@ -127,12 +128,12 @@ class TestErrorClassifiers:
 
 class TestExecuterAvecTimeout:
     def test_returns_result_on_success(self):
-        assert T._executer_avec_timeout(lambda: 42, timeout_s=2) == 42
+        assert AB._executer_avec_timeout(lambda: 42, timeout_s=2) == 42
 
     def test_raises_timeout_on_slow_function(self):
         import time
         with pytest.raises(FuturesTimeoutError):
-            T._executer_avec_timeout(lambda: time.sleep(2), timeout_s=0)
+            AB._executer_avec_timeout(lambda: time.sleep(2), timeout_s=0)
 
 
 # ---------------------------------------------------------------------------
@@ -142,12 +143,12 @@ class TestExecuterAvecTimeout:
 class TestAppelerModele:
     def test_success_returns_text(self):
         client = FakeOpenAI(make_response("Bonjour"))
-        out = T.appeler_modele(client, "fake-model", "context", "ticket", timeout_s=2)
+        out = AB.appeler_modele(client, "fake-model", "context", "ticket", timeout_s=2)
         assert out == "Bonjour"
 
     def test_exception_returns_error_envelope(self):
         client = FakeOpenAI(RuntimeError("upstream failed"))
-        out = T.appeler_modele(client, "fake-model", "context", "ticket", timeout_s=2)
+        out = AB.appeler_modele(client, "fake-model", "context", "ticket", timeout_s=2)
         assert out.startswith("[ERREUR_MODELE fake-model]")
         assert "upstream failed" in out
 
@@ -163,7 +164,7 @@ class TestAppelerModele:
             return make_response("retry succeeded")
 
         client = FakeOpenAI(behaviour)
-        out = T.appeler_modele(client, "fake-model", "context", "ticket", timeout_s=2)
+        out = AB.appeler_modele(client, "fake-model", "context", "ticket", timeout_s=2)
         assert out == "retry succeeded"
         assert calls["n"] == 2
 

@@ -22,9 +22,10 @@ import time
 from openai import OpenAI
 
 from src.common.config import BASE_DIR as PROJECT_ROOT
-from src.common.config import COPILOT_BASE_URL, OUTPUT_DIR
+from src.common.config import OUTPUT_DIR
 from src.common.config import INPUT_CSV as DEFAULT_INPUT_CSV
-from src.common.text import _extraire_texte, charger_copilot_api_key
+from src.common.llm_clients import get_copilot_client
+from src.common.text import _extraire_texte
 
 BASE_DIR = str(PROJECT_ROOT)
 INPUT_CSV = str(DEFAULT_INPUT_CSV)
@@ -87,8 +88,7 @@ def main():
     parser.add_argument("--auto-choice", choices=["A", "B"], default=_auto_choice_default(), help="Choix auto en mode non interactif")
     args = parser.parse_args()
 
-    api_key = charger_copilot_api_key()
-    client = OpenAI(api_key=api_key, base_url=COPILOT_BASE_URL, timeout=40)
+    client = get_copilot_client()
 
     rng = random.Random(args.seed)
 
