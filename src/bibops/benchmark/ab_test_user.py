@@ -12,11 +12,9 @@ son choix, et sauvegarde les resultats dans ab_user_resultat.json.
 """
 
 import argparse
-import csv
 import json
 import os
 import random
-import sys
 import time
 
 from openai import OpenAI
@@ -25,7 +23,11 @@ from src.common.config import BASE_DIR as PROJECT_ROOT
 from src.common.config import OUTPUT_DIR
 from src.common.config import INPUT_CSV as DEFAULT_INPUT_CSV
 from src.common.llm_clients import get_copilot_client
-from src.common.text import _extraire_texte
+from src.common.text import (
+    _extraire_texte,
+    is_non_interactive_mode as _is_non_interactive_mode,
+    load_tickets_csv,
+)
 
 BASE_DIR = str(PROJECT_ROOT)
 INPUT_CSV = str(DEFAULT_INPUT_CSV)
@@ -50,10 +52,6 @@ def _env_int(name: str, default: int) -> int:
 def _auto_choice_default() -> str:
     raw = os.environ.get("BIBOPS_AB_USER_CHOICE", "A").strip().upper()
     return raw if raw in ("A", "B") else "A"
-
-
-def _is_non_interactive_mode() -> bool:
-    return os.environ.get("BIBOPS_NON_INTERACTIVE", "0") == "1" or not sys.stdin.isatty()
 
 
 def appeler_modele(client: OpenAI, modele: str, contexte: str, ticket: str, retries: int) -> str:
@@ -92,8 +90,7 @@ def main():
 
     rng = random.Random(args.seed)
 
-    with open(INPUT_CSV, newline="", encoding="utf-8") as f:
-        tickets = list(csv.DictReader(f))[:args.max_tickets]
+    tickets = load_tickets_csv(INPUT_CSV, max_tickets=args.max_tickets)
 
     resultats = []
     scores = {args.model_a: 0, args.model_b: 0}

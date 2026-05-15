@@ -1,14 +1,13 @@
 """LLM-as-judge wrapper used by tests that need semantic scoring."""
 from __future__ import annotations
 
-import json
-import re
 from dataclasses import dataclass
 from datetime import datetime, timezone
 
 from openai import OpenAI
 
 from src.common.config import DEFAULT_JUDGE_MODEL
+from src.common.text import extract_first_json as _extract_first_json_object
 
 _JUDGE_SYSTEM = (
     "You are an impartial evaluator. Given a criterion, a question, and an answer, "
@@ -27,23 +26,6 @@ class JudgeVerdict:
     @property
     def ok(self) -> bool:
         return self.score >= 0 and not self.justification.startswith(("judge_error:", "judge_invalid_json:"))
-
-
-def _extract_first_json_object(text: str) -> dict | None:
-    text = text.strip()
-    text = re.sub(r"^```[a-zA-Z0-9_-]*\n?", "", text)
-    text = re.sub(r"\n?```$", "", text)
-    decoder = json.JSONDecoder()
-    for idx, ch in enumerate(text):
-        if ch != "{":
-            continue
-        try:
-            obj, _ = decoder.raw_decode(text[idx:])
-            if isinstance(obj, dict):
-                return obj
-        except Exception:
-            continue
-    return None
 
 
 class LLMJudge:

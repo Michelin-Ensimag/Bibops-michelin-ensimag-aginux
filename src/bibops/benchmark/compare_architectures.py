@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import argparse
-import csv
 import json
 import statistics
 import time
@@ -26,7 +25,7 @@ from src.bibops.evaluation.registry import EvaluatorRegistry
 from src.bibops.evaluation.result_schema import build_benchmark_payload
 from src.bibops.evaluation.security_evaluator import SecurityLLMInspectorAdapter
 from src.common.chat_models import call_chat_model
-from src.common.text import contains_timeout
+from src.common.text import contains_timeout, load_tickets_csv
 from src.common.config import (
     DEFAULT_AGENT_MODEL,
     DEFAULT_AGENT_PROVIDER,
@@ -452,11 +451,8 @@ def main() -> None:
     output_json = Path(args.output_json)
     output_json.parent.mkdir(parents=True, exist_ok=True)
 
-    with open(csv_path, newline="", encoding="utf-8") as f:
-        tickets_all = list(csv.DictReader(f))
-
+    tickets_all = load_tickets_csv(str(csv_path))
     tickets = _filter_by_domain(tickets_all, args.domain)
-
     if args.max_tickets is not None and args.max_tickets > 0:
         tickets = tickets[: args.max_tickets]
 

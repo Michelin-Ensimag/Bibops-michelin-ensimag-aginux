@@ -1,7 +1,11 @@
 """Shared text processing and response extraction helpers."""
 from __future__ import annotations
 
+import csv
+import json
 import os
+import re
+import sys
 from typing import Any
 
 
@@ -16,6 +20,41 @@ def charger_copilot_api_key() -> str:
         if key:
             return key
     return "copilot"
+
+
+def is_non_interactive_mode() -> bool:
+    return os.environ.get("BIBOPS_NON_INTERACTIVE", "0") == "1" or not sys.stdin.isatty()
+
+
+def extract_first_json(text: str) -> dict | None:
+    """Return the first valid JSON object found in *text*, or None.
+
+    Tolerates leading prose and ```json ... ``` code fences.
+    """
+    if not isinstance(text, str) or not text:
+        return None
+    cleaned = re.sub(r"^```[a-zA-Z0-9_-]*\n?", "", text.strip())
+    cleaned = re.sub(r"\n?```$", "", cleaned)
+    decoder = json.JSONDecoder()
+    for idx, ch in enumerate(cleaned):
+        if ch != "{":
+            continue
+        try:
+            obj, _ = decoder.raw_decode(cleaned[idx:])
+        except json.JSONDecodeError:
+            continue
+        if isinstance(obj, dict):
+            return obj
+    return None
+
+
+def load_tickets_csv(path: str, max_tickets: int | None = None) -> list[dict]:
+    """Load tickets from a CSV. Slices to *max_tickets* if it is a positive int."""
+    with open(path, encoding="utf-8") as f:
+        rows = list(csv.DictReader(f))
+    if isinstance(max_tickets, int) and max_tickets > 0:
+        rows = rows[:max_tickets]
+    return rows
 
 
 def _extraire_texte(message: Any) -> str:

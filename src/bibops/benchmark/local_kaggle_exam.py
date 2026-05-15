@@ -28,6 +28,7 @@ from src.common.config import (
     validate_chat_model,
     validate_judge_model,
 )
+from src.common.text import extract_first_json as _first_json_object
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 COPILOT_API_URL = os.environ.get("COPILOT_API_URL", "http://localhost:4141/v1/chat/completions")
@@ -42,20 +43,6 @@ def _banner(title: str) -> None:
     print("\n" + "=" * 92)
     print(title)
     print("=" * 92)
-
-
-def _first_json_object(text: str) -> dict[str, Any] | None:
-    decoder = json.JSONDecoder()
-    for idx, ch in enumerate(text):
-        if ch != "{":
-            continue
-        try:
-            obj, _ = decoder.raw_decode(text[idx:])
-            if isinstance(obj, dict):
-                return obj
-        except Exception:
-            continue
-    return None
 
 
 def _strip_code_fences(text: str) -> str:

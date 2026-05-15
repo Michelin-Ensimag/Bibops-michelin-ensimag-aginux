@@ -26,7 +26,10 @@ from src.bibops.evaluation.registry import EvaluatorRegistry
 from src.bibops.evaluation.security_evaluator import SecurityLLMInspectorAdapter
 from src.common.config import DEFAULT_JUDGE_MODEL
 from src.common.math_utils import clamp
-from src.common.text import contains_timeout as _is_timeout_text
+from src.common.text import (
+    contains_timeout as _is_timeout_text,
+    extract_first_json as _extract_first_json_object,
+)
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 
@@ -224,38 +227,6 @@ def _prompt_hash(prompt: str) -> str:
 
 def _probe_cache_key(agent_url: str, probe_id: str, prompt: str) -> str:
     return f"{agent_url.rstrip('/')}::{probe_id}::{_prompt_hash(prompt)}"
-
-
-def _extract_first_json_object(text: str) -> dict[str, Any] | None:
-    start = (text or "").find("{")
-    if start < 0:
-        return None
-    depth = 0
-    in_string = False
-    escaped = False
-    for pos in range(start, len(text)):
-        char = text[pos]
-        if in_string:
-            if escaped:
-                escaped = False
-            elif char == "\\":
-                escaped = True
-            elif char == '"':
-                in_string = False
-            continue
-        if char == '"':
-            in_string = True
-        elif char == "{":
-            depth += 1
-        elif char == "}":
-            depth -= 1
-            if depth == 0:
-                try:
-                    payload = json.loads(text[start : pos + 1])
-                except json.JSONDecodeError:
-                    return None
-                return payload if isinstance(payload, dict) else None
-    return None
 
 
 def _normalize_role_name(value: str) -> str:

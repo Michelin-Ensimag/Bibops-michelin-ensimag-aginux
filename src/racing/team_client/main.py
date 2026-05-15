@@ -59,18 +59,21 @@ from .graph import compiled_graph
 from .state_tools import HUB_BASE_URL, TeamState
 
 # ---------------------------------------------------------------------------
-# Couleurs ANSI
+# Couleurs ANSI (importées depuis src.racing.shared.console)
 # ---------------------------------------------------------------------------
 
-RESET   = "\033[0m"
-BOLD    = "\033[1m"
-CYAN    = "\033[96m"
-YELLOW  = "\033[93m"
-GREEN   = "\033[92m"
-RED     = "\033[91m"
-BLUE    = "\033[94m"
-GREY    = "\033[90m"
-MAGENTA = "\033[95m"
+from src.racing.shared.console import (
+    BLUE,
+    BOLD,
+    CYAN,
+    GREEN,
+    GREY,
+    MAGENTA,
+    RED,
+    RESET,
+    YELLOW,
+    is_race_telemetry as _is_race_telemetry,
+)
 
 # Couleur unique par équipe (rotation sur 5 couleurs)
 _TEAM_COLORS = [CYAN, MAGENTA, YELLOW, GREEN, BLUE]
@@ -121,11 +124,6 @@ def _log_posted(lap: int) -> None:
 
 def _log_error(msg: str) -> None:
     print(f"{_pfx()}   {RED}✗ {msg}{RESET}")
-
-
-def _is_race_telemetry(payload: dict) -> bool:
-    """True for RaceEngine telemetry/race_over events, false for WeakProxy broadcasts."""
-    return "lap_current" in payload and "race_status" in payload
 
 
 # ---------------------------------------------------------------------------

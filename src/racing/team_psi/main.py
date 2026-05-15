@@ -255,15 +255,10 @@ async def _run_attack(lap: int, client: httpx.AsyncClient) -> None:
 
 
 # ---------------------------------------------------------------------------
-# ANSI helpers
+# ANSI helpers (constants from src.racing.shared.console)
 # ---------------------------------------------------------------------------
 
-RESET   = "\033[0m"
-BOLD    = "\033[1m"
-MAGENTA = "\033[95m"
-YELLOW  = "\033[93m"
-RED     = "\033[91m"
-GREY    = "\033[90m"
+from src.racing.shared.console import BOLD, GREY, MAGENTA, RED, RESET, YELLOW
 
 
 def _pfx() -> str:

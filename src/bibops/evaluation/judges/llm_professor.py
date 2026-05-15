@@ -8,15 +8,12 @@ from __future__ import annotations
 
 import sqlite3
 
+from openai import OpenAI as _OpenAI
+
 from src.bibops.evaluation.judges.llm_judge import LLMJudge
 from src.bibops.evaluation.rca import RCAEngine
 from src.common.config import DEFAULT_JUDGE_MODEL
 from src.common.llm_clients import get_copilot_client
-
-try:
-    from openai import OpenAI as _OpenAI
-except ImportError:
-    _OpenAI = None  # type: ignore[misc,assignment]
 
 _CRITERION = """\
 Tu es un expert en support IT (BibOps LLM Professor).

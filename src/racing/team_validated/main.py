@@ -106,25 +106,22 @@ async def _run_query_server() -> None:
 
 
 # ---------------------------------------------------------------------------
-# ANSI helpers
+# ANSI helpers (constants from src.racing.shared.console)
 # ---------------------------------------------------------------------------
 
-RESET  = "\033[0m"
-BOLD   = "\033[1m"
-GREEN  = "\033[92m"
-RED    = "\033[91m"
-YELLOW = "\033[93m"
-GREY   = "\033[90m"
-BLUE   = "\033[94m"
+from src.racing.shared.console import (
+    BOLD,
+    GREEN,
+    GREY,
+    RED,
+    RESET,
+    YELLOW,
+    is_race_telemetry as _is_race_telemetry,
+)
 
 
 def _pfx() -> str:
     return f"{GREEN}{BOLD}[{_ARGS.team}]{RESET}"
-
-
-def _is_race_telemetry(payload: dict) -> bool:
-    """True for RaceEngine telemetry/race_over events, false for WeakProxy broadcasts."""
-    return "lap_current" in payload and "race_status" in payload
 
 
 # ---------------------------------------------------------------------------

@@ -135,25 +135,23 @@ async def _decide(telemetry: dict) -> dict:
 
 
 # ---------------------------------------------------------------------------
-# ANSI helpers
+# ANSI helpers (constants from src.racing.shared.console)
 # ---------------------------------------------------------------------------
 
-RESET  = "\033[0m"
-BOLD   = "\033[1m"
-CYAN   = "\033[96m"
-YELLOW = "\033[93m"
-GREEN  = "\033[92m"
-RED    = "\033[91m"
-GREY   = "\033[90m"
+from src.racing.shared.console import (
+    BOLD,
+    CYAN,
+    GREEN,
+    GREY,
+    RED,
+    RESET,
+    YELLOW,
+    is_race_telemetry as _is_race_telemetry,
+)
 
 
 def _pfx() -> str:
     return f"{CYAN}{BOLD}[{_ARGS.team}]{RESET}"
-
-
-def _is_race_telemetry(payload: dict) -> bool:
-    """True for RaceEngine telemetry/race_over events, false for WeakProxy broadcasts."""
-    return "lap_current" in payload and "race_status" in payload
 
 
 # ---------------------------------------------------------------------------

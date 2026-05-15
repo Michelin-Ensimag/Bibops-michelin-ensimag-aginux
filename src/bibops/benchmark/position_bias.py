@@ -16,7 +16,6 @@ Exemple:
 """
 
 import argparse
-import csv
 import json
 import math
 import os
@@ -26,6 +25,7 @@ from typing import Any
 from src.bibops.benchmark import ab_test_llm as core
 from src.common.config import validate_judge_model
 from src.common.llm_clients import get_copilot_client
+from src.common.text import load_tickets_csv
 
 OUTPUT_JSON = os.path.join(core.BASE_DIR, "data", "outputs", "benchmark", "position_bias_resultat.json")
 DEFAULT_MAX_TICKETS = int(os.environ.get("BIBOPS_POSITION_MAX_TICKETS", "2"))
@@ -67,10 +67,7 @@ def main() -> None:
 
     rng = random.Random(args.seed)
 
-    with open(core.INPUT_CSV, newline="", encoding="utf-8") as f:
-        tickets = list(csv.DictReader(f))
-    if args.max_tickets > 0:
-        tickets = tickets[: args.max_tickets]
+    tickets = load_tickets_csv(core.INPUT_CSV, max_tickets=args.max_tickets)
 
     total_judgments = 0
     picks_a_position = 0

@@ -10,11 +10,9 @@ par modele, puis demande a un modele juge de choisir la meilleure reponse.
 """
 
 import argparse
-import csv
 import json
 import os
 import random
-import re
 import time
 from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import TimeoutError as FuturesTimeoutError
@@ -28,7 +26,11 @@ from src.common.config import DEFAULT_JUDGE_MODEL as CONFIG_DEFAULT_JUDGE_MODEL
 from src.common.config import INPUT_CSV as DEFAULT_INPUT_CSV
 from src.common.config import MODEL_REQUEST_TIMEOUT_S
 from src.common.llm_clients import get_copilot_client
-from src.common.text import _extraire_texte
+from src.common.text import (
+    _extraire_texte,
+    extract_first_json as _extraire_json_depuis_texte,
+    load_tickets_csv,
+)
 
 BASE_DIR = str(PROJECT_ROOT)
 INPUT_CSV = str(DEFAULT_INPUT_CSV)
@@ -58,31 +60,6 @@ JUDGE_SYSTEM_PROMPT = (
 def _executer_avec_timeout(fn, timeout_s: int):
     with ThreadPoolExecutor(max_workers=1) as executor:
         return executor.submit(fn).result(timeout=timeout_s)
-
-
-def _extraire_json_depuis_texte(texte: str) -> dict | None:
-    brut = texte.strip()
-    try:
-        obj = json.loads(brut)
-        if isinstance(obj, dict):
-            return obj
-    except Exception:
-        pass
-    for bloc in re.findall(r"```(?:json)?\s*(\{.*?\})\s*```", brut, flags=re.DOTALL | re.IGNORECASE):
-        try:
-            obj = json.loads(bloc)
-            if isinstance(obj, dict):
-                return obj
-        except Exception:
-            continue
-    for c in re.findall(r"\{[\s\S]*?\}", brut):
-        try:
-            obj = json.loads(c)
-            if isinstance(obj, dict):
-                return obj
-        except Exception:
-            continue
-    return None
 
 
 def _normaliser_choix(choix: Any) -> str | None:
@@ -303,8 +280,7 @@ def main() -> None:
     client = get_copilot_client()
     rng = random.Random(RANDOM_SEED)
 
-    with open(INPUT_CSV, newline="", encoding="utf-8") as f:
-        tickets = list(csv.DictReader(f))[:args.max_tickets] if args.max_tickets > 0 else list(csv.DictReader(f))
+    tickets = load_tickets_csv(INPUT_CSV, max_tickets=args.max_tickets)
 
     resultats = []
     scores = {args.model_a: 0, args.model_b: 0}

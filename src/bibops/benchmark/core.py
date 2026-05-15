@@ -1,8 +1,7 @@
 import argparse
-import csv
 import json
 import os
-import sys
+import sys  # noqa: F401  # patched by tests via src.bibops.benchmark.core.sys
 import time
 from datetime import datetime
 
@@ -11,7 +10,12 @@ import ollama
 from src.common.config import BASE_DIR as PROJECT_ROOT
 from src.common.config import DEFAULT_AGENT_MODEL, OLLAMA_OPTIONS, OUTPUT_DIR
 from src.common.config import INPUT_CSV as DEFAULT_INPUT_CSV
-from src.common.text import extraire_compteurs_tokens, extraire_texte_reponse
+from src.common.text import (
+    extraire_compteurs_tokens,
+    extraire_texte_reponse,
+    is_non_interactive_mode as _is_non_interactive_mode,
+    load_tickets_csv,
+)
 
 BASE_DIR = str(PROJECT_ROOT)
 INPUT_CSV = str(DEFAULT_INPUT_CSV)
@@ -22,9 +26,6 @@ FEEDBACK_OPTIONS = {
     "2": "Partiellement utile",
     "3": "Inutile",
 }
-
-def _is_non_interactive_mode() -> bool:
-    return os.environ.get("BIBOPS_NON_INTERACTIVE", "0") == "1" or not sys.stdin.isatty()
 
 
 def _default_feedback_choice() -> str:
@@ -76,16 +77,11 @@ def run_benchmark(model_names=None):
     resultats = []
 
     # Lecture des tickets
-    with open(INPUT_CSV, encoding='utf-8') as file:
-        tickets = list(csv.DictReader(file))
-    max_tickets_env = os.environ.get("BIBOPS_MAX_TICKETS", "").strip()
-    if max_tickets_env:
-        try:
-            max_tickets = int(max_tickets_env)
-            if max_tickets > 0:
-                tickets = tickets[:max_tickets]
-        except ValueError:
-            pass
+    try:
+        max_tickets = int(os.environ.get("BIBOPS_MAX_TICKETS", "").strip() or 0)
+    except ValueError:
+        max_tickets = 0
+    tickets = load_tickets_csv(INPUT_CSV, max_tickets=max_tickets)
 
     for model_name in model_names:
         print("=" * 70)
