@@ -3,8 +3,6 @@
 BibOps is an LLM evaluation and agent benchmarking framework built for Michelin IT support scenarios. It compares a simple zero-shot assistant against a tool-using ReAct agent, scores the results across quality and safety dimensions, and includes a Racing Arena for distributed multi-agent decision experiments.
 
 [![Pipeline CI/CD BibOps](https://github.com/Michelin-Ensimag/BibOps-michelin-ensimag-aginux/actions/workflows/ci.yml/badge.svg)](https://github.com/Michelin-Ensimag/BibOps-michelin-ensimag-aginux/actions/workflows/ci.yml)
-[![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://python.org)
-[![Tests](https://img.shields.io/badge/tests-pytest-green.svg)](tests/)
 
 ## What BibOps Does
 
@@ -153,15 +151,3 @@ The default proxy URL is `http://localhost:4141/v1`.
 | `data/databases/vectordb/` | Chroma vector database for RAG |
 | `data/outputs/benchmark/security_race_report.json` | Racing Arena adversarial report |
 
-## Direct Module Fallback
-
-If the editable install is not available, run modules from the repository root:
-
-```bash
-PYTHONPATH=. python -m src.bibops.cli.main --help
-PYTHONPATH=. python -m src.agent.mcp_server
-```
-
-## License
-
-Educational project for Ensimag/Michelin LLM evaluation and agent benchmarking experiments.
