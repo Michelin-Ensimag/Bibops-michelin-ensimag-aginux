@@ -1,0 +1,440 @@
+{
+  "config": {
+    "generator_model": "gpt-4o-mini",
+    "generator_provider": "copilot",
+    "judge_model": "gpt-4o",
+    "max_iterations": 2,
+    "tickets_count": 10
+  },
+  "modes": {
+    "zero_shot": {
+      "per_iteration": {
+        "faithfulness": [
+          5.6,
+          6.5
+        ],
+        "relevance": [
+          6.9,
+          7.8
+        ],
+        "context": [
+          5.4,
+          6.5
+        ],
+        "average": [
+          5.96,
+          6.94
+        ]
+      },
+      "success_rate": 0.5,
+      "total_cost_usd": 0.1132,
+      "wallclock_s": 91.0,
+      "reports": [
+        {
+          "ticket_id": "VPN-001",
+          "succes": false,
+          "iterations_necessaires": null,
+          "scores_par_iteration": [
+            {
+              "iter": 1,
+              "faithfulness": 3,
+              "relevance": 6,
+              "context": 4,
+              "moy": 4.3
+            },
+            {
+              "iter": 2,
+              "faithfulness": 6,
+              "relevance": 7,
+              "context": 5,
+              "moy": 6.0
+            }
+          ]
+        },
+        {
+          "ticket_id": "OUTLOOK-005",
+          "succes": false,
+          "iterations_necessaires": null,
+          "scores_par_iteration": [
+            {
+              "iter": 1,
+              "faithfulness": 5,
+              "relevance": 5,
+              "context": 4,
+              "moy": 4.7
+            },
+            {
+              "iter": 2,
+              "faithfulness": 4,
+              "relevance": 6,
+              "context": 5,
+              "moy": 5.0
+            }
+          ]
+        },
+        {
+          "ticket_id": "WIFI-006",
+          "succes": true,
+          "iterations_necessaires": 1,
+          "scores_par_iteration": [
+            {
+              "iter": 1,
+              "faithfulness": 9,
+              "relevance": 10,
+              "context": 8,
+              "moy": 9.0
+            }
+          ]
+        },
+        {
+          "ticket_id": "PWD-007",
+          "succes": true,
+          "iterations_necessaires": 2,
+          "scores_par_iteration": [
+            {
+              "iter": 1,
+              "faithfulness": 3,
+              "relevance": 5,
+              "context": 4,
+              "moy": 4.0
+            },
+            {
+              "iter": 2,
+              "faithfulness": 7,
+              "relevance": 8,
+              "context": 8,
+              "moy": 7.7
+            }
+          ]
+        },
+        {
+          "ticket_id": "TEAMS-011",
+          "succes": true,
+          "iterations_necessaires": 2,
+          "scores_par_iteration": [
+            {
+              "iter": 1,
+              "faithfulness": 6,
+              "relevance": 7,
+              "context": 5,
+              "moy": 6.0
+            },
+            {
+              "iter": 2,
+              "faithfulness": 7,
+              "relevance": 9,
+              "context": 7,
+              "moy": 7.7
+            }
+          ]
+        },
+        {
+          "ticket_id": "PRINT-013",
+          "succes": false,
+          "iterations_necessaires": null,
+          "scores_par_iteration": [
+            {
+              "iter": 1,
+              "faithfulness": 6,
+              "relevance": 7,
+              "context": 5,
+              "moy": 6.0
+            },
+            {
+              "iter": 2,
+              "faithfulness": 6,
+              "relevance": 7,
+              "context": 5,
+              "moy": 6.0
+            }
+          ]
+        },
+        {
+          "ticket_id": "MAIL-014",
+          "succes": true,
+          "iterations_necessaires": 1,
+          "scores_par_iteration": [
+            {
+              "iter": 1,
+              "faithfulness": 9,
+              "relevance": 10,
+              "context": 9,
+              "moy": 9.3
+            }
+          ]
+        },
+        {
+          "ticket_id": "VPN-017",
+          "succes": false,
+          "iterations_necessaires": null,
+          "scores_par_iteration": [
+            {
+              "iter": 1,
+              "faithfulness": 4,
+              "relevance": 6,
+              "context": 5,
+              "moy": 5.0
+            },
+            {
+              "iter": 2,
+              "faithfulness": 5,
+              "relevance": 6,
+              "context": 6,
+              "moy": 5.7
+            }
+          ]
+        },
+        {
+          "ticket_id": "SAP-036",
+          "succes": true,
+          "iterations_necessaires": 2,
+          "scores_par_iteration": [
+            {
+              "iter": 1,
+              "faithfulness": 6,
+              "relevance": 7,
+              "context": 5,
+              "moy": 6.0
+            },
+            {
+              "iter": 2,
+              "faithfulness": 6,
+              "relevance": 8,
+              "context": 7,
+              "moy": 7.0
+            }
+          ]
+        },
+        {
+          "ticket_id": "PROXY-037",
+          "succes": false,
+          "iterations_necessaires": null,
+          "scores_par_iteration": [
+            {
+              "iter": 1,
+              "faithfulness": 5,
+              "relevance": 6,
+              "context": 5,
+              "moy": 5.3
+            },
+            {
+              "iter": 2,
+              "faithfulness": 6,
+              "relevance": 7,
+              "context": 5,
+              "moy": 6.0
+            }
+          ]
+        }
+      ]
+    },
+    "react": {
+      "per_iteration": {
+        "faithfulness": [
+          5.7,
+          5.8
+        ],
+        "relevance": [
+          6.8,
+          7.4
+        ],
+        "context": [
+          5.6,
+          6.4
+        ],
+        "average": [
+          6.03,
+          6.54
+        ]
+      },
+      "success_rate": 0.5,
+      "total_cost_usd": 0.0938,
+      "wallclock_s": 257.4,
+      "reports": [
+        {
+          "ticket_id": "VPN-001",
+          "succes": false,
+          "iterations_necessaires": null,
+          "scores_par_iteration": [
+            {
+              "iter": 1,
+              "faithfulness": 0,
+              "relevance": 2,
+              "context": 0,
+              "moy": 0.7
+            },
+            {
+              "iter": 2,
+              "faithfulness": 0,
+              "relevance": 5,
+              "context": 4,
+              "moy": 3.0
+            }
+          ]
+        },
+        {
+          "ticket_id": "OUTLOOK-005",
+          "succes": false,
+          "iterations_necessaires": null,
+          "scores_par_iteration": [
+            {
+              "iter": 1,
+              "faithfulness": 5,
+              "relevance": 6,
+              "context": 5,
+              "moy": 5.3
+            },
+            {
+              "iter": 2,
+              "faithfulness": 5,
+              "relevance": 6,
+              "context": 6,
+              "moy": 5.7
+            }
+          ]
+        },
+        {
+          "ticket_id": "WIFI-006",
+          "succes": true,
+          "iterations_necessaires": 2,
+          "scores_par_iteration": [
+            {
+              "iter": 1,
+              "faithfulness": 7,
+              "relevance": 6,
+              "context": 6,
+              "moy": 6.3
+            },
+            {
+              "iter": 2,
+              "faithfulness": 8,
+              "relevance": 9,
+              "context": 9,
+              "moy": 8.7
+            }
+          ]
+        },
+        {
+          "ticket_id": "PWD-007",
+          "succes": false,
+          "iterations_necessaires": null,
+          "scores_par_iteration": [
+            {
+              "iter": 1,
+              "faithfulness": 4,
+              "relevance": 7,
+              "context": 6,
+              "moy": 5.7
+            },
+            {
+              "iter": 2,
+              "faithfulness": 4,
+              "relevance": 6,
+              "context": 5,
+              "moy": 5.0
+            }
+          ]
+        },
+        {
+          "ticket_id": "TEAMS-011",
+          "succes": true,
+          "iterations_necessaires": 1,
+          "scores_par_iteration": [
+            {
+              "iter": 1,
+              "faithfulness": 7,
+              "relevance": 8,
+              "context": 7,
+              "moy": 7.3
+            }
+          ]
+        },
+        {
+          "ticket_id": "PRINT-013",
+          "succes": true,
+          "iterations_necessaires": 1,
+          "scores_par_iteration": [
+            {
+              "iter": 1,
+              "faithfulness": 9,
+              "relevance": 10,
+              "context": 8,
+              "moy": 9.0
+            }
+          ]
+        },
+        {
+          "ticket_id": "MAIL-014",
+          "succes": true,
+          "iterations_necessaires": 1,
+          "scores_par_iteration": [
+            {
+              "iter": 1,
+              "faithfulness": 9,
+              "relevance": 9,
+              "context": 8,
+              "moy": 8.7
+            }
+          ]
+        },
+        {
+          "ticket_id": "VPN-017",
+          "succes": true,
+          "iterations_necessaires": 1,
+          "scores_par_iteration": [
+            {
+              "iter": 1,
+              "faithfulness": 7,
+              "relevance": 8,
+              "context": 6,
+              "moy": 7.0
+            }
+          ]
+        },
+        {
+          "ticket_id": "SAP-036",
+          "succes": false,
+          "iterations_necessaires": null,
+          "scores_par_iteration": [
+            {
+              "iter": 1,
+              "faithfulness": 4,
+              "relevance": 5,
+              "context": 4,
+              "moy": 4.3
+            },
+            {
+              "iter": 2,
+              "faithfulness": 4,
+              "relevance": 6,
+              "context": 5,
+              "moy": 5.0
+            }
+          ]
+        },
+        {
+          "ticket_id": "PROXY-037",
+          "succes": false,
+          "iterations_necessaires": null,
+          "scores_par_iteration": [
+            {
+              "iter": 1,
+              "faithfulness": 5,
+              "relevance": 7,
+              "context": 6,
+              "moy": 6.0
+            },
+            {
+              "iter": 2,
+              "faithfulness": 5,
+              "relevance": 7,
+              "context": 6,
+              "moy": 6.0
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "wallclock_total_s": 348.4
+}

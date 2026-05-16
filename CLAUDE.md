@@ -35,6 +35,8 @@ bibops bench ab-test --mode llm
 bibops bench position-bias --max-tickets 10
 bibops bench validate --input data/outputs/benchmark/comparison_results.json
 bibops bench kaggle --judge-model gpt-4o
+bibops bench adversarial --max-tickets 10           # RAGAS-inspired loop: ReAct vs Zero-shot (10 IT tickets)
+bibops bench adversarial-demo --mode react          # Single-ticket adversarial demo (VPN-China)
 
 # Evaluation
 bibops eval pending --db data/databases/bibops.db
@@ -85,17 +87,16 @@ src/
   bibops/           — Production namespace package
     cli/            — Typer CLI (main.py, commands/{bench,eval,dev,racing}.py)
     evaluation/     — Evaluation engine
-      judges/       — llm_judge.py (LLMJudge, JudgeVerdict) + llm_professor.py (LLMProfessor) + rule_engine.py
+      judges/       — llm_judge.py (LLMJudge) + llm_professor.py (LLMProfessor) + rule_engine.py + discriminator.py (RAGAS-inspired)
       metrics/      — composite.py, greenops.py, consistency.py
       scoring/      — thresholds.py (ScoreThreshold, ScoreVerdict, load_thresholds, evaluate_score)
       reporting/    — regression.py
       checks.py     — PII, injection, secrets, toxicity, URL, refusal detectors
     adapters/       — Agent adapters (registry, it_support, a2a_client, openai_compat)
     probes/         — Probe loader (load_probes, list_categories, Probe schema)
-    research/       — Experimental code (excluded from coverage gates)
+    benchmark/      — Benchmark pipelines (compare_archs, ab_test, adversarial, adversarial_convergence, …)
   agent/            — IT support ReAct agent (maestro.py, tools.py, mcp_server.py, rag.py)
   common/           — Shared constants (config.py), text helpers (text.py), LLM clients (llm_clients.py)
-  benchmark/        — Benchmark pipelines and A/B testing
   racing/           — Distributed F1 racing arena
     hub/            — FastAPI server + race engine + RAG service
     team_client/    — LangGraph-based team agent (runs as separate process)

@@ -1,0 +1,65 @@
+{
+  "description": "10 tickets IT Michelin + RCA Ground Truth pour la boucle adversariale RAGAS. Chaque RCA décrit la cause racine et la procédure de résolution attendue, et sert de référence au discriminateur.",
+  "tickets": [
+    {
+      "id": "VPN-001",
+      "ticket": "Le VPN Cisco me donne l'erreur 412 et je suis en Chine. J'ai déjà redémarré mon PC et réinstallé AnyConnect mais rien ne change.",
+      "contexte": "L'entreprise est Michelin. Le VPN principal est Cisco AnyConnect.",
+      "rca": "L'erreur 412 'Tunnel rejected by server' en Chine est causée par le blocage du port UDP 1194 (IPSec/IKEv2) par le Great Firewall of China. La solution est de reconfigurer AnyConnect pour utiliser le port TCP 443 (TLS fallback) via le profil VPN 'Michelin-China-Fallback'. Si ce profil est absent du client, l'utilisateur doit contacter le support N2 pour que l'équipe réseau active le profil de contournement GFW sur son compte AnyConnect et lui fournisse le fichier de configuration XML."
+    },
+    {
+      "id": "OUTLOOK-005",
+      "ticket": "Je ne peux pas accéder à Outlook depuis ce matin, le client refuse de se connecter.",
+      "contexte": "Tu es un technicien support IT chez Michelin. Aide l'utilisateur rapidement.",
+      "rca": "Le refus de connexion d'Outlook au démarrage est généralement causé soit par une expiration du jeton d'authentification Microsoft 365, soit par un incident côté service Exchange Online. La procédure attendue est : (1) vérifier le statut du service mail Michelin, (2) si le service est en ligne, demander à l'utilisateur de se déconnecter de son profil Outlook et de relancer en mode sans cache OST, (3) supprimer puis recréer le profil Outlook depuis Panneau de configuration → Mail, (4) si le problème persiste, vérifier l'expiration du certificat MSAL et escalader au support N2 si nécessaire."
+    },
+    {
+      "id": "WIFI-006",
+      "ticket": "Je suis en télétravail et ma connexion WiFi est très lente. Comment l'améliorer ?",
+      "contexte": "Tu es un technicien support IT chez Michelin.",
+      "rca": "Une connexion WiFi lente en télétravail provient le plus souvent de la saturation de la bande 2,4 GHz, d'une mauvaise position de la box ou d'un canal WiFi encombré. La procédure attendue est : (1) basculer le PC sur la bande 5 GHz du SSID domestique, (2) rapprocher physiquement le poste de la box ou utiliser un câble Ethernet pour les visios critiques, (3) redémarrer la box, (4) vérifier qu'aucune autre application (streaming, sauvegarde cloud) ne sature la bande passante, (5) tester le débit via speedtest.net et remonter les chiffres au support N2 si la latence reste supérieure à 100 ms."
+    },
+    {
+      "id": "PWD-007",
+      "ticket": "J'ai oublié mon mot de passe Windows. Comment faire pour le réinitialiser ?",
+      "contexte": "Tu es un technicien support IT chez Michelin. Sois concis.",
+      "rca": "La réinitialisation du mot de passe Windows pour un poste joint au domaine Michelin se fait via le portail Self-Service Password Reset (SSPR) Azure AD ou, en l'absence d'accès, via le service desk. La procédure attendue est : (1) se connecter à https://passwordreset.microsoftonline.com depuis un autre appareil, (2) valider son identité via SMS ou Authenticator, (3) définir un nouveau mot de passe respectant la politique Michelin (12+ caractères, complexité, pas de réutilisation des 10 derniers), (4) si la SSPR n'est pas configurée, appeler le service desk avec une pièce d'identité Michelin pour une réinitialisation manuelle."
+    },
+    {
+      "id": "TEAMS-011",
+      "ticket": "Mon compte Teams est connecté mais je ne vois plus mes canaux de projet.",
+      "contexte": "Tu es un technicien support IT chez Michelin.",
+      "rca": "La disparition des canaux Teams alors que la connexion fonctionne est typiquement causée par un cache local corrompu ou par une perte d'appartenance à l'équipe côté Azure AD. La procédure attendue est : (1) fermer complètement Teams (clic droit sur l'icône systray → Quitter), (2) vider le cache via %appdata%\\Microsoft\\Teams (supprimer les dossiers Cache, blob_storage, GPUCache, IndexedDB), (3) relancer Teams et se reconnecter, (4) si les canaux restent absents, vérifier auprès du propriétaire de l'équipe que l'utilisateur est toujours membre, (5) si nécessaire, demander la réintégration à l'équipe et escalader au support N2 pour audit Azure AD."
+    },
+    {
+      "id": "PRINT-013",
+      "ticket": "Je ne peux pas imprimer en recto-verso, l'option n'apparaît plus.",
+      "contexte": "Tu es un technicien support IT chez Michelin.",
+      "rca": "La disparition de l'option recto-verso (duplex) est due soit à un pilote d'imprimante générique installé à la place du pilote constructeur, soit à un module duplex désactivé dans les propriétés du périphérique. La procédure attendue est : (1) ouvrir Paramètres → Imprimantes et scanners → propriétés de l'imprimante, (2) vérifier sous l'onglet Configuration que l'unité duplex est activée et déclarée comme installée, (3) si l'option reste absente, désinstaller l'imprimante et réinstaller le pilote constructeur officiel depuis le portail logiciel Michelin, (4) tester l'impression recto-verso avec un document de test, (5) escalader au support N2 si le module duplex matériel n'est pas reconnu."
+    },
+    {
+      "id": "MAIL-014",
+      "ticket": "J'ai un message 'boîte aux lettres pleine' dans Outlook.",
+      "contexte": "Tu es un technicien support IT chez Michelin.",
+      "rca": "Le message 'boîte aux lettres pleine' apparaît lorsque le quota Exchange Online de l'utilisateur (50 Go par défaut chez Michelin) est atteint. La procédure attendue est : (1) vider la corbeille Outlook (clic droit sur 'Éléments supprimés' → Vider le dossier), (2) archiver les anciens mails via Outlook → Fichier → Outils → Nettoyer la boîte de réception, (3) supprimer les pièces jointes volumineuses via le tri par taille, (4) configurer l'AutoArchive pour basculer les mails de plus de 12 mois vers un fichier PST local ou l'archive en ligne, (5) si le quota reste insuffisant après nettoyage, demander une extension de quota au support N2 avec justification métier."
+    },
+    {
+      "id": "VPN-017",
+      "ticket": "Le VPN se connecte mais je n'accède à aucune application interne.",
+      "contexte": "Tu es un technicien support IT chez Michelin.",
+      "rca": "Quand le VPN est connecté mais qu'aucune application interne n'est joignable, la cause racine est généralement un problème de routage (split-tunneling mal configuré ou table de routage non poussée) ou un problème DNS (le client n'utilise pas les serveurs DNS internes Michelin). La procédure attendue est : (1) vérifier dans AnyConnect que la session affiche bien 'tunnel établi' et qu'une route vers 10.0.0.0/8 est présente (ipconfig /all + route print), (2) vérifier que les serveurs DNS internes Michelin sont utilisés (nslookup d'un FQDN interne doit résoudre), (3) si DNS ne résout pas, lancer ipconfig /flushdns et reconnecter le VPN, (4) si le routage est cassé, déconnecter/reconnecter avec le profil 'Full-Tunnel-Michelin', (5) escalader au support N2 réseau si le problème persiste."
+    },
+    {
+      "id": "SAP-036",
+      "ticket": "Le client SAP affiche une erreur de certificat expiré.",
+      "contexte": "Tu es un technicien support IT chez Michelin.",
+      "rca": "Une erreur de certificat expiré dans SAP GUI résulte soit d'un certificat client (SNC) périmé sur le poste, soit d'une autorité de certification Michelin non à jour dans le magasin de certificats Windows. La procédure attendue est : (1) ouvrir le magasin de certificats utilisateur (certmgr.msc) et vérifier la validité du certificat SAP-SNC personnel, (2) si expiré, demander un renouvellement via l'auto-enrôlement Active Directory ou via le portail PKI Michelin, (3) vérifier que les certificats racine 'Michelin Internal Root CA' sont installés et valides dans le magasin 'Autorités de certification racines de confiance', (4) redémarrer SAP GUI après installation du nouveau certificat, (5) escalader au support N2 Sécurité si l'auto-enrôlement échoue."
+    },
+    {
+      "id": "PROXY-037",
+      "ticket": "Mon navigateur bloque l'accès à l'intranet pour cause de proxy.",
+      "contexte": "Tu es un technicien support IT chez Michelin.",
+      "rca": "Le blocage de l'intranet par le proxy provient le plus souvent d'une configuration PAC (Proxy Auto-Configuration) obsolète, d'une authentification proxy expirée ou d'un certificat d'inspection SSL non à jour. La procédure attendue est : (1) vérifier dans Paramètres Windows → Réseau → Proxy que le script PAC Michelin pointe bien sur http://wpad.michelin.com/wpad.dat, (2) ouvrir une session admin et lancer 'netsh winhttp reset proxy' puis 'netsh winhttp import proxy source=ie', (3) vider le cache du navigateur et redémarrer, (4) tester l'accès à un site intranet de référence (https://intranet.michelin.com), (5) si l'erreur persiste, vérifier la validité du certificat 'Michelin SSL Inspection' dans le magasin Windows et escalader au support N2 Sécurité réseau."
+    }
+  ]
+}

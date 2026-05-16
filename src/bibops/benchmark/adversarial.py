@@ -1,32 +1,29 @@
 """
 Boucle d'entraînement adversariale GAN-inspirée pour l'agent BibOps.
 
-  Générateur    = maestro.lancer_agent  (produit une réponse au ticket)
-  Discriminateur = DiscriminatorLLM     (juge RAGAS-inspired avec 3 métriques)
+  Générateur    = maestro.lancer_agent (mode='react') ou appel LLM direct (mode='zero_shot')
+  Discriminateur = DiscriminatorLLM    (juge RAGAS-inspired avec 3 métriques)
 
 Logique par itération :
-  1. lancer_agent génère une réponse.
+  1. Le générateur produit une réponse au ticket.
   2. Le Discriminateur évalue 3 métriques : faithfulness, relevance, context.
-  3. is_perfect (les 3 >= 8) → succès, la boucle s'arrête.
+  3. is_perfect (moyenne >= 7) → succès, la boucle s'arrête.
   4. Sinon, un feedback ciblé par métrique est injecté dans le contexte
      de l'agent pour la prochaine tentative.
   5. Jusqu'à max_iterations.
 
 Rapport final : métriques RAGAS + bilan FinOps (latence, tokens, coût USD).
 
-Exécution directe (démo) :
-    python -m src.llm_professor.adversarial
+Exécution directe (démo single-ticket) :
+    PYTHONPATH=. python -m src.bibops.benchmark.adversarial
 """
 
 import os
 import signal
-import sys
 import textwrap
 import time
 from dataclasses import dataclass, field
-from typing import List, Optional
-
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
+from typing import List, Literal, Optional
 
 from src.agent.maestro import lancer_agent
 from src.agent.tools import (
@@ -34,7 +31,40 @@ from src.agent.tools import (
     chercher_documentation_technique,
     verifier_statut_serveur,
 )
-from src.bibops.research.discriminator import DiscriminatorLLM
+from src.bibops.evaluation.judges.discriminator import DiscriminatorLLM
+from src.common.llm_clients import get_copilot_client
+
+GeneratorMode = Literal["react", "zero_shot"]
+
+
+def _run_zero_shot_generator(
+    contexte: str,
+    ticket: str,
+    modele: str,
+    temperature: float = 0.3,
+    timeout_s: int = 60,
+) -> str:
+    """
+    Générateur sans couche agentique : un seul appel LLM, aucun outil, aucune trace.
+    Sert de baseline pour mesurer l'impact de la couche ReAct + RAG sur la convergence.
+    """
+    client = get_copilot_client()
+    system = (
+        f"Tu es un agent IA de support IT Michelin. Contexte : {contexte}\n\n"
+        "Réponds directement au ticket de l'utilisateur en français, en proposant "
+        "un diagnostic puis des étapes d'action concrètes. Tu n'as accès à aucun outil "
+        "externe : utilise uniquement ton raisonnement et le contexte fourni."
+    )
+    response = client.chat.completions.create(
+        model=modele,
+        messages=[
+            {"role": "system", "content": system},
+            {"role": "user", "content": ticket},
+        ],
+        temperature=temperature,
+        timeout=timeout_s,
+    )
+    return (response.choices[0].message.content or "").strip()
 
 
 # ── Tarification FinOps (USD / 1M tokens) ────────────────────────────────────
@@ -189,6 +219,8 @@ def run_adversarial_training(
     modele_discriminateur: str = "gpt-5.2",
     contexte_initial: str = "L'entreprise est Michelin.",
     verbose: bool = True,
+    mode: GeneratorMode = "react",
+    generator_provider: str = "ollama",
 ) -> AdversarialReport:
     """
     Lance la boucle d'entraînement adversariale GAN-inspirée.
@@ -220,6 +252,7 @@ def run_adversarial_training(
         print(f"{_B}RCA réf.  :{_R} {_DIM}{rca_ground_truth[:100]}…{_R}")
         print(
             f"{_B}Config    :{_R} agent={_YELLOW}{modele_agent}{_R}"
+            f" ({generator_provider}, mode={mode})"
             f" | discriminateur={_MAGENTA}{modele_discriminateur}{_R}"
             f" | max_iter={max_iterations}"
         )
@@ -230,14 +263,29 @@ def run_adversarial_training(
 
         # ── Étape 1 : Générateur ──────────────────────────────────────────────
         if verbose:
-            print(_banner(f"ITÉRATION {i}/{max_iterations}  —  GÉNÉRATEUR (agent)", _YELLOW))
+            label_mode = "ReAct + RAG" if mode == "react" else "ZERO-SHOT (no tools)"
+            print(_banner(
+                f"ITÉRATION {i}/{max_iterations}  —  GÉNÉRATEUR ({label_mode})",
+                _YELLOW,
+            ))
 
-        reponse = lancer_agent(
-            contexte=contexte_courant,
-            ticket_utilisateur=ticket,
-            outils_disponibles=outils,
-            modele=modele_agent,
-        )
+        if mode == "zero_shot":
+            reponse = _run_zero_shot_generator(
+                contexte=contexte_courant,
+                ticket=ticket,
+                modele=modele_agent,
+            )
+            if verbose:
+                print(f"\n [Utilisateur] : {ticket}")
+                print(f"\n[Agent zero-shot] :\n{reponse}")
+        else:
+            reponse = lancer_agent(
+                contexte=contexte_courant,
+                ticket_utilisateur=ticket,
+                outils_disponibles=outils,
+                modele=modele_agent,
+                modele_provider=generator_provider,
+            )
 
         if verbose:
             print(_header("Réponse de l'agent", _WHITE))
@@ -330,10 +378,11 @@ def run_adversarial_training(
                 )
         else:
             if verbose:
+                moyenne = round((sf + sr + sc) / 3, 1)
                 print(
                     _banner(
                         f"⚠️   MAX ITÉRATIONS ATTEINT  "
-                        f"—  F={sf} R={sr} C={sc} (seuil : 8)",
+                        f"—  F={sf} R={sr} C={sc} (moy={moyenne}, seuil moy ≥ 7)",
                         _RED,
                     )
                 )
@@ -408,50 +457,65 @@ def _afficher_rapport_final(rapport: AdversarialReport) -> None:
     )
 
 
-# ── Démo ─────────────────────────────────────────────────────────────────────
+# ── Démo single-ticket ───────────────────────────────────────────────────────
 
-if __name__ == "__main__":
+_DEMO_TICKET = (
+    "Le VPN Cisco me donne l'erreur 412 et je suis en Chine. "
+    "J'ai déjà redémarré mon PC et réinstallé AnyConnect mais rien ne change."
+)
+_DEMO_RCA = (
+    "L'erreur 412 'Tunnel rejected by server' en Chine est causée par le "
+    "blocage du port UDP 1194 (IPSec/IKEv2) par le Great Firewall of China. "
+    "La solution est de reconfigurer AnyConnect pour utiliser le port TCP 443 "
+    "(TLS fallback) via le profil VPN 'Michelin-China-Fallback'. "
+    "Si ce profil est absent du client, l'utilisateur doit contacter le support "
+    "N2 pour que l'équipe réseau active le profil de contournement GFW sur son "
+    "compte AnyConnect et lui fournisse le fichier de configuration XML."
+)
 
-    TICKET_DEMO = (
-        "Le VPN Cisco me donne l'erreur 412 et je suis en Chine. "
-        "J'ai déjà redémarré mon PC et réinstallé AnyConnect mais rien ne change."
+
+def main() -> None:
+    """Démo single-ticket de la boucle adversariale (entrée argparse-compatible)."""
+    import argparse
+
+    parser = argparse.ArgumentParser(
+        description="Démo single-ticket de la boucle adversariale BibOps."
     )
-
-    RCA_GROUND_TRUTH = (
-        "L'erreur 412 'Tunnel rejected by server' en Chine est causée par le "
-        "blocage du port UDP 1194 (IPSec/IKEv2) par le Great Firewall of China. "
-        "La solution est de reconfigurer AnyConnect pour utiliser le port TCP 443 "
-        "(TLS fallback) via le profil VPN 'Michelin-China-Fallback'. "
-        "Si ce profil est absent du client, l'utilisateur doit contacter le support "
-        "N2 pour que l'équipe réseau active le profil de contournement GFW sur son "
-        "compte AnyConnect et lui fournisse le fichier de configuration XML."
-    )
-
-    max_iter = int(os.environ.get("BIBOPS_ADVERSARIAL_MAX_ITER", "2"))
-    judge_model = os.environ.get("BIBOPS_ADVERSARIAL_JUDGE_MODEL", "gpt-4o-mini")
-    run_timeout_s = int(os.environ.get("BIBOPS_ADVERSARIAL_RUN_TIMEOUT_S", "120"))
+    parser.add_argument("--max-iter", type=int, default=2,
+                        help="Itérations adversariales (default: 2).")
+    parser.add_argument("--mode", choices=["react", "zero_shot"], default="react")
+    parser.add_argument("--generator-model", default="gpt-4o-mini")
+    parser.add_argument("--generator-provider", choices=["copilot", "ollama"], default="copilot")
+    parser.add_argument("--judge-model", default="gpt-4o")
+    parser.add_argument("--run-timeout-s", type=int, default=120,
+                        help="Timeout SIGALRM global (0 pour désactiver).")
+    args = parser.parse_args()
 
     def _on_timeout(_signum, _frame):
-        raise TimeoutError(f"Timeout adversarial dépassé ({run_timeout_s}s).")
+        raise TimeoutError(f"Timeout adversarial dépassé ({args.run_timeout_s}s).")
 
-    if run_timeout_s > 0:
+    if args.run_timeout_s > 0:
         signal.signal(signal.SIGALRM, _on_timeout)
-        signal.alarm(run_timeout_s)
+        signal.alarm(args.run_timeout_s)
 
     try:
         run_adversarial_training(
-            ticket=TICKET_DEMO,
-            rca_ground_truth=RCA_GROUND_TRUTH,
-            max_iterations=max_iter,
-            modele_agent="phi3:latest",
-            # NOTE : Le proxy Copilot (localhost:4141) accepte uniquement les modèles GPT.
-            # Remplacez par "claude-sonnet-4-6" si vous utilisez un proxy LiteLLM+Anthropic.
-            modele_discriminateur=judge_model,
+            ticket=_DEMO_TICKET,
+            rca_ground_truth=_DEMO_RCA,
+            max_iterations=args.max_iter,
+            modele_agent=args.generator_model,
+            generator_provider=args.generator_provider,
+            mode=args.mode,
+            modele_discriminateur=args.judge_model,
             contexte_initial="L'entreprise est Michelin. Le VPN principal est Cisco AnyConnect.",
         )
     except TimeoutError as exc:
         print(f"\n[WARN] {exc}")
-        print("[WARN] Arrêt propre de la démo adversariale (utilisez BIBOPS_ADVERSARIAL_RUN_TIMEOUT_S pour ajuster).")
+        print("[WARN] Arrêt propre de la démo adversariale.")
     finally:
-        if run_timeout_s > 0:
+        if args.run_timeout_s > 0:
             signal.alarm(0)
+
+
+if __name__ == "__main__":
+    main()

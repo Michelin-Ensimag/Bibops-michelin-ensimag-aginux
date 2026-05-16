@@ -108,3 +108,19 @@ def validate(ctx: typer.Context) -> None:
     from src.bibops.benchmark import validate_benchmark_output
 
     run_argparse_main(validate_benchmark_output.main, ctx.args, "bibops bench validate")
+
+
+@app.command("adversarial", context_settings=PASSTHROUGH)
+def adversarial(ctx: typer.Context) -> None:
+    """Adversarial RAGAS-inspired benchmark: ReAct+RAG vs Zero-shot convergence (10 tickets x N iter)."""
+    from src.bibops.benchmark import adversarial_convergence
+
+    run_argparse_main(adversarial_convergence.main, ctx.args, "bibops bench adversarial")
+
+
+@app.command("adversarial-demo", context_settings=PASSTHROUGH)
+def adversarial_demo(ctx: typer.Context) -> None:
+    """Single-ticket demo of the adversarial loop (default: VPN-China scenario)."""
+    from src.bibops.benchmark import adversarial as adversarial_demo_runner
+
+    run_argparse_main(adversarial_demo_runner.main, ctx.args, "bibops bench adversarial-demo")

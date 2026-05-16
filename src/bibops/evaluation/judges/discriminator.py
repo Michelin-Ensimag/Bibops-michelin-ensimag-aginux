@@ -1,5 +1,5 @@
 """
-src/bibops/research/discriminator.py
+src/bibops/evaluation/judges/discriminator.py
 
 DiscriminatorLLM — évaluateur multi-métriques RAGAS-inspired pour la boucle GAN.
 
@@ -29,9 +29,11 @@ class DiscriminatorOutput(BaseModel):
 
     score_faithfulness: int = Field(
         description=(
-            "Fidélité de la réponse au RCA Ground Truth. "
-            "0 = hallucination totale (informations inventées), "
-            "10 = strictement fidèle, aucune information fabriquée."
+            "Fidélité SÉMANTIQUE de la réponse au RCA Ground Truth. "
+            "0 = la réponse CONTREDIT le RCA ou invente une cause technique fausse, "
+            "10 = aucune contradiction avec le RCA. "
+            "IMPORTANT : les ajouts raisonnables et cohérents (étapes de bonne pratique IT) "
+            "ne sont PAS des hallucinations tant qu'ils ne contredisent pas le RCA."
         )
     )
     score_relevance: int = Field(
@@ -49,57 +51,78 @@ class DiscriminatorOutput(BaseModel):
         )
     )
     is_perfect: bool = Field(
-        description="True uniquement si score_faithfulness >= 8 ET score_relevance >= 8 ET score_context >= 8."
+        description="True si la moyenne des 3 scores >= 7. Calculé côté Python, peu importe ta valeur."
     )
     feedback_actionnable: str = Field(
         description=(
-            "Si is_perfect=False : explique précisément quelle métrique est la plus faible "
-            "et ce que l'agent doit corriger (ex : 'Ton score_context est bas : rappelle "
-            "l'outil avec un meilleur mot-clé'). Si is_perfect=True : chaîne vide."
+            "Si is_perfect=False : guide général sur l'axe à améliorer SANS révéler la solution. "
+            "Tu DOIS proscrire toute citation directe d'éléments du RCA (URL, noms de profils, "
+            "ports, codes d'incident, noms de procédures Michelin). "
+            "Formule en termes pédagogiques : 'creuse la cause racine technique', 'précise "
+            "davantage le mécanisme', 'cite la procédure officielle Michelin sans inventer'. "
+            "Si is_perfect=True : chaîne vide."
         )
     )
 
 
 _SYSTEM_PROMPT = """\
-Tu es un Discriminateur adversarial RAGAS-inspired dans une boucle d'entraînement GAN.
+Tu es un Discriminateur RAGAS-inspired dans une boucle adversariale.
 Tu évalues la réponse d'un agent IA de support IT selon 3 métriques indépendantes.
 
-TON RÔLE : débusquer les hallucinations, les hors-sujets, et les mauvais appels d'outils.
-Tu n'es PAS bienveillant. Tu es rigoureux, précis, exigeant.
+TON RÔLE : évaluer la qualité SÉMANTIQUE par rapport au RCA, pas la conformité textuelle.
+Tu es exigeant mais juste : tu pénalises les contradictions et hors-sujets, pas les ajouts
+pédagogiques cohérents avec une bonne pratique IT.
 
-━━━ MÉTRIQUE 1 — FAITHFULNESS (Fidélité) ━━━
-Question : La réponse contient-elle UNIQUEMENT des informations présentes dans le RCA Ground Truth ?
-- 8-10 : Toutes les affirmations sont tracées au RCA. Zéro invention.
-- 5-7  : Quelques éléments corrects mais 1-2 informations non présentes dans le RCA.
-- 0-4  : L'agent a inventé des procédures, ports, profils ou causes absents du RCA.
+━━━ MÉTRIQUE 1 — FAITHFULNESS (Fidélité sémantique) ━━━
+Question : La réponse CONTREDIT-elle le RCA Ground Truth ou invente-t-elle une cause fausse ?
+- 8-10 : Aucune contradiction. La cause racine identifiée correspond au RCA, même si la
+         formulation diffère. Des étapes de bonne pratique IT ajoutées sont OK.
+- 5-7  : 1-2 affirmations en désaccord léger avec le RCA, ou détails techniques imprécis.
+- 0-4  : Contradiction directe (cause inventée, URL/procédure fausse présentée comme vraie).
+
+IMPORTANT : "L'agent a ajouté X qui n'est pas dans le RCA" n'est PAS une hallucination si X
+est une bonne pratique IT raisonnable. Ne pénalise que ce qui CONTREDIT le RCA.
 
 ━━━ MÉTRIQUE 2 — RELEVANCE (Pertinence) ━━━
-Question : La réponse répond-elle directement au problème décrit dans le ticket ?
-- 8-10 : Adresse la cause racine exacte du ticket, solution actionnable, contexte utilisé.
-- 5-7  : Réponse générique ou partiellement adaptée au ticket.
-- 0-4  : Hors sujet, répond à un autre problème, ou refuse d'aider.
+Question : La réponse adresse-t-elle le problème du ticket ?
+- 8-10 : Identifie correctement le type de problème et propose une solution actionnable.
+- 5-7  : Réponse partiellement adaptée mais manque de spécificité.
+- 0-4  : Hors sujet, refuse d'aider, ou répond à un autre problème.
 
-━━━ MÉTRIQUE 3 — CONTEXT (Qualité du contexte RAG) ━━━
-Question : L'agent a-t-il utilisé ses outils pour ramener la bonne documentation ?
-- 8-10 : L'outil appelé avec les bons mots-clés a retourné la documentation pertinente.
-- 5-7  : Outil appelé mais résultats partiels ou mots-clés sous-optimaux.
-- 0-4  : Aucun outil appelé, mauvais outil utilisé, ou résultats totalement hors sujet.
+━━━ MÉTRIQUE 3 — CONTEXT (Qualité du contexte) ━━━
+Question : Le contenu mobilisé (outils RAG ou raisonnement zero-shot) est-il pertinent ?
+- 8-10 : Le contexte mobilisé couvre la cause racine et les étapes de résolution.
+- 5-7  : Contexte partiellement aligné.
+- 0-4  : Contexte absent, incorrect, ou totalement hors sujet.
 
 ━━━ CONDITION is_perfect ━━━
-is_perfect = True UNIQUEMENT si score_faithfulness >= 8 ET score_relevance >= 8 ET score_context >= 8.
+Calculée côté Python (moyenne >= 7). Mets ce que tu veux dans le JSON, on l'écrase.
 
-━━━ FEEDBACK ACTIONNABLE ━━━
-Si is_perfect=False, identifie la métrique la plus faible et donne une instruction précise :
-- Faithfulness bas → "Tu as halluciné [X]. Colle-toi strictement aux résultats des outils."
-- Relevance bas    → "Ta réponse ne traite pas [problème exact]. Adresse directement [cause]."
-- Context bas      → "Ton score context est bas. Rappelle l'outil avec le mot-clé [X]."
+━━━ FEEDBACK ACTIONNABLE — RÈGLES STRICTES ━━━
+Tu ne dois JAMAIS révéler la solution exacte du RCA. INTERDIT de citer :
+  - Les URLs, noms de profils, ports, codes d'incident, noms de procédures Michelin
+  - Les étapes précises listées dans le RCA
+  - Les noms de profils VPN, certificats, services internes
+
+Formule un feedback PÉDAGOGIQUE et GÉNÉRAL, comme un professeur qui guide sans donner
+la réponse. Exemples :
+  - Faithfulness bas → "Ta réponse contredit la cause racine attendue : revois le type
+    d'incident en jeu (réseau / authentification / certificat / quota) avant de proposer
+    une solution."
+  - Relevance bas    → "Ta réponse reste générique. Identifie le mécanisme technique
+    spécifique évoqué par le ticket (code d'erreur, contexte géographique, application
+    précise) et adresse-le."
+  - Context bas      → "Le contexte que tu mobilises n'est pas spécifique au RCA. Cherche
+    la procédure officielle Michelin associée à ce type d'incident."
+
+Le feedback doit faire **2 phrases maximum** et ne contenir **aucun nom propre Michelin**.
 
 Renvoie UNIQUEMENT un JSON valide avec exactement ces 5 clés :
   "score_faithfulness"   — entier 0 à 10
   "score_relevance"      — entier 0 à 10
   "score_context"        — entier 0 à 10
-  "is_perfect"           — booléen
-  "feedback_actionnable" — string (vide si is_perfect=true)
+  "is_perfect"           — booléen (sera recalculé)
+  "feedback_actionnable" — string (2 phrases max, sans citation du RCA)
 
 {format_instructions}
 """
@@ -158,7 +181,8 @@ class DiscriminatorLLM:
         }
     """
 
-    SEUIL_PARFAIT: int = 8  # chaque métrique doit atteindre ce seuil
+    SEUIL_PARFAIT: int = 8  # legacy — non utilisé depuis le passage au critère moyenne
+    SEUIL_MOYENNE: float = 7.0  # is_perfect ssi (F + R + C) / 3 >= SEUIL_MOYENNE
 
     def __init__(
         self,
@@ -214,11 +238,8 @@ class DiscriminatorLLM:
         sf = int(resultat.get("score_faithfulness", 0))
         sr = int(resultat.get("score_relevance", 0))
         sc = int(resultat.get("score_context", 0))
-        is_perfect = (
-            sf >= self.SEUIL_PARFAIT
-            and sr >= self.SEUIL_PARFAIT
-            and sc >= self.SEUIL_PARFAIT
-        )
+        moyenne = (sf + sr + sc) / 3
+        is_perfect = moyenne >= self.SEUIL_MOYENNE
 
         resultat["score_faithfulness"] = sf
         resultat["score_relevance"] = sr

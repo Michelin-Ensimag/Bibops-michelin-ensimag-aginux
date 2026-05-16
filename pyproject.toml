@@ -56,8 +56,6 @@ markers = [
 branch = true
 source = ["src"]
 omit = [
-    # Research / experimental code — explicitly excluded from gates
-    "src/bibops/research/*",
     # CLI is Typer glue around importable runners — exercised by --help smoke and end-to-end runs
     "src/bibops/cli/*",
     "src/bibops/__main__.py",
@@ -119,7 +117,6 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**/*.py" = ["S", "B"]      # tests can use asserts, subprocess, etc.
-"src/bibops/research/**/*.py" = ["E", "F", "B", "I", "UP", "RUF"]   # experimental sandbox
 "src/racing/team_client/main.py" = ["E402"]       # model/team globals are set before graph import
 "src/racing/team_validated/main.py" = ["E402"]    # model globals are set before graph import
 "src/racing/team_validated/nodes.py" = ["E402"]   # imports team_client node globals after re-exports

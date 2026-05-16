@@ -30,8 +30,8 @@ DEFAULT_AGENT_MODEL: str = os.environ.get("BIBOPS_AGENT_MODEL", "phi3:latest").s
 DEFAULT_ZERO_SHOT_PROVIDER: str = os.environ.get("BIBOPS_ZERO_SHOT_PROVIDER", "ollama").strip() or "ollama"
 DEFAULT_ZERO_SHOT_MODEL: str = os.environ.get("BIBOPS_ZERO_SHOT_MODEL", "phi3:latest").strip() or "phi3:latest"
 
-MODEL_REQUEST_TIMEOUT_S: int = 30
-JUDGE_REQUEST_TIMEOUT_S: int = 30
+MODEL_REQUEST_TIMEOUT_S: int = int(os.environ.get("BIBOPS_MODEL_REQUEST_TIMEOUT_S", "60"))
+JUDGE_REQUEST_TIMEOUT_S: int = int(os.environ.get("BIBOPS_JUDGE_REQUEST_TIMEOUT_S", "30"))
 
 OLLAMA_OPTIONS: dict = {"num_predict": 1024, "temperature": 0}
 
