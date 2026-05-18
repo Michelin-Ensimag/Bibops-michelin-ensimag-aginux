@@ -134,6 +134,7 @@
     background: var(--amber);
     border-radius: 1px;
     box-shadow: 0 0 18px rgba(244,184,96,.4);
+    animation: glyphPulse 2.4s ease-in-out infinite;
   }
   .mark .name{
     font-size:14px; font-weight:600;
@@ -386,6 +387,7 @@
     color: var(--bg);
     border: 1px solid var(--amber);
     box-shadow: 0 4px 20px rgba(244,184,96,.25);
+    animation: ctaGlow 2.5s ease 3.5s infinite;
   }
   .btn.primary:hover{
     background: var(--amber-glow);
@@ -3429,10 +3431,10 @@
   <section class="stage hero">
     <div style="width:100%">
       <div class="boot">
-        <div><span class="arrow">▸</span> <span class="info">bibops::init</span> <span class="ok">[ok]</span></div>
-        <div><span class="arrow">▸</span> <span class="info">loading 21 tickets from </span><span class="ok">data/inputs/benchmark/</span></div>
-        <div><span class="arrow">▸</span> <span class="info">judge model</span> <span class="ok">gpt-5.2</span> <span class="info">/ agent</span> <span class="ok">phi3:latest</span></div>
-        <div><span class="arrow">▸</span> <span class="info">composite policy</span> <span class="ok">v1.0.0</span> <span class="info">ready</span><span class="blink"></span></div>
+        <div class="line"><span class="arrow">▸</span> <span class="info">bibops::init</span> <span class="ok">[ok]</span></div>
+        <div class="line"><span class="arrow">▸</span> <span class="info">loading 21 tickets from </span><span class="ok">data/inputs/benchmark/</span></div>
+        <div class="line"><span class="arrow">▸</span> <span class="info">judge model</span> <span class="ok">gpt-5.2</span> <span class="info">/ agent</span> <span class="ok">phi3:latest</span></div>
+        <div class="line"><span class="arrow">▸</span> <span class="info">composite policy</span> <span class="ok">v1.0.0</span> <span class="info">ready</span><span class="blink"></span></div>
       </div>
 
       <h1 class="display">
