@@ -5,8 +5,8 @@ from concurrent.futures import TimeoutError as FuturesTimeoutError
 
 import pytest
 
-from src.common import text as T
 from src.bibops.benchmark import ab_test_llm as AB
+from src.common import text as T
 from tests._fakes.fake_openai import FakeOpenAI, make_response
 
 # ---------------------------------------------------------------------------

@@ -36,6 +36,7 @@ from langchain_openai import ChatOpenAI
 from pydantic import BaseModel as PydanticModel
 
 from src.racing.shared.attack_payloads import get_payload, pick_attack_type
+from src.racing.shared.console import BOLD, GREY, MAGENTA, RED, RESET, YELLOW
 from src.racing.shared.security_metrics import detect_data_leaked
 
 # ---------------------------------------------------------------------------
@@ -255,11 +256,8 @@ async def _run_attack(lap: int, client: httpx.AsyncClient) -> None:
 
 
 # ---------------------------------------------------------------------------
-# ANSI helpers (constants from src.racing.shared.console)
+# ANSI helpers
 # ---------------------------------------------------------------------------
-
-from src.racing.shared.console import BOLD, GREY, MAGENTA, RED, RESET, YELLOW
-
 
 def _pfx() -> str:
     return f"{MAGENTA}{BOLD}[{_ARGS.team}]{RESET}"

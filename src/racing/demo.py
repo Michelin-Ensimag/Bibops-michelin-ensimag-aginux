@@ -13,22 +13,21 @@ import time
 
 from langchain_core.messages import AIMessage, HumanMessage
 
+# Couleurs ANSI — partagées via racing/shared/console.py
+from src.racing.shared.console import (
+    BLUE,
+    BOLD,
+    CYAN,
+    GREEN,
+    GREY,
+    MAGENTA,
+    RED,
+    RESET,
+    YELLOW,
+)
+
 from .graph import compiled_graph
 from .state import RacingState
-
-# ---------------------------------------------------------------------------
-# Couleurs ANSI pour le terminal
-# ---------------------------------------------------------------------------
-
-RESET  = "\033[0m"
-BOLD   = "\033[1m"
-CYAN   = "\033[96m"
-YELLOW = "\033[93m"
-GREEN  = "\033[92m"
-RED    = "\033[91m"
-MAGENTA= "\033[95m"
-BLUE   = "\033[94m"
-GREY   = "\033[90m"
 
 AGENT_COLORS = {
     "supervisor":     MAGENTA,

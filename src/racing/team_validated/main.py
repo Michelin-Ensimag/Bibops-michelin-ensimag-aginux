@@ -116,6 +116,8 @@ from src.racing.shared.console import (
     RED,
     RESET,
     YELLOW,
+)
+from src.racing.shared.console import (
     is_race_telemetry as _is_race_telemetry,
 )
 

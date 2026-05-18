@@ -25,7 +25,6 @@ from src.bibops.evaluation.registry import EvaluatorRegistry
 from src.bibops.evaluation.result_schema import build_benchmark_payload
 from src.bibops.evaluation.security_evaluator import SecurityLLMInspectorAdapter
 from src.common.chat_models import call_chat_model
-from src.common.text import contains_timeout, load_tickets_csv
 from src.common.config import (
     DEFAULT_AGENT_MODEL,
     DEFAULT_AGENT_PROVIDER,
@@ -35,6 +34,7 @@ from src.common.config import (
     validate_chat_model,
     validate_judge_model,
 )
+from src.common.text import contains_timeout, load_tickets_csv
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_INPUT_CSV = PROJECT_ROOT / "data" / "inputs" / "benchmark" / "tickets_scenario_1.csv"

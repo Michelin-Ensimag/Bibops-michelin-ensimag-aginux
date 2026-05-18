@@ -55,13 +55,9 @@ _nodes_module.MODEL      = _ARGS.model
 _tools_module.TEAM_ID    = _ARGS.team
 
 # Import du graphe compilé (après config des globaux)
-from .graph import compiled_graph
-from .state_tools import HUB_BASE_URL, TeamState
-
 # ---------------------------------------------------------------------------
 # Couleurs ANSI (importées depuis src.racing.shared.console)
 # ---------------------------------------------------------------------------
-
 from src.racing.shared.console import (
     BLUE,
     BOLD,
@@ -72,8 +68,13 @@ from src.racing.shared.console import (
     RED,
     RESET,
     YELLOW,
+)
+from src.racing.shared.console import (
     is_race_telemetry as _is_race_telemetry,
 )
+
+from .graph import compiled_graph
+from .state_tools import HUB_BASE_URL, TeamState
 
 # Couleur unique par équipe (rotation sur 5 couleurs)
 _TEAM_COLORS = [CYAN, MAGENTA, YELLOW, GREEN, BLUE]

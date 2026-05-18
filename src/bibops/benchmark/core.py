@@ -13,8 +13,10 @@ from src.common.config import INPUT_CSV as DEFAULT_INPUT_CSV
 from src.common.text import (
     extraire_compteurs_tokens,
     extraire_texte_reponse,
-    is_non_interactive_mode as _is_non_interactive_mode,
     load_tickets_csv,
+)
+from src.common.text import (
+    is_non_interactive_mode as _is_non_interactive_mode,
 )
 
 BASE_DIR = str(PROJECT_ROOT)

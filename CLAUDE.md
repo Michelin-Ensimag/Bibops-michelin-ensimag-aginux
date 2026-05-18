@@ -15,8 +15,9 @@ It also includes a **Racing Arena**: a distributed multi-agent system where LLM-
 ### Setup (one-time)
 ```bash
 pip install -r requirements.txt
-python scripts/dev/init_sqlite.py          # Create SQLite schema
-python scripts/dev/build_it_vector_db.py   # Ingest KB into ChromaDB (requires Ollama)
+pip install -e .                           # Install the `bibops` CLI entry point
+bibops dev init-db                         # Create SQLite schema (servers + KB metadata)
+bibops dev build-vectordb                  # Ingest KB into ChromaDB (requires Ollama)
 ```
 
 ### Tests
@@ -53,11 +54,11 @@ bibops racing arena           # Hub + 3 legacy teams in parallel processes
 bibops racing adversarial     # 4 teams: A=zero-shot, B=ReAct, C=validated, Psi=attacker
 ```
 
-### Direct script fallback (PYTHONPATH=. required)
+### Direct module fallback (PYTHONPATH=. required)
 ```bash
 # MCP benchmark (requires MCP server in another terminal)
-PYTHONPATH=. python scripts/dev/run_mcp_server.py   # Terminal 1
-PYTHONPATH=. python -m src.benchmark.mcp_tools       # Terminal 2
+bibops dev mcp-server                                # Terminal 1
+PYTHONPATH=. python -m src.bibops.benchmark.mcp_tools # Terminal 2
 ```
 
 ### Racing Arena monitoring
@@ -100,7 +101,6 @@ src/
   racing/           — Distributed F1 racing arena
     hub/            — FastAPI server + race engine + RAG service
     team_client/    — LangGraph-based team agent (runs as separate process)
-scripts/            — Thin wrappers that call src/ modules
 data/
   inputs/benchmark/ — Input CSVs (tickets_scenario_1.csv, 40 tickets)
   databases/        — bibops.db (SQLite) + vectordb/ (ChromaDB)

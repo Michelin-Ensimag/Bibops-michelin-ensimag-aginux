@@ -21,15 +21,16 @@ from typing import Any
 from openai import OpenAI
 
 from src.common.config import BASE_DIR as PROJECT_ROOT
-from src.common.config import OUTPUT_DIR, validate_judge_model
 from src.common.config import DEFAULT_JUDGE_MODEL as CONFIG_DEFAULT_JUDGE_MODEL
 from src.common.config import INPUT_CSV as DEFAULT_INPUT_CSV
-from src.common.config import MODEL_REQUEST_TIMEOUT_S
+from src.common.config import MODEL_REQUEST_TIMEOUT_S, OUTPUT_DIR, validate_judge_model
 from src.common.llm_clients import get_copilot_client
 from src.common.text import (
     _extraire_texte,
-    extract_first_json as _extraire_json_depuis_texte,
     load_tickets_csv,
+)
+from src.common.text import (
+    extract_first_json as _extraire_json_depuis_texte,
 )
 
 BASE_DIR = str(PROJECT_ROOT)

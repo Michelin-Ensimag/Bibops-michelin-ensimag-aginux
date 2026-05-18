@@ -20,13 +20,15 @@ import time
 from openai import OpenAI
 
 from src.common.config import BASE_DIR as PROJECT_ROOT
-from src.common.config import OUTPUT_DIR
 from src.common.config import INPUT_CSV as DEFAULT_INPUT_CSV
+from src.common.config import OUTPUT_DIR
 from src.common.llm_clients import get_copilot_client
 from src.common.text import (
     _extraire_texte,
-    is_non_interactive_mode as _is_non_interactive_mode,
     load_tickets_csv,
+)
+from src.common.text import (
+    is_non_interactive_mode as _is_non_interactive_mode,
 )
 
 BASE_DIR = str(PROJECT_ROOT)

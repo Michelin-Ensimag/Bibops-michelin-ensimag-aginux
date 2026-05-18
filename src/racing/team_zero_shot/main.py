@@ -29,6 +29,9 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel as PydanticModel
 
+from src.racing.shared.console import BOLD, CYAN, GREEN, GREY, RED, RESET, YELLOW
+from src.racing.shared.console import is_race_telemetry as _is_race_telemetry
+
 # ---------------------------------------------------------------------------
 # CLI args (parsed before any LLM import)
 # ---------------------------------------------------------------------------
@@ -135,20 +138,8 @@ async def _decide(telemetry: dict) -> dict:
 
 
 # ---------------------------------------------------------------------------
-# ANSI helpers (constants from src.racing.shared.console)
+# ANSI helpers
 # ---------------------------------------------------------------------------
-
-from src.racing.shared.console import (
-    BOLD,
-    CYAN,
-    GREEN,
-    GREY,
-    RED,
-    RESET,
-    YELLOW,
-    is_race_telemetry as _is_race_telemetry,
-)
-
 
 def _pfx() -> str:
     return f"{CYAN}{BOLD}[{_ARGS.team}]{RESET}"

@@ -54,17 +54,16 @@ LOG_DIR = os.path.join(
 )
 HUB_BASE_URL = os.environ.get("BIBOPS_RACING_HUB_URL", "http://localhost:8000")
 
-# ---------------------------------------------------------------------------
-# Couleurs ANSI
-# ---------------------------------------------------------------------------
-
-RESET  = "\033[0m"
-BOLD   = "\033[1m"
-CYAN   = "\033[96m"
-YELLOW = "\033[93m"
-GREEN  = "\033[92m"
-RED    = "\033[91m"
-GREY   = "\033[90m"
+# Couleurs ANSI — partagées via racing/shared/console.py
+from src.racing.shared.console import (  # noqa: E402
+    BOLD,
+    CYAN,
+    GREEN,
+    GREY,
+    RED,
+    RESET,
+    YELLOW,
+)
 
 # ---------------------------------------------------------------------------
 # Helpers

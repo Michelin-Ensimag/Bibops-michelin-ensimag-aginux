@@ -28,6 +28,8 @@ from src.common.config import DEFAULT_JUDGE_MODEL
 from src.common.math_utils import clamp
 from src.common.text import (
     contains_timeout as _is_timeout_text,
+)
+from src.common.text import (
     extract_first_json as _extract_first_json_object,
 )
 

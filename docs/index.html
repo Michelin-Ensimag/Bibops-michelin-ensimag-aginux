@@ -2577,6 +2577,182 @@
     #strategie .eval-dashboard .ed-detail .d-scores{ flex-direction: column; gap: 12px; }
     #strategie .eval-dashboard .ed-detail .d-score{ border-left: none; padding-left: 0; }
   }
+
+  /* ============================================================
+     ADVERSARIAL — RAGAS-inspired discriminator loop, section 03
+     ============================================================ */
+  #adversarial .adv-wrap{ margin-top: 36px; border: 1px solid var(--grid); background: var(--bg-card); }
+  #adversarial .adv-sub{
+    display: flex; align-items: baseline; gap: 14px;
+    padding: 14px 22px;
+    border-bottom: 1px solid var(--grid);
+    background: var(--bg-elev);
+    font-size: 11px; color: var(--cream-dim);
+    letter-spacing: .12em; text-transform: uppercase;
+  }
+  #adversarial .adv-sub .id{ color: var(--amber); font-weight: 600; }
+  #adversarial .adv-sub .name{ color: var(--cream); font-weight: 500; }
+  #adversarial .adv-sub .meta{ margin-left: auto; font-size: 10px; }
+  #adversarial .adv-sub .meta::before{ content: "// "; color: var(--slate-dim); }
+
+  /* Aggregate strip — small svg curve at top */
+  #adversarial .adv-aggregate{
+    padding: 22px 28px 14px;
+    border-bottom: 1px solid var(--grid);
+  }
+  #adversarial .adv-aggregate .adv-agg-title{
+    font-size: 10px; color: var(--slate); letter-spacing: .18em;
+    text-transform: uppercase; margin-bottom: 10px;
+  }
+  #adversarial .adv-aggregate svg{ width: 100%; height: 130px; display: block; }
+  #adversarial .adv-aggregate .adv-line-react{ stroke: var(--cyan); stroke-width: 2; fill: none; }
+  #adversarial .adv-aggregate .adv-line-zero{ stroke: var(--red); stroke-width: 2; fill: none; }
+  #adversarial .adv-aggregate .adv-threshold{ stroke: var(--green); stroke-width: 1; stroke-dasharray: 4 4; fill: none; opacity: .7; }
+  #adversarial .adv-aggregate .adv-dot{ fill: var(--amber); stroke: var(--bg-card); stroke-width: 2; }
+  #adversarial .adv-aggregate .adv-axis{ stroke: var(--grid); stroke-width: 1; }
+  #adversarial .adv-aggregate .adv-axis-label{ fill: var(--slate); font-size: 10px; font-family: "JetBrains Mono", monospace; }
+  #adversarial .adv-aggregate .adv-legend{
+    display: flex; gap: 18px; margin-top: 8px; font-size: 10px; color: var(--cream-dim);
+    letter-spacing: .12em; text-transform: uppercase;
+  }
+  #adversarial .adv-aggregate .adv-legend .sw{ display: inline-block; width: 18px; height: 2px; vertical-align: middle; margin-right: 6px; }
+  #adversarial .adv-aggregate .adv-legend .sw-react{ background: var(--cyan); }
+  #adversarial .adv-aggregate .adv-legend .sw-zero{ background: var(--red); }
+  #adversarial .adv-aggregate .adv-legend .sw-thresh{ border-top: 1px dashed var(--green); background: transparent; height: 0; }
+
+  /* Controls row — picker + mode toggle + stepper */
+  #adversarial .adv-controls{
+    display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+    padding: 14px 22px; border-bottom: 1px solid var(--grid);
+    background: var(--bg-elev);
+  }
+  #adversarial .adv-controls label{
+    font-size: 10px; color: var(--slate); letter-spacing: .16em; text-transform: uppercase;
+    margin-right: 8px;
+  }
+  #adversarial .adv-controls select{
+    background: var(--bg-card); color: var(--cream); border: 1px solid var(--grid);
+    padding: 6px 10px; font-family: inherit; font-size: 13px;
+  }
+  #adversarial .adv-modes{
+    display: inline-flex; border: 1px solid var(--grid); overflow: hidden;
+  }
+  #adversarial .adv-modes button{
+    background: transparent; color: var(--cream-dim); border: none;
+    padding: 6px 14px; font-family: inherit; font-size: 12px;
+    cursor: pointer; letter-spacing: .08em;
+  }
+  #adversarial .adv-modes button.active{ background: var(--amber); color: var(--bg); font-weight: 600; }
+  #adversarial .adv-modes button:not(.active):hover{ color: var(--amber); }
+  #adversarial .adv-stepper{
+    display: inline-flex; align-items: center; gap: 12px; margin-left: auto;
+  }
+  #adversarial .adv-stepper button{
+    background: var(--bg-card); color: var(--cream); border: 1px solid var(--grid);
+    padding: 6px 12px; font-family: inherit; font-size: 12px; cursor: pointer;
+  }
+  #adversarial .adv-stepper button:hover:not(:disabled){ border-color: var(--amber); color: var(--amber); }
+  #adversarial .adv-stepper button:disabled{ opacity: .35; cursor: not-allowed; }
+  #adversarial .adv-stepper .adv-iter-label{ font-size: 12px; color: var(--cream-dim); letter-spacing: .1em; }
+  #adversarial .adv-stepper .adv-iter-label b{ color: var(--amber); font-weight: 600; }
+
+  /* Two-column body */
+  #adversarial .adv-body{
+    display: grid; grid-template-columns: 1.6fr 1fr; gap: 0;
+  }
+  #adversarial .adv-conv{
+    padding: 22px 28px; border-right: 1px solid var(--grid);
+    min-height: 380px;
+  }
+  #adversarial .adv-conv .adv-block{
+    margin-bottom: 18px; padding-bottom: 18px;
+    border-bottom: 1px dashed var(--grid-soft);
+  }
+  #adversarial .adv-conv .adv-block:last-child{ border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+  #adversarial .adv-conv .adv-role{
+    font-size: 10px; color: var(--slate); letter-spacing: .18em;
+    text-transform: uppercase; margin-bottom: 8px;
+  }
+  #adversarial .adv-conv .adv-role .adv-tag{ color: var(--amber); margin-right: 6px; }
+  #adversarial .adv-conv .adv-role-user .adv-tag{ color: var(--cyan); }
+  #adversarial .adv-conv .adv-role-judge .adv-tag{ color: var(--magenta); }
+  #adversarial .adv-conv .adv-text{
+    color: var(--cream); font-size: 13px; line-height: 1.65; white-space: pre-wrap;
+  }
+  #adversarial .adv-conv .adv-text-user{ color: var(--cream-dim); font-style: italic; }
+  #adversarial .adv-conv ins.adv-diff-add{
+    background: rgba(127,190,154,0.18); color: var(--green);
+    text-decoration: none; border-bottom: 1px solid var(--green-dim);
+    padding: 0 2px;
+  }
+  #adversarial .adv-conv del.adv-diff-del{
+    color: var(--red-dim); text-decoration: line-through;
+    opacity: .6; padding: 0 2px;
+  }
+  #adversarial .adv-conv .adv-chips{
+    display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px;
+  }
+  #adversarial .adv-conv .adv-chip{
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 10px; color: var(--cyan);
+    background: rgba(107,182,204,0.08);
+    border: 1px solid var(--grid);
+    padding: 3px 9px;
+    font-family: "JetBrains Mono", monospace;
+    letter-spacing: .04em;
+  }
+  #adversarial .adv-conv .adv-chip.adv-chip-fail{ color: var(--red); border-color: var(--red-dim); background: rgba(229,103,93,0.08); }
+  #adversarial .adv-conv .adv-chip .adv-chip-arg{ color: var(--cream-dim); }
+
+  /* Score panel */
+  #adversarial .adv-scores{
+    padding: 22px 24px;
+    background: var(--bg-deep);
+  }
+  #adversarial .adv-scores .adv-score-title{
+    font-size: 10px; color: var(--slate); letter-spacing: .18em;
+    text-transform: uppercase; margin-bottom: 14px;
+  }
+  #adversarial .adv-bar-row{ margin-bottom: 14px; }
+  #adversarial .adv-bar-row .adv-bar-label{
+    display: flex; justify-content: space-between;
+    font-size: 11px; color: var(--cream-dim);
+    letter-spacing: .08em; text-transform: uppercase; margin-bottom: 4px;
+  }
+  #adversarial .adv-bar-row .adv-bar-value{ color: var(--cream); font-family: "JetBrains Mono", monospace; }
+  #adversarial .adv-bar-row .adv-bar-track{
+    height: 8px; background: var(--grid-soft); border: 1px solid var(--grid); position: relative;
+  }
+  #adversarial .adv-bar-row .adv-bar-fill{
+    height: 100%; background: var(--amber);
+    transition: width .35s ease, background .25s ease;
+  }
+  #adversarial .adv-bar-row .adv-bar-fill.low{ background: var(--red); }
+  #adversarial .adv-bar-row .adv-bar-fill.mid{ background: var(--amber); }
+  #adversarial .adv-bar-row .adv-bar-fill.high{ background: var(--green); }
+  #adversarial .adv-verdict{
+    margin-top: 18px; padding: 12px 14px;
+    border: 1px solid var(--grid);
+    text-align: center;
+    font-size: 12px; letter-spacing: .14em; text-transform: uppercase;
+  }
+  #adversarial .adv-verdict.pass{ color: var(--green); border-color: var(--green-dim); background: rgba(127,190,154,0.06); }
+  #adversarial .adv-verdict.fail{ color: var(--red); border-color: var(--red-dim); background: rgba(229,103,93,0.06); }
+  #adversarial .adv-verdict b{ font-weight: 600; }
+  #adversarial .adv-finops{
+    margin-top: 18px; padding-top: 14px; border-top: 1px dashed var(--grid-soft);
+    font-size: 11px; color: var(--cream-dim);
+  }
+  #adversarial .adv-finops .row{ display: flex; justify-content: space-between; margin-bottom: 4px; }
+  #adversarial .adv-finops .k{ color: var(--slate); letter-spacing: .12em; text-transform: uppercase; font-size: 10px; }
+  #adversarial .adv-finops .v{ color: var(--cream); font-family: "JetBrains Mono", monospace; }
+
+  @media (max-width: 900px){
+    #adversarial .adv-body{ grid-template-columns: 1fr; }
+    #adversarial .adv-conv{ border-right: none; border-bottom: 1px solid var(--grid); }
+    #adversarial .adv-controls{ flex-direction: column; align-items: flex-start; }
+    #adversarial .adv-stepper{ margin-left: 0; }
+  }
 </style>
 </head>
 <body>
@@ -3141,7 +3317,7 @@
   <section class="stage tall" id="expedition">
     <div style="width:100%">
       <div class="sec-head">
-        <span class="id">[01 / 07]</span>
+        <span class="id">[01 / 08]</span>
         <span class="name">Architecture</span>
         <span class="path">src/agent/maestro.py</span>
       </div>
@@ -3181,7 +3357,7 @@ flowchart TD
   <section class="stage tall" id="strategie">
     <div style="width:100%">
       <div class="sec-head">
-        <span class="id">[02 / 07]</span>
+        <span class="id">[02 / 08]</span>
         <span class="name">Methodology</span>
         <span class="path">src/bibops/evaluation/metrics/composite.py</span>
       </div>
@@ -3348,11 +3524,103 @@ flowchart TD
     </div>
   </section>
 
-  <!-- SECTION III · RESULTS -->
+  <!-- SECTION III · ADVERSARIAL / DISCRIMINATOR -->
+  <section class="stage tall" id="adversarial">
+    <div style="width:100%">
+      <div class="sec-head">
+        <span class="id">[03 / 08]</span>
+        <span class="name">Adversarial loop</span>
+        <span class="path">src/bibops/benchmark/adversarial.py · evaluation/judges/discriminator.py</span>
+      </div>
+
+      <div class="prose">
+        <p>Un <b>Discriminateur</b> inspiré de RAGAS note chaque réponse de l'agent sur trois axes — <code>Fidélité</code> au RCA, <code>Pertinence</code> du diagnostic, qualité du <code>Contexte</code> mobilisé. Si la moyenne est sous <b>7/10</b>, un feedback ciblé est ré-injecté dans la mémoire du générateur, qui retente. C'est une boucle GAN-inspirée à <i>prompt</i> — aucun poids n'est mis à jour, mais le contexte se densifie tour après tour.</p>
+        <p>Cliquez un ticket, basculez l'architecture, avancez d'une itération : observez le score grimper, le diagnostic s'affiner, les outils RAG répondre. <b>Surlignement vert</b> = ajouts entre deux tentatives.</p>
+      </div>
+
+      <div class="adv-wrap" id="adv-demo">
+        <div class="adv-sub">
+          <span class="id">[03.a]</span>
+          <span class="name">RAGAS-inspired discriminator</span>
+          <span class="meta" id="adv-meta">10 tickets · gpt-4o-mini → gpt-4o judge</span>
+        </div>
+
+        <div class="adv-aggregate">
+          <div class="adv-agg-title">▸ moyenne RAGAS — score par itération, agrégé sur les 10 tickets</div>
+          <svg id="adv-agg-svg" viewBox="0 0 600 130" preserveAspectRatio="none" aria-hidden="true"></svg>
+          <div class="adv-legend">
+            <span><span class="sw sw-react"></span>ReAct + RAG</span>
+            <span><span class="sw sw-zero"></span>Zero-shot</span>
+            <span><span class="sw sw-thresh"></span>seuil succès (moy ≥ 7/10)</span>
+          </div>
+        </div>
+
+        <div class="adv-controls">
+          <div>
+            <label for="adv-ticket-pick">Ticket</label>
+            <select id="adv-ticket-pick"></select>
+          </div>
+          <div class="adv-modes" role="tablist" aria-label="Architecture">
+            <button type="button" class="active" data-mode="react">ReAct + RAG</button>
+            <button type="button" data-mode="zero_shot">Zero-shot</button>
+          </div>
+          <div class="adv-stepper">
+            <button type="button" id="adv-prev" aria-label="Itération précédente">◀ Prev</button>
+            <span class="adv-iter-label">Itération <b id="adv-iter-cur">1</b> / <span id="adv-iter-max">2</span></span>
+            <button type="button" id="adv-next" aria-label="Itération suivante">Next ▶</button>
+          </div>
+        </div>
+
+        <div class="adv-body">
+          <div class="adv-conv">
+            <div class="adv-block adv-role-user">
+              <div class="adv-role"><span class="adv-tag">▸</span>Ticket utilisateur</div>
+              <div class="adv-text adv-text-user" id="adv-ticket-text">—</div>
+            </div>
+            <div class="adv-block">
+              <div class="adv-role"><span class="adv-tag">▸</span>Agent <span id="adv-mode-label">ReAct + RAG</span> · itération <span id="adv-iter-cur2">1</span></div>
+              <div class="adv-text" id="adv-agent-text">—</div>
+              <div class="adv-chips" id="adv-tool-chips"></div>
+            </div>
+            <div class="adv-block adv-role-judge" id="adv-feedback-block">
+              <div class="adv-role"><span class="adv-tag">▸</span>Discriminateur · feedback actionnable</div>
+              <div class="adv-text" id="adv-feedback-text">—</div>
+            </div>
+          </div>
+
+          <div class="adv-scores">
+            <div class="adv-score-title">▸ métriques RAGAS</div>
+
+            <div class="adv-bar-row">
+              <div class="adv-bar-label"><span>Fidélité</span><span class="adv-bar-value" id="adv-sf-val">0/10</span></div>
+              <div class="adv-bar-track"><div class="adv-bar-fill" id="adv-sf-fill" style="width:0%"></div></div>
+            </div>
+            <div class="adv-bar-row">
+              <div class="adv-bar-label"><span>Pertinence</span><span class="adv-bar-value" id="adv-sr-val">0/10</span></div>
+              <div class="adv-bar-track"><div class="adv-bar-fill" id="adv-sr-fill" style="width:0%"></div></div>
+            </div>
+            <div class="adv-bar-row">
+              <div class="adv-bar-label"><span>Contexte</span><span class="adv-bar-value" id="adv-sc-val">0/10</span></div>
+              <div class="adv-bar-track"><div class="adv-bar-fill" id="adv-sc-fill" style="width:0%"></div></div>
+            </div>
+
+            <div class="adv-verdict fail" id="adv-verdict">— · moy 0.0</div>
+
+            <div class="adv-finops">
+              <div class="row"><span class="k">RCA ground truth</span></div>
+              <div class="adv-text" id="adv-rca-text" style="font-size:11px;color:var(--cream-dim);margin-top:4px;font-style:italic;">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION IV · RESULTS -->
   <section class="stage tall" id="bataille">
     <div style="width:100%">
       <div class="sec-head">
-        <span class="id">[03 / 07]</span>
+        <span class="id">[04 / 08]</span>
         <span class="name">Results</span>
         <span class="path">data/outputs/benchmark/comparison_results.json</span>
       </div>
@@ -3406,7 +3674,7 @@ flowchart TD
   <section class="stage tall" id="arena">
     <div style="width:100%">
       <div class="sec-head">
-        <span class="id">[04 / 07]</span>
+        <span class="id">[05 / 08]</span>
         <span class="name">Security Arena</span>
         <span class="path">src/racing/hub/server.py · 4 teams</span>
       </div>
@@ -3516,7 +3784,7 @@ flowchart LR
   <section class="stage tall" id="a2a">
     <div style="width:100%">
       <div class="sec-head">
-        <span class="id">[05 / 07]</span>
+        <span class="id">[06 / 08]</span>
         <span class="name">A2A · External Agents</span>
         <span class="path">src/bibops/adapters/a2a_client.py · src/bibops/benchmark/compare_a2a_agents.py</span>
       </div>
@@ -3645,7 +3913,7 @@ flowchart LR
   <section class="stage tall" id="abtest">
     <div style="width:100%">
       <div class="sec-head">
-        <span class="id">[06 / 07]</span>
+        <span class="id">[07 / 08]</span>
         <span class="name">A/B Testing &amp; Position Bias</span>
         <span class="path">src/bibops/benchmark/ab_test_llm.py · position_bias.py</span>
       </div>
@@ -3671,7 +3939,7 @@ flowchart LR
   <section class="stage" id="deploy">
     <div style="width:100%">
       <div class="sec-head">
-        <span class="id">[07 / 07]</span>
+        <span class="id">[08 / 08]</span>
         <span class="name">Deploy &amp; Reproduce</span>
         <span class="path">$ bibops --help</span>
       </div>
@@ -3812,6 +4080,14 @@ flowchart LR
   "ab-stmt": {"label":"statements · factual verification","question":"Quel système valide mieux des statements factuels ?","models":["factchecker","bibops"],"judge":"gpt-4o","scores":{"factchecker":4,"bibops":1},"pct":{"factchecker":80.0,"bibops":20.0},"total":5,"verdict":{"label":"factchecker leads","class":"fail","text":"Sur 5 statements, le factchecker dédié gagne 80%. À investiguer : bibops n'est pas optimisé pour la vérification de statements isolés (cible : tickets IT contextuels)."}}
 }
 </script>
+
+<!-- Refresh with: python scripts/embed_adversarial_data.py
+     (after `bibops bench adversarial`) -->
+<!-- ADVERSARIAL_DATA_BEGIN -->
+<script id="adversarial-data" type="application/json">
+{"config":{"generator_model":"gpt-4o-mini","generator_provider":"copilot","judge_model":"gpt-4o","max_iterations":2,"tickets_count":10},"modes":{"zero_shot":{"per_iteration":{"faithfulness":[5.7,7],"relevance":[6.8,8.1],"context":[5.3,6.7],"average":[5.92,7.25]},"success_rate":0.7,"reports":[{"ticket_id":"VPN-001","ticket_text":"Le VPN Cisco me donne l'erreur 412 et je suis en Chine. J'ai déjà redémarré mon PC et réinstallé AnyConnect mais rien ne change.","rca_ground_truth":"L'erreur 412 'Tunnel rejected by server' en Chine est causée par le blocage du port UDP 1194 (IPSec/IKEv2) par le Great Firewall of China. La solution est de reconfigurer AnyConnect pour utiliser le port TCP 443 (TLS fallback) via le profil VPN 'Michelin-China-Fallback'. Si ce profil est absent du client, l'utilisateur doit contacter le support N2 pour que l'équipe réseau active le profil de contournement GFW sur son compte AnyConnect et lui fournisse le fichier de configuration XML.","succes":false,"iterations_necessaires":null,"scores_par_iteration":[{"iter":1,"faithfulness":5,"relevance":6,"context":4,"moy":5.0,"reponse_agent":"Bonjour,\n\nL'erreur 412 sur Cisco AnyConnect indique généralement un problème de connexion au serveur VPN, souvent lié à des restrictions de réseau ou à des paramètres de configuration. Étant donné que vous êtes en Chine, il est possible que des restrictions locales affectent votre connexion VPN.\n\nVoici quelques étapes de diagnostic et d'action que vous pouvez suivre :\n\n1. **Vérifiez votre connexion Internet** : Assurez-vous que votre connexion Internet fonctionne correctement. Essayez d'accéder à d'autres sites web pour confirmer que vous êtes bien connecté.\n\n2. **Testez un autre réseau** : Si possible, essayez de vous connecter à un autre réseau (par exemple, un réseau Wi-Fi public ou un hotspot mobile) pour voir si le problème persiste. Cela peut aider à déterminer si le réseau actuel bl...","feedback":"Ta réponse reste générique et ignore la cause racine spécifique liée au blocage du port par le Great Firewall. Revois les paramètres techniques du VPN et adresse directement le mécanisme de contournement attendu.","tool_calls":[]},{"iter":2,"faithfulness":6,"relevance":6,"context":5,"moy":5.7,"reponse_agent":"Bonjour,\n\nL'erreur 412 que vous rencontrez avec Cisco AnyConnect indique généralement que le client VPN ne parvient pas à établir une connexion avec le serveur VPN. Étant donné que vous êtes en Chine, cela peut être lié à des restrictions imposées par le Great Firewall.\n\nVoici quelques étapes que vous pouvez suivre pour tenter de résoudre ce problème :\n\n1. **Vérifiez votre connexion Internet** : Assurez-vous que votre connexion Internet fonctionne correctement. Essayez d'accéder à d'autres sites web pour confirmer.\n\n2. **Utilisez un autre réseau** : Si possible, essayez de vous connecter à un autre réseau (comme un réseau Wi-Fi public ou un hotspot mobile) pour voir si le problème persiste. Cela peut aider à déterminer si le réseau actuel bloque le VPN.\n\n3. **Modifier les paramètres de con...","feedback":"Ta réponse est partiellement fidèle mais manque de spécificité par rapport à la cause liée au Great Firewall. Identifie le port bloqué et mentionne explicitement l'approche de reconfiguration requise pour résoudre ce problème.","tool_calls":[]}]},{"ticket_id":"OUTLOOK-005","ticket_text":"Je ne peux pas accéder à Outlook depuis ce matin, le client refuse de se connecter.","rca_ground_truth":"Le refus de connexion d'Outlook au démarrage est généralement causé soit par une expiration du jeton d'authentification Microsoft 365, soit par un incident côté service Exchange Online. La procédure attendue est : (1) vérifier le statut du service mail Michelin, (2) si le service est en ligne, demander à l'utilisateur de se déconnecter de son profil Outlook et de relancer en mode sans cache OST, (3) supprimer puis recréer le profil Outlook depuis Panneau de configuration → Mail, (4) si le problème persiste, vérifier l'expiration du certificat MSAL et escalader au support N2 si nécessaire.","succes":false,"iterations_necessaires":null,"scores_par_iteration":[{"iter":1,"faithfulness":4,"relevance":5,"context":4,"moy":4.3,"reponse_agent":"Bonjour,\n\nMerci de nous avoir contactés concernant votre problème d'accès à Outlook. Voici quelques étapes de diagnostic et d'action que vous pouvez suivre pour tenter de résoudre ce problème :\n\n1. **Vérifiez votre connexion Internet** :\n   - Assurez-vous que vous êtes bien connecté à Internet. Essayez d'ouvrir un site web dans votre navigateur pour confirmer.\n\n2. **Redémarrez Outlook** :\n   - Fermez complètement l'application Outlook, puis rouvrez-la pour voir si le problème persiste.\n\n3. **Vérifiez les informations de connexion** :\n   - Assurez-vous que vos identifiants (adresse e-mail et mot de passe) sont corrects. Si vous avez récemment changé votre mot de passe, essayez de vous reconnecter avec le nouveau.\n\n4. **Mode hors ligne** :\n   - Vérifiez si Outlook est en mode hors ligne. All...","feedback":"Ta réponse manque de fidélité au RCA : les causes racines spécifiques liées au service ou aux jetons d'authentification ne sont pas traitées. Recentre tes étapes sur les vérifications et la procédure adaptées à la plateforme Exchange et Outlook.","tool_calls":[]},{"iter":2,"faithfulness":5,"relevance":6,"context":4,"moy":5.0,"reponse_agent":"Bonjour,\n\nJe comprends que vous avez des difficultés à accéder à Outlook. Voici quelques étapes de diagnostic et d'action que vous pouvez suivre pour résoudre ce problème :\n\n1. **Vérifiez votre connexion Internet** : Assurez-vous que votre appareil est bien connecté à Internet. Essayez d'ouvrir un site web pour confirmer.\n\n2. **Redémarrez Outlook** : Fermez complètement l'application Outlook et rouvrez-la. Parfois, un simple redémarrage peut résoudre des problèmes de connexion.\n\n3. **Vérifiez les informations d'identification** : Assurez-vous que vous utilisez les bonnes informations de connexion (adresse e-mail et mot de passe). Si vous avez récemment changé votre mot de passe, essayez de vous reconnecter avec le nouveau.\n\n4. **Mode hors connexion** : Vérifiez si Outlook est en mode hors ...","feedback":"Ta réponse inclut des étapes génériques mais n'adresse pas précisément la cause racine (authentification ou statut Exchange Online). Appuie-toi sur la procédure officielle pour fournir une solution adaptée au problème Outlook spécifié.","tool_calls":[]}]},{"ticket_id":"WIFI-006","ticket_text":"Je suis en télétravail et ma connexion WiFi est très lente. Comment l'améliorer ?","rca_ground_truth":"Une connexion WiFi lente en télétravail provient le plus souvent de la saturation de la bande 2,4 GHz, d'une mauvaise position de la box ou d'un canal WiFi encombré. La procédure attendue est : (1) basculer le PC sur la bande 5 GHz du SSID domestique, (2) rapprocher physiquement le poste de la box ou utiliser un câble Ethernet pour les visios critiques, (3) redémarrer la box, (4) vérifier qu'aucune autre application (streaming, sauvegarde cloud) ne sature la bande passante, (5) tester le débit via speedtest.net et remonter les chiffres au support N2 si la latence reste supérieure à 100 ms.","succes":true,"iterations_necessaires":1,"scores_par_iteration":[{"iter":1,"faithfulness":8,"relevance":10,"context":7,"moy":8.3,"reponse_agent":"Bonjour,\n\nMerci pour votre message. Voici quelques étapes que vous pouvez suivre pour améliorer la connexion WiFi de votre télétravail :\n\n### Diagnostic :\n1. **Distance au routeur** : Vérifiez si vous êtes éloigné du routeur. Plus vous êtes loin, plus le signal est faible.\n2. **Interférences** : D'autres appareils électroniques (comme les micro-ondes ou les téléphones sans fil) peuvent interférer avec le signal WiFi.\n3. **Nombre d'appareils connectés** : Trop d'appareils connectés au même réseau peuvent ralentir la connexion.\n4. **État du matériel** : Assurez-vous que votre routeur et votre ordinateur sont en bon état de fonctionnement.\n\n### Étapes d'action :\n1. **Rapprochez-vous du routeur** : Si possible, déplacez-vous plus près du routeur pour améliorer la réception du signal.\n2. **Redé...","feedback":"","tool_calls":[]}]},{"ticket_id":"PWD-007","ticket_text":"J'ai oublié mon mot de passe Windows. Comment faire pour le réinitialiser ?","rca_ground_truth":"La réinitialisation du mot de passe Windows pour un poste joint au domaine Michelin se fait via le portail Self-Service Password Reset (SSPR) Azure AD ou, en l'absence d'accès, via le service desk. La procédure attendue est : (1) se connecter à https://passwordreset.microsoftonline.com depuis un autre appareil, (2) valider son identité via SMS ou Authenticator, (3) définir un nouveau mot de passe respectant la politique Michelin (12+ caractères, complexité, pas de réutilisation des 10 derniers), (4) si la SSPR n'est pas configurée, appeler le service desk avec une pièce d'identité Michelin pour une réinitialisation manuelle.","succes":true,"iterations_necessaires":2,"scores_par_iteration":[{"iter":1,"faithfulness":2,"relevance":4,"context":3,"moy":3.0,"reponse_agent":"Bonjour,\n\nPour réinitialiser votre mot de passe Windows, voici les étapes à suivre :\n\n1. **Écran de connexion** : Sur l'écran de connexion, cliquez sur \"Réinitialiser le mot de passe\" ou \"Mot de passe oublié\" (selon votre version de Windows).\n\n2. **Suivre les instructions** : Suivez les instructions à l'écran. Vous devrez peut-être répondre à des questions de sécurité ou utiliser une adresse e-mail de récupération si vous en avez configuré une.\n\n3. **Utiliser un autre compte administrateur** : Si vous avez un autre compte avec des droits administratifs, connectez-vous avec celui-ci et allez dans \"Panneau de configuration\" > \"Comptes d'utilisateurs\" > \"Gérer un autre compte\" pour changer le mot de passe de votre compte.\n\n4. **Mode sans échec** : Si aucune des options ci-dessus ne fonctionne...","feedback":"Ta réponse introduit des options contradictoires avec la procédure officielle, comme l'utilisation du mode sans échec ou d'un compte administrateur, qui ne s'appliquent pas dans le contexte mentionné. Recentre-toi sur le portail SSPR ou l'escalade au service desk pour aligner la réponse avec les pratiques attendues.","tool_calls":[]},{"iter":2,"faithfulness":7,"relevance":9,"context":7,"moy":7.7,"reponse_agent":"Pour réinitialiser votre mot de passe Windows, veuillez suivre ces étapes :\n\n1. **Accédez au portail SSPR (Self-Service Password Reset)** : Ouvrez votre navigateur et allez sur le site dédié au réinitialisation de mot de passe de Michelin.\n\n2. **Identifiez-vous** : Entrez votre adresse e-mail ou votre identifiant utilisateur.\n\n3. **Suivez les instructions** : Vous recevrez des instructions pour vérifier votre identité (par exemple, via un code envoyé par e-mail ou SMS).\n\n4. **Réinitialisez votre mot de passe** : Une fois votre identité vérifiée, suivez les étapes pour créer un nouveau mot de passe.\n\nSi vous rencontrez des difficultés, n'hésitez pas à contacter le service desk pour obtenir de l'aide.","feedback":"","tool_calls":[]}]},{"ticket_id":"TEAMS-011","ticket_text":"Mon compte Teams est connecté mais je ne vois plus mes canaux de projet.","rca_ground_truth":"La disparition des canaux Teams alors que la connexion fonctionne est typiquement causée par un cache local corrompu ou par une perte d'appartenance à l'équipe côté Azure AD. La procédure attendue est : (1) fermer complètement Teams (clic droit sur l'icône systray → Quitter), (2) vider le cache via %appdata%\\Microsoft\\Teams (supprimer les dossiers Cache, blob_storage, GPUCache, IndexedDB), (3) relancer Teams et se reconnecter, (4) si les canaux restent absents, vérifier auprès du propriétaire de l'équipe que l'utilisateur est toujours membre, (5) si nécessaire, demander la réintégration à l'équipe et escalader au support N2 pour audit Azure AD.","succes":true,"iterations_necessaires":2,"scores_par_iteration":[{"iter":1,"faithfulness":6,"relevance":7,"context":6,"moy":6.3,"reponse_agent":"Bonjour,\n\nMerci d'avoir contacté le support IT. Je vais vous aider à résoudre ce problème concernant votre compte Teams.\n\n**Diagnostic :**\nIl est possible que vous ayez rencontré un problème d'affichage ou que vous ne soyez plus membre des canaux de projet. Cela peut également être dû à une déconnexion temporaire ou à des paramètres de filtrage.\n\n**Étapes d'action :**\n\n1. **Vérifiez votre connexion :**\n   - Assurez-vous que vous êtes bien connecté à votre compte Teams avec les bonnes identifiants. Déconnectez-vous puis reconnectez-vous pour voir si cela résout le problème.\n\n2. **Vérifiez les équipes et canaux :**\n   - Dans la colonne de gauche, cliquez sur \"Équipes\" pour voir la liste de toutes les équipes auxquelles vous appartenez. Assurez-vous que l'équipe de votre projet est bien prése...","feedback":"Ta réponse mentionne des causes possibles non alignées avec le RCA, comme des paramètres de filtrage qui ne relèvent pas de la cause racine. Focalise-toi davantage sur les causes techniques principales comme le cache ou l'appartenance Azure AD et propose des solutions conformes.","tool_calls":[]},{"iter":2,"faithfulness":7,"relevance":8,"context":7,"moy":7.3,"reponse_agent":"Bonjour,\n\nMerci de nous avoir contactés concernant votre problème avec Teams. Voici un diagnostic basé sur les informations disponibles.\n\n### Diagnostic :\nIl est possible que le problème soit lié à votre cache Teams ou à votre appartenance à Azure AD. Parfois, des problèmes d'affichage des canaux peuvent survenir si l'application n'a pas correctement synchronisé vos données.\n\n### Étapes d'action :\n1. **Vider le cache de Teams** :\n   - Fermez complètement l'application Microsoft Teams.\n   - Accédez au dossier de cache en utilisant le chemin suivant : `%appdata%\\Microsoft\\Teams`.\n   - Supprimez tous les fichiers et dossiers à l'intérieur de ce dossier.\n   - Redémarrez Teams et vérifiez si vos canaux réapparaissent.\n\n2. **Vérifier votre appartenance à Azure AD** :\n   - Assurez-vous que vous ê...","feedback":"","tool_calls":[]}]},{"ticket_id":"PRINT-013","ticket_text":"Je ne peux pas imprimer en recto-verso, l'option n'apparaît plus.","rca_ground_truth":"La disparition de l'option recto-verso (duplex) est due soit à un pilote d'imprimante générique installé à la place du pilote constructeur, soit à un module duplex désactivé dans les propriétés du périphérique. La procédure attendue est : (1) ouvrir Paramètres → Imprimantes et scanners → propriétés de l'imprimante, (2) vérifier sous l'onglet Configuration que l'unité duplex est activée et déclarée comme installée, (3) si l'option reste absente, désinstaller l'imprimante et réinstaller le pilote constructeur officiel depuis le portail logiciel Michelin, (4) tester l'impression recto-verso avec un document de test, (5) escalader au support N2 si le module duplex matériel n'est pas reconnu.","succes":true,"iterations_necessaires":2,"scores_par_iteration":[{"iter":1,"faithfulness":6,"relevance":7,"context":6,"moy":6.3,"reponse_agent":"Bonjour,\n\nMerci pour votre message. Je vais vous aider à résoudre ce problème d'impression en recto-verso.\n\n**Diagnostic :**\nIl est possible que l'option d'impression recto-verso ait été désactivée dans les paramètres de votre imprimante ou que le pilote de l'imprimante nécessite une mise à jour. Cela peut également être dû à un changement de configuration dans votre application d'impression.\n\n**Étapes d'action :**\n\n1. **Vérifiez les paramètres de l'imprimante :**\n   - Allez dans le Panneau de configuration de votre ordinateur.\n   - Sélectionnez \"Périphériques et imprimantes\".\n   - Faites un clic droit sur votre imprimante et choisissez \"Propriétés de l'imprimante\".\n   - Dans l'onglet \"Options\", vérifiez si l'option \"Impression recto-verso\" est activée. Si ce n'est pas le cas, activez-la.\n...","feedback":"Ta réponse ne reflète pas complètement les causes possibles spécifiques au RCA, comme le pilote générique ou le module duplex. Revois la procédure officielle pour inclure les étapes correctes liées aux paramètres de l'unité duplex et au remplacement du pilote constructeur.","tool_calls":[]},{"iter":2,"faithfulness":9,"relevance":10,"context":9,"moy":9.3,"reponse_agent":"Bonjour,\n\nMerci de nous avoir contactés concernant votre problème d'impression en recto-verso. Voici quelques étapes de diagnostic et d'action que vous pouvez suivre pour résoudre ce problème :\n\n1. **Vérification des paramètres d'impression** :\n   - Ouvrez le document que vous souhaitez imprimer.\n   - Allez dans le menu \"Fichier\" puis \"Imprimer\".\n   - Vérifiez si l'option \"Impression recto-verso\" ou \"Duplex\" est disponible dans les paramètres d'impression. Si elle n'apparaît pas, passez à l'étape suivante.\n\n2. **Vérification du pilote d'imprimante** :\n   - Assurez-vous que le pilote de votre imprimante est à jour. Parfois, un pilote générique peut être installé, ce qui peut entraîner la disparition de certaines options.\n   - Si vous avez un accès à la gestion des imprimantes, vérifiez le m...","feedback":"","tool_calls":[]}]},{"ticket_id":"MAIL-014","ticket_text":"J'ai un message 'boîte aux lettres pleine' dans Outlook.","rca_ground_truth":"Le message 'boîte aux lettres pleine' apparaît lorsque le quota Exchange Online de l'utilisateur (50 Go par défaut chez Michelin) est atteint. La procédure attendue est : (1) vider la corbeille Outlook (clic droit sur 'Éléments supprimés' → Vider le dossier), (2) archiver les anciens mails via Outlook → Fichier → Outils → Nettoyer la boîte de réception, (3) supprimer les pièces jointes volumineuses via le tri par taille, (4) configurer l'AutoArchive pour basculer les mails de plus de 12 mois vers un fichier PST local ou l'archive en ligne, (5) si le quota reste insuffisant après nettoyage, demander une extension de quota au support N2 avec justification métier.","succes":true,"iterations_necessaires":1,"scores_par_iteration":[{"iter":1,"faithfulness":9,"relevance":10,"context":9,"moy":9.3,"reponse_agent":"Bonjour,\n\nIl semble que votre boîte aux lettres Outlook ait atteint sa capacité maximale, ce qui empêche l'envoi et la réception de nouveaux e-mails. Voici quelques étapes pour résoudre ce problème :\n\n### Diagnostic :\n1. **Vérification de l'espace de stockage** : La taille maximale de la boîte aux lettres dépend de votre configuration. En général, elle est limitée à 50 Go pour les comptes standard.\n\n### Étapes d'action :\n1. **Supprimer les e-mails inutiles** :\n   - Ouvrez Outlook et allez dans votre boîte de réception.\n   - Triez vos e-mails par taille (clic droit sur \"Boîte de réception\" > \"Trier par\" > \"Taille\").\n   - Supprimez les e-mails volumineux ou ceux dont vous n'avez plus besoin.\n\n2. **Vider le dossier \"Éléments supprimés\"** :\n   - Allez dans le dossier \"Éléments supprimés\".\n   -...","feedback":"","tool_calls":[]}]},{"ticket_id":"VPN-017","ticket_text":"Le VPN se connecte mais je n'accède à aucune application interne.","rca_ground_truth":"Quand le VPN est connecté mais qu'aucune application interne n'est joignable, la cause racine est généralement un problème de routage (split-tunneling mal configuré ou table de routage non poussée) ou un problème DNS (le client n'utilise pas les serveurs DNS internes Michelin). La procédure attendue est : (1) vérifier dans AnyConnect que la session affiche bien 'tunnel établi' et qu'une route vers 10.0.0.0/8 est présente (ipconfig /all + route print), (2) vérifier que les serveurs DNS internes Michelin sont utilisés (nslookup d'un FQDN interne doit résoudre), (3) si DNS ne résout pas, lancer ipconfig /flushdns et reconnecter le VPN, (4) si le routage est cassé, déconnecter/reconnecter avec le profil 'Full-Tunnel-Michelin', (5) escalader au support N2 réseau si le problème persiste.","succes":true,"iterations_necessaires":2,"scores_par_iteration":[{"iter":1,"faithfulness":6,"relevance":7,"context":5,"moy":6.0,"reponse_agent":"Bonjour,\n\nMerci pour votre message. Voici un diagnostic et des étapes à suivre pour résoudre votre problème d'accès aux applications internes via le VPN.\n\n### Diagnostic :\n1. **Connexion VPN** : Vous mentionnez que le VPN se connecte, ce qui est un bon signe. Cependant, cela ne garantit pas que toutes les configurations sont correctes.\n2. **Accès aux applications internes** : Cela peut être dû à plusieurs raisons, telles que des problèmes de configuration du VPN, des paramètres de pare-feu ou des problèmes de réseau interne.\n\n### Étapes d'action :\n1. **Vérification de la connexion VPN** :\n   - Assurez-vous que vous êtes bien connecté au bon profil VPN. Parfois, il peut y avoir plusieurs configurations.\n   - Vérifiez que l'adresse IP attribuée par le VPN est dans le bon sous-réseau pour acc...","feedback":"Revois la cause technique principale liée au problème de routage ou DNS, et assure-toi d'aligner les étapes avec les pratiques IT spécifiques à ce cas. Évite les conseils génériques comme pare-feu ou redémarrage, qui détournent de la cause racine identifiée.","tool_calls":[]},{"iter":2,"faithfulness":7,"relevance":8,"context":7,"moy":7.3,"reponse_agent":"Bonjour,\n\nMerci pour votre message. Il semble que vous rencontriez un problème d'accès aux applications internes via le VPN. Voici quelques étapes de diagnostic et d'action que nous pouvons entreprendre pour résoudre ce problème :\n\n1. **Vérification de la connexion VPN** :\n   - Assurez-vous que le VPN est bien connecté. Vérifiez l'interface de votre client VPN pour confirmer que la connexion est active.\n\n2. **Vérification des paramètres DNS** :\n   - Il est possible que votre configuration DNS ne soit pas correcte. Accédez aux paramètres de votre connexion réseau et vérifiez que les serveurs DNS sont ceux fournis par Michelin. Vous pouvez essayer de les changer pour les serveurs DNS internes si vous les connaissez.\n\n3. **Vérification des routes** :\n   - Ouvrez une invite de commande (cmd) e...","feedback":"","tool_calls":[]}]},{"ticket_id":"SAP-036","ticket_text":"Le client SAP affiche une erreur de certificat expiré.","rca_ground_truth":"Une erreur de certificat expiré dans SAP GUI résulte soit d'un certificat client (SNC) périmé sur le poste, soit d'une autorité de certification Michelin non à jour dans le magasin de certificats Windows. La procédure attendue est : (1) ouvrir le magasin de certificats utilisateur (certmgr.msc) et vérifier la validité du certificat SAP-SNC personnel, (2) si expiré, demander un renouvellement via l'auto-enrôlement Active Directory ou via le portail PKI Michelin, (3) vérifier que les certificats racine 'Michelin Internal Root CA' sont installés et valides dans le magasin 'Autorités de certification racines de confiance', (4) redémarrer SAP GUI après installation du nouveau certificat, (5) escalader au support N2 Sécurité si l'auto-enrôlement échoue.","succes":false,"iterations_necessaires":null,"scores_par_iteration":[{"iter":1,"faithfulness":6,"relevance":7,"context":5,"moy":6.0,"reponse_agent":"Bonjour,\n\nMerci d'avoir signalé le problème concernant l'erreur de certificat expiré sur le client SAP. Voici un diagnostic et des étapes d'action concrètes que vous pouvez suivre pour résoudre ce problème.\n\n### Diagnostic :\nL'erreur de certificat expiré indique que le certificat de sécurité utilisé par le client SAP pour établir une connexion sécurisée n'est plus valide. Cela peut se produire si le certificat n'a pas été renouvelé à temps ou si la date de votre système est incorrecte.\n\n### Étapes d'action :\n\n1. **Vérification de la date et de l'heure du système :**\n   - Assurez-vous que la date et l'heure de votre ordinateur sont correctement réglées. Une date incorrecte peut entraîner des erreurs de certificat.\n   - Pour vérifier cela, faites un clic droit sur l'horloge dans la barre des...","feedback":"Ta réponse inclut des étapes générales correctes mais néglige des détails spécifiques au RCA comme la vérification des certificats Michelin racines. Assure-toi de suivre exactement les principales étapes officielles pour ce type d'incident.","tool_calls":[]},{"iter":2,"faithfulness":5,"relevance":6,"context":5,"moy":5.3,"reponse_agent":"Bonjour,\n\nMerci pour votre message concernant l'erreur de certificat expiré sur le client SAP. Voici un diagnostic et des étapes d'action concrètes pour résoudre ce problème.\n\n### Diagnostic\nL'erreur de certificat expiré indique que le certificat SSL utilisé par le client SAP pour établir une connexion sécurisée n'est plus valide. Cela peut se produire si le certificat n'a pas été renouvelé à temps ou si le certificat racine de l'autorité de certification n'est pas à jour.\n\n### Étapes d'action\n\n1. **Vérification de la date d'expiration du certificat** :\n   - Ouvrez le client SAP et accédez aux paramètres de connexion.\n   - Vérifiez les détails du certificat pour confirmer qu'il est effectivement expiré.\n\n2. **Mise à jour du certificat** :\n   - Si vous avez accès à l'autorité de certificati...","feedback":"Ta réponse ne reflète pas fidèlement la cause technique Ni la procédure attendue : revois l'importance de l'auto-enrôlement et des Autorité de certification correcte Michelin en focus. Les étapes inclues englobent donc ajoutent des informations nouvelles.","tool_calls":[]}]},{"ticket_id":"PROXY-037","ticket_text":"Mon navigateur bloque l'accès à l'intranet pour cause de proxy.","rca_ground_truth":"Le blocage de l'intranet par le proxy provient le plus souvent d'une configuration PAC (Proxy Auto-Configuration) obsolète, d'une authentification proxy expirée ou d'un certificat d'inspection SSL non à jour. La procédure attendue est : (1) vérifier dans Paramètres Windows → Réseau → Proxy que le script PAC Michelin pointe bien sur http://wpad.michelin.com/wpad.dat, (2) ouvrir une session admin et lancer 'netsh winhttp reset proxy' puis 'netsh winhttp import proxy source=ie', (3) vider le cache du navigateur et redémarrer, (4) tester l'accès à un site intranet de référence (https://intranet.michelin.com), (5) si l'erreur persiste, vérifier la validité du certificat 'Michelin SSL Inspection' dans le magasin Windows et escalader au support N2 Sécurité réseau.","succes":true,"iterations_necessaires":2,"scores_par_iteration":[{"iter":1,"faithfulness":5,"relevance":5,"context":4,"moy":4.7,"reponse_agent":"Bonjour,\n\nMerci pour votre message. Il semble que votre navigateur rencontre un problème d'accès à l'intranet en raison de paramètres de proxy. Voici un diagnostic et des étapes d'action concrètes pour résoudre ce problème :\n\n### Diagnostic :\n1. **Vérification des paramètres de proxy** : Il est possible que les paramètres de proxy soient mal configurés ou que le proxy ne soit pas accessible.\n2. **Problème de connexion réseau** : Assurez-vous que votre connexion Internet fonctionne correctement.\n3. **Paramètres du navigateur** : Les paramètres de votre navigateur peuvent bloquer l'accès à certaines adresses.\n\n### Étapes d'action :\n1. **Vérifiez votre connexion Internet** :\n   - Ouvrez un autre site web (par exemple, Google) pour confirmer que votre connexion fonctionne.\n\n2. **Vérifiez les p...","feedback":"Ta réponse évite la cause racine technique précisée dans le RCA, notamment sur les paramètres PAC et le certificat SSL. Réoriente ton analyse vers les aspects spécifiques du proxy et valide les procédures internes correspondantes.","tool_calls":[]},{"iter":2,"faithfulness":7,"relevance":8,"context":7,"moy":7.3,"reponse_agent":"Bonjour,\n\nMerci de nous avoir contactés concernant le problème d'accès à l'intranet via votre navigateur. Il semble que le blocage soit lié à la configuration du proxy. Voici quelques étapes à suivre pour diagnostiquer et potentiellement résoudre ce problème :\n\n1. **Vérification des paramètres de proxy :**\n   - Ouvrez les paramètres de votre navigateur.\n   - Accédez à la section des paramètres de réseau ou de connexion.\n   - Vérifiez si un proxy est configuré. Notez les paramètres actuels (adresse et port).\n\n2. **Désactivation temporaire du proxy :**\n   - Si vous avez accès à cette option, essayez de désactiver le proxy temporairement pour voir si cela vous permet d'accéder à l'intranet.\n   - Si l'accès est rétabli, cela confirme que le problème est lié à la configuration du proxy.\n\n3. **V...","feedback":"","tool_calls":[]}]}]},"react":{"per_iteration":{"faithfulness":[5.7,6.2],"relevance":[6.5,7.5],"context":[5.3,5.9],"average":[5.84,6.52]},"success_rate":0.5,"reports":[{"ticket_id":"VPN-001","ticket_text":"Le VPN Cisco me donne l'erreur 412 et je suis en Chine. J'ai déjà redémarré mon PC et réinstallé AnyConnect mais rien ne change.","rca_ground_truth":"L'erreur 412 'Tunnel rejected by server' en Chine est causée par le blocage du port UDP 1194 (IPSec/IKEv2) par le Great Firewall of China. La solution est de reconfigurer AnyConnect pour utiliser le port TCP 443 (TLS fallback) via le profil VPN 'Michelin-China-Fallback'. Si ce profil est absent du client, l'utilisateur doit contacter le support N2 pour que l'équipe réseau active le profil de contournement GFW sur son compte AnyConnect et lui fournisse le fichier de configuration XML.","succes":false,"iterations_necessaires":null,"scores_par_iteration":[{"iter":1,"faithfulness":0,"relevance":4,"context":2,"moy":2.0,"reponse_agent":"Le service VPN est actuellement hors ligne en raison d'un incident identifié (Incident 4042). Vous ne pouvez rien faire pour résoudre le problème localement. Je vous recommande de réessayer plus tard ou d'utiliser un service de secours si disponible. Par ailleurs, j'escaladerai cette situation à l'équipe infrastructure pour qu'ils prennent connaissance de l'incident.","feedback":"Ta réponse contredit le RCA en invoquant un incident inexistant et sans rapport. Revois la cause technique exacte de l'erreur et propose des solutions alignées avec les contextes réseau géographique et VPN spécifiques.","tool_calls":[{"tool":"verifier_statut_serveur","argument":"vpn","ok":true}]},{"iter":2,"faithfulness":2,"relevance":4,"context":3,"moy":3.0,"reponse_agent":"Le service VPN est actuellement hors ligne en raison d'un incident (Incident 4042). Cela peut être la cause de l'erreur 412 que vous rencontrez. Malheureusement, les manipulations locales comme le redémarrage de votre PC ou la réinstallation d'AnyConnect ne seront pas suffisantes pour résoudre ce problème.\n\nJe vous conseille de réessayer de vous connecter plus tard. Si vous avez un service de secours disponible, vous pourriez l'utiliser en attendant. De plus, je vais escalader cette situation à l'équipe infrastructure avec l'ID d'incident pour qu'ils puissent intervenir.","feedback":"Ta réponse invente un problème d'infrastructure non mentionné dans le RCA. Revois les causes possibles liées au contexte géographique et à la configuration réseau pour adresser correctement l'erreur.","tool_calls":[{"tool":"verifier_statut_serveur","argument":"vpn","ok":true}]}]},{"ticket_id":"OUTLOOK-005","ticket_text":"Je ne peux pas accéder à Outlook depuis ce matin, le client refuse de se connecter.","rca_ground_truth":"Le refus de connexion d'Outlook au démarrage est généralement causé soit par une expiration du jeton d'authentification Microsoft 365, soit par un incident côté service Exchange Online. La procédure attendue est : (1) vérifier le statut du service mail Michelin, (2) si le service est en ligne, demander à l'utilisateur de se déconnecter de son profil Outlook et de relancer en mode sans cache OST, (3) supprimer puis recréer le profil Outlook depuis Panneau de configuration → Mail, (4) si le problème persiste, vérifier l'expiration du certificat MSAL et escalader au support N2 si nécessaire.","succes":false,"iterations_necessaires":null,"scores_par_iteration":[{"iter":1,"faithfulness":7,"relevance":7,"context":6,"moy":6.7,"reponse_agent":"Je n'ai pas obtenu de réponse finale fiable du modèle, mais les outils donnent un diagnostic exploitable.\n\nTicket : Je ne peux pas accéder à Outlook depuis ce matin, le client refuse de se connecter.\n\nÉléments vérifiés :\n- chercher_dans_kb(Je ne peux pas accéder à Outlook depuis ce matin, le client refuse de se connecter.) : 1 solution(s) trouvée(s) :  --- SOLUTION 1 --- ID : KB-011 Score KB : 48 Problème : Outlook : client refuse de se connecter Catégorie : Messagerie Priorité : moyenne  DIAGNOSTIC :   - Tester Outlook Web pour distinguer un problème compte d'un problème client local   - Vérifier le mode hors connexion, les identifiants enregistrés et l'état du service Outlook   - Noter le message d'erreur exact et l'heure d'apparition  RÉSOLUTION :   1. Redémarrer Outlook puis tester htt...","feedback":"Ta réponse couvre partiellement la cause technique mais méconnaît certains éléments clé attendus comme l'expiration du jeton d'authentification. Creuse davantage les procédures spécifiques au problème identifié dans le RCA pour améliorer ta qualité contextuelle.","tool_calls":[{"tool":"chercher_dans_kb","argument":"Je ne peux pas accéder à Outlook depuis ce matin, le client refuse de se connecter.","ok":true}]},{"iter":2,"faithfulness":6,"relevance":7,"context":6,"moy":6.3,"reponse_agent":"Voici quelques étapes à suivre pour résoudre votre problème d'accès à Outlook :\n\n1. **Redémarrez Outlook** et testez l'accès via [Outlook Web](https://outlook.office.com) avec votre compte Michelin.\n2. **Vérifiez le mode hors connexion** : Allez dans l'onglet \"Envoyer/Recevoir\" et désactivez \"Travailler hors connexion\".\n3. **Supprimez les identifiants obsolètes** dans le Gestionnaire d'identifiants Windows.\n4. Si le client local ne fonctionne toujours pas mais qu'Outlook Web fonctionne, créez un **nouveau profil Outlook**.\n5. Si cela ne suffit pas, **effectuez une réparation rapide** d'Office.\n\nSi vous ne parvenez toujours pas à vous connecter, et qu'Outlook Web échoue aussi, veuillez soumettre un ticket à l'équipe de niveau 2 pour la messagerie.","feedback":"Certaines étapes proposées ne sont pas strictement conformes à la procédure attendue du RCA, notamment sur la priorité des vérifications. Aligne mieux ta réponse sur les causes racines techniques spécifiques et les étapes recommandées pour ce type d'incident.","tool_calls":[{"tool":"chercher_dans_kb","argument":"Je ne peux pas accéder à Outlook depuis ce matin, le client refuse de se connecter.","ok":true}]}]},{"ticket_id":"WIFI-006","ticket_text":"Je suis en télétravail et ma connexion WiFi est très lente. Comment l'améliorer ?","rca_ground_truth":"Une connexion WiFi lente en télétravail provient le plus souvent de la saturation de la bande 2,4 GHz, d'une mauvaise position de la box ou d'un canal WiFi encombré. La procédure attendue est : (1) basculer le PC sur la bande 5 GHz du SSID domestique, (2) rapprocher physiquement le poste de la box ou utiliser un câble Ethernet pour les visios critiques, (3) redémarrer la box, (4) vérifier qu'aucune autre application (streaming, sauvegarde cloud) ne sature la bande passante, (5) tester le débit via speedtest.net et remonter les chiffres au support N2 si la latence reste supérieure à 100 ms.","succes":true,"iterations_necessaires":2,"scores_par_iteration":[{"iter":1,"faithfulness":6,"relevance":7,"context":6,"moy":6.3,"reponse_agent":"Je n'ai pas obtenu de réponse finale fiable du modèle, mais les outils donnent un diagnostic exploitable.\n\nTicket : Je suis en télétravail et ma connexion WiFi est très lente. Comment l'améliorer ?\n\nÉléments vérifiés :\n- chercher_dans_kb(Je suis en télétravail et ma connexion WiFi est très lente. Comment l'améliorer ?) : 1 solution(s) trouvée(s) :  --- SOLUTION 1 --- ID : KB-025 Score KB : 39 Problème : WiFi lent en télétravail Catégorie : Réseau Priorité : moyenne  DIAGNOSTIC :   - Comparer le débit WiFi avec un test en câble Ethernet si possible   - Vérifier si d'autres appareils saturent la connexion domestique   - Tester la qualité du signal près de la box puis à l'emplacement de travail  RÉSOLUTION :   1. Se rapprocher de la box ou utiliser un câble Ethernet pour les visioconférences ...","feedback":"Ta réponse est partiellement fidèle, mais elle ne couvre pas toutes les causes racines précises du RCA, notamment l'aspect des bandes WiFi. Assure-toi de relier les actions suggérées directement au diagnostic RCA et à ses étapes spécifiques.","tool_calls":[{"tool":"chercher_dans_kb","argument":"Je suis en télétravail et ma connexion WiFi est très lente. Comment l'améliorer ?","ok":true}]},{"iter":2,"faithfulness":9,"relevance":10,"context":8,"moy":9.0,"reponse_agent":"Pour améliorer votre connexion WiFi en télétravail, voici quelques étapes à suivre :\n\n1. **Tester la connexion** : Comparez le débit WiFi à un test effectué avec un câble Ethernet, si possible.\n2. **Évaluer la saturation** : Vérifiez si d'autres appareils utilisent intensivement votre connexion domestique (téléchargements, vidéos en streaming, etc.).\n3. **Positionnement** : Testez la qualité du signal à différents endroits : près de la box et à votre emplacement de travail.\n\n**Actions recommandées :**\n- Rapprochez-vous de la box ou utilisez un câble Ethernet pour des visioconférences importantes.\n- Redémarrez votre box internet et votre poste de travail.\n- Si disponible, utilisez le réseau 5 GHz pour de meilleures performances et évitez les zones faiblement couvertes.\n- Fermez les applicat...","feedback":"","tool_calls":[{"tool":"chercher_dans_kb","argument":"Je suis en télétravail et ma connexion WiFi est très lente. Comment l'améliorer ?","ok":true}]}]},{"ticket_id":"PWD-007","ticket_text":"J'ai oublié mon mot de passe Windows. Comment faire pour le réinitialiser ?","rca_ground_truth":"La réinitialisation du mot de passe Windows pour un poste joint au domaine Michelin se fait via le portail Self-Service Password Reset (SSPR) Azure AD ou, en l'absence d'accès, via le service desk. La procédure attendue est : (1) se connecter à https://passwordreset.microsoftonline.com depuis un autre appareil, (2) valider son identité via SMS ou Authenticator, (3) définir un nouveau mot de passe respectant la politique Michelin (12+ caractères, complexité, pas de réutilisation des 10 derniers), (4) si la SSPR n'est pas configurée, appeler le service desk avec une pièce d'identité Michelin pour une réinitialisation manuelle.","succes":false,"iterations_necessaires":null,"scores_par_iteration":[{"iter":1,"faithfulness":4,"relevance":4,"context":3,"moy":3.7,"reponse_agent":"Je n'ai pas obtenu de réponse finale fiable du modèle, mais les outils donnent un diagnostic exploitable.\n\nTicket : J'ai oublié mon mot de passe Windows. Comment faire pour le réinitialiser ?\n\nÉléments vérifiés :\n- chercher_dans_kb(J'ai oublié mon mot de passe Windows. Comment faire pour le réinitialiser ?) : 1 solution(s) trouvée(s) :  --- SOLUTION 1 --- ID : KB-003 Score KB : 29 Problème : Mot de passe oublié ou compte verrouillé Catégorie : Authentification Priorité : haute  DIAGNOSTIC :   - Vérifier si le compte est verrouillé (3 tentatives échouées = verrouillage 30 min)   - Confirmer que l'utilisateur utilise le bon domaine (MICHELIN\\username)  RÉSOLUTION :   1. Réinitialisation self-service : https://password.michelin.com   2. Cliquer sur 'Mot de passe oublié'   3. Entrer l'adresse ...","feedback":"Ta réponse ne reflète pas fidèlement la procédure attendue et introduit une URL incorrecte. Concentre-toi sur la méthode standard préconisée pour ce type d'incident sans mélanger des éléments non pertinents.","tool_calls":[{"tool":"chercher_dans_kb","argument":"J'ai oublié mon mot de passe Windows. Comment faire pour le réinitialiser ?","ok":true}]},{"iter":2,"faithfulness":3,"relevance":6,"context":4,"moy":4.3,"reponse_agent":"Je n'ai pas obtenu de réponse finale fiable du modèle, mais les outils donnent un diagnostic exploitable.\n\nTicket : J'ai oublié mon mot de passe Windows. Comment faire pour le réinitialiser ?\n\nÉléments vérifiés :\n- chercher_dans_kb(J'ai oublié mon mot de passe Windows. Comment faire pour le réinitialiser ?) : 1 solution(s) trouvée(s) :  --- SOLUTION 1 --- ID : KB-003 Score KB : 29 Problème : Mot de passe oublié ou compte verrouillé Catégorie : Authentification Priorité : haute  DIAGNOSTIC :   - Vérifier si le compte est verrouillé (3 tentatives échouées = verrouillage 30 min)   - Confirmer que l'utilisateur utilise le bon domaine (MICHELIN\\username)  RÉSOLUTION :   1. Réinitialisation self-service : https://password.michelin.com   2. Cliquer sur 'Mot de passe oublié'   3. Entrer l'adresse ...","feedback":"Ta réponse contient des contradictions : le portail mentionné dans la solution n'est pas conforme au RCA. Revois les outils et procédures spécifiques à ce scénario de réinitialisation pour assurer une fidélité totale.","tool_calls":[{"tool":"chercher_dans_kb","argument":"J'ai oublié mon mot de passe Windows. Comment faire pour le réinitialiser ?","ok":true}]}]},{"ticket_id":"TEAMS-011","ticket_text":"Mon compte Teams est connecté mais je ne vois plus mes canaux de projet.","rca_ground_truth":"La disparition des canaux Teams alors que la connexion fonctionne est typiquement causée par un cache local corrompu ou par une perte d'appartenance à l'équipe côté Azure AD. La procédure attendue est : (1) fermer complètement Teams (clic droit sur l'icône systray → Quitter), (2) vider le cache via %appdata%\\Microsoft\\Teams (supprimer les dossiers Cache, blob_storage, GPUCache, IndexedDB), (3) relancer Teams et se reconnecter, (4) si les canaux restent absents, vérifier auprès du propriétaire de l'équipe que l'utilisateur est toujours membre, (5) si nécessaire, demander la réintégration à l'équipe et escalader au support N2 pour audit Azure AD.","succes":true,"iterations_necessaires":1,"scores_par_iteration":[{"iter":1,"faithfulness":7,"relevance":8,"context":6,"moy":7.0,"reponse_agent":"Voici quelques étapes à suivre pour résoudre le problème de canaux absents sur Teams :\n\n1. Vérifiez que vous êtes connecté au bon compte professionnel et au bon tenant.\n2. Recherchez l'équipe dans Teams et vérifiez si les canaux sont masqués via l'option 'Afficher'.\n3. Déconnectez-vous puis reconnectez-vous à Teams, et videz le cache si les canaux restent absents.\n4. Essayez de vous connecter à Teams Web pour voir si les canaux apparaissent, afin de distinguer un problème de cache local d'un problème de droits.\n5. Si un canal est privé, demandez au propriétaire de l'équipe de confirmer votre appartenance au canal.\n6. Enfin, assurez-vous que Teams est à jour depuis le portail logiciel Michelin.\n\nSi après cela les canaux sont toujours absents et que vous suspectez un problème de droits, il p...","feedback":"","tool_calls":[{"tool":"chercher_dans_kb","argument":"Mon compte Teams est connecté mais je ne vois plus mes canaux de projet.","ok":true}]}]},{"ticket_id":"PRINT-013","ticket_text":"Je ne peux pas imprimer en recto-verso, l'option n'apparaît plus.","rca_ground_truth":"La disparition de l'option recto-verso (duplex) est due soit à un pilote d'imprimante générique installé à la place du pilote constructeur, soit à un module duplex désactivé dans les propriétés du périphérique. La procédure attendue est : (1) ouvrir Paramètres → Imprimantes et scanners → propriétés de l'imprimante, (2) vérifier sous l'onglet Configuration que l'unité duplex est activée et déclarée comme installée, (3) si l'option reste absente, désinstaller l'imprimante et réinstaller le pilote constructeur officiel depuis le portail logiciel Michelin, (4) tester l'impression recto-verso avec un document de test, (5) escalader au support N2 si le module duplex matériel n'est pas reconnu.","succes":true,"iterations_necessaires":1,"scores_par_iteration":[{"iter":1,"faithfulness":9,"relevance":10,"context":8,"moy":9.0,"reponse_agent":"Voici quelques étapes à suivre pour résoudre le problème de l'impression recto-verso :\n\n1. Ouvrez les propriétés de l'imprimante et vérifiez que l'unité recto-verso est installée et activée.\n2. Supprimez puis réinstallez l'imprimante depuis le portail d'impression Michelin.\n3. Assurez-vous d'utiliser le pilote constructeur recommandé au lieu d'un pilote générique.\n4. Redémarrez le spouleur d'impression et relancez l'application.\n5. Testez l'impression recto-verso avec un document simple.\n\nSi l'option reste absente après avoir vérifié ces points, veuillez soumettre un ticket de maintenance pour l'imprimante.","feedback":"","tool_calls":[{"tool":"chercher_dans_kb","argument":"Je ne peux pas imprimer en recto-verso, l'option n'apparaît plus.","ok":true}]}]},{"ticket_id":"MAIL-014","ticket_text":"J'ai un message 'boîte aux lettres pleine' dans Outlook.","rca_ground_truth":"Le message 'boîte aux lettres pleine' apparaît lorsque le quota Exchange Online de l'utilisateur (50 Go par défaut chez Michelin) est atteint. La procédure attendue est : (1) vider la corbeille Outlook (clic droit sur 'Éléments supprimés' → Vider le dossier), (2) archiver les anciens mails via Outlook → Fichier → Outils → Nettoyer la boîte de réception, (3) supprimer les pièces jointes volumineuses via le tri par taille, (4) configurer l'AutoArchive pour basculer les mails de plus de 12 mois vers un fichier PST local ou l'archive en ligne, (5) si le quota reste insuffisant après nettoyage, demander une extension de quota au support N2 avec justification métier.","succes":true,"iterations_necessaires":2,"scores_par_iteration":[{"iter":1,"faithfulness":7,"relevance":6,"context":5,"moy":6.0,"reponse_agent":"Je n'ai pas obtenu de réponse finale fiable du modèle, mais les outils donnent un diagnostic exploitable.\n\nTicket : J'ai un message 'boîte aux lettres pleine' dans Outlook.\n\nÉléments vérifiés :\n- chercher_dans_kb(boîte aux lettres pleine Outlook) : 1 solution(s) trouvée(s) :  --- SOLUTION 1 --- ID : KB-017 Score KB : 55 Problème : Outlook : boîte aux lettres pleine Catégorie : Messagerie Priorité : moyenne  DIAGNOSTIC :   - Vérifier le quota de boîte aux lettres dans Outlook ou Outlook Web   - Identifier les dossiers les plus volumineux et les emails avec grosses pièces jointes   - Confirmer que les éléments supprimés sont bien vidés côté serveur  RÉSOLUTION :   1. Supprimer ou archiver les emails volumineux et les pièces jointes inutiles   2. Vider les do...\n\nActions recommandées :\n1. App...","feedback":"Ta réponse omet certaines étapes précises attendues dans la gestion du quota, comme l'utilisation d'options spécifiques dans Outlook. Renforce la pertinence en détaillant mieux les solutions correspondant exactement au contexte du quota de boîte pleine.","tool_calls":[{"tool":"chercher_dans_kb","argument":"boîte aux lettres pleine Outlook","ok":true}]},{"iter":2,"faithfulness":9,"relevance":10,"context":8,"moy":9.0,"reponse_agent":"Pour résoudre le problème de la 'boîte aux lettres pleine' dans Outlook, voici les étapes à suivre :\n\n1. Vérifiez le quota de votre boîte aux lettres dans Outlook ou Outlook Web.\n2. Identifiez les dossiers les plus volumineux et les emails avec de grosses pièces jointes.\n3. Assurez-vous que les éléments supprimés sont bien vidés côté serveur.\n\n### Résolution :\n- Supprimez ou archivez les emails volumineux et les pièces jointes inutiles.\n- Videz les dossiers 'Éléments supprimés' et 'Courrier indésirable'.\n- Utilisez l'outil de nettoyage de boîte aux lettres dans Outlook pour trouver les messages les plus lourds.\n- Déplacez les archives autorisées vers l'emplacement prévu par la politique de messagerie.\n- Relancez Outlook et vérifiez que le quota a diminué.\n\n### A noter :\nSi le quota reste b...","feedback":"","tool_calls":[{"tool":"chercher_dans_kb","argument":"boîte aux lettres pleine","ok":true}]}]},{"ticket_id":"VPN-017","ticket_text":"Le VPN se connecte mais je n'accède à aucune application interne.","rca_ground_truth":"Quand le VPN est connecté mais qu'aucune application interne n'est joignable, la cause racine est généralement un problème de routage (split-tunneling mal configuré ou table de routage non poussée) ou un problème DNS (le client n'utilise pas les serveurs DNS internes Michelin). La procédure attendue est : (1) vérifier dans AnyConnect que la session affiche bien 'tunnel établi' et qu'une route vers 10.0.0.0/8 est présente (ipconfig /all + route print), (2) vérifier que les serveurs DNS internes Michelin sont utilisés (nslookup d'un FQDN interne doit résoudre), (3) si DNS ne résout pas, lancer ipconfig /flushdns et reconnecter le VPN, (4) si le routage est cassé, déconnecter/reconnecter avec le profil 'Full-Tunnel-Michelin', (5) escalader au support N2 réseau si le problème persiste.","succes":true,"iterations_necessaires":1,"scores_par_iteration":[{"iter":1,"faithfulness":7,"relevance":8,"context":6,"moy":7.0,"reponse_agent":"Pour résoudre le problème où le VPN est connecté mais que vous n'accédez à aucune application interne, voici les étapes à suivre : \n\n1. Vérifiez que le VPN est bien connecté avec une adresse IP VPN attribuée. \n2. Testez une application interne connue et notez le message d'erreur exact. \n3. Assurez-vous que le problème ne concerne pas le DNS, le proxy ou le routage VPN. \n\n**Résolution :**  \n- Déconnectez puis reconnectez le VPN Cisco AnyConnect.  \n- Videz le cache DNS en utilisant la commande `ipconfig /flushdns`, puis relancez le navigateur.  \n- Testez l'accès à une application interne en utilisant son nom DNS, puis via l'URL officielle.  \n- Désactivez temporairement les proxys personnels ou les extensions réseau non autorisées.  \n- Collectez l'heure, l'adresse IP VPN, l'application testée...","feedback":"","tool_calls":[{"tool":"chercher_dans_kb","argument":"Le VPN se connecte mais je n'accède à aucune application interne.","ok":true}]}]},{"ticket_id":"SAP-036","ticket_text":"Le client SAP affiche une erreur de certificat expiré.","rca_ground_truth":"Une erreur de certificat expiré dans SAP GUI résulte soit d'un certificat client (SNC) périmé sur le poste, soit d'une autorité de certification Michelin non à jour dans le magasin de certificats Windows. La procédure attendue est : (1) ouvrir le magasin de certificats utilisateur (certmgr.msc) et vérifier la validité du certificat SAP-SNC personnel, (2) si expiré, demander un renouvellement via l'auto-enrôlement Active Directory ou via le portail PKI Michelin, (3) vérifier que les certificats racine 'Michelin Internal Root CA' sont installés et valides dans le magasin 'Autorités de certification racines de confiance', (4) redémarrer SAP GUI après installation du nouveau certificat, (5) escalader au support N2 Sécurité si l'auto-enrôlement échoue.","succes":false,"iterations_necessaires":null,"scores_par_iteration":[{"iter":1,"faithfulness":4,"relevance":5,"context":6,"moy":5.0,"reponse_agent":"Je n'ai pas obtenu de réponse finale fiable du modèle, mais les outils donnent un diagnostic exploitable.\n\nTicket : Le client SAP affiche une erreur de certificat expiré.\n\nÉléments vérifiés :\n- chercher_dans_kb(Le client SAP affiche une erreur de certificat expiré.) : 1 solution(s) trouvée(s) :  --- SOLUTION 1 --- ID : KB-021 Score KB : 58 Problème : SAP GUI : certificat expiré Catégorie : Réseau applicatif Priorité : haute  DIAGNOSTIC :   - Vérifier la date et l'heure du poste car un décalage peut déclencher une erreur de certificat   - Identifier si l'erreur vient du client SAP GUI, du navigateur SSO ou du serveur SAP   - Noter le nom du système SAP et le message exact du certificat  RÉSOLUTION :   1. Corriger la date, l'heure et le fuseau horaire du poste puis relancer SAP...\n\nActions r...","feedback":"Ta réponse se détourne de la cause racine sur les certificats. Révise la solution proposée pour coller à la validation et au renouvellement des certificats SAP-SNC et à la gestion des autorités internes nécessaires.","tool_calls":[{"tool":"chercher_dans_kb","argument":"Le client SAP affiche une erreur de certificat expiré.","ok":true}]},{"iter":2,"faithfulness":4,"relevance":5,"context":4,"moy":4.3,"reponse_agent":"Pour résoudre l'erreur de certificat expiré sur le client SAP, voici les étapes à suivre :\n\n1. Vérifiez la date, l'heure et le fuseau horaire de votre poste. Un décalage peut provoquer une erreur de certificat.\n2. Identifiez si l'erreur provient du client SAP GUI, du navigateur SSO ou du serveur SAP.\n3. Notez le nom du système SAP et le message exact concernant le certificat.\n4. Corrigez la date et l'heure de votre poste, puis relancez SAP GUI.\n5. Mettez à jour SAP GUI depuis le portail logiciel Michelin.\n6. Si nécessaire, importez la chaîne de certificats valides uniquement si elle est fournie par le support PKI/SAP.\n7. Testez l'accès à SAP depuis un autre poste pour déterminer si le problème est lié au poste local ou au certificat serveur.\n8. Transmettez le message exact et le nom du sys...","feedback":"Ta réponse inclut des étapes sans lien direct avec la cause racine, comme les vérifications de date/heure et les mises à jour SAP GUI. Recentre-toi sur la gestion des certificats SNC dans le magasin Windows, comme précisé dans la procédure.","tool_calls":[{"tool":"chercher_dans_kb","argument":"Le client SAP affiche une erreur de certificat expiré.","ok":true}]}]},{"ticket_id":"PROXY-037","ticket_text":"Mon navigateur bloque l'accès à l'intranet pour cause de proxy.","rca_ground_truth":"Le blocage de l'intranet par le proxy provient le plus souvent d'une configuration PAC (Proxy Auto-Configuration) obsolète, d'une authentification proxy expirée ou d'un certificat d'inspection SSL non à jour. La procédure attendue est : (1) vérifier dans Paramètres Windows → Réseau → Proxy que le script PAC Michelin pointe bien sur http://wpad.michelin.com/wpad.dat, (2) ouvrir une session admin et lancer 'netsh winhttp reset proxy' puis 'netsh winhttp import proxy source=ie', (3) vider le cache du navigateur et redémarrer, (4) tester l'accès à un site intranet de référence (https://intranet.michelin.com), (5) si l'erreur persiste, vérifier la validité du certificat 'Michelin SSL Inspection' dans le magasin Windows et escalader au support N2 Sécurité réseau.","succes":false,"iterations_necessaires":null,"scores_par_iteration":[{"iter":1,"faithfulness":6,"relevance":6,"context":5,"moy":5.7,"reponse_agent":"Pour résoudre le problème de blocage de votre navigateur à l'accès de l'intranet à cause du proxy, voici quelques étapes à suivre :\n\n1. Vérifiez si l'accès intranet fonctionne dans un autre navigateur ou en mode navigation privée.\n2. Assurez-vous que votre poste utilise la configuration proxy automatique de Michelin dans les paramètres réseau.\n3. Testez l'accès avec le VPN connecté si vous êtes hors site.\n4. Vérifiez la configuration proxy automatique Michelin dans les paramètres réseau.\n5. Désactivez les extensions de navigateur qui modifient le proxy, puis relancez le navigateur.\n6. Videz le cache DNS en exécutant la commande `ipconfig /flushdns` dans l'invite de commande, puis relancez le navigateur.\n7. Si le proxy reste bloqué, réinitialisez les paramètres réseau du navigateur.\n8. Note...","feedback":"Ta réponse est partiellement correcte mais manque de cohérence avec la cause identifiée dans le RCA, comme la gestion spécifique des PAC obsolètes. Revois les étapes de vérification des configurations proxy et des certificats pour aligner davantage avec la procédure Michelin.","tool_calls":[{"tool":"chercher_dans_kb","argument":"Mon navigateur bloque l'accès à l'intranet pour cause de proxy.","ok":true}]},{"iter":2,"faithfulness":6,"relevance":7,"context":6,"moy":6.3,"reponse_agent":"Pour résoudre le problème de blocage d'accès à l'intranet par votre navigateur à cause du proxy, veuillez suivre ces étapes :\n\n1. Vérifiez si l'accès intranet fonctionne dans un autre navigateur ou en mode navigation privée.\n2. Contrôlez que votre poste utilise la configuration proxy automatique Michelin dans les paramètres réseau.\n3. Testez l'accès au site avec le VPN connecté si vous êtes hors site.\n4. Vérifiez la configuration du proxy automatique Michelin dans les paramètres réseau.\n5. Désactivez les extensions de navigateur qui modifient le proxy, puis relancez le navigateur.\n6. Videz le cache DNS en utilisant la commande `ipconfig /flushdns`, puis relancez le navigateur.\n7. Si le problème persiste, réinitialisez les paramètres réseau de votre navigateur.\n8. Avant d'escalader, notez l...","feedback":"Tu n'identifies pas clairement la cause technique racine liée au proxy ou certificat. Recentre ta réponse sur la procédure exacte pour les scripts PAC et SSL, en évitant les étapes non spécifiques au RCA.","tool_calls":[{"tool":"chercher_dans_kb","argument":"Mon navigateur bloque l'accès à l'intranet pour cause de proxy.","ok":true}]}]}]}}}
+</script>
+<!-- ADVERSARIAL_DATA_END -->
 
 <!-- ============================================================
      ENGINE + RENDER
@@ -5760,6 +6036,277 @@ flowchart LR
       }
     }, { rootMargin: '0px 0px -10% 0px' });
     io.observe(root);
+  } else {
+    init();
+  }
+})();
+</script>
+
+<!-- ============================================================
+     ADVERSARIAL DIAGRAM — RAGAS-inspired discriminator [03/08]
+     ============================================================ -->
+<script>
+(function(){
+  const dataEl = document.getElementById('adversarial-data');
+  if (!dataEl) return;
+  const DATA = JSON.parse(dataEl.textContent);
+  if (!DATA || !DATA.modes || !DATA.modes.react || !DATA.modes.react.reports || !DATA.modes.react.reports.length) {
+    return;
+  }
+
+  // ---- state -------------------------------------------------------------
+  const state = {
+    mode: 'react',
+    ticketIdx: 0,
+    iter: 1,
+  };
+
+  // ---- DOM refs ----------------------------------------------------------
+  const pick = document.getElementById('adv-ticket-pick');
+  const prevBtn = document.getElementById('adv-prev');
+  const nextBtn = document.getElementById('adv-next');
+  const iterCurEl = document.getElementById('adv-iter-cur');
+  const iterCur2El = document.getElementById('adv-iter-cur2');
+  const iterMaxEl = document.getElementById('adv-iter-max');
+  const ticketTextEl = document.getElementById('adv-ticket-text');
+  const agentTextEl = document.getElementById('adv-agent-text');
+  const feedbackTextEl = document.getElementById('adv-feedback-text');
+  const feedbackBlock = document.getElementById('adv-feedback-block');
+  const chipsEl = document.getElementById('adv-tool-chips');
+  const modeLabelEl = document.getElementById('adv-mode-label');
+  const verdictEl = document.getElementById('adv-verdict');
+  const rcaTextEl = document.getElementById('adv-rca-text');
+  const metaEl = document.getElementById('adv-meta');
+  const svg = document.getElementById('adv-agg-svg');
+  const modeButtons = document.querySelectorAll('#adversarial .adv-modes button');
+
+  const scoreRefs = {
+    sf: { val: document.getElementById('adv-sf-val'), fill: document.getElementById('adv-sf-fill') },
+    sr: { val: document.getElementById('adv-sr-val'), fill: document.getElementById('adv-sr-fill') },
+    sc: { val: document.getElementById('adv-sc-val'), fill: document.getElementById('adv-sc-fill') },
+  };
+
+  // ---- helpers -----------------------------------------------------------
+  function reportFor(mode, idx){ return DATA.modes[mode].reports[idx]; }
+  function curReport(){ return reportFor(state.mode, state.ticketIdx); }
+  function curIteration(){
+    const rep = curReport();
+    const i = Math.min(state.iter - 1, rep.scores_par_iteration.length - 1);
+    return rep.scores_par_iteration[i];
+  }
+  function maxIter(){ return curReport().scores_par_iteration.length; }
+  function escapeHtml(s){
+    return (s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  function tokenize(text){
+    // Split on whitespace AND keep punctuation as separate tokens for cleaner diffs.
+    return (text || '').split(/(\s+)/);
+  }
+
+  // Word-level diff via LCS — additions wrapped in <ins>, removals in <del>.
+  function diffWords(oldText, newText){
+    const A = tokenize(oldText), B = tokenize(newText);
+    const m = A.length, n = B.length;
+    // Small inputs (responses capped at 800 chars), so O(m*n) DP is fine.
+    const lcs = Array.from({length: m + 1}, () => new Uint16Array(n + 1));
+    for (let i = m - 1; i >= 0; i--) {
+      for (let j = n - 1; j >= 0; j--) {
+        if (A[i] === B[j]) lcs[i][j] = lcs[i + 1][j + 1] + 1;
+        else lcs[i][j] = Math.max(lcs[i + 1][j], lcs[i][j + 1]);
+      }
+    }
+    let i = 0, j = 0, out = '';
+    while (i < m && j < n) {
+      if (A[i] === B[j]) { out += escapeHtml(B[j]); i++; j++; }
+      else if (lcs[i + 1][j] >= lcs[i][j + 1]) { out += '<del class="adv-diff-del">' + escapeHtml(A[i]) + '</del>'; i++; }
+      else { out += '<ins class="adv-diff-add">' + escapeHtml(B[j]) + '</ins>'; j++; }
+    }
+    while (i < m) { out += '<del class="adv-diff-del">' + escapeHtml(A[i++]) + '</del>'; }
+    while (j < n) { out += '<ins class="adv-diff-add">' + escapeHtml(B[j++]) + '</ins>'; }
+    return out;
+  }
+
+  function scoreClass(s){ return s >= 7 ? 'high' : s >= 5 ? 'mid' : 'low'; }
+
+  function updateScoreBars(it){
+    const map = [['sf', it.faithfulness], ['sr', it.relevance], ['sc', it.context]];
+    for (const [k, v] of map) {
+      scoreRefs[k].val.textContent = v + '/10';
+      const fill = scoreRefs[k].fill;
+      fill.style.width = (v * 10) + '%';
+      fill.classList.remove('low', 'mid', 'high');
+      fill.classList.add(scoreClass(v));
+    }
+    const moy = ((it.faithfulness + it.relevance + it.context) / 3).toFixed(1);
+    const pass = parseFloat(moy) >= 7;
+    verdictEl.className = 'adv-verdict ' + (pass ? 'pass' : 'fail');
+    verdictEl.innerHTML = (pass ? '✓ <b>PARFAIT</b>' : '✗ <b>INSUFFISANT</b>') + ' · moy ' + moy + '/10';
+  }
+
+  function renderChips(it){
+    chipsEl.innerHTML = '';
+    if (state.mode !== 'react' || !it.tool_calls || !it.tool_calls.length) return;
+    for (const tc of it.tool_calls) {
+      const div = document.createElement('span');
+      div.className = 'adv-chip' + (tc.ok ? '' : ' adv-chip-fail');
+      const arg = tc.argument && tc.argument.length > 32 ? tc.argument.slice(0, 32) + '…' : (tc.argument || '');
+      div.innerHTML = '▸ ' + escapeHtml(tc.tool) + '<span class="adv-chip-arg">(' + escapeHtml(arg) + ')</span>' + (tc.ok ? ' ✓' : ' ✗');
+      chipsEl.appendChild(div);
+    }
+  }
+
+  function renderConversation(){
+    const rep = curReport();
+    ticketTextEl.textContent = rep.ticket_text || '—';
+    rcaTextEl.textContent = rep.rca_ground_truth || '—';
+
+    const itArr = rep.scores_par_iteration;
+    const curIdx = Math.min(state.iter - 1, itArr.length - 1);
+    const cur = itArr[curIdx];
+
+    modeLabelEl.textContent = state.mode === 'react' ? 'ReAct + RAG' : 'Zero-shot';
+
+    // Agent response: show diff against previous iter if iter >= 2, else plain.
+    if (curIdx === 0) {
+      agentTextEl.innerHTML = escapeHtml(cur.reponse_agent || '—');
+    } else {
+      const prev = itArr[curIdx - 1];
+      agentTextEl.innerHTML = diffWords(prev.reponse_agent || '', cur.reponse_agent || '');
+    }
+
+    renderChips(cur);
+    updateScoreBars(cur);
+
+    // Feedback only shown if iteration was not perfect AND a feedback exists.
+    const moy = (cur.faithfulness + cur.relevance + cur.context) / 3;
+    if (moy < 7 && cur.feedback) {
+      feedbackBlock.style.display = '';
+      feedbackTextEl.textContent = cur.feedback;
+    } else {
+      feedbackBlock.style.display = 'none';
+    }
+
+    iterCurEl.textContent = state.iter;
+    iterCur2El.textContent = state.iter;
+    iterMaxEl.textContent = maxIter();
+    prevBtn.disabled = state.iter <= 1;
+    nextBtn.disabled = state.iter >= maxIter();
+
+    renderAggregate();
+  }
+
+  // ---- aggregate strip ---------------------------------------------------
+  function renderAggregate(){
+    const W = 600, H = 130, padL = 40, padR = 20, padT = 14, padB = 30;
+    const innerW = W - padL - padR, innerH = H - padT - padB;
+    const maxIt = DATA.config.max_iterations || 2;
+    const x = i => padL + (maxIt === 1 ? innerW / 2 : (i / (maxIt - 1)) * innerW);
+    const y = v => padT + innerH - (v / 10) * innerH;
+
+    const reactAvg = DATA.modes.react.per_iteration.average;
+    const zeroAvg = DATA.modes.zero_shot.per_iteration.average;
+    const pathFrom = arr => arr.map((v, i) => (i === 0 ? 'M' : 'L') + x(i) + ',' + y(v)).join(' ');
+
+    // Highlighted-ticket trajectory: current ticket's per-iter average for current mode
+    const rep = curReport();
+    const curTraj = rep.scores_par_iteration.map(s => s.moy);
+
+    let svgContent = '';
+    // axes
+    svgContent += '<line class="adv-axis" x1="' + padL + '" y1="' + (padT + innerH) + '" x2="' + (padL + innerW) + '" y2="' + (padT + innerH) + '"/>';
+    svgContent += '<line class="adv-axis" x1="' + padL + '" y1="' + padT + '" x2="' + padL + '" y2="' + (padT + innerH) + '"/>';
+    // y-axis ticks (0, 5, 7, 10)
+    for (const tick of [0, 5, 7, 10]) {
+      const yy = y(tick);
+      svgContent += '<text class="adv-axis-label" x="' + (padL - 6) + '" y="' + (yy + 3) + '" text-anchor="end">' + tick + '</text>';
+    }
+    // x-axis ticks (iterations)
+    for (let i = 0; i < maxIt; i++) {
+      svgContent += '<text class="adv-axis-label" x="' + x(i) + '" y="' + (padT + innerH + 16) + '" text-anchor="middle">iter ' + (i + 1) + '</text>';
+    }
+    // threshold line
+    svgContent += '<line class="adv-threshold" x1="' + padL + '" y1="' + y(7) + '" x2="' + (padL + innerW) + '" y2="' + y(7) + '"/>';
+    // aggregate lines
+    svgContent += '<path class="adv-line-react" d="' + pathFrom(reactAvg) + '"/>';
+    svgContent += '<path class="adv-line-zero" d="' + pathFrom(zeroAvg) + '"/>';
+    // current-ticket trajectory dots on the active mode line
+    const isReact = state.mode === 'react';
+    for (let i = 0; i < curTraj.length; i++) {
+      const isCurIter = (i === state.iter - 1);
+      const r = isCurIter ? 6 : 3;
+      svgContent += '<circle class="adv-dot" cx="' + x(i) + '" cy="' + y(curTraj[i]) + '" r="' + r + '" style="fill:' + (isReact ? 'var(--cyan)' : 'var(--red)') + '"/>';
+    }
+    svg.innerHTML = svgContent;
+  }
+
+  // ---- controls ----------------------------------------------------------
+  function populateTicketPicker(){
+    pick.innerHTML = '';
+    const reports = DATA.modes[state.mode].reports;
+    reports.forEach((rep, idx) => {
+      const opt = document.createElement('option');
+      opt.value = idx;
+      const last = rep.scores_par_iteration[rep.scores_par_iteration.length - 1];
+      const moy = last ? last.moy : 0;
+      opt.textContent = rep.ticket_id + '  ·  moy ' + moy + (rep.succes ? '  ✓' : '');
+      pick.appendChild(opt);
+    });
+    pick.value = state.ticketIdx;
+  }
+
+  function pickHero(){
+    // Default to the ReAct report with the largest iter-1 → final climb that crosses 7/10.
+    const reports = DATA.modes.react.reports;
+    let bestIdx = 0, bestClimb = -Infinity;
+    reports.forEach((rep, idx) => {
+      const its = rep.scores_par_iteration;
+      if (its.length < 2) return;
+      const climb = its[its.length - 1].moy - its[0].moy;
+      const crossed = its[its.length - 1].moy >= 7 && its[0].moy < 7;
+      const score = climb + (crossed ? 2 : 0);
+      if (score > bestClimb) { bestClimb = score; bestIdx = idx; }
+    });
+    return bestIdx;
+  }
+
+  function bind(){
+    pick.addEventListener('change', () => {
+      state.ticketIdx = parseInt(pick.value, 10) || 0;
+      state.iter = 1;
+      renderConversation();
+    });
+    prevBtn.addEventListener('click', () => {
+      if (state.iter > 1) { state.iter--; renderConversation(); }
+    });
+    nextBtn.addEventListener('click', () => {
+      if (state.iter < maxIter()) { state.iter++; renderConversation(); }
+    });
+    modeButtons.forEach(b => b.addEventListener('click', () => {
+      const m = b.getAttribute('data-mode');
+      if (m === state.mode) return;
+      state.mode = m;
+      state.iter = 1;
+      modeButtons.forEach(x => x.classList.toggle('active', x === b));
+      populateTicketPicker();
+      renderConversation();
+    }));
+  }
+
+  // ---- init --------------------------------------------------------------
+  function init(){
+    if (DATA.config) {
+      metaEl.textContent = (DATA.config.tickets_count || 0) + ' tickets · '
+        + (DATA.config.generator_model || '?') + ' → ' + (DATA.config.judge_model || '?') + ' judge';
+    }
+    state.ticketIdx = pickHero();
+    populateTicketPicker();
+    bind();
+    renderConversation();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
   } else {
     init();
   }

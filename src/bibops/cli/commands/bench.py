@@ -14,113 +14,74 @@ app = typer.Typer(
 )
 
 
-@app.command("compare-archs", context_settings=PASSTHROUGH)
-def compare_archs(ctx: typer.Context) -> None:
-    """LLM Unique vs Multi-Agents architecture comparison."""
-    from src.bibops.benchmark import compare_architectures
+def _register_passthrough(name: str, module_attr: str, label: str, help_text: str) -> None:
+    """Wire a `bibops bench <name>` command that defers to a benchmark module's main()."""
 
-    run_argparse_main(compare_architectures.main, ctx.args, "bibops bench compare-archs")
+    @app.command(name, context_settings=PASSTHROUGH)
+    def _cmd(ctx: typer.Context, _module_attr: str = module_attr, _label: str = label) -> None:
+        from importlib import import_module
+        module = import_module(f"src.bibops.benchmark.{_module_attr}")
+        run_argparse_main(module.main, ctx.args, _label)
+
+    _cmd.__doc__ = help_text
 
 
-@app.command("core", context_settings=PASSTHROUGH)
-def core(ctx: typer.Context) -> None:
-    """Historical local Ollama benchmark producing tickets_evalues.json."""
-    from src.bibops.benchmark import core as core_benchmark
-
-    run_argparse_main(core_benchmark.main, ctx.args, "bibops bench core")
+# (command-name, module attr, CLI label, help text)
+_BENCHMARKS = [
+    ("compare-archs", "compare_architectures", "bibops bench compare-archs",
+     "LLM Unique vs Multi-Agents architecture comparison."),
+    ("core", "core", "bibops bench core",
+     "Historical local Ollama benchmark producing tickets_evalues.json."),
+    ("kaggle", "local_kaggle_exam", "bibops bench kaggle",
+     "Local Kaggle SAE exam (judge-scored)."),
+    ("a2a", "compare_a2a_agents", "bibops bench a2a",
+     "Evaluate external A2A agents through the BibOps evaluator stack."),
+    ("validate", "validate_benchmark_output", "bibops bench validate",
+     "Validate a benchmark output JSON against the BibOps schema."),
+    ("adversarial", "adversarial_convergence", "bibops bench adversarial",
+     "Adversarial RAGAS-inspired benchmark: ReAct+RAG vs Zero-shot convergence (10 tickets x N iter)."),
+    ("adversarial-demo", "adversarial", "bibops bench adversarial-demo",
+     "Single-ticket demo of the adversarial loop (default: VPN-China scenario)."),
+]
+for _name, _attr, _label, _help in _BENCHMARKS:
+    _register_passthrough(_name, _attr, _label, _help)
 
 
 @app.command("ab-test", context_settings=PASSTHROUGH)
 def ab_test(
     ctx: typer.Context,
-    mode: str = typer.Option(
-        "llm",
-        "--mode",
-        help="A/B mode: 'llm' (judge), 'user' (human), or 'statements' (factchecker vs bibops).",
-    ),
+    mode: str = typer.Option("llm", "--mode",
+                             help="A/B mode: 'llm' (judge), 'user' (human), or 'statements' (factchecker vs bibops)."),
 ) -> None:
     """A/B test between two models / agents."""
-    if mode == "llm":
-        from src.bibops.benchmark import ab_test_llm
-
-        run_argparse_main(ab_test_llm.main, ctx.args, "bibops bench ab-test")
-    elif mode == "user":
-        from src.bibops.benchmark import ab_test_user
-
-        run_argparse_main(ab_test_user.main, ctx.args, "bibops bench ab-test")
-    elif mode == "statements":
-        from src.bibops.benchmark import ab_test_llm_statements
-
-        run_argparse_main(ab_test_llm_statements.main, ctx.args, "bibops bench ab-test --mode statements")
-    else:
+    modules = {"llm": "ab_test_llm", "user": "ab_test_user", "statements": "ab_test_llm_statements"}
+    if mode not in modules:
         raise typer.BadParameter(f"Unknown --mode: {mode}. Use 'llm', 'user', or 'statements'.")
+    from importlib import import_module
+    module = import_module(f"src.bibops.benchmark.{modules[mode]}")
+    label = "bibops bench ab-test --mode statements" if mode == "statements" else "bibops bench ab-test"
+    run_argparse_main(module.main, ctx.args, label)
 
 
 @app.command("position-bias", context_settings=PASSTHROUGH)
 def position_bias(
     ctx: typer.Context,
-    mode: str = typer.Option(
-        "tickets",
-        "--mode",
-        help="'tickets' (CSV scenarios) or 'statements' (factchecker pairs).",
-    ),
+    mode: str = typer.Option("tickets", "--mode",
+                             help="'tickets' (CSV scenarios) or 'statements' (factchecker pairs)."),
 ) -> None:
     """Detect order-dependent bias in the LLM judge."""
-    if mode == "tickets":
-        from src.bibops.benchmark import position_bias
-
-        run_argparse_main(position_bias.main, ctx.args, "bibops bench position-bias")
-    elif mode == "statements":
-        from src.bibops.benchmark import position_bias_statements
-
-        run_argparse_main(position_bias_statements.main, ctx.args, "bibops bench position-bias --mode statements")
-    else:
+    modules = {"tickets": "position_bias", "statements": "position_bias_statements"}
+    if mode not in modules:
         raise typer.BadParameter(f"Unknown --mode: {mode}. Use 'tickets' or 'statements'.")
-
-
-@app.command("kaggle", context_settings=PASSTHROUGH)
-def kaggle(ctx: typer.Context) -> None:
-    """Local Kaggle SAE exam (judge-scored)."""
-    from src.bibops.benchmark import local_kaggle_exam
-
-    run_argparse_main(local_kaggle_exam.main, ctx.args, "bibops bench kaggle")
-
-
-@app.command("a2a", context_settings=PASSTHROUGH)
-def a2a(ctx: typer.Context) -> None:
-    """Evaluate external A2A agents through the BibOps evaluator stack."""
-    from src.bibops.benchmark import compare_a2a_agents
-
-    run_argparse_main(compare_a2a_agents.main, ctx.args, "bibops bench a2a")
+    from importlib import import_module
+    module = import_module(f"src.bibops.benchmark.{modules[mode]}")
+    label = "bibops bench position-bias --mode statements" if mode == "statements" else "bibops bench position-bias"
+    run_argparse_main(module.main, ctx.args, label)
 
 
 @app.command("mcp-tools", context_settings=PASSTHROUGH)
 def mcp_tools(ctx: typer.Context) -> None:
     """MCP tools benchmark (requires MCP server running in another terminal)."""
-    from src.bibops.benchmark import mcp_tools
+    from src.bibops.benchmark import mcp_tools as mcp_tools_mod
 
-    run_async_main(mcp_tools.main)
-
-
-@app.command("validate", context_settings=PASSTHROUGH)
-def validate(ctx: typer.Context) -> None:
-    """Validate a benchmark output JSON against the BibOps schema."""
-    from src.bibops.benchmark import validate_benchmark_output
-
-    run_argparse_main(validate_benchmark_output.main, ctx.args, "bibops bench validate")
-
-
-@app.command("adversarial", context_settings=PASSTHROUGH)
-def adversarial(ctx: typer.Context) -> None:
-    """Adversarial RAGAS-inspired benchmark: ReAct+RAG vs Zero-shot convergence (10 tickets x N iter)."""
-    from src.bibops.benchmark import adversarial_convergence
-
-    run_argparse_main(adversarial_convergence.main, ctx.args, "bibops bench adversarial")
-
-
-@app.command("adversarial-demo", context_settings=PASSTHROUGH)
-def adversarial_demo(ctx: typer.Context) -> None:
-    """Single-ticket demo of the adversarial loop (default: VPN-China scenario)."""
-    from src.bibops.benchmark import adversarial as adversarial_demo_runner
-
-    run_argparse_main(adversarial_demo_runner.main, ctx.args, "bibops bench adversarial-demo")
+    run_async_main(mcp_tools_mod.main)

@@ -137,35 +137,15 @@ RÉPONSE DE L'AGENT : {reponse_agent}
 
 
 def _extract_usage(ai_message: BaseMessage) -> dict:
-    """
-    Extrait les compteurs de tokens depuis les métadonnées de l'AIMessage LangChain.
-
-    Stratégie de fallback (du plus au moins récent) :
-      1. usage_metadata   → format unifié LangChain >= 0.2
-                            {"input_tokens": X, "output_tokens": Y, "total_tokens": Z}
-      2. response_metadata → format natif OpenAI via LangChain
-                            {"token_usage": {"prompt_tokens": X, "completion_tokens": Y}}
-      3. Zéros             → proxy ne renvoie pas de métadonnées (Copilot proxy limité)
-    """
-    # Priorité 1 : usage_metadata (LangChain >= 0.2)
-    usage_meta = getattr(ai_message, "usage_metadata", None)
-    if usage_meta:
-        return {
-            "prompt_tokens": int(usage_meta.get("input_tokens", 0)),
-            "completion_tokens": int(usage_meta.get("output_tokens", 0)),
-        }
-
-    # Priorité 2 : response_metadata (format OpenAI natif)
-    resp_meta = getattr(ai_message, "response_metadata", None)
-    if resp_meta:
-        token_usage = resp_meta.get("token_usage", {})
-        return {
-            "prompt_tokens": int(token_usage.get("prompt_tokens", 0)),
-            "completion_tokens": int(token_usage.get("completion_tokens", 0)),
-        }
-
-    # Fallback : proxy ne fournit pas de métadonnées
-    return {"prompt_tokens": 0, "completion_tokens": 0}
+    """Extrait (prompt_tokens, completion_tokens). Cascade: usage_metadata (LC >=0.2)
+    → response_metadata.token_usage (OpenAI natif) → zéros (proxy Copilot)."""
+    um = getattr(ai_message, "usage_metadata", None) or {}
+    if um:
+        return {"prompt_tokens": int(um.get("input_tokens", 0)),
+                "completion_tokens": int(um.get("output_tokens", 0))}
+    tu = (getattr(ai_message, "response_metadata", None) or {}).get("token_usage", {})
+    return {"prompt_tokens": int(tu.get("prompt_tokens", 0)),
+            "completion_tokens": int(tu.get("completion_tokens", 0))}
 
 
 class DiscriminatorLLM:
@@ -181,7 +161,6 @@ class DiscriminatorLLM:
         }
     """
 
-    SEUIL_PARFAIT: int = 8  # legacy — non utilisé depuis le passage au critère moyenne
     SEUIL_MOYENNE: float = 7.0  # is_perfect ssi (F + R + C) / 3 >= SEUIL_MOYENNE
 
     def __init__(
@@ -225,30 +204,18 @@ class DiscriminatorLLM:
             "format_instructions": self._parser.get_format_instructions(),
         }
 
-        # Étape 1 : appel LLM → AIMessage avec response_metadata intact
+        # Chaîne cassée en 2 étapes pour capturer les métadonnées de tokens
+        # AVANT que le JsonOutputParser ne les efface.
         ai_message = self._prompt_llm.invoke(inputs)
-
-        # Étape 2 : extraction des tokens AVANT le parsing
         usage = _extract_usage(ai_message)
-
-        # Étape 3 : parsing du JSON depuis le contenu texte
         resultat = self._parser.parse(ai_message.content)
 
         # Enforce is_perfect côté Python — ne pas déléguer ça au LLM
-        sf = int(resultat.get("score_faithfulness", 0))
-        sr = int(resultat.get("score_relevance", 0))
-        sc = int(resultat.get("score_context", 0))
-        moyenne = (sf + sr + sc) / 3
-        is_perfect = moyenne >= self.SEUIL_MOYENNE
-
-        resultat["score_faithfulness"] = sf
-        resultat["score_relevance"] = sr
-        resultat["score_context"] = sc
-        resultat["is_perfect"] = is_perfect
-        if is_perfect:
+        scores = {k: int(resultat.get(k, 0)) for k in
+                  ("score_faithfulness", "score_relevance", "score_context")}
+        resultat.update(scores)
+        resultat["is_perfect"] = sum(scores.values()) / 3 >= self.SEUIL_MOYENNE
+        if resultat["is_perfect"]:
             resultat["feedback_actionnable"] = ""
-
-        # Injection des métadonnées FinOps
         resultat["usage"] = usage
-
         return resultat
