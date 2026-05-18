@@ -6568,5 +6568,41 @@ flowchart LR
 })();
 </script>
 
+<script>
+(function(){
+  var raw = document.getElementById('bibops-data');
+  if (!raw) return;
+  var d;
+  try { d = JSON.parse(raw.textContent); } catch(e){ return; }
+
+  var ma  = d.composite.architectures.systeme_multi_agents.composite_score;
+  var llm = d.composite.architectures.llm_unique.composite_score;
+  var q   = d.summary.systeme_multi_agents.score_moyen;
+  var n   = d.diagnostics.ticket_count;
+
+  function animNum(id, target, decimals, unit, delay) {
+    setTimeout(function(){
+      var el = document.getElementById(id);
+      if (!el) return;
+      var start = performance.now();
+      var dur = 900;
+      var unitHtml = unit ? '<span style="font-size:12px;color:var(--slate)">' + unit + '</span>' : '';
+      (function step(now){
+        var t = Math.min((now - start) / dur, 1);
+        var ease = 1 - Math.pow(1 - t, 3);
+        var val = (target * ease).toFixed(decimals);
+        el.innerHTML = val + unitHtml;
+        if (t < 1) requestAnimationFrame(step);
+      })(start);
+    }, delay);
+  }
+
+  animNum('hero-cnt-tickets', n,   0, '',     2200);
+  animNum('hero-cnt-ma',      ma,  1, '/100', 2300);
+  animNum('hero-cnt-llm',     llm, 1, '/100', 2400);
+  animNum('hero-cnt-q',       q,   2, '/10',  2500);
+})();
+</script>
+
 </body>
 </html>
