@@ -344,8 +344,8 @@
 
   .hero .specs{
     margin: 44px 0 0;
-    display: grid; grid-template-columns: repeat(4, 1fr);
-    max-width: 800px;
+    display: grid; grid-template-columns: repeat(4, 1fr) 160px;
+    max-width: 1040px;
     gap: 1px;
     background: var(--grid);
     border: 1px solid var(--grid);
@@ -3452,20 +3452,35 @@
 
       <div class="specs">
         <div>
-          <div class="k">— tickets</div>
-          <div class="v">21</div>
+          <div class="k">— tickets évalués</div>
+          <div class="v" id="hero-cnt-tickets">0</div>
         </div>
         <div>
-          <div class="k">— domaines</div>
-          <div class="v">IT</div>
+          <div class="k">— composite · MA</div>
+          <div class="v" id="hero-cnt-ma" style="color:var(--green)">0<span style="font-size:12px;color:var(--slate)">/100</span></div>
         </div>
         <div>
-          <div class="k">— architectures</div>
-          <div class="v">2</div>
+          <div class="k">— composite · LLM</div>
+          <div class="v" id="hero-cnt-llm" style="color:var(--red)">0<span style="font-size:12px;color:var(--slate)">/100</span></div>
         </div>
         <div>
-          <div class="k">— dimensions</div>
-          <div class="v">6</div>
+          <div class="k">— qualité MA</div>
+          <div class="v" id="hero-cnt-q" style="color:var(--amber)">0<span style="font-size:12px;color:var(--slate)">/10</span></div>
+        </div>
+        <div class="spec-spark">
+          <div class="k">Score · MA vs LLM</div>
+          <div class="spark-labels"><span class="ma">▲ MA</span><span class="llm">▲ LLM</span></div>
+          <svg viewBox="0 0 140 52" fill="none" style="width:100%;height:52px">
+            <line x1="0" y1="13" x2="140" y2="13" stroke="#1E2A3A" stroke-width="1"/>
+            <line x1="0" y1="26" x2="140" y2="26" stroke="#1E2A3A" stroke-width="1"/>
+            <line x1="0" y1="39" x2="140" y2="39" stroke="#1E2A3A" stroke-width="1"/>
+            <line x1="0" y1="20" x2="140" y2="20" stroke="#E8E2D5" stroke-width="0.7" stroke-dasharray="3 3" opacity="0.25"/>
+            <polyline points="0,41 23,43 46,39 70,45 93,37 116,42 140,40" stroke="#6BB6CC" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <polygon points="0,17 23,15 46,13 70,19 93,11 116,14 140,12 140,52 0,52" fill="rgba(244,184,96,0.08)"/>
+            <polyline points="0,17 23,15 46,13 70,19 93,11 116,14 140,12" stroke="#F4B860" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+            <text x="3" y="10" font-family="JetBrains Mono,monospace" font-size="7" fill="#F4B860">91.3</text>
+            <text x="3" y="50" font-family="JetBrains Mono,monospace" font-size="7" fill="#6BB6CC">46.1</text>
+          </svg>
         </div>
       </div>
 
