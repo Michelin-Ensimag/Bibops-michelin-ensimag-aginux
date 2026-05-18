@@ -6584,9 +6584,12 @@ flowchart LR
     setTimeout(function(){
       var el = document.getElementById(id);
       if (!el) return;
+      var unitHtml = unit ? '<span style="font-size:12px;color:var(--slate)">' + unit + '</span>' : '';
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        el.innerHTML = target.toFixed(decimals) + unitHtml; return;
+      }
       var start = performance.now();
       var dur = 900;
-      var unitHtml = unit ? '<span style="font-size:12px;color:var(--slate)">' + unit + '</span>' : '';
       (function step(now){
         var t = Math.min((now - start) / dur, 1);
         var ease = 1 - Math.pow(1 - t, 3);
