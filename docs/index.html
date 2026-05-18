@@ -2812,7 +2812,7 @@
   .hero .live-strip .lc .ld.cy{ background: var(--cyan); box-shadow: 0 0 6px var(--cyan); animation-delay: .8s; }
   .hero .live-strip .lc .ld.mg{ background: var(--magenta); box-shadow: 0 0 6px var(--magenta); animation-delay: 1.2s; }
   .hero .live-strip .lc .lt{ color: var(--cream-dim); }
-  .hero .live-strip .lc .lv{ margin-left: auto; color: var(--amber); font-family: "JetBrains Mono"; font-size: 11px; font-weight: 600; }
+  .hero .live-strip .lc .lv{ margin-left: auto; color: var(--amber); font-family: "JetBrains Mono", monospace; font-size: 11px; font-weight: 600; }
 
   /* Score comparison cards */
   .hero .hero-compare{
@@ -2833,7 +2833,7 @@
   .hero .hc-card .hc-name{ font-size:13px; font-weight:600; margin-bottom:10px; }
   .hero .hc-card.ma .hc-name{ color:var(--amber); }
   .hero .hc-card.llm .hc-name{ color:var(--cyan); }
-  .hero .hc-card .hc-score{ font-family:"JetBrains Mono"; font-size:40px; font-weight:600; line-height:1; }
+  .hero .hc-card .hc-score{ font-family:"JetBrains Mono", monospace; font-size:40px; font-weight:600; line-height:1; }
   .hero .hc-card.ma .hc-score{ color:var(--green); }
   .hero .hc-card.llm .hc-score{ color:var(--red); }
   .hero .hc-card .hc-score small{ font-size:13px; color:var(--slate); }
@@ -2852,13 +2852,13 @@
   .hero .hc-bar-row .hb-fill{ position:absolute; top:0;left:0;bottom:0; animation: fillBar 1s cubic-bezier(.2,.7,.2,1) 2.7s both; }
   .hero .hc-card.ma .hb-fill{ background:var(--amber); }
   .hero .hc-card.llm .hb-fill{ background:var(--cyan); }
-  .hero .hc-bar-row .hb-v{ color:var(--cream-dim); text-align:right; font-family:"JetBrains Mono"; font-size:10px; }
+  .hero .hc-bar-row .hb-v{ color:var(--cream-dim); text-align:right; font-family:"JetBrains Mono", monospace; font-size:10px; }
   .hero .hc-sep{
     display:flex; flex-direction:column; align-items:center; justify-content:center;
     gap:6px; padding:0 4px;
   }
   .hero .hc-sep .vs{ font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--slate); }
-  .hero .hc-sep .delta{ font-size:13px; color:var(--amber); font-weight:600; font-family:"JetBrains Mono"; }
+  .hero .hc-sep .delta{ font-size:13px; color:var(--amber); font-weight:600; font-family:"JetBrains Mono", monospace; }
 
   /* Benchmark progress bar */
   .hero .bench-status{ margin-top:22px; max-width:480px; }
@@ -2899,6 +2899,21 @@
     .hero .specs .spec-spark{ grid-column: 1 / -1; }
     .hero .hero-compare{ flex-direction: column; }
     .hero .hc-sep{ flex-direction: row; padding: 4px 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .hero .boot .line,
+    .hero h1.display,
+    .hero .lede,
+    .hero .specs,
+    .hero .live-strip,
+    .hero .hero-compare,
+    .hero .bench-status,
+    .hero .actions,
+    .hero .scroll-cue { opacity: 1 !important; animation: none !important; }
+    .hero .bench-status .bs-fill,
+    .hero .hc-bar-row .hb-fill { animation: none !important; width: var(--target-w, 100%); }
+    .mark .glyph, .btn.primary { animation: none !important; }
   }
 </style>
 </head>
