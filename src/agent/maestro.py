@@ -889,65 +889,6 @@ RECOMMANDATION DE ROUTAGE (guide non-bloquant) : {trace.routing_hint}
     return final_answer
 
 
-# ── Batch evaluation ──────────────────────────────────────────────────────────
-
-def evaluer_agent_sur_tickets(
-    cas_tests: list[dict[str, str]],
-    outils_disponibles: list[Callable[[str], str]],
-    modele: str = DEFAULT_AGENT_MODEL,
-    modele_provider: str = DEFAULT_AGENT_PROVIDER,
-    save_trace: bool = True,
-    trace_dir: str | None = None,
-) -> dict[str, Any]:
-    runs: list[dict[str, Any]] = []
-    total_ms = total_tool_calls = total_tool_success = total_tool_retries = 0
-
-    for idx, case in enumerate(cas_tests, start=1):
-        result = lancer_agent(
-            contexte=case.get("contexte", ""),
-            ticket_utilisateur=case.get("ticket") or case.get("texte_utilisateur") or "",
-            outils_disponibles=outils_disponibles,
-            modele=modele,
-            modele_provider=modele_provider,
-            return_trace=True,
-            structured_output=True,
-            save_trace=save_trace,
-            trace_dir=trace_dir,
-        )
-        trace = result["trace"]
-        tool_calls = trace.get("tool_calls", [])
-        success_calls = sum(1 for c in tool_calls if c.get("statut") == "ok")
-        retries = sum(max(0, int(c.get("attempts", 0)) - 1) for c in tool_calls)
-        total_tool_calls += len(tool_calls)
-        total_tool_success += success_calls
-        total_tool_retries += retries
-        total_ms += trace.get("total_duree_ms", 0)
-        runs.append({
-            "index": idx,
-            "ticket": case.get("ticket") or case.get("texte_utilisateur") or "",
-            "run_id": result["run_id"],
-            "outcome": trace.get("outcome"),
-            "latence_ms": trace.get("total_duree_ms"),
-            "tool_calls": len(tool_calls),
-            "tool_success": success_calls,
-            "tool_retries": retries,
-            "confiance": result["resultat_structure"]["niveau_confiance"],
-            "diagnostic": result["resultat_structure"]["diagnostic"],
-        })
-
-    n = max(1, len(runs))
-    return {
-        "provider": modele_provider,
-        "modele": modele,
-        "nombre_cas": len(runs),
-        "latence_moyenne_ms": round(total_ms / n, 2),
-        "appels_outils_total": total_tool_calls,
-        "taux_succes_outils": round(total_tool_success / max(1, total_tool_calls), 4),
-        "retries_outils_total": total_tool_retries,
-        "runs": runs,
-    }
-
-
 if __name__ == "__main__":
     print("[ AGENT BIBOPS ]")
     demo = lancer_agent(

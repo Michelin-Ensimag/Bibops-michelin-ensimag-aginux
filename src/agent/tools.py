@@ -3,7 +3,7 @@ import os
 import re
 import sqlite3
 import unicodedata
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 from typing import Any
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
@@ -53,10 +53,6 @@ except Exception:
 
 def get_tool_policy(tool_name: str) -> ToolPolicy:
     return TOOL_POLICIES.get(tool_name, ToolPolicy(timeout_s=5.0, max_retries=0, min_arg_len=1, max_arg_len=120))
-
-
-def get_tool_policies() -> dict[str, dict[str, Any]]:
-    return {name: asdict(policy) for name, policy in TOOL_POLICIES.items()}
 
 
 def normaliser_argument_outil(tool_name: str, argument: str) -> str:
