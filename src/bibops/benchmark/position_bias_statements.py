@@ -19,22 +19,14 @@ import time
 from pathlib import Path
 
 import src.bibops.benchmark.ab_test_llm as core
+from src.common.math_utils import binom_pmf, binom_test_two_sided
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 STATEMENTS_PATH = PROJECT_ROOT / "data" / "inputs" / "benchmark" / "statements_abtest_bibops.json"
 OUTPUT_PATH = PROJECT_ROOT / "data" / "outputs" / "benchmark" / "position_bias_statements_result.json"
 
-
-def _binom_pmf(n: int, k: int, p: float) -> float:
-    from math import comb
-    return comb(n, k) * (p ** k) * ((1 - p) ** (n - k))
-
-
-def binom_test_two_sided(k: int, n: int, p0: float = 0.5) -> float:
-    if n <= 0:
-        return 1.0
-    p_obs = _binom_pmf(n, k, p0)
-    return min(1.0, sum(_binom_pmf(n, i, p0) for i in range(n + 1) if _binom_pmf(n, i, p0) <= p_obs + 1e-15))
+# Backward compatibility alias
+_binom_pmf = binom_pmf
 
 
 def judge_pair(client, statement: str, resp_a: str, resp_b: str) -> tuple[str, str, dict]:

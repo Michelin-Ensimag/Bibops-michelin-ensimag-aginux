@@ -3,7 +3,7 @@ Configuration de la formule d'évaluation des réponses des modèles LLM
 Permet d'ajuster les poids
 """
 
-# POIDS RELATIFS 
+# POIDS RELATIFS
 WEIGHTS = {
     "erreur_penalty": 0.15,      # Pénalité pour "ERREUR" (abscence de réponse valide)
     "feedback": 0.20,            # Feedback utilisateur (Utile/Partiellement utile/Inutile)

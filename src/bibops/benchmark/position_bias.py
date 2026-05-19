@@ -17,7 +17,6 @@ Exemple:
 
 import argparse
 import json
-import math
 import os
 import random
 from typing import Any
@@ -25,28 +24,14 @@ from typing import Any
 from src.bibops.benchmark import ab_test_llm as core
 from src.common.config import validate_judge_model
 from src.common.llm_clients import get_copilot_client
+from src.common.math_utils import binom_pmf, binom_test_two_sided
 from src.common.text import load_tickets_csv
 
 OUTPUT_JSON = os.path.join(core.BASE_DIR, "data", "outputs", "benchmark", "position_bias_resultat.json")
 DEFAULT_MAX_TICKETS = int(os.environ.get("BIBOPS_POSITION_MAX_TICKETS", "2"))
 
-
-def _binom_pmf(n: int, k: int, p: float) -> float:
-    return math.comb(n, k) * (p ** k) * ((1 - p) ** (n - k))
-
-
-def binom_test_two_sided(k: int, n: int, p0: float = 0.5) -> float:
-    """Exact two-sided binomial test p-value (no scipy dependency)."""
-    if n <= 0:
-        return 1.0
-
-    p_obs = _binom_pmf(n, k, p0)
-    p_value = 0.0
-    for i in range(n + 1):
-        p_i = _binom_pmf(n, i, p0)
-        if p_i <= p_obs + 1e-15:
-            p_value += p_i
-    return min(1.0, p_value)
+# Backward compatibility alias
+_binom_pmf = binom_pmf
 
 
 def main() -> None:
