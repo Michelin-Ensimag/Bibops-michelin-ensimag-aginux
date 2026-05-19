@@ -35,12 +35,12 @@ def adapter_name() -> str:
 
 @pytest.fixture(scope="session")
 def agent_model() -> str | None:
-    return os.environ.get("EVAL_BANK_AGENT_MODEL") or None
+    return os.environ.get("EVAL_BANK_AGENT_MODEL") or "gpt-4o"
 
 
 @pytest.fixture(scope="session")
 def agent_provider() -> str | None:
-    return os.environ.get("EVAL_BANK_AGENT_PROVIDER") or None
+    return os.environ.get("EVAL_BANK_AGENT_PROVIDER") or "copilot"
 
 
 @pytest.fixture(scope="session")

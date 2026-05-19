@@ -436,7 +436,14 @@ class TestA2AFactChecker:
         assert "raw_response" in result
 
     def test_check_answer_without_credentials_sends_no_auth(self):
-        checker = self._make_checker()
+        clean_env = {
+            "A2A_FACTCHECKER_USERNAME": "",
+            "A2A_FACTCHECKER_PASSWORD": "",
+            "A2A_USERNAME": "",
+            "A2A_PASSWORD": "",
+        }
+        with patch.dict("os.environ", clean_env):
+            checker = self._make_checker()
         response_payload = {"result": {"parts": [{"text": "not applicable"}]}}
         with patch("src.bibops.adapters.a2a_client.requests.post") as mock_post:
             mock_post.return_value = self._mock_response(response_payload)

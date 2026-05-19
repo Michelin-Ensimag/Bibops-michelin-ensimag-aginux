@@ -17,12 +17,10 @@ These tests exercise deterministic logic (no Ollama, no network) in:
 from __future__ import annotations
 
 import json
-from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 
 import pytest
-
 
 # ── validate_benchmark_output ────────────────────────────────────────────────
 
@@ -260,7 +258,7 @@ class TestJudgePair:
 
         with patch("src.bibops.benchmark.position_bias_statements.core.evaluer_ticket_par_juge",
                    return_value=mock_result):
-            choice, justif, raw = judge_pair(client, "statement", "resp_a", "resp_b")
+            choice, justif, _raw = judge_pair(client, "statement", "resp_a", "resp_b")
 
         assert choice == "A"
         assert "better" in justif
@@ -273,7 +271,7 @@ class TestJudgePair:
 
         with patch("src.bibops.benchmark.position_bias_statements.core.evaluer_ticket_par_juge",
                    return_value=mock_result):
-            choice, justif, raw = judge_pair(client, "statement", "resp_a", "resp_b")
+            choice, justif, _raw = judge_pair(client, "statement", "resp_a", "resp_b")
 
         assert choice == "?"
         assert "timeout" in justif
@@ -605,12 +603,12 @@ class TestBuildDomainSummary:
 
 class TestAdversarialDisplayHelpers:
     def test_banner_returns_string_with_title(self):
-        from src.bibops.benchmark.adversarial import _banner, C
+        from src.bibops.benchmark.adversarial import C, _banner
         result = _banner("TEST TITLE", C["green"])
         assert "TEST TITLE" in result
 
     def test_header_returns_label(self):
-        from src.bibops.benchmark.adversarial import _header, C
+        from src.bibops.benchmark.adversarial import C, _header
         result = _header("Section", C["blue"] if "blue" in C else C["green"])
         assert "Section" in result
 
@@ -650,7 +648,7 @@ class TestFinopsSummary:
 
     def test_moderate_cost_returns_derisoire_comment(self):
         from src.bibops.benchmark.adversarial import _finops_summary
-        cost, comment = _finops_summary(1_000_000, 500_000)
+        _cost, comment = _finops_summary(1_000_000, 500_000)
         assert isinstance(comment, str)
         assert len(comment) > 0
 
@@ -1013,8 +1011,9 @@ class TestMakeChart:
         }
 
     def test_make_chart_creates_output_file(self, tmp_path):
-        from src.bibops.benchmark.adversarial_convergence import make_chart
         import matplotlib
+
+        from src.bibops.benchmark.adversarial_convergence import make_chart
         matplotlib.use("Agg")
 
         output = tmp_path / "chart.png"
@@ -1231,7 +1230,7 @@ class TestAfficherRapportFinal:
         assert "…" in captured.out
 
     def test_proxy_error_feedback_shows_warning(self, capsys):
-        from src.bibops.benchmark.adversarial import _afficher_rapport_final, IterationResult, AdversarialReport
+        from src.bibops.benchmark.adversarial import AdversarialReport, IterationResult, _afficher_rapport_final
         rep = AdversarialReport(ticket="ticket", rca_ground_truth="rca")
         rep.succes = False
         it = IterationResult(
