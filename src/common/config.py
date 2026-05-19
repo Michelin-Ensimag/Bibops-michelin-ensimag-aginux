@@ -72,3 +72,7 @@ def validate_chat_model(provider: str, model: str, *, role: str = "model") -> tu
             f"Available: {', '.join(available)}"
         )
     return normalized_provider, normalized_model
+
+
+LLM_COST_INPUT_PER_1M_USD: float = 2.50
+LLM_COST_OUTPUT_PER_1M_USD: float = 10.00

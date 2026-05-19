@@ -34,13 +34,10 @@ from src.agent.tools import (
     verifier_statut_serveur,
 )
 from src.bibops.evaluation.judges.discriminator import DiscriminatorLLM
+from src.common.config import LLM_COST_INPUT_PER_1M_USD, LLM_COST_OUTPUT_PER_1M_USD
 from src.common.llm_clients import get_copilot_client
 
 GeneratorMode = Literal["react", "zero_shot"]
-
-# Tarification FinOps (USD / 1M tokens) — grille GPT-4o / Claude 3.5 Sonnet.
-_PRIX_INPUT_PER_M_USD = 2.50
-_PRIX_OUTPUT_PER_M_USD = 10.00
 
 # Couleurs ANSI
 C = {
@@ -100,7 +97,7 @@ def _score_color(s: int) -> str:
 
 def _finops_summary(pt: int, ct: int) -> tuple[float, str]:
     """Retourne (cout_usd, commentaire_rentabilite) pour une paire (in, out) tokens."""
-    cost = pt / 1_000_000 * _PRIX_INPUT_PER_M_USD + ct / 1_000_000 * _PRIX_OUTPUT_PER_M_USD
+    cost = pt / 1_000_000 * LLM_COST_INPUT_PER_1M_USD + ct / 1_000_000 * LLM_COST_OUTPUT_PER_1M_USD
     if cost < 0.001:
         comment = "Coût quasi-nul — rentable dès le 1er ticket résolu sans technicien N2."
     elif cost < 0.01:
@@ -369,8 +366,8 @@ def _afficher_rapport_final(rapport: AdversarialReport) -> None:
     print(f"    {C['b']}Coût estimé      :{C['r']} {C['green']}${rapport.cout_estime_usd:.6f} USD{C['r']}")
     print(f"    {C['b']}Rentabilité      :{C['r']} {C['gold']}{commentaire}{C['r']}")
     print(
-        f"\n  {C['dim']}Tarification : ${_PRIX_INPUT_PER_M_USD}/M input"
-        f" | ${_PRIX_OUTPUT_PER_M_USD}/M output (GPT-4o / Claude Sonnet 3.5){C['r']}"
+        f"\n  {C['dim']}Tarification : ${LLM_COST_INPUT_PER_1M_USD}/M input"
+        f" | ${LLM_COST_OUTPUT_PER_1M_USD}/M output (GPT-4o / Claude Sonnet 3.5){C['r']}"
     )
 
 

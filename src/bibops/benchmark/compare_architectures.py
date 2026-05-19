@@ -31,6 +31,8 @@ from src.common.config import (
     DEFAULT_JUDGE_MODEL,
     DEFAULT_ZERO_SHOT_MODEL,
     DEFAULT_ZERO_SHOT_PROVIDER,
+    LLM_COST_INPUT_PER_1M_USD,
+    LLM_COST_OUTPUT_PER_1M_USD,
     validate_chat_model,
     validate_judge_model,
 )
@@ -41,9 +43,6 @@ DEFAULT_INPUT_CSV = PROJECT_ROOT / "data" / "inputs" / "benchmark" / "tickets_sc
 DEFAULT_OUTPUT_JSON = PROJECT_ROOT / "data" / "outputs" / "benchmark" / "comparison_results.json"
 DEFAULT_DB_PATH = PROJECT_ROOT / "data" / "databases" / "bibops.db"
 
-# FinOps heuristic (USD / 1M tokens), aligned with existing llm_professor constants.
-USD_INPUT_PER_1M_TOKENS = 2.50
-USD_OUTPUT_PER_1M_TOKENS = 10.00
 DOMAIN_CHOICES = ("all", "it", "rh", "juridique", "finance", "autre", "non-it")
 DOMAIN_LABELS = {
     "it": "IT",
@@ -75,8 +74,8 @@ class ArchMetrics:
     @property
     def cost_usd(self) -> float:
         return round(
-            (self.prompt_tokens / 1_000_000.0) * USD_INPUT_PER_1M_TOKENS
-            + (self.completion_tokens / 1_000_000.0) * USD_OUTPUT_PER_1M_TOKENS,
+            (self.prompt_tokens / 1_000_000.0) * LLM_COST_INPUT_PER_1M_USD
+            + (self.completion_tokens / 1_000_000.0) * LLM_COST_OUTPUT_PER_1M_USD,
             6,
         )
 
@@ -803,8 +802,8 @@ def main() -> None:
             "enabled_evaluators": ["quality", "security"],
             "composite_policy_version": composite_summary.get("policy_version", "1.0.0"),
             "pricing_usd_per_1m_tokens": {
-                "input": USD_INPUT_PER_1M_TOKENS,
-                "output": USD_OUTPUT_PER_1M_TOKENS,
+                "input": LLM_COST_INPUT_PER_1M_USD,
+                "output": LLM_COST_OUTPUT_PER_1M_USD,
             },
         },
         summary=summary,
