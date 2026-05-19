@@ -43,15 +43,3 @@ TOKEN_THRESHOLDS = {
 # AUTRES PARAMÈTRES
 SCORE_MIN = 0
 SCORE_MAX = 10
-
-# Format de la colonne dateheure attendue
-DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
-
-# Modèles connus (pour analyse)
-KNOWN_MODELS = [
-    "llama3.2:1b",
-    "gpt-4",
-    "gpt-3.5-turbo",
-    "claude-3-opus",
-    "mistral-7b",
-]
