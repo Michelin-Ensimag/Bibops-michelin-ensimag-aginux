@@ -8,6 +8,8 @@
 .vscode/
 .claude/
 .junie/
+.github/
+.superpowers/
 
 # Environnements virtuels
 venv/
@@ -74,3 +76,5 @@ data/outputs/eval_bank/
 
 # Fichier d'instructions Claude (local uniquement)
 CLAUDE.md
+
+generate_gantt.py
