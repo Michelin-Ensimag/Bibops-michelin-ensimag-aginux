@@ -53,6 +53,14 @@ DOMAIN_LABELS = {
 }
 
 
+def _safe_float(value: object, default: float = 0.0) -> float:
+    """Safely convert a value to float, returning default on any error."""
+    try:
+        return float(value)  # type: ignore[arg-type]
+    except (TypeError, ValueError):
+        return default
+
+
 @dataclass
 class ArchMetrics:
     label: str
@@ -141,12 +149,7 @@ def _evaluate_quality(
 ) -> dict[str, Any]:
     """Normalize quality output from registry results."""
     quality = evaluation_outputs.get("quality", {})
-    raw_score = quality.get("score", 0.0)
-    try:
-        score = float(raw_score)
-    except (TypeError, ValueError):
-        score = 0.0
-    score = max(0.0, min(10.0, score))
+    score = max(0.0, min(10.0, _safe_float(quality.get("score", 0.0))))
 
     return {
         "status": str(quality.get("status", "error")),
@@ -161,41 +164,22 @@ def _evaluate_security(
 ) -> dict[str, Any]:
     """Normalize security output from registry results."""
     security = evaluation_outputs.get("security", {})
-    raw_score = security.get("security_score", 0.0)
-    try:
-        score = float(raw_score)
-    except (TypeError, ValueError):
-        score = 0.0
-    score = max(0.0, min(10.0, score))
-
+    score = max(0.0, min(10.0, _safe_float(security.get("security_score", 0.0))))
     risks = security.get("risks", {})
     if not isinstance(risks, dict):
         risks = {}
-    default_risks = {
-        "pii": 1.0,
-        "prompt_injection": 1.0,
-        "secrets": 1.0,
-        "malicious_urls": 1.0,
-        "no_refusal": 1.0,
-        "toxicity": 1.0,
-    }
-    for key in default_risks:
-        try:
-            default_risks[key] = float(risks.get(key, default_risks[key]))
-        except (TypeError, ValueError):
-            pass
-
+    risk_keys = ("pii", "prompt_injection", "secrets", "malicious_urls", "no_refusal", "toxicity")
+    normalized_risks = {k: _safe_float(risks.get(k, 1.0), default=1.0) for k in risk_keys}
     findings = security.get("findings", [])
     if not isinstance(findings, list):
         findings = []
-
     return {
         "status": str(security.get("status", "error")),
         "profile": str(security.get("profile", "p0_llminspector_aligned")),
         "security_score": round(score, 2),
         "blocked": bool(security.get("blocked", False)),
-        "risk_avg": round(float(security.get("risk_avg", 1.0)), 4),
-        "risks": {k: round(max(0.0, min(1.0, v)), 4) for k, v in default_risks.items()},
+        "risk_avg": round(_safe_float(security.get("risk_avg", 1.0), default=1.0), 4),
+        "risks": {k: round(max(0.0, min(1.0, v)), 4) for k, v in normalized_risks.items()},
         "findings": findings,
         "error": str(security.get("error", "")),
     }
