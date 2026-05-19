@@ -563,6 +563,21 @@ class TestBuildDiagnostics:
         result = _build_diagnostics(details)
         assert result["systeme_multi_agents"]["tool_use_rate"] == 0.5
 
+    def test_aggregates_tool_status_counts(self):
+        from src.bibops.benchmark.compare_architectures import _build_diagnostics
+        detail = {
+            "llm_unique": {"score": "7.0", "error": "", "answer": ""},
+            "multi_agents": {
+                "score": "8.0",
+                "error": "",
+                "tool_calls": 2,
+                "tool_status_counts": {"ok": 2, "error": 1},
+                "trace_outcome": "",
+            },
+        }
+        result = _build_diagnostics([detail])
+        assert result["ticket_count"] == 1
+
 
 class TestBuildDomainSummary:
     def _detail(self, domain="it", zs_score=7.0, ag_score=8.0, tool_calls=1):
@@ -909,6 +924,14 @@ class TestResolveInputCsv:
         from src.bibops.benchmark.compare_architectures import _resolve_input_csv
         with pytest.raises(FileNotFoundError):
             _resolve_input_csv(tmp_path / "missing.csv")
+
+    def test_uses_fallback_for_legacy_benchmark_path(self):
+        from pathlib import Path
+        from src.bibops.benchmark.compare_architectures import _resolve_input_csv
+        legacy = Path("/nonexistent/data/benchmark/tickets_scenario_1.csv")
+        result = _resolve_input_csv(legacy)
+        assert result.name == "tickets_scenario_1.csv"
+        assert result.exists()
 
 
 # ── adversarial.py: network-dependent helpers mocked ────────────────────────
