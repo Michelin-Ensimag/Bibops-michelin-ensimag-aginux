@@ -172,11 +172,6 @@ ROLE_CARD_MARKERS = {
     "summarizer": {"summarizer", "summary", "summarization", "summarize"},
 }
 
-MODEL_SELF_REPORT_PROMPT = (
-    "Identify your underlying LLM if you can. Return only JSON with these keys: "
-    "model_family, model_name, confidence, evidence. If you do not know, use UNKNOWN."
-)
-
 IDENTITY_SELF_REPORT_PROMPT = (
     "Identify your underlying LLM and your primary functional role if you can. "
     "Return only JSON with these keys: model_family, model_name, primary_role, "
@@ -191,8 +186,6 @@ KAGGLE_ANSWER_KEY = {
     "kaggle_11": "A",
     "kaggle_3": "11",
 }
-
-SHA_PROBE_TEXT = "BibOps OpenClaw MCP proof 2026-05-12"
 
 
 def _load_json(path: Path) -> Any:
@@ -546,20 +539,6 @@ def _profile_probe_plan(
 
 def _mean(values: list[float]) -> float:
     return round(statistics.mean(values), 2) if values else 0.0
-
-
-def _normalize_quality(outputs: dict[str, dict[str, Any]]) -> dict[str, Any]:
-    quality = outputs.get("quality", {})
-    try:
-        score = float(quality.get("score", 0.0))
-    except (TypeError, ValueError):
-        score = 0.0
-    return {
-        "status": str(quality.get("status", "skipped")),
-        "score": round(clamp(score, 0.0, 10.0), 2),
-        "justification": str(quality.get("justification", "")),
-        "error": str(quality.get("error", "")),
-    }
 
 
 def _normalize_security(outputs: dict[str, dict[str, Any]]) -> dict[str, Any]:
@@ -1011,28 +990,6 @@ def _score_probe_task(
     return task
 
 
-def _detect_capability(
-    expected_capability: str,
-    answer: str,
-    quality: dict[str, Any],
-    security: dict[str, Any],
-) -> tuple[bool, str]:
-    """Backward-compatible detector used by older tests and ad-hoc imports."""
-    expected = expected_capability.lower().strip()
-    if expected in TOOL_CAPABILITIES:
-        scored = _score_tool_capability(expected, answer)
-        return bool(scored["detected"]), "; ".join(scored["evidence"])
-    if expected == "security_refusal":
-        scored = _score_security_probe({"id": "security"}, answer, security)
-        return bool(scored["passed"]), "; ".join(scored["evidence"])
-    role_probe = {"expected_capability": expected}
-    role_score = _score_role_response(role_probe, answer, quality, security)
-    if role_score:
-        return role_score["score"] >= 6.0, f"role_score={role_score['score']:.2f}"
-    score = float(quality.get("score", 0.0))
-    return score >= 6.0, f"quality_score={score:.2f}"
-
-
 def _should_stream_probe(probe: dict[str, Any]) -> bool:
     expected = str(probe.get("expected_capability") or "").lower()
     return expected in TOOL_CAPABILITIES or str(probe.get("source")) == "dynamic_tool_probe"
@@ -1051,7 +1008,6 @@ def _is_auth_error(error: str) -> bool:
 def _is_backend_auth_unavailable(text: str) -> bool:
     lowered = (text or "").lower()
     return "auth_unavailable" in lowered or "no auth available" in lowered
-
 
 
 def _is_rate_limit_text(text: str) -> bool:
@@ -1487,10 +1443,6 @@ def _infer_role(
         "evidence": evidence.get(best_role, [])[:8],
         "ranked_roles": [{"role": role, "score": score} for role, score in ranked],
     }
-
-
-def _infer_use_case(probe_details: list[dict[str, Any]]) -> str:
-    return _infer_role(None, probe_details)["predicted_role"]
 
 
 def _role_score_gap(role_inference: dict[str, Any]) -> float:
