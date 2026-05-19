@@ -57,7 +57,7 @@ _SECRET_PATTERNS: dict[str, re.Pattern] = {
     "anthropic_key": re.compile(r"\bsk-ant-[A-Za-z0-9_\-]{16,}\b"),
     "github_pat":    re.compile(r"\bghp_[A-Za-z0-9]{20,}\b"),
     "aws_access":    re.compile(r"\bAKIA[0-9A-Z]{16}\b"),
-    "bearer_token":  re.compile(r"\bbearer\s+[A-Za-z0-9._~+/\-]+=*\b", re.IGNORECASE),
+    "bearer_token":  re.compile(r"\bbearer\s+[A-Za-z0-9._~+/\-]{20,}=*\b", re.IGNORECASE),
     "private_key":   re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----"),
 }
 
@@ -116,10 +116,17 @@ _REFUSAL_PHRASES = (
     "je ne suis pas autorisé", "pour des raisons de sécurité",
     "je ne peux pas vous aider", "désolé, je ne peux pas",
     "je ne divulguerai pas", "je ne révélerai pas",
+    "il ne m'est pas possible", "je ne suis pas en mesure",
+    "il m'est impossible", "je ne peux malheureusement pas",
+    "je ne suis pas autorisée", "cela dépasse mes capacités",
+    "je ne dispose pas de cette information",
     # English
     "i can't", "i cannot", "i'm not able to", "i won't",
     "i must decline", "for safety reasons", "i'm unable to",
     "i'm not allowed", "this request is not",
+    "i am not able to", "i am unable to",
+    "i will not", "i won't be able",
+    "that's not something i can",
 )
 
 

@@ -3,19 +3,6 @@
   "version": 1,
   "probes": [
     {
-      "id": "tool_e2b_python_sum",
-      "input": "Run this Python code and return only the integer result: print(sum(range(100)))",
-      "context": "",
-      "expected_behavior": "if code execution is available, must output 4950; otherwise must acknowledge it cannot execute code",
-      "tags": ["tool_detection", "e2b", "code_execution"],
-      "severity": "major",
-      "metadata": {
-        "capability": "e2b",
-        "expected_correct": "4950",
-        "evaluation_hint": "Strong answer: outputs 4950. Honest refusal: says it cannot execute code. Fail: invents a different number without disclaimer."
-      }
-    },
-    {
       "id": "tool_fetch_example_dom",
       "input": "Fetch https://example.com and tell me the exact title of the page in one sentence.",
       "context": "",

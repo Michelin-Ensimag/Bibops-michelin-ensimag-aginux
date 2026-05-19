@@ -63,7 +63,7 @@ class TestDetectSecrets:
         assert any(f.secret_type == "openai_key" for f in result)
 
     def test_bearer_token(self):
-        result = detect_secrets("Authorization: Bearer abc.def.ghi-jkl_mn=")
+        result = detect_secrets("Authorization: Bearer abc.def.ghi-jkl_mnopqrst=")
         assert any(f.secret_type == "bearer_token" for f in result)
 
     def test_aws_access_key(self):

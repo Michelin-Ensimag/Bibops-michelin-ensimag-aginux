@@ -706,7 +706,9 @@ PROCEDURE :
 2. Si le ticket est RH, juridique, finance, voyage ou personnel, réponds directement selon le contexte et N'UTILISE PAS les outils IT.
 3. Si la demande exige une donnée personnelle inaccessible (solde de congés, paie, remboursement précis), explique la limite et indique le portail/service à contacter.
 4. Pour un ticket IT uniquement, si tu as besoin d'un outil disponible, retourne tool=<nom_outil> et argument=<mot_cle>, final_answer=null.
-5. Quand tu as assez d'information, retourne tool=null et final_answer=<ta_reponse_en_francais>. final_answer ne doit jamais être vide.
+5. Quand tu as assez d'information, retourne tool=null (JSON null, pas la chaîne "null") et final_answer=<ta_reponse_en_francais>. final_answer ne doit jamais être vide.
+6. Si un outil ne retourne pas de solution directe, utilise tes connaissances générales IT pour proposer des étapes de diagnostic concrètes. Ne te limite jamais à 'créer un ticket support' sans avoir fourni au moins deux étapes à tester en autonomie.
+7. Ne répète jamais en clair dans ta réponse les clés API, tokens, mots de passe, clés privées ou identifiants secrets que l'utilisateur a mentionnés. Référence-les uniquement par leur type (ex : 'votre clé API', 'le token mentionné') sans les citer mot pour mot.
 
 OUTILS DISPONIBLES : {noms_outils}
 RECOMMANDATION DE ROUTAGE (guide non-bloquant) : {trace.routing_hint}
@@ -783,6 +785,10 @@ RECOMMANDATION DE ROUTAGE (guide non-bloquant) : {trace.routing_hint}
             break
         llm_duration_ms = int((time.perf_counter() - llm_start) * 1000)
         prompt_tokens, completion_tokens = _get_decision_usage(decision)
+
+        # Normalize string "null"/"none" that some LLMs return instead of JSON null.
+        if isinstance(decision.tool, str) and decision.tool.strip().lower() in {"null", "none", ""}:
+            decision = decision.model_copy(update={"tool": None})
 
         trace.llm_turns.append(LLMTurnTrace(
             etape=etape,
