@@ -17,8 +17,6 @@ import os
 import random
 import time
 
-from openai import OpenAI
-
 from src.common.config import BASE_DIR as PROJECT_ROOT
 from src.common.config import INPUT_CSV as DEFAULT_INPUT_CSV
 from src.common.config import OUTPUT_DIR
@@ -56,7 +54,8 @@ def _auto_choice_default() -> str:
     return raw if raw in ("A", "B") else "A"
 
 
-def appeler_modele(client: OpenAI, modele: str, contexte: str, ticket: str, retries: int) -> str:
+def _call(modele: str, contexte: str, ticket: str, retries: int) -> str:
+    client = get_copilot_client()
     last_error = ""
     for attempt in range(1, retries + 1):
         try:
@@ -88,8 +87,6 @@ def main():
     parser.add_argument("--auto-choice", choices=["A", "B"], default=_auto_choice_default(), help="Choix auto en mode non interactif")
     args = parser.parse_args()
 
-    client = get_copilot_client()
-
     rng = random.Random(args.seed)
 
     tickets = load_tickets_csv(INPUT_CSV, max_tickets=args.max_tickets)
@@ -109,8 +106,8 @@ def main():
         print(f"Question : {question}\n")
         print("Génération des réponses en cours...")
 
-        rep_a_modele = appeler_modele(client, args.model_a, contexte, question, args.retries)
-        rep_b_modele = appeler_modele(client, args.model_b, contexte, question, args.retries)
+        rep_a_modele = _call(args.model_a, contexte, question, args.retries)
+        rep_b_modele = _call(args.model_b, contexte, question, args.retries)
 
         # Mélange aléatoire : le correcteur ne sait pas quel modèle est A ou B
         if rng.random() < 0.5:

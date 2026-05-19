@@ -139,14 +139,15 @@ class TestAppelerModeleUser:
         return resp
 
     def test_returns_content_on_success(self):
-        from src.bibops.benchmark.ab_test_user import appeler_modele
+        from src.bibops.benchmark.ab_test_user import _call
         client = MagicMock()
         client.chat.completions.create.return_value = self._make_response("VPN OK")
-        result = appeler_modele(client, "gpt-4o-mini", "ctx", "ticket", retries=1)
+        with patch("src.bibops.benchmark.ab_test_user.get_copilot_client", return_value=client):
+            result = _call("gpt-4o-mini", "ctx", "ticket", retries=1)
         assert result == "VPN OK"
 
     def test_retries_on_exception(self):
-        from src.bibops.benchmark.ab_test_user import appeler_modele
+        from src.bibops.benchmark.ab_test_user import _call
         client = MagicMock()
         call_count = [0]
         def side_effect(**kwargs):
@@ -155,17 +156,19 @@ class TestAppelerModeleUser:
                 raise RuntimeError("transient error")
             return self._make_response("recovered")
         client.chat.completions.create.side_effect = side_effect
-        with patch("src.bibops.benchmark.ab_test_user.time.sleep"):
-            result = appeler_modele(client, "gpt-4o-mini", "ctx", "ticket", retries=2)
+        with patch("src.bibops.benchmark.ab_test_user.get_copilot_client", return_value=client), \
+             patch("src.bibops.benchmark.ab_test_user.time.sleep"):
+            result = _call("gpt-4o-mini", "ctx", "ticket", retries=2)
         assert result == "recovered"
         assert call_count[0] == 2
 
     def test_all_retries_fail_returns_error_string(self):
-        from src.bibops.benchmark.ab_test_user import appeler_modele
+        from src.bibops.benchmark.ab_test_user import _call
         client = MagicMock()
         client.chat.completions.create.side_effect = RuntimeError("always fails")
-        with patch("src.bibops.benchmark.ab_test_user.time.sleep"):
-            result = appeler_modele(client, "gpt-4o-mini", "ctx", "ticket", retries=2)
+        with patch("src.bibops.benchmark.ab_test_user.get_copilot_client", return_value=client), \
+             patch("src.bibops.benchmark.ab_test_user.time.sleep"):
+            result = _call("gpt-4o-mini", "ctx", "ticket", retries=2)
         assert "ERREUR_MODELE" in result
         assert "always fails" in result
 
