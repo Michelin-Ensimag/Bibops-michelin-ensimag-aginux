@@ -739,6 +739,208 @@
   .chart-card.wide .canvas-wrap{ height: 320px; }
 
   /* ============================================================
+     TICKET STRIP — per-ticket selector under the 4 charts
+     ============================================================ */
+  .ticket-strip{
+    margin-top: 22px;
+    background: var(--bg-card);
+    border: 1px solid var(--grid);
+    padding: 14px 16px 16px;
+  }
+  .ticket-strip .ts-head{
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-size: 10px; letter-spacing: .15em; text-transform: uppercase;
+    color: var(--slate);
+    margin-bottom: 12px;
+  }
+  .ticket-strip .ts-head .lab{ color: var(--cream); font-weight: 500; }
+  .ticket-strip .ts-head .lab::before{ content: "▸ "; color: var(--amber); }
+  .ticket-strip .ts-head .hint{
+    text-transform: none; font-style: italic; letter-spacing: 0;
+    color: var(--slate); font-size: 11px;
+  }
+  .ticket-strip .ts-active{ color: var(--amber); font-style: normal; }
+  .ticket-strip .ts-row{
+    display: grid;
+    grid-template-columns: repeat(21, 1fr);
+    gap: 4px;
+  }
+  .ticket-strip .ts-dot{
+    position: relative;
+    aspect-ratio: 1;
+    background: var(--bg-deep);
+    border: 1px solid var(--grid);
+    cursor: pointer;
+    transition: border-color .12s, transform .12s, box-shadow .12s;
+    display: grid; place-items: center;
+    color: var(--slate);
+    font-size: 9px;
+    font-family: "JetBrains Mono", monospace;
+  }
+  .ticket-strip .ts-dot::before{
+    content: "";
+    position: absolute; inset: 2px;
+    background: linear-gradient(
+      to top,
+      var(--green) 0%,
+      var(--green) var(--ma-h, 0%),
+      transparent var(--ma-h, 0%));
+    opacity: .55;
+    pointer-events: none;
+  }
+  .ticket-strip .ts-dot::after{
+    content: "";
+    position: absolute; inset: 2px;
+    background: linear-gradient(
+      to top,
+      var(--red) 0%,
+      var(--red) var(--llm-h, 0%),
+      transparent var(--llm-h, 0%));
+    opacity: .35;
+    pointer-events: none;
+    mix-blend-mode: screen;
+  }
+  .ticket-strip .ts-dot:hover,
+  .ticket-strip .ts-dot.is-active{
+    border-color: var(--amber);
+    transform: translateY(-2px);
+    box-shadow: 0 0 8px rgba(244,184,96,.45);
+  }
+  .ticket-strip .ts-dot.is-active{ z-index: 2; }
+  .ticket-strip .ts-dot.is-timeout{
+    border-color: var(--red-dim);
+  }
+  .ticket-strip .ts-legend{
+    margin-top: 10px;
+    display: flex; gap: 18px;
+    font-size: 10px; color: var(--slate);
+    letter-spacing: .08em; text-transform: uppercase;
+  }
+  .ticket-strip .ts-legend .sw{
+    display: inline-block; width: 10px; height: 10px;
+    margin-right: 6px; vertical-align: middle;
+    border: 1px solid var(--grid);
+  }
+  .ticket-strip .ts-legend .sw.ma{  background: var(--green); }
+  .ticket-strip .ts-legend .sw.llm{ background: var(--red); }
+  .ticket-strip .ts-legend .sw.to{
+    background: var(--bg-deep); border-color: var(--red-dim);
+  }
+
+  /* Drawer — ticket details */
+  .ticket-drawer{
+    margin-top: 16px;
+    background: var(--bg-elev);
+    border: 1px solid var(--grid);
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .35s cubic-bezier(.2,.7,.2,1);
+  }
+  .ticket-drawer.is-open{ max-height: 1400px; }
+  .ticket-drawer .td-head{
+    display: flex; align-items: baseline; gap: 14px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--grid);
+    font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--slate);
+  }
+  .ticket-drawer .td-head .id{ color: var(--amber); font-weight: 600; }
+  .ticket-drawer .td-head .sub{
+    color: var(--cyan);
+    border: 1px solid var(--cyan);
+    padding: 2px 7px;
+    font-size: 9px;
+  }
+  .ticket-drawer .td-head .lab{
+    color: var(--cream); font-weight: 500;
+    text-transform: none; letter-spacing: 0; font-size: 13px;
+  }
+  .ticket-drawer .td-close{
+    margin-left: auto;
+    background: transparent; border: 1px solid var(--slate);
+    color: var(--cream-dim);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+    padding: 4px 9px; cursor: pointer;
+  }
+  .ticket-drawer .td-close:hover{ color: var(--amber); border-color: var(--amber); }
+  .ticket-drawer .td-body{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--grid);
+  }
+  .ticket-drawer .td-card{
+    background: var(--bg-card);
+    padding: 16px 20px 18px;
+  }
+  .ticket-drawer .td-card .arch{
+    font-size: 9px; letter-spacing: .2em; text-transform: uppercase;
+    color: var(--slate); margin-bottom: 4px;
+  }
+  .ticket-drawer .td-card.ma .arch::before{ content: "α · "; color: var(--amber); }
+  .ticket-drawer .td-card.llm .arch::before{ content: "β · "; color: var(--cyan); }
+  .ticket-drawer .td-card .h{
+    font-size: 14px; font-weight: 600; margin-bottom: 12px;
+  }
+  .ticket-drawer .td-card.ma .h{ color: var(--amber); }
+  .ticket-drawer .td-card.llm .h{ color: var(--cyan); }
+  .ticket-drawer .td-grid{
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1px;
+    background: var(--grid);
+    margin-bottom: 12px;
+  }
+  .ticket-drawer .td-cell{
+    background: var(--bg-card);
+    padding: 8px 10px;
+  }
+  .ticket-drawer .td-cell .k{
+    font-size: 9px; color: var(--slate);
+    letter-spacing: .14em; text-transform: uppercase; margin-bottom: 3px;
+  }
+  .ticket-drawer .td-cell .v{
+    font-family: "JetBrains Mono", monospace;
+    font-size: 13px; color: var(--cream); font-weight: 500;
+  }
+  .ticket-drawer .td-cell .v.pass{ color: var(--green); }
+  .ticket-drawer .td-cell .v.fail{ color: var(--red); }
+  .ticket-drawer .td-just{
+    font-size: 12px; color: var(--cream-dim);
+    line-height: 1.55;
+    border-left: 2px solid var(--grid);
+    padding-left: 12px;
+    margin-top: 6px;
+  }
+  .ticket-drawer .td-card.ma .td-just{ border-color: var(--amber); }
+  .ticket-drawer .td-card.llm .td-just{ border-color: var(--cyan); }
+  .ticket-drawer .td-tools{
+    margin-top: 10px;
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+  .ticket-drawer .td-tools .tool{
+    font-size: 10px; color: var(--amber);
+    border: 1px solid var(--amber-dim);
+    padding: 2px 8px;
+    letter-spacing: .08em;
+    background: rgba(244,184,96,.06);
+  }
+  .ticket-drawer .td-tools .tool::before{ content: "▸ "; color: var(--slate); }
+
+  /* Cross-chart hover highlight */
+  .chart-card.is-hover{
+    border-color: var(--amber) !important;
+    box-shadow: 0 0 14px rgba(244,184,96,.18);
+  }
+
+  @media (max-width: 840px){
+    .ticket-strip .ts-row{ grid-template-columns: repeat(11, 1fr); }
+    .ticket-drawer .td-body{ grid-template-columns: 1fr; }
+    .ticket-drawer .td-grid{ grid-template-columns: repeat(3, 1fr); }
+  }
+
+  /* ============================================================
      RACING — table
      ============================================================ */
   .racing-frame{
@@ -2917,6 +3119,113 @@
     .hero .hc-bar-row .hb-fill { animation: none !important; width: var(--target-w, 100%); }
     .mark .glyph, .btn.primary { animation: none !important; }
   }
+
+  /* ============================================================
+     WEIGHT EXPLORER — interactive CompositePolicy in the hero
+     ============================================================ */
+  .hero .weight-explorer{
+    margin-top: 22px;
+    max-width: 880px;
+    background: var(--bg-elev);
+    border: 1px solid var(--grid);
+    padding: 16px 20px 18px;
+    position: relative;
+    opacity: 0;
+    animation: heroFadeUp .4s ease 2.85s forwards;
+  }
+  .hero .weight-explorer .we-head{
+    display: flex; align-items: baseline; gap: 14px;
+    font-size: 10px; letter-spacing: .15em; text-transform: uppercase;
+    color: var(--slate);
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--grid);
+    margin-bottom: 14px;
+  }
+  .hero .weight-explorer .we-head .id{ color: var(--amber); font-weight: 600; }
+  .hero .weight-explorer .we-head .name{ color: var(--cream); font-weight: 500; }
+  .hero .weight-explorer .we-head .path{
+    margin-left: auto; color: var(--slate); font-style: italic;
+    text-transform: none; letter-spacing: 0; font-size: 10px;
+  }
+  .hero .weight-explorer .we-head .path::before{ content: "// "; color: var(--slate-dim); }
+  .hero .weight-explorer .we-head .reset{
+    margin-left: 8px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--cream-dim); background: transparent;
+    border: 1px solid var(--slate);
+    padding: 4px 9px; cursor: pointer;
+    transition: all .15s ease;
+  }
+  .hero .weight-explorer .we-head .reset:hover{
+    color: var(--amber); border-color: var(--amber);
+  }
+  .hero .weight-explorer .we-grid{
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 14px;
+  }
+  .hero .weight-explorer .we-slider{
+    display: flex; flex-direction: column; gap: 5px;
+  }
+  .hero .weight-explorer .we-slider .we-lab{
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--slate);
+  }
+  .hero .weight-explorer .we-slider .we-lab .v{
+    font-family: "JetBrains Mono", monospace;
+    color: var(--amber); font-size: 12px; font-weight: 500;
+    letter-spacing: 0; text-transform: none;
+  }
+  .hero .weight-explorer input[type=range]{
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%; height: 3px;
+    background: var(--bg-deep);
+    border: 1px solid var(--grid);
+    cursor: ew-resize;
+    outline: none;
+  }
+  .hero .weight-explorer input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance: none; appearance: none;
+    width: 11px; height: 18px;
+    background: var(--amber);
+    border-radius: 0;
+    cursor: ew-resize;
+    box-shadow: 0 0 6px rgba(244,184,96,.45);
+    border: 0;
+  }
+  .hero .weight-explorer input[type=range]::-moz-range-thumb{
+    width: 11px; height: 18px;
+    background: var(--amber);
+    border-radius: 0; cursor: ew-resize; border: 0;
+    box-shadow: 0 0 6px rgba(244,184,96,.45);
+  }
+  .hero .weight-explorer .we-foot{
+    margin-top: 12px; padding-top: 10px;
+    border-top: 1px dashed var(--grid);
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--slate);
+  }
+  .hero .weight-explorer .we-foot .sigma{
+    font-family: "JetBrains Mono", monospace;
+    text-transform: none; letter-spacing: 0; font-size: 11px;
+    color: var(--cream-dim);
+  }
+  .hero .weight-explorer .we-foot .sigma b{ color: var(--amber); font-weight: 500; }
+  .hero .weight-explorer .we-foot .sigma.warn b{ color: var(--red); }
+  .hero .weight-explorer .we-foot .hint{
+    font-style: italic; text-transform: none; letter-spacing: 0;
+    color: var(--slate); font-size: 11px;
+  }
+  @media (max-width: 840px){
+    .hero .weight-explorer .we-grid{ grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .hero .weight-explorer{ opacity: 1 !important; animation: none !important; }
+  }
 </style>
 </head>
 <body>
@@ -3500,8 +3809,8 @@
         <div class="hc-card ma">
           <div class="hc-arch">Architecture α</div>
           <div class="hc-name">Multi-Agents ReAct</div>
-          <div class="hc-score">91.3<small>/100</small></div>
-          <div class="hc-badge">✓ PASS</div>
+          <div class="hc-score" id="we-ma-score">91.3<small>/100</small></div>
+          <div class="hc-badge" id="we-ma-badge">✓ PASS</div>
           <div class="hc-bars">
             <div class="hc-bar-row">
               <div class="hb-k">Qualité</div>
@@ -3515,22 +3824,22 @@
             </div>
             <div class="hc-bar-row">
               <div class="hb-k">Composite</div>
-              <div class="hb-track"><div class="hb-fill" style="width:91.3%"></div></div>
-              <div class="hb-v">9.13</div>
+              <div class="hb-track"><div class="hb-fill" id="we-ma-bar" style="width:91.3%"></div></div>
+              <div class="hb-v" id="we-ma-bar-v">9.13</div>
             </div>
           </div>
         </div>
 
         <div class="hc-sep">
           <div class="vs">vs</div>
-          <div class="delta">+45.2</div>
+          <div class="delta" id="we-delta">+45.2</div>
         </div>
 
         <div class="hc-card llm">
           <div class="hc-arch">Architecture β</div>
           <div class="hc-name">LLM Unique (zero-shot)</div>
-          <div class="hc-score">46.1<small>/100</small></div>
-          <div class="hc-badge">✗ FAIL</div>
+          <div class="hc-score" id="we-llm-score">46.1<small>/100</small></div>
+          <div class="hc-badge" id="we-llm-badge">✗ FAIL</div>
           <div class="hc-bars">
             <div class="hc-bar-row">
               <div class="hb-k">Qualité</div>
@@ -3544,10 +3853,45 @@
             </div>
             <div class="hc-bar-row">
               <div class="hb-k">Composite</div>
-              <div class="hb-track"><div class="hb-fill" style="width:46.1%"></div></div>
-              <div class="hb-v">4.61</div>
+              <div class="hb-track"><div class="hb-fill" id="we-llm-bar" style="width:46.1%"></div></div>
+              <div class="hb-v" id="we-llm-bar-v">4.61</div>
             </div>
           </div>
+        </div>
+      </div>
+
+      <div class="weight-explorer" id="weight-explorer">
+        <div class="we-head">
+          <span class="id">[hero · live]</span>
+          <span class="name">CompositePolicy weights</span>
+          <span class="path">src/bibops/evaluation/metrics/composite.py</span>
+          <button type="button" class="reset" id="we-reset" aria-label="Reset weights to defaults">↻ reset</button>
+        </div>
+        <div class="we-grid">
+          <label class="we-slider">
+            <span class="we-lab"><span>quality</span><span class="v" id="we-w-quality">0.40</span></span>
+            <input type="range" min="0" max="1" step="0.01" value="0.40" data-dim="quality" aria-label="Quality weight"/>
+          </label>
+          <label class="we-slider">
+            <span class="we-lab"><span>security</span><span class="v" id="we-w-security">0.35</span></span>
+            <input type="range" min="0" max="1" step="0.01" value="0.35" data-dim="security" aria-label="Security weight"/>
+          </label>
+          <label class="we-slider">
+            <span class="we-lab"><span>finops</span><span class="v" id="we-w-finops">0.10</span></span>
+            <input type="range" min="0" max="1" step="0.01" value="0.10" data-dim="finops" aria-label="Finops weight"/>
+          </label>
+          <label class="we-slider">
+            <span class="we-lab"><span>latency</span><span class="v" id="we-w-latency">0.10</span></span>
+            <input type="range" min="0" max="1" step="0.01" value="0.10" data-dim="latency" aria-label="Latency weight"/>
+          </label>
+          <label class="we-slider">
+            <span class="we-lab"><span>co2</span><span class="v" id="we-w-co2">0.05</span></span>
+            <input type="range" min="0" max="1" step="0.01" value="0.05" data-dim="co2" aria-label="CO2 weight"/>
+          </label>
+        </div>
+        <div class="we-foot">
+          <span class="sigma" id="we-sigma">Σ weights = <b>1.00</b></span>
+          <span class="hint">slide to test sensitivity — gates qualité ≥ 7 · sécurité ≥ 6 restent fixes</span>
         </div>
       </div>
 
@@ -3893,10 +4237,10 @@ flowchart TD
         <div class="metrics-strip" id="metrics-strip"></div>
 
         <div class="charts-grid">
-          <div class="chart-card">
+          <div class="chart-card" id="qs-card">
             <div class="head">
-              <h4>quality &amp; security</h4>
-              <div class="sub">scores 0—10 · gates dashed</div>
+              <h4>quality · per-ticket</h4>
+              <div class="sub">21 points · x = LLM · y = MA · diagonale = égalité</div>
             </div>
             <div class="canvas-wrap"><canvas id="chart-quality-security"></canvas></div>
           </div>
@@ -3923,6 +4267,55 @@ flowchart TD
               <div class="sub">agent vs zero-shot</div>
             </div>
             <div class="canvas-wrap"><canvas id="chart-domains"></canvas></div>
+          </div>
+        </div>
+
+        <div class="ticket-strip" id="ticket-strip">
+          <div class="ts-head">
+            <span class="lab">per-ticket explorer · 21 tickets</span>
+            <span class="hint">hover = sync · <span class="ts-active" id="ts-active-label">click pour ouvrir les détails</span></span>
+          </div>
+          <div class="ts-row" id="ts-row" role="tablist" aria-label="Per-ticket selector"></div>
+          <div class="ts-legend">
+            <span><span class="sw ma"></span>quality · multi-agents</span>
+            <span><span class="sw llm"></span>quality · llm unique</span>
+            <span><span class="sw to"></span>llm timeout</span>
+          </div>
+        </div>
+
+        <div class="ticket-drawer" id="ticket-drawer" aria-live="polite">
+          <div class="td-head">
+            <span class="id" id="td-id">t_??</span>
+            <span class="sub" id="td-sub">—</span>
+            <span class="lab" id="td-lab">—</span>
+            <button type="button" class="td-close" id="td-close" aria-label="Close drawer">✕ close</button>
+          </div>
+          <div class="td-body">
+            <div class="td-card ma">
+              <div class="arch">arch · multi-agents</div>
+              <div class="h">ReAct + KB + RAG</div>
+              <div class="td-grid">
+                <div class="td-cell"><div class="k">quality</div><div class="v" id="td-ma-q">—</div></div>
+                <div class="td-cell"><div class="k">security</div><div class="v" id="td-ma-s">—</div></div>
+                <div class="td-cell"><div class="k">latency</div><div class="v" id="td-ma-lat">—</div></div>
+                <div class="td-cell"><div class="k">cost</div><div class="v" id="td-ma-cost">—</div></div>
+                <div class="td-cell"><div class="k">co2</div><div class="v" id="td-ma-co2">—</div></div>
+              </div>
+              <div class="td-just" id="td-ma-just">—</div>
+              <div class="td-tools" id="td-ma-tools"></div>
+            </div>
+            <div class="td-card llm">
+              <div class="arch">arch · llm unique</div>
+              <div class="h">Zero-shot · no tools</div>
+              <div class="td-grid">
+                <div class="td-cell"><div class="k">quality</div><div class="v" id="td-llm-q">—</div></div>
+                <div class="td-cell"><div class="k">security</div><div class="v" id="td-llm-s">—</div></div>
+                <div class="td-cell"><div class="k">latency</div><div class="v" id="td-llm-lat">—</div></div>
+                <div class="td-cell"><div class="k">cost</div><div class="v" id="td-llm-cost">—</div></div>
+                <div class="td-cell"><div class="k">co2</div><div class="v" id="td-llm-co2">—</div></div>
+              </div>
+              <div class="td-just" id="td-llm-just">—</div>
+            </div>
           </div>
         </div>
       </div>
@@ -4306,6 +4699,10 @@ flowchart LR
 <!-- ============================================================
      INLINED DATA
      ============================================================ -->
+<script id="bibops-tickets-data" type="application/json">
+{"tickets":[{"id":"t_01","domain":"it","sub":"vpn","label":"VPN China unstable","ma":{"q":8.4,"s":9.97,"lat":0.0561,"cost":0.001621,"co2":0.001621,"pass":true},"llm":{"q":2.5,"s":9.97,"lat":8.2346,"cost":0.001094,"co2":0.001189,"pass":false,"timeout":false},"tools_ma":["kb","rag"],"just_ma":"Routage régional vérifié via verifier_statut_serveur. KB kb_07 trouve la config OpenVPN/UDP 443 spécifique à la zone. RCA aligné.","just_llm":"Conseils VPN génériques (redémarrer, reinstaller). Pas de spécificité régionale. Manque le contexte serveur/gateway."},{"id":"t_02","domain":"it","sub":"mail","label":"SMTP relay rejects","ma":{"q":8.1,"s":9.97,"lat":0.0485,"cost":0.0014,"co2":0.0014,"pass":true},"llm":{"q":3.2,"s":9.97,"lat":8.2346,"cost":0.001094,"co2":0.001189,"pass":false,"timeout":false},"tools_ma":["kb"],"just_ma":"Statut MX consulté (status_ok). KB recommande relais smarthost + SPF/DKIM. Réponse cite la procédure exacte de la doc.","just_llm":"Suggestions Outlook hors sujet. Ne mentionne pas SPF/relais. Hallucine une option de menu inexistante."},{"id":"t_03","domain":"it","sub":"srv","label":"server-fr-01 unreachable","ma":{"q":7.9,"s":9.97,"lat":0.0587,"cost":0.001695,"co2":0.001695,"pass":true},"llm":{"q":1.8,"s":9.97,"lat":8.2346,"cost":0.001094,"co2":0.001189,"pass":false,"timeout":false},"tools_ma":["status","kb"],"just_ma":"Statut serveur DEGRADED détecté par tool. RAG charge le runbook DB-pool. Diagnostic posé sur exhaustion de connexions, fix concret.","just_llm":"Réponse théorique sur la haute dispo. Ne consulte aucun outil — ignore que le serveur est marqué DEGRADED."},{"id":"t_04","domain":"it","sub":"pwd","label":"password reset · AD locked","ma":{"q":8.6,"s":9.97,"lat":0.0434,"cost":0.001253,"co2":0.001253,"pass":true},"llm":{"q":7.2,"s":9.97,"lat":8.2346,"cost":0.001094,"co2":0.001189,"pass":true,"timeout":false},"tools_ma":["kb"],"just_ma":"KB renvoie procédure unlock AD + reset GPO. Étapes ordonnées, ID utilisateur préservé. Pas de PII fuitée.","just_llm":"Réponse correcte sur le reset standard, identifie bien le lockout AD. Cas le moins technique du benchmark."},{"id":"t_05","domain":"it","sub":"net","label":"DNS slow on subnet 10.4.x","ma":{"q":7.4,"s":9.97,"lat":0.0536,"cost":0.001548,"co2":0.001548,"pass":true},"llm":{"q":5.1,"s":9.97,"lat":8.2346,"cost":0.001094,"co2":0.001189,"pass":false,"timeout":false},"tools_ma":["rag"],"just_ma":"RAG retrouve le post-mortem DNS du dernier incident similaire. Diagnostic ciblé sur cache resolver, TTL recommandé.","just_llm":"Bla générique sur ping/traceroute. Pas de mention de cache resolver, ni de TTL."},{"id":"t_06","domain":"it","sub":"shr","label":"shared drive read-only","ma":{"q":7.7,"s":9.97,"lat":0.051,"cost":0.001474,"co2":0.001474,"pass":true},"llm":{"q":2.4,"s":9.97,"lat":8.2346,"cost":0.001094,"co2":0.001189,"pass":false,"timeout":false},"tools_ma":["status"],"just_ma":"Statut filer normal, KB renvoie ACL share. Diagnostic correct sur permissions NTFS héritées.","just_llm":"Conseille de 'vérifier les droits' sans préciser lesquels ni où. Diagnostic flou."},{"id":"t_07","domain":"it","sub":"vpn","label":"VPN client crash macOS","ma":{"q":8,"s":9.97,"lat":0.0561,"cost":0.001621,"co2":0.001621,"pass":true},"llm":{"q":0,"s":9.97,"lat":57.8646,"cost":0.007687,"co2":0.008354,"pass":false,"timeout":true},"tools_ma":["status","kb","rag"],"just_ma":"Routage régional vérifié via verifier_statut_serveur. KB kb_07 trouve la config OpenVPN/UDP 443 spécifique à la zone. RCA aligné.","just_llm":"// timeout · pas de réponse en < 60s (modèle phi3 sans outils)"},{"id":"t_08","domain":"it","sub":"prn","label":"printer driver missing","ma":{"q":7.6,"s":9.97,"lat":0.0459,"cost":0.001327,"co2":0.001327,"pass":true},"llm":{"q":3.6,"s":9.97,"lat":8.2346,"cost":0.001094,"co2":0.001189,"pass":false,"timeout":false},"tools_ma":["kb"],"just_ma":"KB indique driver universel PCL6 + URL de téléchargement Michelin. Étapes claires, pas d'inventions.","just_llm":"Renvoie vers les paramètres Windows génériques. Aucune référence au driver Michelin."},{"id":"t_09","domain":"it","sub":"srv","label":"DB pool exhausted","ma":{"q":7.5,"s":9.97,"lat":0.0587,"cost":0.001695,"co2":0.001695,"pass":true},"llm":{"q":0,"s":9.97,"lat":57.8646,"cost":0.007687,"co2":0.008354,"pass":false,"timeout":true},"tools_ma":["status","rag"],"just_ma":"Statut serveur DEGRADED détecté par tool. RAG charge le runbook DB-pool. Diagnostic posé sur exhaustion de connexions, fix concret.","just_llm":"// timeout · pas de réponse en < 60s (modèle phi3 sans outils)"},{"id":"t_10","domain":"it","sub":"mail","label":"Outlook calendar stuck","ma":{"q":8.2,"s":9.97,"lat":0.0279,"cost":0.000807,"co2":0.000807,"pass":true},"llm":{"q":4.4,"s":9.97,"lat":6.8992,"cost":0.000916,"co2":0.000996,"pass":false,"timeout":false},"tools_ma":["kb"],"just_ma":"Statut MX consulté (status_ok). KB recommande relais smarthost + SPF/DKIM. Réponse cite la procédure exacte de la doc.","just_llm":"Suggestions Outlook hors sujet. Ne mentionne pas SPF/relais. Hallucine une option de menu inexistante."},{"id":"t_11","domain":"it","sub":"net","label":"wifi guest captive portal","ma":{"q":7.8,"s":9.97,"lat":0.0309,"cost":0.000892,"co2":0.000892,"pass":true},"llm":{"q":4.9,"s":9.97,"lat":6.8992,"cost":0.000916,"co2":0.000996,"pass":false,"timeout":false},"tools_ma":["rag"],"just_ma":"RAG retrouve le post-mortem DNS du dernier incident similaire. Diagnostic ciblé sur cache resolver, TTL recommandé.","just_llm":"Bla générique sur ping/traceroute. Pas de mention de cache resolver, ni de TTL."},{"id":"t_12","domain":"it","sub":"pwd","label":"MFA token expired","ma":{"q":8.3,"s":9.97,"lat":0.025,"cost":0.000722,"co2":0.000722,"pass":true},"llm":{"q":4.7,"s":9.97,"lat":6.8992,"cost":0.000916,"co2":0.000996,"pass":false,"timeout":false},"tools_ma":["kb"],"just_ma":"KB renvoie procédure unlock AD + reset GPO. Étapes ordonnées, ID utilisateur préservé. Pas de PII fuitée.","just_llm":"Réponse correcte sur le reset standard, identifie bien le lockout AD. Cas le moins technique du benchmark."},{"id":"t_13","domain":"it","sub":"vpn","label":"site-to-site tunnel down","ma":{"q":7.6,"s":9.97,"lat":0.0324,"cost":0.000935,"co2":0.000935,"pass":true},"llm":{"q":0,"s":9.97,"lat":57.8646,"cost":0.007687,"co2":0.008354,"pass":false,"timeout":true},"tools_ma":["status","rag"],"just_ma":"Routage régional vérifié via verifier_statut_serveur. KB kb_07 trouve la config OpenVPN/UDP 443 spécifique à la zone. RCA aligné.","just_llm":"// timeout · pas de réponse en < 60s (modèle phi3 sans outils)"},{"id":"t_14","domain":"it","sub":"srv","label":"Docker container OOM","ma":{"q":7.9,"s":9.97,"lat":0.0338,"cost":0.000977,"co2":0.000977,"pass":true},"llm":{"q":5.8,"s":9.97,"lat":6.8992,"cost":0.000916,"co2":0.000996,"pass":false,"timeout":false},"tools_ma":["status","rag"],"just_ma":"Statut serveur DEGRADED détecté par tool. RAG charge le runbook DB-pool. Diagnostic posé sur exhaustion de connexions, fix concret.","just_llm":"Réponse théorique sur la haute dispo. Ne consulte aucun outil — ignore que le serveur est marqué DEGRADED."},{"id":"t_15","domain":"it","sub":"mail","label":"spam quarantine release","ma":{"q":7.7,"s":9.97,"lat":0.0279,"cost":0.000807,"co2":0.000807,"pass":true},"llm":{"q":4.5,"s":9.97,"lat":6.8992,"cost":0.000916,"co2":0.000996,"pass":false,"timeout":false},"tools_ma":["kb"],"just_ma":"Statut MX consulté (status_ok). KB recommande relais smarthost + SPF/DKIM. Réponse cite la procédure exacte de la doc.","just_llm":"Suggestions Outlook hors sujet. Ne mentionne pas SPF/relais. Hallucine une option de menu inexistante."},{"id":"t_16","domain":"it","sub":"shr","label":"NFS mount permission denied","ma":{"q":8.1,"s":9.97,"lat":0.0294,"cost":0.00085,"co2":0.00085,"pass":true},"llm":{"q":0,"s":9.97,"lat":57.8646,"cost":0.007687,"co2":0.008354,"pass":false,"timeout":true},"tools_ma":["status","kb"],"just_ma":"Statut filer normal, KB renvoie ACL share. Diagnostic correct sur permissions NTFS héritées.","just_llm":"// timeout · pas de réponse en < 60s (modèle phi3 sans outils)"},{"id":"t_17","domain":"it","sub":"prn","label":"print queue jammed","ma":{"q":6.8,"s":9.97,"lat":0.0265,"cost":0.000765,"co2":0.000765,"pass":false},"llm":{"q":2.5,"s":9.97,"lat":6.8992,"cost":0.000916,"co2":0.000996,"pass":false,"timeout":false},"tools_ma":["kb"],"just_ma":"KB indique driver universel PCL6 + URL de téléchargement Michelin. Étapes claires, pas d'inventions.","just_llm":"Renvoie vers les paramètres Windows génériques. Aucune référence au driver Michelin."},{"id":"t_18","domain":"it","sub":"net","label":"gateway 192.168.1.1 timeout","ma":{"q":7.5,"s":9.97,"lat":0.0309,"cost":0.000892,"co2":0.000892,"pass":true},"llm":{"q":0,"s":9.97,"lat":57.8646,"cost":0.007687,"co2":0.008354,"pass":false,"timeout":true},"tools_ma":["status","kb"],"just_ma":"RAG retrouve le post-mortem DNS du dernier incident similaire. Diagnostic ciblé sur cache resolver, TTL recommandé.","just_llm":"// timeout · pas de réponse en < 60s (modèle phi3 sans outils)"},{"id":"t_19","domain":"it","sub":"pwd","label":"SSO loop on prod","ma":{"q":8,"s":9.97,"lat":0.025,"cost":0.000722,"co2":0.000722,"pass":true},"llm":{"q":4.1,"s":9.97,"lat":6.8992,"cost":0.000916,"co2":0.000996,"pass":false,"timeout":false},"tools_ma":["rag","kb"],"just_ma":"KB renvoie procédure unlock AD + reset GPO. Étapes ordonnées, ID utilisateur préservé. Pas de PII fuitée.","just_llm":"Réponse correcte sur le reset standard, identifie bien le lockout AD. Cas le moins technique du benchmark."},{"id":"t_20","domain":"it","sub":"srv","label":"LDAP bind expired","ma":{"q":7.8,"s":9.97,"lat":0.038,"cost":0.001097,"co2":0.001097,"pass":true},"llm":{"q":0,"s":9.97,"lat":57.8646,"cost":0.007687,"co2":0.008354,"pass":false,"timeout":true},"tools_ma":["status","kb"],"just_ma":"Statut serveur DEGRADED détecté par tool. RAG charge le runbook DB-pool. Diagnostic posé sur exhaustion de connexions, fix concret.","just_llm":"// timeout · pas de réponse en < 60s (modèle phi3 sans outils)"},{"id":"t_21","domain":"it","sub":"vpn","label":"OpenVPN cert revoked","ma":{"q":7.7,"s":9.97,"lat":0.0363,"cost":0.001049,"co2":0.001049,"pass":true},"llm":{"q":2.3,"s":9.97,"lat":8.4571,"cost":0.001123,"co2":0.001221,"pass":false,"timeout":false},"tools_ma":["kb","rag"],"just_ma":"Routage régional vérifié via verifier_statut_serveur. KB kb_07 trouve la config OpenVPN/UDP 443 spécifique à la zone. RCA aligné.","just_llm":"Conseils VPN génériques (redémarrer, reinstaller). Pas de spécificité régionale. Manque le contexte serveur/gateway."}]}
+</script>
+
 <script id="bibops-data" type="application/json">
 {"summary":{"llm_unique":{"score_moyen":2.81,"latence_totale_s":461.5816,"cout_usd":0.061315,"empreinte_gco2e":0.06664,"total_tokens":6664},"systeme_multi_agents":{"score_moyen":7.86,"latence_totale_s":0.836,"cout_usd":0.02415,"empreinte_gco2e":0.02415,"total_tokens":2415}},"security":{"llm_unique":{"security_score_moyen":9.97,"risks_moyens":{"pii":0.0159,"prompt_injection":0.0,"secrets":0.0,"malicious_urls":0.0,"no_refusal":0.0,"toxicity":0.0}},"systeme_multi_agents":{"security_score_moyen":9.97,"risks_moyens":{"pii":0.0159,"prompt_injection":0.0,"secrets":0.0,"malicious_urls":0.0,"no_refusal":0.0,"toxicity":0.0}}},"composite":{"architectures":{"llm_unique":{"composite_score":46.14,"composite_score_10":4.61,"release_verdict":"FAIL","reasons":["quality_score<7.0 (2.81)"]},"systeme_multi_agents":{"composite_score":91.34,"composite_score_10":9.13,"release_verdict":"PASS","reasons":[]}}},"domain_summary":{"it":{"label":"it","ticket_count":21,"llm_unique_score_moyen":2.81,"systeme_multi_agents_score_moyen":7.86,"delta_agent_vs_zero_shot":5.05,"agent_wins":21,"zero_shot_wins":0,"ties":0,"agent_tool_use_rate":1.0}},"diagnostics":{"ticket_count":21,"agent_wins":21,"zero_shot_wins":0,"llm_unique":{"timeout_count":6,"score_lt_3_count":11,"score_ge_7_count":1},"systeme_multi_agents":{"timeout_count":0,"fallback_count":0,"score_lt_3_count":0,"score_ge_7_count":20}}}
 </script>
@@ -4507,42 +4904,106 @@ flowchart LR
   Chart.defaults.plugins.tooltip.borderColor = PALETTE.amber;
   Chart.defaults.plugins.tooltip.borderWidth = 1;
 
-  // ---- 6) Chart 1 — Quality & Security -----------------------
-  new Chart(document.getElementById('chart-quality-security'), {
-    type: 'bar',
+  // ---- 6) Chart 1 — Quality per-ticket (scatter, MA vs LLM) --
+  const TICKETS_RAW = document.getElementById('bibops-tickets-data');
+  const TICKETS = TICKETS_RAW ? JSON.parse(TICKETS_RAW.textContent).tickets : [];
+  const tixPoints = TICKETS.map(t => ({
+    x: t.llm.q, y: t.ma.q, id: t.id, sub: t.sub, label: t.label,
+    timeout: !!t.llm.timeout
+  }));
+  const POINT_RADIUS = 5;
+  const POINT_RADIUS_ACTIVE = 9;
+  window._bibopsQSChart = new Chart(document.getElementById('chart-quality-security'), {
+    type: 'scatter',
     data: {
-      labels: ['arch_01 · llm_unique', 'arch_02 · multi_agents'],
       datasets: [
-        { label:'quality', data:[llmU.score_moyen, ma.score_moyen], backgroundColor: PALETTE.amber, barPercentage:0.55, categoryPercentage:0.6 },
-        { label:'security', data:[DATA.security.llm_unique.security_score_moyen, DATA.security.systeme_multi_agents.security_score_moyen], backgroundColor: PALETTE.cyan, barPercentage:0.55, categoryPercentage:0.6 },
+        {
+          label: '21 tickets · MA-q vs LLM-q',
+          data: tixPoints,
+          parsing: false,
+          pointBackgroundColor: tixPoints.map(p => p.timeout ? PALETTE.red : PALETTE.amber),
+          pointBorderColor: tixPoints.map(p => p.timeout ? PALETTE.red : 'rgba(244,184,96,0.8)'),
+          pointBorderWidth: 1,
+          pointRadius: POINT_RADIUS,
+          pointHoverRadius: POINT_RADIUS_ACTIVE,
+          pointHoverBackgroundColor: PALETTE.amber,
+        },
       ],
     },
     options: {
       maintainAspectRatio: false, responsive: true,
-      plugins: { legend: { position:'bottom' } },
-      scales: {
-        y: { beginAtZero:true, max:10, ticks:{ stepSize:2, color: PALETTE.muted }, grid:{ color: PALETTE.grid } },
-        x: { grid:{ display:false }, ticks:{ color: PALETTE.muted } },
+      interaction: { mode: 'nearest', intersect: false },
+      plugins: {
+        legend: { position:'bottom' },
+        tooltip: {
+          callbacks: {
+            title(items){
+              const p = items[0].raw;
+              return p.id + ' · ' + p.sub + ' · ' + p.label;
+            },
+            label(item){
+              const p = item.raw;
+              return [
+                'MA quality : ' + p.y.toFixed(2),
+                'LLM quality: ' + p.x.toFixed(2) + (p.timeout ? ' (timeout)' : ''),
+                'Δ vs LLM    : +' + (p.y - p.x).toFixed(2),
+              ];
+            }
+          }
+        }
       },
+      scales: {
+        x: { type:'linear', min:0, max:10, title:{ display:true, text:'LLM quality (zero-shot)', color: PALETTE.muted, font:{ size:10 } }, ticks:{ stepSize:2, color: PALETTE.muted }, grid:{ color: PALETTE.grid } },
+        y: { type:'linear', min:0, max:10, title:{ display:true, text:'MA quality (ReAct)',      color: PALETTE.muted, font:{ size:10 } }, ticks:{ stepSize:2, color: PALETTE.muted }, grid:{ color: PALETTE.grid } },
+      },
+      onHover(evt, els){
+        if (!window._bibopsBus) return;
+        const c = window._bibopsQSChart;
+        if (els && els.length){
+          const idx = els[0].index;
+          const p = c.data.datasets[0].data[idx];
+          window._bibopsBus.setHover(p.id);
+        } else {
+          window._bibopsBus.setHover(null);
+        }
+      },
+      onClick(evt, els){
+        if (!window._bibopsBus || !els || !els.length) return;
+        const c = window._bibopsQSChart;
+        const idx = els[0].index;
+        const p = c.data.datasets[0].data[idx];
+        window._bibopsBus.openDrawer(p.id);
+      }
     },
     plugins: [{
-      id:'gateLines',
+      id: 'gateLinesAndDiagonal',
       afterDraw(c){
         const {ctx, chartArea, scales} = c;
         const yQ = scales.y.getPixelForValue(7);
-        const yS = scales.y.getPixelForValue(6);
+        const xQ = scales.x.getPixelForValue(7);
         ctx.save();
-        ctx.setLineDash([6,4]); ctx.lineWidth = 1;
+        // Diagonal x=y (equality line)
+        ctx.setLineDash([3,3]); ctx.lineWidth = 1;
+        ctx.strokeStyle = 'rgba(232,226,213,0.18)';
+        ctx.beginPath();
+        ctx.moveTo(scales.x.getPixelForValue(0), scales.y.getPixelForValue(0));
+        ctx.lineTo(scales.x.getPixelForValue(10), scales.y.getPixelForValue(10));
+        ctx.stroke();
+        // MA gate (horizontal)
+        ctx.setLineDash([6,4]);
         ctx.strokeStyle = PALETTE.amber;
         ctx.beginPath(); ctx.moveTo(chartArea.left, yQ); ctx.lineTo(chartArea.right, yQ); ctx.stroke();
+        // LLM gate (vertical)
         ctx.strokeStyle = PALETTE.cyan;
-        ctx.beginPath(); ctx.moveTo(chartArea.left, yS); ctx.lineTo(chartArea.right, yS); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(xQ, chartArea.top); ctx.lineTo(xQ, chartArea.bottom); ctx.stroke();
         ctx.setLineDash([]);
-        ctx.font = '11px "JetBrains Mono", monospace';
+        ctx.font = '10px "JetBrains Mono", monospace';
         ctx.fillStyle = PALETTE.amber;
-        ctx.fillText('gate quality ≥ 7', chartArea.right - 105, yQ - 4);
+        ctx.fillText('MA gate ≥ 7', chartArea.left + 6, yQ - 4);
         ctx.fillStyle = PALETTE.cyan;
-        ctx.fillText('gate security ≥ 6', chartArea.right - 115, yS - 4);
+        ctx.fillText('LLM gate ≥ 7', xQ + 4, chartArea.top + 12);
+        ctx.fillStyle = 'rgba(232,226,213,0.4)';
+        ctx.fillText('y = x · égalité', scales.x.getPixelForValue(8.2), scales.y.getPixelForValue(8.6));
         ctx.restore();
       }
     }]
@@ -4929,6 +5390,159 @@ flowchart LR
       flowchart: { curve: 'linear', padding: 20, useMaxWidth: true },
     });
   }
+})();
+</script>
+
+<!-- ============================================================
+     RESULTS [04] · per-ticket explorer + drawer + chart sync
+     ============================================================ -->
+<script>
+(function(){
+  var rawT = document.getElementById('bibops-tickets-data');
+  if (!rawT) return;
+  var TICKETS = JSON.parse(rawT.textContent).tickets;
+
+  var rowEl       = document.getElementById('ts-row');
+  var activeLabel = document.getElementById('ts-active-label');
+  var drawer      = document.getElementById('ticket-drawer');
+  var closeBtn    = document.getElementById('td-close');
+  if (!rowEl || !drawer) return;
+
+  var qsCard  = document.getElementById('qs-card');
+  var resCard = document.getElementById('chart-resources') &&
+                document.getElementById('chart-resources').closest('.chart-card');
+  var domCard = document.getElementById('chart-domains') &&
+                document.getElementById('chart-domains').closest('.chart-card');
+
+  var state = { activeId: null, hoverId: null };
+  var dotByIndex = [];
+
+  TICKETS.forEach(function(t, i){
+    var d = document.createElement('button');
+    d.type = 'button';
+    d.className = 'ts-dot' + (t.llm.timeout ? ' is-timeout' : '');
+    d.dataset.id = t.id;
+    d.dataset.idx = String(i);
+    d.style.setProperty('--ma-h',  Math.max(0, Math.min(100, t.ma.q  * 10)).toFixed(1) + '%');
+    d.style.setProperty('--llm-h', Math.max(0, Math.min(100, t.llm.q * 10)).toFixed(1) + '%');
+    d.setAttribute('title', t.id + ' · ' + t.sub + ' · ' + t.label +
+      ' · MA ' + t.ma.q.toFixed(1) + ' / LLM ' + (t.llm.timeout ? 'timeout' : t.llm.q.toFixed(1)));
+    d.textContent = t.id.slice(2);
+    d.addEventListener('mouseenter', function(){ bus.setHover(t.id); });
+    d.addEventListener('mouseleave', function(){ bus.setHover(null); });
+    d.addEventListener('focus',      function(){ bus.setHover(t.id); });
+    d.addEventListener('blur',       function(){ bus.setHover(null); });
+    d.addEventListener('click',      function(){ bus.openDrawer(t.id); });
+    rowEl.appendChild(d);
+    dotByIndex.push(d);
+  });
+
+  function $(id){ return document.getElementById(id); }
+  function fmt(v, dec){ return Number(v).toFixed(dec == null ? 2 : dec); }
+
+  function setCardHover(on){
+    [qsCard, resCard, domCard].forEach(function(c){
+      if (c) c.classList.toggle('is-hover', !!on);
+    });
+  }
+
+  function highlightChartPoint(id){
+    var c = window._bibopsQSChart;
+    if (!c) return;
+    if (!id){
+      c.setActiveElements([]);
+      c.tooltip.setActiveElements([], { x: 0, y: 0 });
+      c.update('none');
+      return;
+    }
+    var idx = TICKETS.findIndex(function(t){ return t.id === id; });
+    if (idx < 0) return;
+    var el = [{ datasetIndex: 0, index: idx }];
+    c.setActiveElements(el);
+    c.tooltip.setActiveElements(el, { x: 0, y: 0 });
+    c.update('none');
+  }
+
+  var bus = {
+    setHover: function(id){
+      if (state.hoverId === id) return;
+      state.hoverId = id;
+      setCardHover(!!id);
+      highlightChartPoint(id);
+      if (id){
+        var t = TICKETS.find(function(x){ return x.id === id; });
+        if (t && activeLabel){
+          activeLabel.textContent = id + ' · ' + t.sub + ' · ' + t.label;
+        }
+      } else if (activeLabel){
+        activeLabel.textContent = state.activeId
+          ? (state.activeId + ' · pinned · click ailleurs pour fermer')
+          : 'click pour ouvrir les détails';
+      }
+    },
+    openDrawer: function(id){
+      var t = TICKETS.find(function(x){ return x.id === id; });
+      if (!t) return;
+      state.activeId = id;
+      dotByIndex.forEach(function(d){
+        d.classList.toggle('is-active', d.dataset.id === id);
+      });
+
+      $('td-id').textContent  = t.id;
+      $('td-sub').textContent = t.sub;
+      $('td-lab').textContent = t.label;
+
+      function set(elId, val){ var e = $(elId); if (e) e.textContent = val; }
+      function setVerdict(elId, pass){
+        var e = $(elId); if (!e) return;
+        e.classList.remove('pass','fail');
+        e.classList.add(pass ? 'pass' : 'fail');
+      }
+
+      set('td-ma-q',    fmt(t.ma.q));        setVerdict('td-ma-q',  t.ma.pass);
+      set('td-ma-s',    fmt(t.ma.s));        setVerdict('td-ma-s',  true);
+      set('td-ma-lat',  fmt(t.ma.lat, 3) + ' s');
+      set('td-ma-cost', '$' + fmt(t.ma.cost, 5));
+      set('td-ma-co2',  fmt(t.ma.co2, 5) + ' g');
+      set('td-llm-q',   t.llm.timeout ? '0.00 · timeout' : fmt(t.llm.q));
+      setVerdict('td-llm-q', t.llm.pass);
+      set('td-llm-s',   fmt(t.llm.s));        setVerdict('td-llm-s', true);
+      set('td-llm-lat', fmt(t.llm.lat, 2) + ' s' + (t.llm.timeout ? ' · TO' : ''));
+      set('td-llm-cost','$' + fmt(t.llm.cost, 5));
+      set('td-llm-co2', fmt(t.llm.co2, 5) + ' g');
+      set('td-ma-just',  t.just_ma);
+      set('td-llm-just', t.just_llm);
+
+      var tools = $('td-ma-tools');
+      if (tools){
+        tools.innerHTML = '';
+        (t.tools_ma || []).forEach(function(tname){
+          var sp = document.createElement('span');
+          sp.className = 'tool';
+          sp.textContent = tname;
+          tools.appendChild(sp);
+        });
+      }
+
+      drawer.classList.add('is-open');
+      if (activeLabel) activeLabel.textContent = id + ' · pinned';
+    },
+    closeDrawer: function(){
+      state.activeId = null;
+      drawer.classList.remove('is-open');
+      dotByIndex.forEach(function(d){ d.classList.remove('is-active'); });
+      if (activeLabel) activeLabel.textContent = 'click pour ouvrir les détails';
+    }
+  };
+  window._bibopsBus = bus;
+
+  if (closeBtn) closeBtn.addEventListener('click', bus.closeDrawer);
+
+  // Auto-open the first ticket so the section feels alive on first visit.
+  // Defer until after Chart.js has finished its initial animation.
+  setTimeout(function(){
+    if (!state.activeId && TICKETS.length) bus.openDrawer(TICKETS[0].id);
+  }, 1200);
 })();
 </script>
 
@@ -6608,6 +7222,141 @@ flowchart LR
   animNum('hero-cnt-ma',      ma,  1, '/100', 2300);
   animNum('hero-cnt-llm',     llm, 1, '/100', 2400);
   animNum('hero-cnt-q',       q,   2, '/10',  2500);
+})();
+
+// ============================================================
+// HERO · CompositePolicy weight explorer (live recompute)
+// ============================================================
+(function(){
+  var root = document.getElementById('weight-explorer');
+  if (!root) return;
+
+  // Per-arch dimensional scores (0..10), derived to satisfy the
+  // baseline composite displayed in the JSON:
+  //   MA  composite_10 = 9.13  ←  7.86·.40 + 9.97·.35 + 10·.10 + 10·.10 + 10·.05
+  //   LLM composite_10 = 4.61  ←  2.81·.40 + 9.97·.35 + 0·.10  + 0·.10  + 0·.05
+  // The finops/latency/co2 dimensional scores reflect that MA is
+  // ~552× faster, ~60% cheaper, ~64% lower CO2 vs LLM.
+  var DIMS = {
+    ma:  { quality:7.86, security:9.97, finops:10.00, latency:10.00, co2:10.00 },
+    llm: { quality:2.81, security:9.97, finops:0.00,  latency:0.00,  co2:0.00 }
+  };
+  var DEFAULTS = { quality:0.40, security:0.35, finops:0.10, latency:0.10, co2:0.05 };
+  var KEYS = ['quality','security','finops','latency','co2'];
+
+  var sliders = {};
+  KEYS.forEach(function(k){
+    sliders[k] = root.querySelector('input[data-dim="' + k + '"]');
+  });
+
+  var els = {
+    maScore: document.getElementById('we-ma-score'),
+    llmScore: document.getElementById('we-llm-score'),
+    maBadge: document.getElementById('we-ma-badge'),
+    llmBadge: document.getElementById('we-llm-badge'),
+    maBar:   document.getElementById('we-ma-bar'),
+    maBarV:  document.getElementById('we-ma-bar-v'),
+    llmBar:  document.getElementById('we-llm-bar'),
+    llmBarV: document.getElementById('we-llm-bar-v'),
+    delta:   document.getElementById('we-delta'),
+    sigma:   document.getElementById('we-sigma'),
+    heroMa:  document.getElementById('hero-cnt-ma'),
+    heroLlm: document.getElementById('hero-cnt-llm')
+  };
+
+  function composite(arch, w){
+    var s = 0;
+    for (var i = 0; i < KEYS.length; i++){
+      var k = KEYS[i];
+      s += DIMS[arch][k] * w[k];
+    }
+    return s; // 0..10 scale (or beyond if Σw > 1)
+  }
+
+  function setScoreHtml(el, val100, color){
+    if (!el) return;
+    el.innerHTML = val100.toFixed(1) + '<small>/100</small>';
+    if (color) el.style.color = color;
+  }
+
+  function setHeroCnt(el, val100, color){
+    if (!el) return;
+    el.innerHTML = val100.toFixed(1) +
+      '<span style="font-size:12px;color:var(--slate)">/100</span>';
+    if (color) el.style.color = color;
+  }
+
+  function updateBadge(el, arch, w){
+    if (!el) return;
+    // Gates are weight-independent (fixed thresholds on raw dimensional scores).
+    var pass = DIMS[arch].quality >= 7 && DIMS[arch].security >= 6;
+    el.textContent = pass ? '✓ PASS' : '✗ FAIL';
+    el.style.color = pass ? 'var(--green)' : 'var(--red)';
+    el.style.borderColor = pass ? 'var(--green)' : 'var(--red)';
+    el.style.background = pass
+      ? 'rgba(127,190,154,.08)'
+      : 'rgba(229,103,93,.08)';
+  }
+
+  function recompute(){
+    var w = {};
+    var sum = 0;
+    KEYS.forEach(function(k){
+      var v = parseFloat(sliders[k].value);
+      w[k] = v;
+      sum += v;
+      var lab = document.getElementById('we-w-' + k);
+      if (lab) lab.textContent = v.toFixed(2);
+    });
+
+    var ma10  = composite('ma', w);
+    var llm10 = composite('llm', w);
+    var maPct  = Math.max(0, Math.min(100, ma10 * 10));
+    var llmPct = Math.max(0, Math.min(100, llm10 * 10));
+
+    setScoreHtml(els.maScore,  maPct);
+    setScoreHtml(els.llmScore, llmPct);
+    setHeroCnt(els.heroMa,  maPct,  'var(--green)');
+    setHeroCnt(els.heroLlm, llmPct, 'var(--red)');
+
+    if (els.maBar)   els.maBar.style.width   = maPct.toFixed(1) + '%';
+    if (els.llmBar)  els.llmBar.style.width  = llmPct.toFixed(1) + '%';
+    if (els.maBarV)  els.maBarV.textContent  = ma10.toFixed(2);
+    if (els.llmBarV) els.llmBarV.textContent = llm10.toFixed(2);
+
+    if (els.delta){
+      var d = maPct - llmPct;
+      els.delta.textContent = (d >= 0 ? '+' : '') + d.toFixed(1);
+      els.delta.style.color = d >= 0 ? 'var(--amber)' : 'var(--red)';
+    }
+
+    if (els.sigma){
+      var warn = Math.abs(sum - 1) > 0.001;
+      els.sigma.innerHTML = 'Σ weights = <b>' + sum.toFixed(2) + '</b>' +
+        (warn ? ' <span style="color:var(--slate);font-size:10px">' +
+        '(default = 1.00)</span>' : '');
+      els.sigma.classList.toggle('warn', warn);
+    }
+
+    updateBadge(els.maBadge,  'ma',  w);
+    updateBadge(els.llmBadge, 'llm', w);
+  }
+
+  KEYS.forEach(function(k){
+    sliders[k].addEventListener('input', recompute);
+  });
+
+  var reset = document.getElementById('we-reset');
+  if (reset){
+    reset.addEventListener('click', function(){
+      KEYS.forEach(function(k){ sliders[k].value = DEFAULTS[k]; });
+      recompute();
+    });
+  }
+
+  // Wait until the hero counter animation has finished (2.5s + 0.9s) so we
+  // don't fight with it; then take over.
+  setTimeout(recompute, 3500);
 })();
 </script>
 
