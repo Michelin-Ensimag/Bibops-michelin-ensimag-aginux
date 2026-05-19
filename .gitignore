@@ -1,5 +1,7 @@
 # Fichiers Mac
 .DS_Store
+.AppleDouble
+.LSOverride
 
 # Fichiers IDE
 .idea/
@@ -7,19 +9,41 @@
 .claude/
 .junie/
 
-# Fichiers de cache
+# Environnements virtuels
+venv/
+.venv/
+env/
+.env/
+
+# Variables d'environnement et secrets
+.env
+.env.*
+*.env
+*.key
+*.pem
+
+# Fichiers de cache Python
 __pycache__/
 .pytest_cache/
 *.pyc
+*.pyo
 .ruff_cache/
 .mypy_cache/
+
+# Couverture de tests
 .coverage
 .coverage.*
 htmlcov/
+coverage.json
 
 # Packaging local
 bibops.egg-info/
 *.egg-info/
+dist/
+build/
+
+# Jupyter
+.ipynb_checkpoints/
 
 # Logs et traces runtime
 logs/
@@ -31,7 +55,10 @@ data/databases/*.db
 data/databases/vectordb/
 src/data/
 
-
+# Artefacts générés par les benchmarks (runs locaux)
+data/outputs/benchmark/charts/
+data/outputs/benchmark/kaggle/
+data/outputs/eval_bank/
 
 # Artefacts LaTeX générés
 *.aux
@@ -45,6 +72,5 @@ src/data/
 *.out
 *.toc
 
-
-
+# Fichier d'instructions Claude (local uniquement)
 CLAUDE.md

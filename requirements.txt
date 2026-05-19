@@ -1,3 +1,4 @@
+# Production dependencies
 chromadb
 fastapi[standard]
 opentelemetry-sdk>=1.41.1
@@ -16,3 +17,9 @@ PyYAML
 requests
 typer
 uvicorn
+
+# Development dependencies
+pytest
+pytest-cov
+ruff
+vulture

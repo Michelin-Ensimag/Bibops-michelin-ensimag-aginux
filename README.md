@@ -43,12 +43,6 @@ pip install -e .
 bibops --help
 ```
 
-For local development and test runs, also install:
-
-```bash
-pip install -r requirements-dev.txt
-```
-
 Initialize local data stores:
 
 ```bash
