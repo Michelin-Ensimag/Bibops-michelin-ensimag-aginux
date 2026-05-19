@@ -17,6 +17,7 @@ These tests exercise deterministic logic (no Ollama, no network) in:
 from __future__ import annotations
 
 import json
+from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 
@@ -926,7 +927,6 @@ class TestResolveInputCsv:
             _resolve_input_csv(tmp_path / "missing.csv")
 
     def test_uses_fallback_for_legacy_benchmark_path(self):
-        from pathlib import Path
         from src.bibops.benchmark.compare_architectures import _resolve_input_csv
         legacy = Path("/nonexistent/data/benchmark/tickets_scenario_1.csv")
         result = _resolve_input_csv(legacy)
