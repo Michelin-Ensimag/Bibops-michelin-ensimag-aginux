@@ -4238,16 +4238,16 @@ flowchart TD
 
           <div class="chart-card">
             <div class="head">
-              <h4>risk levels vs gates</h4>
-              <div class="sub">0 = safe · dashed = block threshold</div>
+              <h4>adversarial ragas · iter 2</h4>
+              <div class="sub">10 tickets · juge gpt-4o · seuil succès ≥ 7 · ReAct 60% vs Zero-shot 30%</div>
             </div>
             <div class="canvas-wrap"><canvas id="chart-radar"></canvas></div>
           </div>
 
           <div class="chart-card wide">
             <div class="head">
-              <h4>latency · cost · co2</h4>
-              <div class="sub">21 tickets · normalised</div>
+              <h4>cost · co2</h4>
+              <div class="sub">21 tickets · normalised · latency hidden (mesure non comparable : la voie multi-agents est court-circuitée par <code>deterministic_tool_answer</code>)</div>
             </div>
             <div class="canvas-wrap"><canvas id="chart-resources"></canvas></div>
           </div>
@@ -4255,7 +4255,7 @@ flowchart TD
           <div class="chart-card wide">
             <div class="head">
               <h4>wins by domain</h4>
-              <div class="sub">agent vs zero-shot</div>
+              <div class="sub">agent vs zero-shot · 21 tickets · domaine unique <code>it</code> · libellés = nombre de tickets gagnés / perdus / nuls</div>
             </div>
             <div class="canvas-wrap"><canvas id="chart-domains"></canvas></div>
           </div>
@@ -5021,28 +5021,22 @@ flowchart LR
     }]
   });
 
-  // ---- 7) Chart 2 — Risk levels vs gates (horizontal bars) ---
-  const riskLabels = ['pii', 'injection', 'secrets', 'urls', 'no_refusal', 'toxicity'];
-  // Block thresholds (from CompositePolicy v1.0.0)
-  const GATES = [0.35, 0.50, 0.50, 0.50, 0.50, 0.60];
-  const riskRow = a => {
-    const r = DATA.security[a].risks_moyens;
-    return [r.pii, r.prompt_injection, r.secrets, r.malicious_urls, r.no_refusal, r.toxicity];
-  };
-  const r1 = riskRow('llm_unique');
-  const r2 = riskRow('systeme_multi_agents');
-  // Add tiny visible floor so 0-values still render as a thin line
-  const FLOOR = 0.004;
-  const padRow = a => a.map(v => Math.max(v, FLOOR));
+  // ---- 7) Chart 2 — Adversarial RAGAS · iter 2 (horizontal bars) ---
+  // Source: data/outputs/benchmark/adversarial_convergence.json
+  // gpt-4o-mini generator / gpt-4o judge · 10 IT tickets · 2 adversarial iterations
+  const ragasLabels = ['Fidélité', 'Pertinence', 'Contexte'];
+  const RAGAS_THRESHOLD = 7.0;
+  const ragasZero  = [5.9, 7.1, 5.6];
+  const ragasReact = [5.7, 7.2, 5.6];
+  const ragasSuccess = { react: 0.60, zero: 0.30 };
 
   new Chart(document.getElementById('chart-radar'), {
     type: 'bar',
     data: {
-      labels: riskLabels,
+      labels: ragasLabels,
       datasets: [
-        { label:'gate threshold', data: GATES, backgroundColor:'rgba(229,103,93,0.10)', borderColor: PALETTE.red, borderWidth: 1, borderDash:[5,4], borderSkipped:false, barPercentage:0.95, categoryPercentage:0.9, order: 3 },
-        { label:'arch_01 · llm_unique', data: padRow(r1), backgroundColor: PALETTE.amber, borderColor: PALETTE.amber, borderWidth:0, barPercentage:0.45, categoryPercentage:0.55, order: 1 },
-        { label:'arch_02 · multi_agents', data: padRow(r2), backgroundColor: PALETTE.cyan, borderColor: PALETTE.cyan, borderWidth:0, barPercentage:0.45, categoryPercentage:0.55, order: 2 },
+        { label:'arch_01 · zero-shot',   data: ragasZero,  backgroundColor: PALETTE.amber, borderColor: PALETTE.amber, borderWidth:0, barPercentage:0.55, categoryPercentage:0.65, order: 2 },
+        { label:'arch_02 · react + rag', data: ragasReact, backgroundColor: PALETTE.cyan,  borderColor: PALETTE.cyan,  borderWidth:0, barPercentage:0.55, categoryPercentage:0.65, order: 1 },
       ],
     },
     options: {
@@ -5053,35 +5047,56 @@ flowchart LR
         tooltip: {
           callbacks: {
             label(ctx){
-              const idx = ctx.dataIndex;
-              if (ctx.dataset.label.startsWith('gate')) return 'gate threshold : ' + GATES[idx].toFixed(2);
-              const raw = ctx.dataset.label.startsWith('arch_01') ? r1[idx] : r2[idx];
-              const pct = ((GATES[idx] - raw) / GATES[idx] * 100).toFixed(0);
-              return ctx.dataset.label + ' : ' + raw.toFixed(4) + ' · ' + pct + '% margin below gate';
+              const tag  = ctx.dataset.label;
+              const v    = ctx.parsed.x.toFixed(1);
+              const succ = tag.includes('react') ? ragasSuccess.react : ragasSuccess.zero;
+              return tag + ' : ' + v + ' / 10 · success rate ' + (succ*100).toFixed(0) + '%';
             }
           }
         }
       },
       scales: {
-        x: { beginAtZero: true, max: 0.7, ticks: { stepSize: 0.1, color: PALETTE.muted }, grid: { color: PALETTE.grid } },
+        x: { beginAtZero: true, max: 10, ticks: { stepSize: 2, color: PALETTE.muted }, grid: { color: PALETTE.grid } },
         y: { stacked: false, grid: { display: false }, ticks: { color: PALETTE.text, font:{ family:'"JetBrains Mono", monospace', size: 12 } } },
       },
     },
+    plugins: [{
+      id: 'ragas-threshold',
+      afterDraw(chart){
+        const { ctx, chartArea, scales } = chart;
+        const x = scales.x.getPixelForValue(RAGAS_THRESHOLD);
+        ctx.save();
+        ctx.setLineDash([6,4]);
+        ctx.strokeStyle = PALETTE.green;
+        ctx.lineWidth = 1.25;
+        ctx.beginPath();
+        ctx.moveTo(x, chartArea.top);
+        ctx.lineTo(x, chartArea.bottom);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.font = '10px "JetBrains Mono", monospace';
+        ctx.fillStyle = PALETTE.green;
+        ctx.fillText('seuil succès ≥ 7', x + 4, chartArea.top + 12);
+        ctx.restore();
+      }
+    }]
   });
 
-  // ---- 8) Chart 3 — Resources (normalised) -------------------
+  // ---- 8) Chart 3 — Resources (normalised, cost + co2 only) --
+  // Latency row removed: `compare-archs` runs the multi-agent path with
+  // deterministic_tool_answer=True, so its trace.total_duree_ms only covers
+  // the tool call (~40ms) — not comparable to the zero-shot LLM call (~22s).
   const norm = (a, b) => { const m = Math.max(a, b) || 1; return [a/m, b/m]; };
-  const latNorm = norm(llmU.latence_totale_s, ma.latence_totale_s);
   const costNorm = norm(llmU.cout_usd, ma.cout_usd);
-  const co2Norm = norm(llmU.empreinte_gco2e, ma.empreinte_gco2e);
+  const co2Norm  = norm(llmU.empreinte_gco2e, ma.empreinte_gco2e);
 
   new Chart(document.getElementById('chart-resources'), {
     type: 'bar',
     data: {
-      labels: ['latency_s', 'cost_usd', 'co2_g'],
+      labels: ['cost_usd', 'co2_g'],
       datasets: [
-        { label:'arch_01 · llm_unique', data:[latNorm[0], costNorm[0], co2Norm[0]], backgroundColor: PALETTE.red, barPercentage:0.55, categoryPercentage:0.5 },
-        { label:'arch_02 · multi_agents', data:[latNorm[1], costNorm[1], co2Norm[1]], backgroundColor: PALETTE.green, barPercentage:0.55, categoryPercentage:0.5 },
+        { label:'arch_01 · llm_unique',   data:[costNorm[0], co2Norm[0]], backgroundColor: PALETTE.red,   barPercentage:0.55, categoryPercentage:0.5 },
+        { label:'arch_02 · multi_agents', data:[costNorm[1], co2Norm[1]], backgroundColor: PALETTE.green, barPercentage:0.55, categoryPercentage:0.5 },
       ],
     },
     options: {
@@ -5093,7 +5108,6 @@ flowchart LR
           callbacks:{
             label(ctx){
               const raw = [
-                [llmU.latence_totale_s.toFixed(2) + ' s', ma.latence_totale_s.toFixed(3) + ' s'],
                 ['$' + llmU.cout_usd.toFixed(5), '$' + ma.cout_usd.toFixed(5)],
                 [llmU.empreinte_gco2e.toFixed(5) + ' g', ma.empreinte_gco2e.toFixed(5) + ' g'],
               ];
@@ -5110,25 +5124,72 @@ flowchart LR
   });
 
   // ---- 9) Chart 4 — Domains ----------------------------------
+  // Stacked wins/losses/ties bar. Count labels overlaid on each segment so the
+  // zero-width arch_01_wins / ties segments stay legible (the benchmark has a
+  // single domain, `it`, and arch_02 won 21/21).
   const domains = Object.values(DATA.domain_summary);
   new Chart(document.getElementById('chart-domains'), {
     type:'bar',
     data:{
       labels: domains.map(d => d.label + ' · ' + d.ticket_count + ' tickets'),
       datasets:[
-        { label:'arch_02 wins', data: domains.map(d => d.agent_wins), backgroundColor: PALETTE.green },
-        { label:'arch_01 wins', data: domains.map(d => d.zero_shot_wins), backgroundColor: PALETTE.red },
-        { label:'ties', data: domains.map(d => d.ties), backgroundColor: PALETTE.muted },
+        { label:'arch_02 wins', data: domains.map(d => d.agent_wins),      backgroundColor: PALETTE.green },
+        { label:'arch_01 wins', data: domains.map(d => d.zero_shot_wins),  backgroundColor: PALETTE.red },
+        { label:'ties',         data: domains.map(d => d.ties),            backgroundColor: PALETTE.muted },
       ],
     },
     options:{
       maintainAspectRatio:false, responsive:true, indexAxis:'y',
-      plugins:{ legend:{ position:'bottom' } },
+      plugins:{
+        legend:{ position:'bottom' },
+        tooltip:{
+          callbacks:{
+            label(ctx){
+              const d = domains[ctx.dataIndex];
+              const total = d.ticket_count || 1;
+              const raw = ctx.parsed.x;
+              return ctx.dataset.label + ' : ' + raw + ' / ' + total + ' (' + (raw/total*100).toFixed(0) + '%)';
+            }
+          }
+        }
+      },
       scales:{
         x:{ stacked:true, beginAtZero:true, grid:{ color: PALETTE.grid }, ticks:{ color: PALETTE.muted } },
         y:{ stacked:true, grid:{ display:false }, ticks:{ color: PALETTE.text, font:{ family:'"JetBrains Mono", monospace', size:13 } } },
       },
     },
+    plugins:[{
+      id: 'domains-count-labels',
+      afterDatasetsDraw(chart){
+        const { ctx, chartArea, scales } = chart;
+        ctx.save();
+        ctx.font = '11px "JetBrains Mono", monospace';
+        ctx.textBaseline = 'middle';
+        chart.data.datasets.forEach((ds, di) => {
+          const meta = chart.getDatasetMeta(di);
+          meta.data.forEach((bar, ri) => {
+            const value = ds.data[ri];
+            const y = bar.y;
+            if (value > 0){
+              // Centre label inside the visible segment
+              const xMid = (bar.base + bar.x) / 2;
+              ctx.fillStyle = '#0A0E14';
+              ctx.textAlign = 'center';
+              ctx.fillText(String(value) + ' · ' + ds.label, xMid, y);
+            } else {
+              // Zero-width segment: caption it just past the row, stacked vertically
+              // so the three legend colours stay visible even when value=0.
+              const xEnd = chart.getDatasetMeta(0).data[ri].x;
+              const offset = (di - 1) * 14;  // -14, 0, +14 vertical fan
+              ctx.fillStyle = ds.backgroundColor;
+              ctx.textAlign = 'left';
+              ctx.fillText('0 · ' + ds.label, xEnd + 10, y + offset);
+            }
+          });
+        });
+        ctx.restore();
+      }
+    }]
   });
 
   // ---- 10) Racing table --------------------------------------

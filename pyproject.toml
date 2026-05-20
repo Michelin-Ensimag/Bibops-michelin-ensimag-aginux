@@ -83,7 +83,6 @@ target-version = "py310"
 extend-exclude = [
     "data",
     "logs",
-    ".claude",
 ]
 
 [tool.ruff.lint]
