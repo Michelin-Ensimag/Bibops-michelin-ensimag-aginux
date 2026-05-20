@@ -77,5 +77,5 @@ data/outputs/eval_bank/
 
 # Fichier d'instructions Claude (local uniquement)
 CLAUDE.md
-
+scripts/
 generate_gantt.py
