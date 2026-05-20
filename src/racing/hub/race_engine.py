@@ -151,7 +151,7 @@ class RaceEngine:
             f"(attente des écuries)..."
         )
         await asyncio.sleep(self.INITIAL_WAIT_SECONDS)
-        print(f"[HUB] 🚦 COURSE DÉMARRÉE — {len(self._subscribers)} écurie(s) connectée(s)")
+        print(f"[HUB] [START] COURSE DÉMARRÉE — {len(self._subscribers)} écurie(s) connectée(s)")
 
         while self._state.lap_current < self._state.lap_total:
             self._state.lap_current += 1
@@ -165,7 +165,7 @@ class RaceEngine:
         # Événement de fin de course
         final = {**self._state.to_dict(), "event": "race_over"}
         await self._broadcast(self._sse_event(final))
-        print("[HUB] 🏁 Course terminée.")
+        print("[HUB] [END] Course terminée.")
 
     async def inject_event(self, event_data: dict) -> None:
         """Push an arbitrary event into the SSE stream (used by authority-broadcast)."""

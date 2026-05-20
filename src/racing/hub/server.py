@@ -145,13 +145,13 @@ async def receive_decision(team_id: str, decision: TeamDecision) -> dict:
     model_tag = f" (propulsée par {decision.model})" if decision.model else ""
     if decision.action.upper() == "BOX BOX":
         print(
-            f"\n🏆 [DECISION] L'écurie {team_id}{model_tag} a décidé de BOX BOX ! "
+            f"\n[WIN] [DECISION] L'écurie {team_id}{model_tag} a décidé de BOX BOX ! "
             f"→ Pneus : {decision.tires or '?'} | Tour : {lap}"
         )
         engine.apply_pit_stop(decision.tires, decision.fuel_added)
     else:
         print(
-            f"\n🟢 [DECISION] L'écurie {team_id}{model_tag} reste en piste "
+            f"\n[GO] [DECISION] L'écurie {team_id}{model_tag} reste en piste "
             f"(STAY OUT) | Tour : {lap}"
         )
 

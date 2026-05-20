@@ -37,10 +37,10 @@ AGENT_COLORS = {
 }
 
 AGENT_ICONS = {
-    "supervisor":    "🎯",
-    "tire_engineer": "🔧",
-    "fuel_engineer": "⛽",
-    "race_engineer": "🏁",
+    "supervisor":    "[>]",
+    "tire_engineer": "[T]",
+    "fuel_engineer": "[F]",
+    "race_engineer": "[R]",
 }
 
 
@@ -76,7 +76,7 @@ TELEMETRY_SCENARIO: dict = {
 
 def print_banner() -> None:
     print(f"\n{BOLD}{RED}{'═' * 65}{RESET}")
-    print(f"{BOLD}{RED}  🏎️  BibOps Racing MAS — Système Multi-Agents Stratégie F1/WEC  🏎️{RESET}")
+    print(f"{BOLD}{RED}  [F1]  BibOps Racing MAS — Système Multi-Agents Stratégie F1/WEC  [F1]{RESET}")
     print(f"{BOLD}{RED}{'═' * 65}{RESET}\n")
 
 
@@ -87,7 +87,7 @@ def print_telemetry(tel: dict) -> None:
 
     print(f"{BOLD}{GREEN}┌─── TÉLÉMÉTRIE ENTRANTE ────────────────────────────────────┐{RESET}")
     print(f"{GREEN}│{RESET}  Tour        : {BOLD}{tel['lap_current']}/{tel['lap_total']}{RESET}  ({laps_left} restants)")
-    print(f"{GREEN}│{RESET}  Météo        : {tel['weather_current']}  →  ⚠️  {tel['weather_forecast']}")
+    print(f"{GREEN}│{RESET}  Météo        : {tel['weather_current']}  →  [!]  {tel['weather_forecast']}")
     print(f"{GREEN}│{RESET}  Pneus        : {BOLD}{tel['tire_compound']}{RESET} — usure {BOLD}{RED}{tel['tire_wear_pct']}%{RESET}")
     print(f"{GREEN}│{RESET}  Carburant    : {tel['fuel_liters']} L  (besoin {fuel_needed:.1f} L | marge {margin:+.1f} L)")
     print(f"{GREEN}│{RESET}  Position     : P{tel['position']}")
@@ -104,7 +104,7 @@ def print_step_header(step_num: int) -> None:
 def print_agent_message(msg: AIMessage, step: int) -> None:
     name  = getattr(msg, "name", "unknown")
     color = AGENT_COLORS.get(name, RESET)
-    icon  = AGENT_ICONS.get(name, "🤖")
+    icon  = AGENT_ICONS.get(name, "[*]")
     label = name.replace("_", " ").upper()
 
     print(f"\n{color}{BOLD}{icon}  {label}{RESET}")
@@ -124,7 +124,7 @@ def print_final_decision(final_msg: AIMessage) -> None:
     content = final_msg.content
     is_box  = "BOX" in content.upper()
     color   = RED if is_box else GREEN
-    symbol  = "🔴" if is_box else "🟢"
+    symbol  = "[BOX]" if is_box else "[GO]"
 
     print(f"\n{BOLD}{color}{'═' * 65}{RESET}")
     print(f"{BOLD}{color}  {symbol}  DÉCISION FINALE — RADIO PILOTE{RESET}")
@@ -160,7 +160,7 @@ def run_demo() -> None:
         "next_node": "",
     }
 
-    print(f"{BOLD}🚦 Lancement du système multi-agents...{RESET}\n")
+    print(f"{BOLD}[>>] Lancement du système multi-agents...{RESET}\n")
     time.sleep(0.5)
 
     step = 0

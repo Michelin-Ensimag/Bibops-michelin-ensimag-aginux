@@ -101,7 +101,7 @@ def _launch(cmd: list[str], log_name: str) -> tuple[subprocess.Popen, str]:
 
 
 def _terminate_all(procs: list[tuple[str, subprocess.Popen]]) -> None:
-    print(f"\n{YELLOW}⛔  Arrêt de l'arène...{RESET}")
+    print(f"\n{YELLOW}[STOP]  Arrêt de l'arène...{RESET}")
     for name, proc in procs:
         if proc.poll() is None:          # encore vivant
             proc.terminate()
@@ -145,7 +145,7 @@ def main() -> None:
     hub_cmd = [python, "-m", "src.racing.hub.server"]
     hub_proc, hub_log = _launch(hub_cmd, "hub")
     procs.append(("Hub", hub_proc))
-    print(f"  {GREEN}✓ Hub lancé{RESET}  PID={hub_proc.pid}  "
+    print(f"  {GREEN}[OK] Hub lancé{RESET}  PID={hub_proc.pid}  "
           f"{GREY}→ {hub_log}{RESET}")
 
     # ── 2. Attente du démarrage du Hub ──────────────────────────────────
@@ -167,7 +167,7 @@ def main() -> None:
         proc, log = _launch(team_cmd, f"team_{team}")
         procs.append((team, proc))
         vuln = {"team_a_zero_shot": "HIGH", "team_b_react": "MED", "team_c_validated": "LOW", "team_psi": "ATTACKER"}.get(team, "?")
-        print(f"  {GREEN}✓{RESET} {BOLD}{team:<22}{RESET}  "
+        print(f"  {GREEN}[OK]{RESET} {BOLD}{team:<22}{RESET}  "
               f"model={CYAN}{model}{RESET}  "
               f"port={query_port}  vuln={YELLOW}{vuln}{RESET}  "
               f"PID={proc.pid}  {GREY}→ {log}{RESET}")

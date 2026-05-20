@@ -62,9 +62,9 @@ def _format_expert_reports(messages) -> str:
     for msg in messages:
         if hasattr(msg, "name") and msg.name in EXPERTS:
             label = {
-                "tire_engineer": "🔧 INGÉNIEUR PNEUS",
-                "fuel_engineer": "⛽ INGÉNIEUR CARBURANT",
-                "race_engineer": "🏁 INGÉNIEUR DE COURSE",
+                "tire_engineer": "[TYRE] INGÉNIEUR PNEUS",
+                "fuel_engineer": "[FUEL] INGÉNIEUR CARBURANT",
+                "race_engineer": "[RACE] INGÉNIEUR DE COURSE",
             }.get(msg.name, msg.name.upper())
             reports.append(f"{label}:\n{msg.content}")
     return "\n\n".join(reports) if reports else "Aucun rapport expert disponible."
@@ -132,7 +132,7 @@ def supervisor_node(state: RacingState) -> dict:
         "Tu as reçu les analyses de tes trois experts. "
         "Tu dois maintenant synthétiser leurs recommandations et rendre UNE décision finale, "
         "claire et autoritaire, au pilote sur sa radio de bord. "
-        "Commence toujours par '🔴 BOX BOX BOX' ou '🟢 STAY OUT STAY OUT' en majuscules. "
+        "Commence toujours par '[BOX] BOX BOX BOX' ou '[GO] STAY OUT STAY OUT' en majuscules. "
         "Ensuite explique brièvement la stratégie (compound si pit, timing, raison). "
         "Sois direct — c'est une communication radio en course."
     ))

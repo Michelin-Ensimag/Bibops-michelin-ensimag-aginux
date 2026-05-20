@@ -281,15 +281,15 @@ def run_adversarial_training(
         ))
 
         if verbose:
-            print(f"\n{C['b']}  📊 Métriques RAGAS :{C['r']}")
+            print(f"\n{C['b']}  [*] Métriques RAGAS :{C['r']}")
             print(_metric_bar("Fidélité", "[F]", sf))
             print(_metric_bar("Pertinence", "[P]", sr))
             print(_metric_bar("Contexte", "[C]", sc))
-            verdict = f"{C['green']}{C['b']}✅ PARFAIT{C['r']}" if is_perfect else f"{C['red']}{C['b']}❌ INSUFFISANT{C['r']}"
+            verdict = f"{C['green']}{C['b']}[PASS] PARFAIT{C['r']}" if is_perfect else f"{C['red']}{C['b']}[FAIL] INSUFFISANT{C['r']}"
             print(f"\n  {verdict}")
             if pt or ct:
                 cost, _ = _finops_summary(pt, ct)
-                print(f"  {C['dim']}🪙 Tokens iter : {pt} in | {ct} out  —  ${cost:.6f}{C['r']}")
+                print(f"  {C['dim']}[$] Tokens iter : {pt} in | {ct} out  —  ${cost:.6f}{C['r']}")
             if feedback_llm and not is_perfect:
                 print(_header("Feedback actionnable du Discriminateur", C["red"]))
                 print(_wrap(feedback_llm))
@@ -298,7 +298,7 @@ def run_adversarial_training(
             rapport.succes = True
             rapport.iterations_necessaires = i
             if verbose:
-                print(_banner(f"✅  SUCCÈS à l'itération {i}  —  Les 3 métriques sont >= 8 !", C["green"]))
+                print(_banner(f"[OK]  SUCCÈS à l'itération {i}  —  Les 3 métriques sont >= 8 !", C["green"]))
             break
 
         if i < max_iterations:
@@ -308,7 +308,7 @@ def run_adversarial_training(
         elif verbose:
             moyenne = round((sf + sr + sc) / 3, 1)
             print(_banner(
-                f"⚠️   MAX ITÉRATIONS ATTEINT  —  F={sf} R={sr} C={sc} (moy={moyenne}, seuil moy ≥ 7)",
+                f"[!]   MAX ITÉRATIONS ATTEINT  —  F={sf} R={sr} C={sc} (moy={moyenne}, seuil moy ≥ 7)",
                 C["red"],
             ))
 
@@ -341,15 +341,15 @@ def _afficher_rapport_final(rapport: AdversarialReport) -> None:
     for it in rapport.iterations:
         line = (
             f"    Iter {it.numero}  "
-            f"📊 Fidélité={_score_color(it.score_faithfulness)}/10  "
-            f"🎯 Pertinence={_score_color(it.score_relevance)}/10  "
-            f"📚 Contexte={_score_color(it.score_context)}/10  "
+            f"[F] Fidélité={_score_color(it.score_faithfulness)}/10  "
+            f"[P] Pertinence={_score_color(it.score_relevance)}/10  "
+            f"[C] Contexte={_score_color(it.score_context)}/10  "
             f"(moy: {it.score_moyen})"
         )
         if it.is_perfect:
-            suffix = f"  {C['green']}✅{C['r']}"
+            suffix = f"  {C['green']}[OK]{C['r']}"
         elif it.feedback.startswith("Erreur proxy"):
-            suffix = f"  {C['red']}⚠ Erreur proxy{C['r']}"
+            suffix = f"  {C['red']}[!] Erreur proxy{C['r']}"
         else:
             suffix = f"  {C['red']}→ recadrage{C['r']}"
         print(line + suffix)
@@ -359,7 +359,7 @@ def _afficher_rapport_final(rapport: AdversarialReport) -> None:
     print(_banner("BILAN FINOPS & PERFORMANCES", C["gold"]))
     print(f"\n  ⏱  {C['b']}Latence totale   :{C['r']} {rapport.latence_totale_s:.2f} secondes")
     print(
-        f"  🪙  {C['b']}Tokens consommés :{C['r']} "
+        f"  [$]  {C['b']}Tokens consommés :{C['r']} "
         f"{rapport.total_prompt_tokens:,} (In) | {rapport.total_completion_tokens:,} (Out)"
         f"  —  {total_tokens:,} total"
     )

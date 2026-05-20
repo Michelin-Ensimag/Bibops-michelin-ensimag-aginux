@@ -636,7 +636,7 @@ class TestAdversarialDisplayHelpers:
 
     def test_metric_bar_reflects_score(self):
         from src.bibops.benchmark.adversarial import _metric_bar
-        result = _metric_bar("Fidélité", "✓", 8)
+        result = _metric_bar("Fidélité", "[OK]", 8)
         assert "8/10" in result
 
     def test_score_color_high_score(self):

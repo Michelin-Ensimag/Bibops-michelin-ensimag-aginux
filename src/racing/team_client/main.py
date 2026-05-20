@@ -91,7 +91,7 @@ def _pfx() -> str:
 def _banner() -> None:
     w = 62
     print(f"\n{_TEAM_COLOR}{BOLD}{'═' * w}{RESET}")
-    print(f"{_TEAM_COLOR}{BOLD}  🏎️  {_ARGS.team}  |  Modèle : {_ARGS.model}{RESET}")
+    print(f"{_TEAM_COLOR}{BOLD}  [F1]  {_ARGS.team}  |  Modèle : {_ARGS.model}{RESET}")
     print(f"{_TEAM_COLOR}{BOLD}{'═' * w}{RESET}\n")
 
 
@@ -111,20 +111,20 @@ def _log_decision(decision: dict, elapsed: float) -> None:
     if action == "BOX BOX":
         tires = decision.get("tires", "?")
         fuel  = decision.get("fuel_added", "?")
-        print(f"{_pfx()}   {RED}{BOLD}🔴 BOX BOX BOX{RESET}  "
+        print(f"{_pfx()}   {RED}{BOLD}[BOX] BOX BOX BOX{RESET}  "
               f"Pneus:{tires}  Carbu:{fuel}{suffix}")
         print(f"{_pfx()}   {GREY}{decision.get('reasoning', '')[:120]}{RESET}")
     else:
-        print(f"{_pfx()}   {GREEN}{BOLD}🟢 STAY OUT{RESET}{suffix}")
+        print(f"{_pfx()}   {GREEN}{BOLD}[GO] STAY OUT{RESET}{suffix}")
         print(f"{_pfx()}   {GREY}{decision.get('reasoning', '')[:120]}{RESET}")
 
 
 def _log_posted(lap: int) -> None:
-    print(f"{_pfx()}   {GREEN}✓ décision envoyée au Hub (tour {lap}){RESET}")
+    print(f"{_pfx()}   {GREEN}[OK] décision envoyée au Hub (tour {lap}){RESET}")
 
 
 def _log_error(msg: str) -> None:
-    print(f"{_pfx()}   {RED}✗ {msg}{RESET}")
+    print(f"{_pfx()}   {RED}[ERR] {msg}{RESET}")
 
 
 # ---------------------------------------------------------------------------

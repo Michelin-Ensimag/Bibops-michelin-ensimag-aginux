@@ -251,7 +251,7 @@ async def team_principal_node(state: TeamState) -> dict:
     for msg in messages:
         name = getattr(msg, "name", None)
         if name in EXPERTS:
-            label = {"tire_expert": "🔧 EXPERT PNEUS", "fuel_expert": "⛽ EXPERT CARBURANT"}.get(name, name)
+            label = {"tire_expert": "[TYRE] EXPERT PNEUS", "fuel_expert": "[FUEL] EXPERT CARBURANT"}.get(name, name)
             reports.append(f"{label}:\n{msg.content}")
     expert_reports = "\n\n".join(reports) if reports else "Aucun rapport."
 

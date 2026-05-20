@@ -22,7 +22,7 @@
 
 | Fichier | Points clés |
 |---|---|
-| `src/agent/maestro.py` | ⭐ **CŒUR** — `lancer_agent()`, boucle ReAct max 5 itérations, `_call_llm()` → `AgentDecision` Pydantic (tool/argument/final_answer), `KEYWORD_ROUTING` (hint, pas contrainte), `MaestroRunTrace` JSONL, fallback déterministe |
+| `src/agent/maestro.py` | [*] **CŒUR** — `lancer_agent()`, boucle ReAct max 5 itérations, `_call_llm()` → `AgentDecision` Pydantic (tool/argument/final_answer), `KEYWORD_ROUTING` (hint, pas contrainte), `MaestroRunTrace` JSONL, fallback déterministe |
 | `src/agent/tools.py` | Les 3 outils : `verifier_statut_serveur` (3s), `chercher_dans_kb` (5s, 1 retry), `chercher_documentation_technique` (ChromaDB 8s, 1 retry) — `ToolPolicy` frozen dataclass |
 
 **Questions jury** : Pourquoi max 5 itérations ? Comment le fallback déterministe est-il déclenché ? Pourquoi JSON mode (pas de regex) ?
@@ -33,9 +33,9 @@
 
 | Ordre | Fichier | Points clés |
 |---|---|---|
-| 1 | `src/bibops/benchmark/adversarial.py` | ⭐ Pipeline principal `bibops bench adversarial` — génère des tickets adversariaux, lance ReAct vs Zero-shot, évalue avec discriminateur RAGAS, 10 tickets IT |
+| 1 | `src/bibops/benchmark/adversarial.py` | [*] Pipeline principal `bibops bench adversarial` — génère des tickets adversariaux, lance ReAct vs Zero-shot, évalue avec discriminateur RAGAS, 10 tickets IT |
 | 2 | `src/bibops/benchmark/adversarial_convergence.py` | Boucle de convergence — itère jusqu'à ce que les deux architectures produisent des réponses similaires, métriques de convergence |
-| 3 | `src/bibops/evaluation/judges/discriminator.py` | ⭐ Discriminateur RAGAS-inspired — distingue réponses LLM Unique vs Multi-Agents, calcule le score de différenciation, logique de jugement |
+| 3 | `src/bibops/evaluation/judges/discriminator.py` | [*] Discriminateur RAGAS-inspired — distingue réponses LLM Unique vs Multi-Agents, calcule le score de différenciation, logique de jugement |
 
 **Questions jury** : Qu'est-ce qu'une boucle adversariale RAGAS ? Comment le discriminateur choisit-il entre les deux architectures ? Qu'est-ce que la convergence mesure ici ? Pourquoi 10 tickets pour `adversarial` ?
 
@@ -45,8 +45,8 @@
 
 | Ordre | Fichier | Points clés |
 |---|---|---|
-| 1 | `src/racing/shared/attack_payloads.py` | ⭐ Templates de payloads adversariaux injectés dans les décisions course — types d'attaques, format des injections |
-| 2 | `src/racing/team_psi/main.py` | ⭐ Équipe Ψ — processus attaquant : lit la télémétrie SSE, construit des décisions malveillantes avec payloads injectés, POST vers Hub |
+| 1 | `src/racing/shared/attack_payloads.py` | [*] Templates de payloads adversariaux injectés dans les décisions course — types d'attaques, format des injections |
+| 2 | `src/racing/team_psi/main.py` | [*] Équipe Ψ — processus attaquant : lit la télémétrie SSE, construit des décisions malveillantes avec payloads injectés, POST vers Hub |
 | 3 | `src/racing/shared/security_metrics.py` | Métriques de détection d'attaques — comment le Hub mesure si une équipe a été compromise |
 | 4 | `src/racing/shared/console.py` | Affichage rich console pendant l'arène (pour la démo) |
 

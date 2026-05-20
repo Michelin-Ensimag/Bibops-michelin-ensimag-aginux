@@ -10,7 +10,7 @@ Configuration — all args fall back to env vars if not passed:
     password  → A2A_PASSWORD
 
 Rate-limit handling:
-    Responses that contain rate-limit signals (HTTP 429 or the "⚠️ API rate
+    Responses that contain rate-limit signals (HTTP 429 or the "[!] API rate
     limit reached" banner used by OpenClaw) are retried up to `max_retries`
     times with a configurable backoff so flaky infrastructure does not corrupt
     benchmark scores.
@@ -27,7 +27,7 @@ _RATE_LIMIT_STRINGS = (
     "rate-limit",
     "too many requests",
     "api rate limit",
-    "⚠️ api rate limit",
+    "[!] api rate limit",
     "ratelimit",
 )
 

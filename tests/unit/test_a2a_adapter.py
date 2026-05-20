@@ -90,7 +90,7 @@ class TestQuery:
 class TestRateLimitRetry:
     def test_retries_when_rate_limited(self):
         adapter = A2AAdapter(a2a_url="https://demo.test", max_retries=3, rate_limit_backoff_s=0)
-        rate_limited = _result(answer="⚠️ API rate limit reached")
+        rate_limited = _result(answer="[!] API rate limit reached")
         ok = _result(answer="success after retry")
         with patch("src.bibops.adapters.a2a_client.discover_agent", return_value=_info()), \
              patch("src.bibops.adapters.a2a_client.send_message", side_effect=[rate_limited, ok]) as mock_send, \

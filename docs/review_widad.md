@@ -9,7 +9,7 @@
 
 | Fichier | Ce qu'on y cherche |
 |---|---|
-| `README.md` | ⭐ **Pitch complet** du projet — contexte Michelin, problème résolu, deux architectures (LLM Unique vs Multi-Agents), commandes de démarrage — **tu dois présenter ce pitch au jury** |
+| `README.md` | [*] **Pitch complet** du projet — contexte Michelin, problème résolu, deux architectures (LLM Unique vs Multi-Agents), commandes de démarrage — **tu dois présenter ce pitch au jury** |
 | `CLAUDE.md` | Sections "Evaluation engine" et "Key data contracts" — comprendre la chaîne d'évaluation |
 | `docs/BIBOPS_DETAILED.md` | Documentation détaillée du projet si disponible — contexte métier Michelin |
 
@@ -24,9 +24,9 @@ Lire dans cet ordre.
 | Ordre | Fichier | Points clés |
 |---|---|---|
 | 1 | `src/bibops/benchmark/ab_test_llm_statements.py` | Prompts statiques pour le juge A/B — comment la question est formulée au LLM juge |
-| 2 | `src/bibops/benchmark/ab_test_llm.py` | ⭐ Pipeline A/B automatique — `appeler_modele()`, `_extraire_json_depuis_texte()`, `_normaliser_choix()`, helpers erreur (`_est_reponse_erreur`, `_est_quota_free_epuise`), `_executer_avec_timeout()`, logique de jugement |
+| 2 | `src/bibops/benchmark/ab_test_llm.py` | [*] Pipeline A/B automatique — `appeler_modele()`, `_extraire_json_depuis_texte()`, `_normaliser_choix()`, helpers erreur (`_est_reponse_erreur`, `_est_quota_free_epuise`), `_executer_avec_timeout()`, logique de jugement |
 | 3 | `src/bibops/benchmark/ab_test_user.py` | Version interactive — l'utilisateur humain choisit A ou B manuellement |
-| 4 | `src/bibops/benchmark/position_bias.py` | ⭐ Test de biais de position — inverse l'ordre A/B et compare les verdicts pour détecter si le juge favorise systématiquement la première réponse |
+| 4 | `src/bibops/benchmark/position_bias.py` | [*] Test de biais de position — inverse l'ordre A/B et compare les verdicts pour détecter si le juge favorise systématiquement la première réponse |
 | 5 | `src/bibops/benchmark/position_bias_statements.py` | Prompts statiques pour le test de biais de position |
 
 **Questions jury** : Comment le juge LLM tranche-t-il entre la réponse A et B ? Qu'est-ce que le biais de position et comment est-il détecté ? Quelle différence entre A/B LLM et A/B utilisateur ? Que faire si le juge répond une chaîne non-parsable ?
@@ -37,9 +37,9 @@ Lire dans cet ordre.
 
 | Ordre | Fichier | Points clés |
 |---|---|---|
-| 1 | `src/bibops/benchmark/compare_architectures.py` | ⭐ **Pipeline principal** LLM Unique vs Multi-Agents — `ComparaisonResult`, calcul `domain_summary`, latence totale, tokens, coût USD, empreinte CO2e, verdict release |
-| 2 | `src/bibops/reporting/charts.py` | ⭐ Génération PNG matplotlib — bar charts comparatifs, radar sécurité — **les visuels de la présentation** |
-| 3 | `src/bibops/evaluation/metrics/composite.py` | ⭐ `CompositePolicy.evaluate()` — formule : quality×0.40 + security×0.35 + finops×0.10 + latency×0.10 + greenops×0.05 → score/100 ; gates PASS/FAIL (quality≥7, security≥6) |
+| 1 | `src/bibops/benchmark/compare_architectures.py` | [*] **Pipeline principal** LLM Unique vs Multi-Agents — `ComparaisonResult`, calcul `domain_summary`, latence totale, tokens, coût USD, empreinte CO2e, verdict release |
+| 2 | `src/bibops/reporting/charts.py` | [*] Génération PNG matplotlib — bar charts comparatifs, radar sécurité — **les visuels de la présentation** |
+| 3 | `src/bibops/evaluation/metrics/composite.py` | [*] `CompositePolicy.evaluate()` — formule : quality×0.40 + security×0.35 + finops×0.10 + latency×0.10 + greenops×0.05 → score/100 ; gates PASS/FAIL (quality≥7, security≥6) |
 | 4 | `src/bibops/benchmark/validate_benchmark_output.py` | Validation schéma JSON de sortie (clés : `schema_version`, `config`, `summary`, `quality`, `security`, `composite`, `details`) |
 
 **Questions jury** : Pourquoi quality×0.40 et security×0.35 — justification des pondérations ? Que signifie le verdict release PASS/FAIL ? Comment le coût USD et l'empreinte CO2e sont-ils calculés ? Quel est le résultat global : LLM Unique ou Multi-Agents est-il meilleur et pourquoi ?
@@ -79,7 +79,7 @@ Lire dans cet ordre.
 
 | Fichier de données | Ce qu'il contient |
 |---|---|
-| `data/outputs/benchmark/comparison_results.json` | ⭐ **Résultats principaux** : LLM Unique vs Multi-Agents, scores par dimension |
+| `data/outputs/benchmark/comparison_results.json` | [*] **Résultats principaux** : LLM Unique vs Multi-Agents, scores par dimension |
 | `data/outputs/benchmark/ab_llm_resultat.json` | Résultats du A/B test par juge LLM |
 | `data/outputs/benchmark/ab_llm_statements_result.json` | Résultats A/B avec statements |
 | `data/outputs/benchmark/ab_user_resultat.json` | Résultats du A/B test utilisateur |

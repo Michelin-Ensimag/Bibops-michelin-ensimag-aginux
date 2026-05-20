@@ -168,7 +168,7 @@ def ingest(reset: bool = False) -> None:
         )
         print(f"       Batch {start}–{end} injecté.")
 
-    print(f"\n✅ Ingestion terminée : {len(chunks)} chunks → \"{COLLECTION_NAME}\"")
+    print(f"\n[OK] Ingestion terminée : {len(chunks)} chunks → \"{COLLECTION_NAME}\"")
     print(f"   Chemin : {CHROMA_PATH}\n")
 
 
