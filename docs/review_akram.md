@@ -12,8 +12,6 @@
 | `README.md` | Pitch, prérequis, commandes de démarrage — **tu dois pouvoir guider le jury pas à pas** |
 | `pyproject.toml` | Entry-point `bibops`, dépendances clés (ollama, chromadb, langgraph, fastapi…) |
 | `requirements.txt` | Liste exacte des dépendances pour la reproduction |
-| `CLAUDE.md` | Architecture globale, conventions, variables d'environnement — **référence pendant la soutenance** |
-
 **Questions jury** : Comment reproduire le projet from scratch ? Pourquoi `pip install -e .` ? Pourquoi Ollama + proxy Copilot séparés ?
 
 ---
@@ -96,7 +94,6 @@
 
 ```
 README.md + pyproject.toml + requirements.txt   ← reproduction
-CLAUDE.md                                        ← référence architecture
 src/agent/maestro.py                             ← méthodologie ReAct
 src/agent/tools.py                               ← outils agent
 src/bibops/benchmark/adversarial.py              ← boucle adversariale

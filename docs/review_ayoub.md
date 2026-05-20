@@ -79,8 +79,6 @@ Lire dans cet ordre — chaque couche s'appuie sur la précédente.
 | `src/racing/start_arena.py` | Lance les 3+ processus en parallèle (Hub + équipes) |
 | `src/bibops/benchmark/core.py` | `run_benchmark()` — lit CSV, appelle LLM, écrit JSON |
 | `src/bibops/copilot/agent_mcp.py` | Agent Copilot utilisant MCP comme backend |
-| `CLAUDE.md` | Sections "Adapters", "Racing Arena", "Key data contracts" |
-
 ---
 
 ## Résultats à connaître

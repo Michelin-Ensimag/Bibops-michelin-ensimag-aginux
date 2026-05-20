@@ -10,7 +10,6 @@
 | Fichier | Ce qu'on y cherche |
 |---|---|
 | `README.md` | [*] **Pitch complet** du projet — contexte Michelin, problème résolu, deux architectures (LLM Unique vs Multi-Agents), commandes de démarrage — **tu dois présenter ce pitch au jury** |
-| `CLAUDE.md` | Sections "Evaluation engine" et "Key data contracts" — comprendre la chaîne d'évaluation |
 | `docs/BIBOPS_DETAILED.md` | Documentation détaillée du projet si disponible — contexte métier Michelin |
 
 **Questions jury** : Quel est le problème que BibOps résout pour Michelin IT Support ? Pourquoi deux architectures à comparer ? Quels sont les critères de comparaison ?

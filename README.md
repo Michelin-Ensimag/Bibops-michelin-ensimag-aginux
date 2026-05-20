@@ -4,7 +4,7 @@
 
 [![Pipeline CI/CD BibOps](https://github.com/Michelin-Ensimag/BibOps-michelin-ensimag-aginux/actions/workflows/ci.yml/badge.svg)](https://github.com/Michelin-Ensimag/BibOps-michelin-ensimag-aginux/actions/workflows/ci.yml)
 
-BibOps was built for the Michelin × Ensimag _Aginux_ project. It treats "does this LLM make a good IT support agent?" as a measurable engineering question — not a vibe check.
+BibOps was built for the Michelin × Ensimag _Aginux_ project. It treats "does this LLM make a good IT support agent?" as a measurable engineering question .
 
 ## Why BibOps
 
@@ -148,8 +148,6 @@ Each answer flows through:
 | **Copilot proxy** | OpenAI-compatible judge + GPT/Claude-via-proxy models | `npx copilot-api@latest start` |
 | **A2A endpoints** | `bench a2a` only | external; supply credentials via env |
 
-Default proxy URL: `http://localhost:4141/v1`. Only GPT models work for Racing Arena teams — the proxy returns `400 model_not_supported` for Claude.
-
 ## Configuration
 
 | Variable | Purpose | Default |
@@ -224,8 +222,3 @@ ruff check .                 # lint
 
 Tests patch `_call_llm` in `src/agent/maestro.py` directly — the mock returns `AgentDecision` Pydantic objects with no network call. `make_fake_llm(decisions)` in `tests/unit/test_maestro.py` feeds one decision per turn; use the same pattern for new agent tests. `tests/_fakes/fake_openai.py` provides `FakeOpenAI` and `make_response()` for judge tests.
 
-## Further reading
-
-- Complete CLI reference with every command, flag, and navigation guide: [docs/CLI_REFERENCE.md](docs/CLI_REFERENCE.md)
-- Engineering reference for internals (agent loop, scoring formula, racing internals): [docs/BIBOPS_DETAILED.md](docs/BIBOPS_DETAILED.md)
-- Project guidance for contributors and Claude Code: [CLAUDE.md](CLAUDE.md)
