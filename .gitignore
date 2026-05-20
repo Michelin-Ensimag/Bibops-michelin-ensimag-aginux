@@ -10,6 +10,7 @@
 .junie/
 .github/
 .superpowers/
+.antigravitycli/
 
 # Environnements virtuels
 venv/
