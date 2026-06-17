@@ -90,10 +90,15 @@ jobs:
           PYTHONPATH: .
           BIBOPS_NON_INTERACTIVE: "1"
         run: |
+          # Without a live backend, llm_judge_required / live_agent_required tests
+          # skip cleanly; the remaining rule-based tests must still pass. Exit code 1
+          # (test failures) fails the job — only "no tests collected" (5) is tolerated.
           pytest tests/integration/ -q --tb=line || EXIT=$?
-          # Soft-fail: integration is observational at this stage (no judge in CI).
-          # Treat collection-only / all-skip as success; real failures still surface.
-          test "${EXIT:-0}" -lt 2
+          if [ "${EXIT:-0}" -eq 5 ]; then
+            echo "No integration tests collected — treating as success."
+            exit 0
+          fi
+          exit "${EXIT:-0}"
 
   # --------------------------------------------------------------------------
   # Regression — label-gated. Only runs when a PR carries `run-regression`.
@@ -115,4 +120,13 @@ jobs:
       - name: Run regression suite
         env:
           PYTHONPATH: .
-        run: pytest tests/regression/ -q
+        run: |
+          # tests/regression/ currently holds only frozen baselines (no test
+          # modules yet). Tolerate "no tests collected" (exit 5); fail on real
+          # regressions (exit 1+).
+          pytest tests/regression/ -q || EXIT=$?
+          if [ "${EXIT:-0}" -eq 5 ]; then
+            echo "No regression tests collected (baselines-only) — treating as success."
+            exit 0
+          fi
+          exit "${EXIT:-0}"

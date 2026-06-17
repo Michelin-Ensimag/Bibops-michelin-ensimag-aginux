@@ -6,10 +6,11 @@ from urllib.parse import urlparse
 
 from openai import OpenAI
 
-from src.common.config import COPILOT_BASE_URL
+from src.common.config import COPILOT_BASE_URL, MLX_BASE_URL
 from src.common.text import charger_copilot_api_key
 
 _client_cache: OpenAI | None = None
+_mlx_client_cache: OpenAI | None = None
 
 
 def get_copilot_client() -> OpenAI:
@@ -23,6 +24,23 @@ def get_copilot_client() -> OpenAI:
             max_retries=0,
         )
     return _client_cache
+
+
+def get_mlx_client() -> OpenAI:
+    """Return a process-wide OpenAI client targeting the local MLX server.
+
+    mlx_lm.server speaks the OpenAI chat API, so a standard OpenAI client works
+    with the base URL pointed at it and a placeholder API key (inference is local).
+    """
+    global _mlx_client_cache
+    if _mlx_client_cache is None:
+        _mlx_client_cache = OpenAI(
+            api_key="not-needed",
+            base_url=MLX_BASE_URL,
+            timeout=60,
+            max_retries=0,
+        )
+    return _mlx_client_cache
 
 
 def is_copilot_available(timeout_s: float = 1.0) -> bool:

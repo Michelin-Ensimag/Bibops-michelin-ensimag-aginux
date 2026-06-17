@@ -87,6 +87,13 @@ def _bar_labels(ax: plt.Axes, fmt: str = "{:.2f}") -> None:
         )
 
 
+def _add_pct_labels(ax: plt.Axes, values: list, percentages: list) -> None:
+    """Overlay percentage labels centered on each bar."""
+    for idx, pct in enumerate(percentages):
+        ax.text(idx, values[idx] * 0.5 if values[idx] else 0.05, f"{pct:.1f}%",
+                ha="center", color="white", fontweight="bold")
+
+
 def _style_axis(ax: plt.Axes, title: str, ylabel: str = "") -> None:
     ax.set_title(title, fontsize=12, fontweight="bold")
     if ylabel:
@@ -470,15 +477,13 @@ def chart_ab_tests(benchmark_dir: Path, charts_dir: Path, outputs: list[Path], w
     axes[0].bar(labels, values, color=[COLORS["blue"], COLORS["green"], COLORS["orange"]][: len(labels)])
     _style_axis(axes[0], "A/B LLM - votes", "votes")
     _bar_labels(axes[0], "{:.0f}")
-    for idx, pct in enumerate(percentages):
-        axes[0].text(idx, values[idx] * 0.5 if values[idx] else 0.05, f"{pct:.1f}%", ha="center", color="white", fontweight="bold")
+    _add_pct_labels(axes[0], values, percentages)
 
     if stmt_labels:
         axes[1].bar(stmt_labels, stmt_values, color=[COLORS["purple"], COLORS["cyan"], COLORS["orange"]][: len(stmt_labels)])
         _style_axis(axes[1], "Statements - votes", "votes")
         _bar_labels(axes[1], "{:.0f}")
-        for idx, pct in enumerate(stmt_pct):
-            axes[1].text(idx, stmt_values[idx] * 0.5 if stmt_values[idx] else 0.05, f"{pct:.1f}%", ha="center", color="white", fontweight="bold")
+        _add_pct_labels(axes[1], stmt_values, stmt_pct)
     else:
         axes[1].axis("off")
     fig.suptitle("Tests A/B", fontsize=15, fontweight="bold")

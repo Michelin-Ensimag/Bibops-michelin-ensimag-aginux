@@ -25,6 +25,7 @@ from src.common.config import (
     DEFAULT_AGENT_MODEL,
     DEFAULT_AGENT_PROVIDER,
     DEFAULT_JUDGE_MODEL,
+    SUPPORTED_PROVIDERS,
     validate_chat_model,
     validate_judge_model,
 )
@@ -225,7 +226,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Run local Kaggle SAE and judge with GPT via Copilot proxy")
     parser.add_argument("--exam-file", type=Path, default=EXAM_DEFAULT)
     parser.add_argument("--judge-model", default=DEFAULT_JUDGE_MODEL)
-    parser.add_argument("--agent-provider", default=DEFAULT_AGENT_PROVIDER, choices=["ollama", "copilot"])
+    parser.add_argument("--agent-provider", default=DEFAULT_AGENT_PROVIDER, choices=list(SUPPORTED_PROVIDERS))
     parser.add_argument("--agent-model", default=DEFAULT_AGENT_MODEL)
     parser.add_argument("--max-questions", type=int, default=None)
     args = parser.parse_args()

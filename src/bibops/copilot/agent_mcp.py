@@ -115,6 +115,19 @@ def traduire_outils_mcp_vers_openai(outils_mcp):
 # ÉTAPES 5-8 : Envoyer au LLM, exécuter l'outil, réponse finale
 # ============================================================
 
+def _make_result(modele, ticket, reponse, outil_utilise, debut, tokens, statut):
+    """Build the uniform per-ticket result record."""
+    return {
+        "modele": modele,
+        "ticket": ticket,
+        "reponse": reponse,
+        "outil_utilise": outil_utilise,
+        "temps_s": round(time.time() - debut, 2),
+        "tokens": tokens,
+        "statut": statut,
+    }
+
+
 async def traiter_ticket(session, ticket, outils_openai, modele):
     """
     Traite un ticket IT complet :
@@ -133,15 +146,8 @@ async def traiter_ticket(session, ticket, outils_openai, modele):
     """
     debut = time.time()
     if not COPILOT_API_URL:
-        return {
-            "modele": modele,
-            "ticket": ticket,
-            "reponse": "Variable d'environnement manquante: COPILOT_API_URL",
-            "outil_utilise": "aucun",
-            "temps_s": round(time.time() - debut, 2),
-            "tokens": 0,
-            "statut": "ERREUR",
-        }
+        return _make_result(modele, ticket, "Variable d'environnement manquante: COPILOT_API_URL",
+                            "aucun", debut, 0, "ERREUR")
 
     # --- ÉTAPE 5 : Envoyer le ticket + les outils au LLM ---
     messages = [
@@ -163,46 +169,20 @@ async def traiter_ticket(session, ticket, outils_openai, modele):
 
         data = response.json()
 
-        # Vérifier si la réponse est valide
-        if "choices" not in data:
-            return {
-                "modele": modele,
-                "ticket": ticket,
-                "reponse": f"Erreur API : {data}",
-                "outil_utilise": "aucun",
-                "temps_s": round(time.time() - debut, 2),
-                "tokens": 0,
-                "statut": "ERREUR",
-            }
+        # Vérifier si la réponse est valide (clé absente OU liste vide)
+        if not data.get("choices"):
+            return _make_result(modele, ticket, f"Erreur API : {data}", "aucun", debut, 0, "ERREUR")
 
         message_llm = data["choices"][0]["message"]
 
     except Exception as e:
-        return {
-            "modele": modele,
-            "ticket": ticket,
-            "reponse": str(e),
-            "outil_utilise": "aucun",
-            "temps_s": round(time.time() - debut, 2),
-            "tokens": 0,
-            "statut": "ERREUR",
-        }
+        return _make_result(modele, ticket, str(e), "aucun", debut, 0, "ERREUR")
 
     # --- ÉTAPE 6 : Le LLM veut-il un outil ? ---
     if "tool_calls" not in message_llm or not message_llm["tool_calls"]:
         # Pas d'outil → réponse directe
-        temps = time.time() - debut
         tokens = data.get("usage", {}).get("total_tokens", 0)
-
-        return {
-            "modele": modele,
-            "ticket": ticket,
-            "reponse": message_llm.get("content", ""),
-            "outil_utilise": "aucun",
-            "temps_s": round(temps, 2),
-            "tokens": tokens,
-            "statut": "OK",
-        }
+        return _make_result(modele, ticket, message_llm.get("content", ""), "aucun", debut, tokens, "OK")
 
     # Le LLM veut un outil → on l'exécute
     tool_call = message_llm["tool_calls"][0]
@@ -246,32 +226,17 @@ async def traiter_ticket(session, ticket, outils_openai, modele):
         )
 
         data_finale = response_finale.json()
+        if not data_finale.get("choices"):
+            return _make_result(modele, ticket, f"Erreur API (réponse finale) : {data_finale}",
+                                nom_outil, debut, 0, "ERREUR")
         reponse_texte = data_finale["choices"][0]["message"]["content"]
 
-        temps = time.time() - debut
         tokens_1 = data.get("usage", {}).get("total_tokens", 0)
         tokens_2 = data_finale.get("usage", {}).get("total_tokens", 0)
-
-        return {
-            "modele": modele,
-            "ticket": ticket,
-            "reponse": reponse_texte,
-            "outil_utilise": nom_outil,
-            "temps_s": round(temps, 2),
-            "tokens": tokens_1 + tokens_2,
-            "statut": "OK",
-        }
+        return _make_result(modele, ticket, reponse_texte, nom_outil, debut, tokens_1 + tokens_2, "OK")
 
     except Exception as e:
-        return {
-            "modele": modele,
-            "ticket": ticket,
-            "reponse": str(e),
-            "outil_utilise": nom_outil,
-            "temps_s": round(time.time() - debut, 2),
-            "tokens": 0,
-            "statut": "ERREUR",
-        }
+        return _make_result(modele, ticket, str(e), nom_outil, debut, 0, "ERREUR")
 
 
 # ============================================================

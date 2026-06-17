@@ -26,7 +26,7 @@ _PII_PATTERNS: dict[str, re.Pattern] = {
     "iban_fr":     re.compile(r"\bFR\d{2}(?:[\s]?\d{4}){5}[\s]?\d{3}\b", re.IGNORECASE),
     "phone_fr":    re.compile(r"(?:\+33|0)\s?[1-9](?:[\s.\-]?\d{2}){4}"),
     "email":       re.compile(r"\b[\w.+\-]+@[\w-]+\.[\w.\-]+\b"),
-    "ipv4":        re.compile(r"\b(?:\d{1,3}\.){3}\d{1,3}\b"),
+    "ipv4":        re.compile(r"(?<![\d.])(?:\d{1,3}\.){3}\d{1,3}(?![\d.])"),
 }
 
 
@@ -167,7 +167,7 @@ def check_urls(text: str | None) -> list[URLFinding]:
         netloc = parsed.netloc.lower()
         if parsed.scheme != "https":
             reasons.append("non_https")
-        if any(netloc.endswith(tld) or tld in netloc for tld in _SUSPICIOUS_TLDS):
+        if any(netloc.endswith(tld) for tld in _SUSPICIOUS_TLDS):
             reasons.append("suspicious_tld")
         if any(s in netloc for s in _URL_SHORTENERS):
             reasons.append("url_shortener")

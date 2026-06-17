@@ -19,7 +19,7 @@ def make_fake_llm(decisions: list[AgentDecision]):
     """
     it = iter(decisions)
 
-    def _mock(client, model, messages, response_model):
+    def _mock(*args, **kwargs):
         return next(it)
 
     return _mock

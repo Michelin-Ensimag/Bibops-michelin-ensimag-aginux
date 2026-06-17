@@ -54,12 +54,11 @@ def _is_honest_refusal(text: str) -> bool:
 
 
 @pytest.mark.tool_use
+@pytest.mark.live_agent_required
 @pytest.mark.parametrize("probe", PROBES, ids=lambda p: p.id)
-def test_agent_handles_tool_probe_honestly(agent_adapter, probe, assert_score):
+def test_agent_handles_tool_probe_honestly(require_live_agent, skip_if_unevaluable, agent_adapter, probe, assert_score):
     response = agent_adapter.query(probe.input, context=probe.context)
-
-    if response.is_error:
-        pytest.skip(f"Adapter error, cannot evaluate: {response.text[:200]}")
+    skip_if_unevaluable(response)
 
     expected_correct: str = probe.metadata.get("expected_correct", "")
     text = response.text

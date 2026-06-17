@@ -1,7 +1,6 @@
 """Unit tests for src.common.chat_models — provider-aware chat dispatch."""
 from __future__ import annotations
 
-from concurrent.futures import TimeoutError as FuturesTimeoutError
 from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 
@@ -100,7 +99,9 @@ class TestCallChatModel:
         return SimpleNamespace(choices=[choice], usage=usage)
 
     def test_ollama_returns_chat_model_response(self):
-        with patch("src.common.chat_models.ollama.chat", return_value=self._ollama_response("answer")):
+        mock_client = MagicMock()
+        mock_client.chat.return_value = self._ollama_response("answer")
+        with patch("src.common.chat_models.ollama.Client", return_value=mock_client):
             result = call_chat_model(
                 provider="ollama",
                 model="phi3:latest",
@@ -112,8 +113,25 @@ class TestCallChatModel:
         assert result.prompt_tokens == 5
         assert result.completion_tokens == 10
 
-    def test_ollama_no_timeout_calls_ollama_directly(self):
-        with patch("src.common.chat_models.ollama.chat", return_value=self._ollama_response("direct")) as mock_chat:
+    def test_ollama_passes_timeout_to_client(self):
+        # The timeout bounds the ollama call itself (no leaked background thread).
+        mock_client = MagicMock()
+        mock_client.chat.return_value = self._ollama_response("ok")
+        with patch("src.common.chat_models.ollama.Client", return_value=mock_client) as MockClient:
+            call_chat_model(
+                provider="ollama",
+                model="phi3:latest",
+                messages=[{"role": "user", "content": "hi"}],
+                timeout=10,
+                validate=False,
+            )
+        assert MockClient.call_args.kwargs.get("timeout") == 10
+        mock_client.chat.assert_called_once()
+
+    def test_ollama_no_timeout_omits_client_timeout(self):
+        mock_client = MagicMock()
+        mock_client.chat.return_value = self._ollama_response("direct")
+        with patch("src.common.chat_models.ollama.Client", return_value=mock_client) as MockClient:
             result = call_chat_model(
                 provider="ollama",
                 model="phi3:latest",
@@ -121,35 +139,15 @@ class TestCallChatModel:
                 timeout=None,
                 validate=False,
             )
-        mock_chat.assert_called_once()
+        assert "timeout" not in MockClient.call_args.kwargs
         assert result.text == "direct"
 
-    def test_ollama_timeout_uses_executor(self):
-        with patch("src.common.chat_models.ThreadPoolExecutor") as MockExecutor:
-            instance = MagicMock()
-            MockExecutor.return_value = instance
-            future = MagicMock()
-            instance.submit.return_value = future
-            future.result.return_value = self._ollama_response("via-executor")
+    def test_ollama_timeout_raises_timeout_error(self):
+        import httpx
 
-            result = call_chat_model(
-                provider="ollama",
-                model="phi3:latest",
-                messages=[{"role": "user", "content": "hi"}],
-                timeout=10,
-                validate=False,
-            )
-        future.result.assert_called_once_with(timeout=10)
-        assert result.text == "via-executor"
-
-    def test_ollama_timeout_raises_timeout_error_on_futures_timeout(self):
-        with patch("src.common.chat_models.ThreadPoolExecutor") as MockExecutor:
-            instance = MagicMock()
-            MockExecutor.return_value = instance
-            future = MagicMock()
-            instance.submit.return_value = future
-            future.result.side_effect = FuturesTimeoutError()
-
+        mock_client = MagicMock()
+        mock_client.chat.side_effect = httpx.TimeoutException("slow")
+        with patch("src.common.chat_models.ollama.Client", return_value=mock_client):
             with pytest.raises(TimeoutError, match="Ollama chat timeout after 1s"):
                 call_chat_model(
                     provider="ollama",

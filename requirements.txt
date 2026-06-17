@@ -2,6 +2,10 @@
 chromadb
 fastapi[standard]
 opentelemetry-sdk>=1.41.1
+# Apple-Silicon only: powers the local MLX model server (mlx_lm.server).
+# Library code never imports it (it serves an OpenAI-compatible HTTP API), so
+# non-Darwin/CI installs simply skip it.
+mlx-lm; sys_platform == "darwin" and platform_machine == "arm64"
 httpx
 httpx-sse
 langchain-core
