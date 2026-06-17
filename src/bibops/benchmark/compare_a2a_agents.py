@@ -1130,6 +1130,41 @@ def _retry_sleep(backoff_s: float, attempt: int) -> None:
     time.sleep(backoff_s * (2 ** max(0, attempt - 1)))
 
 
+def _send_with_retries(
+    send_fn,
+    *,
+    agent: A2AAgentInfo,
+    prompt: str,
+    username: str,
+    password: str,
+    timeout_s: int,
+    max_retries: int,
+    backoff_s: float,
+    extra_attempt_fields=None,
+) -> tuple[Any, list[dict[str, Any]]]:
+    """Call *send_fn* with retry/backoff on transient transport issues."""
+    attempts: list[dict[str, Any]] = []
+    last_result = None
+    for attempt in range(1, max_retries + 2):
+        result = send_fn(agent=agent, prompt=prompt, username=username, password=password, timeout_s=timeout_s)
+        issue = _classify_transport_issue(result.error, result.answer)
+        record = {
+            "attempt": attempt,
+            "latency_s": result.latency_s,
+            "issue": issue,
+            "error": result.error,
+            "answer_preview": result.answer[:160],
+        }
+        if extra_attempt_fields is not None:
+            record.update(extra_attempt_fields(result))
+        attempts.append(record)
+        last_result = result
+        if issue not in {"rate_limit", "timeout", "connection"} or attempt > max_retries:
+            break
+        _retry_sleep(backoff_s, attempt)
+    return last_result, attempts
+
+
 def _send_message_with_retries(
     *,
     agent: A2AAgentInfo,
@@ -1140,31 +1175,10 @@ def _send_message_with_retries(
     max_retries: int,
     backoff_s: float,
 ) -> tuple[Any, list[dict[str, Any]]]:
-    attempts: list[dict[str, Any]] = []
-    last_result = None
-    for attempt in range(1, max_retries + 2):
-        result = send_message(
-            agent=agent,
-            prompt=prompt,
-            username=username,
-            password=password,
-            timeout_s=timeout_s,
-        )
-        issue = _classify_transport_issue(result.error, result.answer)
-        attempts.append(
-            {
-                "attempt": attempt,
-                "latency_s": result.latency_s,
-                "issue": issue,
-                "error": result.error,
-                "answer_preview": result.answer[:160],
-            }
-        )
-        last_result = result
-        if issue not in {"rate_limit", "timeout", "connection"} or attempt > max_retries:
-            break
-        _retry_sleep(backoff_s, attempt)
-    return last_result, attempts
+    return _send_with_retries(
+        send_message, agent=agent, prompt=prompt, username=username, password=password,
+        timeout_s=timeout_s, max_retries=max_retries, backoff_s=backoff_s,
+    )
 
 
 def _discover_agent_cached(
@@ -1241,32 +1255,11 @@ def _send_stream_with_retries(
     max_retries: int,
     backoff_s: float,
 ) -> tuple[Any, list[dict[str, Any]]]:
-    attempts: list[dict[str, Any]] = []
-    last_result = None
-    for attempt in range(1, max_retries + 2):
-        result = send_stream_message(
-            agent=agent,
-            prompt=prompt,
-            username=username,
-            password=password,
-            timeout_s=timeout_s,
-        )
-        issue = _classify_transport_issue(result.error, result.answer)
-        attempts.append(
-            {
-                "attempt": attempt,
-                "latency_s": result.latency_s,
-                "issue": issue,
-                "error": result.error,
-                "event_count": len(result.events),
-                "answer_preview": result.answer[:160],
-            }
-        )
-        last_result = result
-        if issue not in {"rate_limit", "timeout", "connection"} or attempt > max_retries:
-            break
-        _retry_sleep(backoff_s, attempt)
-    return last_result, attempts
+    return _send_with_retries(
+        send_stream_message, agent=agent, prompt=prompt, username=username, password=password,
+        timeout_s=timeout_s, max_retries=max_retries, backoff_s=backoff_s,
+        extra_attempt_fields=lambda r: {"event_count": len(r.events)},
+    )
 
 
 def _looks_like_placeholder_secret(value: str) -> bool:
@@ -1865,18 +1858,15 @@ def _empty_summary_row(agent: str, error_count: int = 0) -> dict[str, Any]:
     }
 
 
-def _transport_error_probe_detail(probe: dict[str, Any], result: Any) -> dict[str, Any]:
-    task_score = {
-        "kind": "transport_error",
-        "score": 0.0,
-        "passed": False,
-        "evidence": [str(result.error)],
-    }
+def _error_probe_detail(
+    probe: dict[str, Any], result: Any, *, kind: str, message: str, fact_check_reason: str
+) -> dict[str, Any]:
+    """Build a skipped-evaluation probe detail for a transport/runtime error."""
     return {
         **probe,
         "response": result.to_dict(),
         "stream": None,
-        "quality": {"status": "skipped", "score": 0.0, "justification": "", "error": result.error},
+        "quality": {"status": "skipped", "score": 0.0, "justification": "", "error": message},
         "security": {
             "status": "skipped",
             "security_score": 0.0,
@@ -1884,45 +1874,25 @@ def _transport_error_probe_detail(probe: dict[str, Any], result: Any) -> dict[st
             "risk_avg": 1.0,
             "risks": {},
             "findings": [],
-            "error": result.error,
+            "error": message,
         },
         "tool_detection": None,
         "role_score": None,
-        "task_score": task_score,
-        "fact_check": {"status": "skipped", "reason": "transport_error"},
+        "task_score": {"kind": kind, "score": 0.0, "passed": False, "evidence": [message]},
+        "fact_check": {"status": "skipped", "reason": fact_check_reason},
         "capability_detected": False,
-        "capability_evidence": str(result.error),
+        "capability_evidence": message,
     }
+
+
+def _transport_error_probe_detail(probe: dict[str, Any], result: Any) -> dict[str, Any]:
+    return _error_probe_detail(
+        probe, result, kind="transport_error", message=str(result.error), fact_check_reason="transport_error"
+    )
 
 
 def _runtime_error_probe_detail(probe: dict[str, Any], result: Any, reason: str) -> dict[str, Any]:
-    task_score = {
-        "kind": "runtime_error",
-        "score": 0.0,
-        "passed": False,
-        "evidence": [reason],
-    }
-    return {
-        **probe,
-        "response": result.to_dict(),
-        "stream": None,
-        "quality": {"status": "skipped", "score": 0.0, "justification": "", "error": reason},
-        "security": {
-            "status": "skipped",
-            "security_score": 0.0,
-            "blocked": False,
-            "risk_avg": 1.0,
-            "risks": {},
-            "findings": [],
-            "error": reason,
-        },
-        "tool_detection": None,
-        "role_score": None,
-        "task_score": task_score,
-        "fact_check": {"status": "skipped", "reason": reason},
-        "capability_detected": False,
-        "capability_evidence": reason,
-    }
+    return _error_probe_detail(probe, result, kind="runtime_error", message=reason, fact_check_reason=reason)
 
 
 def main() -> None:

@@ -1,10 +1,7 @@
 # data/runtime
 
-Runtime-generated local artifacts (should generally be gitignored):
-- sqlite databases
-- chroma vector stores
-- runtime logs
+Runtime-generated traces (gitignored — safe to delete and regenerate).
 
-Current legacy equivalents still in use:
-- `data/databases/*`
-- `logs/*`
+- `maestro/maestro_runs.jsonl` — one JSON record per `lancer_agent` run (`MaestroRunTrace`); appended, not rotated.
+
+The SQLite database and Chroma vector store live under `data/databases/`, not here.

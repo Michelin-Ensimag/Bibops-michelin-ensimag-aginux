@@ -5,16 +5,19 @@ description = "BibOps - Agent IA de support IT Michelin"
 requires-python = ">=3.10"
 dependencies = [
     "chromadb",
-    "fastapi",
+    "fastapi[standard]",
     "httpx",
     "httpx-sse",
     "langchain-core",
+    "langchain-ollama",
     "langchain-openai",
     "langgraph",
     "matplotlib",
     "mcp",
+    "mlx-lm; sys_platform == 'darwin' and platform_machine == 'arm64'",
     "ollama",
     "openai",
+    "opentelemetry-sdk",
     "pydantic",
     "PyYAML",
     "requests",
@@ -49,6 +52,7 @@ markers = [
     "performance: performance tests (latency, tokens, carbon)",
     "regression: regression tests against frozen baselines",
     "llm_judge_required: requires Copilot proxy on localhost:4141 (skipped otherwise)",
+    "live_agent_required: requires a reachable agent LLM backend — Copilot proxy on :4141 or Ollama on :11434 (skipped otherwise)",
     "slow: tests that take more than ~10 seconds",
 ]
 

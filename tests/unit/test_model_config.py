@@ -71,8 +71,8 @@ def test_zero_shot_defaults_do_not_follow_agent_provider(monkeypatch):
         reloaded = importlib.reload(config)
         assert reloaded.DEFAULT_AGENT_PROVIDER == "copilot"
         assert reloaded.DEFAULT_AGENT_MODEL == "gpt-5.2"
-        assert reloaded.DEFAULT_ZERO_SHOT_PROVIDER == "ollama"
-        assert reloaded.DEFAULT_ZERO_SHOT_MODEL == "phi3:latest"
+        assert reloaded.DEFAULT_ZERO_SHOT_PROVIDER == "mlx"
+        assert reloaded.DEFAULT_ZERO_SHOT_MODEL == "mlx-community/Mistral-7B-Instruct-v0.3-4bit"
     finally:
         monkeypatch.delenv("BIBOPS_AGENT_PROVIDER", raising=False)
         monkeypatch.delenv("BIBOPS_AGENT_MODEL", raising=False)

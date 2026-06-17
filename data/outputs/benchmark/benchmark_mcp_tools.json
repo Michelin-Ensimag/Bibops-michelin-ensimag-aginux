@@ -24,7 +24,7 @@
     "ticket": "Est-ce que le service Mail est en ligne ?",
     "outil": "mcp_verifier_statut_serveur",
     "statut": "OK",
-    "temps_reponse_s": 0.012,
+    "temps_reponse_s": 0.003,
     "scores": {
       "score_erreur": 10.0,
       "score_feedback": 10.0,
@@ -44,7 +44,7 @@
     "ticket": "Comment récupérer ma clé Bitlocker ?",
     "outil": "mcp_chercher_documentation_technique",
     "statut": "OK",
-    "temps_reponse_s": 0.369,
+    "temps_reponse_s": 0.615,
     "scores": {
       "score_erreur": 10.0,
       "score_feedback": 10.0,
@@ -64,7 +64,7 @@
     "ticket": "Mon PC est très lent depuis ce matin.",
     "outil": "mcp_chercher_dans_kb",
     "statut": "OK",
-    "temps_reponse_s": 0.004,
+    "temps_reponse_s": 0.005,
     "scores": {
       "score_erreur": 10.0,
       "score_feedback": 10.0,

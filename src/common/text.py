@@ -85,13 +85,14 @@ def extraire_compteurs_tokens(reponse_ollama) -> tuple[int | None, str]:
     if isinstance(prompt_eval_count, int) and isinstance(eval_count, int):
         return prompt_eval_count + eval_count, "ollama_native"
 
+    # `usage` may be a dict (Ollama) or an object (OpenAI-compatible clients). _get_attr handles both.
     usage = _get_attr(reponse_ollama, "usage")
-    if isinstance(usage, dict):
-        total_tokens = usage.get("total_tokens")
+    if usage is not None:
+        total_tokens = _get_attr(usage, "total_tokens")
         if isinstance(total_tokens, int):
             return total_tokens, "usage_total_tokens"
-        prompt_tokens = usage.get("prompt_tokens")
-        completion_tokens = usage.get("completion_tokens")
+        prompt_tokens = _get_attr(usage, "prompt_tokens")
+        completion_tokens = _get_attr(usage, "completion_tokens")
         if isinstance(prompt_tokens, int) and isinstance(completion_tokens, int):
             return prompt_tokens + completion_tokens, "usage_prompt_plus_completion"
 

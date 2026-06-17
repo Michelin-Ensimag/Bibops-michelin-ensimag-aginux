@@ -204,3 +204,8 @@ class TestOllamaResponseHelpers:
     def test_token_count_absent(self):
         total, source = T.extraire_compteurs_tokens({})
         assert total is None and source == "native_tokens_absents"
+
+    def test_token_count_from_usage_object(self):
+        # OpenAI-compatible clients (Copilot/MLX) return `usage` as an object, not a dict.
+        total, source = T.extraire_compteurs_tokens(make_response("hi"))
+        assert total == 30 and source == "usage_total_tokens"

@@ -8,9 +8,9 @@
 .vscode/
 .claude/
 .junie/
-.github/
 .superpowers/
 .antigravitycli/
+# NB: .github/ is intentionally NOT ignored — CI workflows are version-controlled.
 
 # Environnements virtuels
 venv/
@@ -74,8 +74,11 @@ data/outputs/eval_bank/
 *.lot
 *.out
 *.toc
+*.synctex.gz
 
-# Fichier d'instructions Claude (local uniquement)
-CLAUDE.md
-scripts/
-generate_gantt.py
+# Artefacts marketing / présentation (local)
+linkedin-carousel/
+
+# NB: personal local-only files (CLAUDE.md, scripts/, generate_gantt.py) are
+# kept in .git/info/exclude instead of here, so the shared .gitignore does not
+# silently hide project directories for collaborators.

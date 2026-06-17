@@ -52,6 +52,15 @@ class TestDetectPII:
         types = {f.entity_type for f in result}
         assert "ssn_us" in types and "email" in types
 
+    def test_detects_valid_ipv4(self):
+        types = {f.entity_type for f in detect_pii("Serveur 10.0.0.1 est hors ligne")}
+        assert "ipv4" in types
+
+    def test_no_ipv4_false_positive_on_longer_dotted_sequence(self):
+        # A 5-group dotted number (version string) must not match as an IPv4.
+        types = {f.entity_type for f in detect_pii("build 192.168.1.1.1 deploye")}
+        assert "ipv4" not in types
+
 
 # ---------------------------------------------------------------------------
 # Secrets

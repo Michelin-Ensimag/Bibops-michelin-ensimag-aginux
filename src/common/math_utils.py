@@ -18,5 +18,7 @@ def binom_test_two_sided(k: int, n: int, p0: float = 0.5) -> float:
     """Exact two-sided binomial test p-value (no scipy dependency)."""
     if n <= 0:
         return 1.0
-    p_obs = binom_pmf(n, k, p0)
-    return min(1.0, sum(binom_pmf(n, i, p0) for i in range(n + 1) if binom_pmf(n, i, p0) <= p_obs + 1e-15))
+    # Compute each pmf once (was evaluated twice per term — 2x the factorial work).
+    pmfs = [binom_pmf(n, i, p0) for i in range(n + 1)]
+    p_obs = pmfs[k]
+    return min(1.0, sum(pmf for pmf in pmfs if pmf <= p_obs + 1e-15))

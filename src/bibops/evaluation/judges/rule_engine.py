@@ -23,6 +23,20 @@ from src.bibops.evaluation.config import (
 )
 
 
+def _interp_score(value: float, thresholds: dict, bands: tuple[str, str, str, str]) -> float:
+    """Piecewise-linear 0-10 score across four named threshold bands (higher value → lower score)."""
+    excellent, good, acceptable, worst = bands
+    if value <= thresholds[excellent]:
+        return 10.0
+    if value <= thresholds[good]:
+        return 10.0 - (value - thresholds[excellent]) / (thresholds[good] - thresholds[excellent]) * 3.0
+    if value <= thresholds[acceptable]:
+        return 7.0 - (value - thresholds[good]) / (thresholds[acceptable] - thresholds[good]) * 6.0
+    if value <= thresholds[worst]:
+        return max(0.0, 1.0 - (value - thresholds[acceptable]) / (thresholds[worst] - thresholds[acceptable]))
+    return 0.0
+
+
 class EvaluationEngine:
     """Moteur d'évaluation par règles (sans LLM). Score pondéré 0–10."""
 
@@ -113,28 +127,10 @@ class EvaluationEngine:
         return float(self.feedback_scores.get(feedback, 0))
 
     def score_vitesse(self, temps_secondes: float) -> float:
-        t = temps_secondes
-        if t <= TIME_THRESHOLDS["excellent"]:
-            return 10.0
-        if t <= TIME_THRESHOLDS["good"]:
-            return 10.0 - (t - TIME_THRESHOLDS["excellent"]) / (TIME_THRESHOLDS["good"] - TIME_THRESHOLDS["excellent"]) * 3.0
-        if t <= TIME_THRESHOLDS["acceptable"]:
-            return 7.0 - (t - TIME_THRESHOLDS["good"]) / (TIME_THRESHOLDS["acceptable"] - TIME_THRESHOLDS["good"]) * 6.0
-        if t <= TIME_THRESHOLDS["slow"]:
-            return max(0.0, 1.0 - (t - TIME_THRESHOLDS["acceptable"]) / (TIME_THRESHOLDS["slow"] - TIME_THRESHOLDS["acceptable"]))
-        return 0.0
+        return _interp_score(temps_secondes, TIME_THRESHOLDS, ("excellent", "good", "acceptable", "slow"))
 
     def score_efficacite_tokens(self, nombre_tokens: int) -> float:
-        n = nombre_tokens
-        if n <= TOKEN_THRESHOLDS["excellent"]:
-            return 10.0
-        if n <= TOKEN_THRESHOLDS["good"]:
-            return 10.0 - (n - TOKEN_THRESHOLDS["excellent"]) / (TOKEN_THRESHOLDS["good"] - TOKEN_THRESHOLDS["excellent"]) * 3.0
-        if n <= TOKEN_THRESHOLDS["acceptable"]:
-            return 7.0 - (n - TOKEN_THRESHOLDS["good"]) / (TOKEN_THRESHOLDS["acceptable"] - TOKEN_THRESHOLDS["good"]) * 6.0
-        if n <= TOKEN_THRESHOLDS["excessive"]:
-            return max(0.0, 1.0 - (n - TOKEN_THRESHOLDS["acceptable"]) / (TOKEN_THRESHOLDS["excessive"] - TOKEN_THRESHOLDS["acceptable"]))
-        return 0.0
+        return _interp_score(nombre_tokens, TOKEN_THRESHOLDS, ("excellent", "good", "acceptable", "excessive"))
 
     def calculate_final_score(
         self,

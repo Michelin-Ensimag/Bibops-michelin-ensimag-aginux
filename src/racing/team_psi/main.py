@@ -211,7 +211,11 @@ async def _run_attack(lap: int, client: httpx.AsyncClient) -> None:
             },
         )
         if relay_resp.status_code == 200:
-            response_text = relay_resp.json().get("response", "")
+            try:
+                response_text = relay_resp.json().get("response", "")
+            except ValueError:
+                # Malformed/empty JSON: treat as a no-leak attack instead of dropping all metrics.
+                response_text = ""
 
             # Step 3 — Extract: did the target leak strategy data? Update vulnerability score.
             from src.racing.shared.security_metrics import detect_injection_executed

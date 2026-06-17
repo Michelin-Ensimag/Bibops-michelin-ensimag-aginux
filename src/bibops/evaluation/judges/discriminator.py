@@ -7,7 +7,7 @@ Métriques produites (inspirées de RAGAS) :
   score_faithfulness  : fidélité au RCA / absence d'hallucination        (0-10)
   score_relevance     : pertinence de la réponse par rapport au ticket    (0-10)
   score_context       : qualité du contexte ramené par les outils RAG     (0-10)
-  is_perfect          : True uniquement si les 3 scores sont >= 8
+  is_perfect          : True si la moyenne des 3 scores >= SEUIL_MOYENNE (7.0)
   feedback_actionnable: texte guidant l'agent vers la correction
 
 Usage FinOps : evaluer() renvoie aussi {"usage": {"prompt_tokens": X, "completion_tokens": Y}}

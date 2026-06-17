@@ -83,6 +83,85 @@ def llm_judge(copilot_client):
 
 
 # ---------------------------------------------------------------------------
+# Live-agent backend availability
+# ---------------------------------------------------------------------------
+
+def _tcp_reachable(raw_url: str, default_port: int) -> bool:
+    import socket
+    from urllib.parse import urlparse
+
+    if "://" not in raw_url:
+        raw_url = "http://" + raw_url
+    parsed = urlparse(raw_url)
+    host, port = parsed.hostname or "localhost", parsed.port or default_port
+    try:
+        with socket.create_connection((host, port), timeout=0.5):
+            return True
+    except OSError:
+        return False
+
+
+def _agent_backend_reachable(provider: str | None) -> bool:
+    """True if the agent-under-test's LLM backend is reachable.
+
+    The default ``it_support`` adapter talks to the Copilot proxy (:4141); an
+    Ollama provider talks to the local Ollama daemon (:11434); an MLX provider
+    talks to the local mlx_lm.server (:8080). Live-agent integration tests skip
+    cleanly when the relevant backend is offline, instead of failing on the
+    agent's degraded fallback response.
+    """
+    prov = (provider or "copilot").lower()
+    if "ollama" in prov:
+        return _tcp_reachable(os.environ.get("OLLAMA_HOST", "localhost:11434"), 11434)
+    if "mlx" in prov:
+        from src.common.config import MLX_BASE_URL
+        return _tcp_reachable(MLX_BASE_URL, 8080)
+    from src.common.llm_clients import is_copilot_available
+    return is_copilot_available()
+
+
+@pytest.fixture(scope="session")
+def agent_backend_available(agent_provider) -> bool:
+    return _agent_backend_reachable(agent_provider)
+
+
+@pytest.fixture
+def require_live_agent(agent_backend_available):
+    """Skip a live-agent test when its LLM backend is unreachable.
+
+    Use together with ``@pytest.mark.live_agent_required`` so the suite can be
+    filtered with ``-m "not live_agent_required"``.
+    """
+    if not agent_backend_available:
+        pytest.skip(
+            "Live agent LLM backend unreachable (Copilot proxy on :4141 or "
+            "Ollama on :11434). Start the backend to run live-agent tests."
+        )
+
+
+# Prefix of the maestro's degraded fallback, returned when its LLM call errors out.
+# A response containing this is not a real agent answer and cannot be fairly scored.
+AGENT_FALLBACK_MARKER = "Je n'ai pas pu produire un diagnostic fiable"
+
+
+@pytest.fixture
+def skip_if_unevaluable():
+    """Return a checker that skips when the agent response can't be fairly evaluated.
+
+    Covers both a hard adapter error and the maestro's post-LLM-error fallback
+    (the proxy intermittently errors/filters a prompt — that degraded answer
+    should not be scored as if it were the agent's real behaviour).
+    """
+    def _check(response) -> None:
+        if response.is_error:
+            pytest.skip(f"Adapter error, cannot evaluate: {response.text[:200]}")
+        if AGENT_FALLBACK_MARKER in (response.text or ""):
+            pytest.skip("Agent returned its post-LLM-error fallback — cannot evaluate behaviour.")
+
+    return _check
+
+
+# ---------------------------------------------------------------------------
 # Thresholds + assert_score helper
 # ---------------------------------------------------------------------------
 

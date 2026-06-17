@@ -11,10 +11,11 @@ from datetime import datetime, timezone
 from typing import Any
 
 from openai import OpenAI
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
 
 from src.common.config import DEFAULT_AGENT_MODEL, DEFAULT_AGENT_PROVIDER, MODEL_REQUEST_TIMEOUT_S, normalize_provider
-from src.common.llm_clients import get_copilot_client
+from src.common.llm_clients import get_copilot_client, get_mlx_client
+from src.common.text import extract_first_json
 
 from .memory import MemoCourTerme
 from .tools import (
@@ -628,7 +629,76 @@ def _make_client(provider: str = DEFAULT_AGENT_PROVIDER) -> OpenAI:
     provider = normalize_provider(provider)
     if provider == "copilot":
         return get_copilot_client()
+    if provider == "mlx":
+        return get_mlx_client()
     return OpenAI(base_url="http://localhost:11434/v1", api_key="ollama")
+
+
+def _normalize_messages_for_mistral(messages: list[dict]) -> list[dict]:
+    """Make a message list satisfy Mistral's strict chat template.
+
+    Mistral instruct templates (as served by ``mlx_lm.server``) require a
+    conversation that starts with ``user`` and strictly alternates
+    user/assistant; a standalone ``system`` message or consecutive same-role
+    messages both raise "Conversation roles must alternate". We fold any
+    ``system`` content into the next user turn (promoting it to a user turn if
+    none follows) and merge consecutive same-role messages.
+    """
+    folded: list[dict] = []
+    pending_system: list[str] = []
+    for msg in messages:
+        role, content = msg.get("role"), msg.get("content") or ""
+        if role == "system":
+            pending_system.append(content)
+            continue
+        # Mistral's template only accepts user/assistant — coerce anything else (e.g. "tool") to user.
+        role = "assistant" if role == "assistant" else "user"
+        if pending_system and role == "user":
+            content = "\n\n".join([*pending_system, content])
+            pending_system = []
+        folded.append({"role": role, "content": content})
+    if pending_system:
+        folded.insert(0, {"role": "user", "content": "\n\n".join(pending_system)})
+
+    merged: list[dict] = []
+    for msg in folded:
+        if merged and merged[-1]["role"] == msg["role"]:
+            merged[-1] = {"role": msg["role"], "content": merged[-1]["content"] + "\n\n" + msg["content"]}
+        else:
+            merged.append(dict(msg))
+    return merged
+
+
+def _as_final_answer_text(content: str) -> str:
+    """Decode a possibly JSON-string-encoded prose answer to plain text."""
+    try:
+        decoded = json.loads(content)
+    except (ValueError, TypeError):
+        return content
+    return decoded if isinstance(decoded, str) else content
+
+
+def _parse_agent_decision(content: str, response_model: type[BaseModel], provider: str) -> BaseModel:
+    """Parse the model's reply into *response_model*, tolerating non-strict backends.
+
+    The official ``mlx_lm.server`` does not enforce ``response_format``, so the
+    reply may be (a) clean JSON, (b) JSON wrapped in prose / ```json fences, or
+    (c) a plain prose answer with no JSON object at all. We try (a), then (b),
+    and for the mlx provider fall back to (c) by treating the prose as the
+    ``final_answer`` rather than failing the turn.
+    """
+    try:
+        return response_model.model_validate_json(content)
+    except ValidationError as first_error:
+        data = extract_first_json(content)
+        if data is not None:
+            try:
+                return response_model.model_validate(data)
+            except ValidationError:
+                pass
+        if provider == "mlx" and content.strip() and "final_answer" in response_model.model_fields:
+            return response_model(final_answer=_as_final_answer_text(content).strip())
+        raise first_error
 
 
 def _call_llm(
@@ -637,14 +707,18 @@ def _call_llm(
     messages: list[dict],
     response_model: type[BaseModel],
     timeout_s: int = MODEL_REQUEST_TIMEOUT_S,
+    provider: str = "",
 ) -> BaseModel:
+    if provider == "mlx":
+        messages = _normalize_messages_for_mistral(messages)
     raw = client.chat.completions.create(
         model=model,
         messages=messages,
         response_format={"type": "json_object"},
         timeout=timeout_s,
     )
-    parsed = response_model.model_validate_json(raw.choices[0].message.content)
+    content = raw.choices[0].message.content or ""
+    parsed = _parse_agent_decision(content, response_model, provider)
     prompt_tokens, completion_tokens = _extract_llm_usage(raw)
     object.__setattr__(
         parsed,
@@ -761,7 +835,9 @@ RECOMMANDATION DE ROUTAGE (guide non-bloquant) : {trace.routing_hint}
             break
         llm_start = time.perf_counter()
         try:
-            decision: AgentDecision = _call_llm(client, modele, messages_a_envoyer, AgentDecision)
+            decision: AgentDecision = _call_llm(
+                client, modele, messages_a_envoyer, AgentDecision, provider=normalize_provider(modele_provider)
+            )
         except Exception as exc:
             llm_duration_ms = int((time.perf_counter() - llm_start) * 1000)
             trace.llm_turns.append(LLMTurnTrace(

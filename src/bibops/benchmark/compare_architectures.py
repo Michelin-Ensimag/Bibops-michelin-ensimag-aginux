@@ -33,6 +33,7 @@ from src.common.config import (
     DEFAULT_ZERO_SHOT_PROVIDER,
     LLM_COST_INPUT_PER_1M_USD,
     LLM_COST_OUTPUT_PER_1M_USD,
+    SUPPORTED_PROVIDERS,
     validate_chat_model,
     validate_judge_model,
 )
@@ -399,9 +400,9 @@ def main() -> None:
         choices=DOMAIN_CHOICES,
         help="Filtrer les tickets par domaine avant --max-tickets.",
     )
-    parser.add_argument("--zero-shot-provider", default=DEFAULT_ZERO_SHOT_PROVIDER, choices=["ollama", "copilot"])
+    parser.add_argument("--zero-shot-provider", default=DEFAULT_ZERO_SHOT_PROVIDER, choices=list(SUPPORTED_PROVIDERS))
     parser.add_argument("--zero-shot-model", default=DEFAULT_ZERO_SHOT_MODEL, help="Modele pour la voie zero-shot.")
-    parser.add_argument("--agent-provider", default=DEFAULT_AGENT_PROVIDER, choices=["ollama", "copilot"])
+    parser.add_argument("--agent-provider", default=DEFAULT_AGENT_PROVIDER, choices=list(SUPPORTED_PROVIDERS))
     parser.add_argument("--agent-model", default=DEFAULT_AGENT_MODEL, help="Modele pour lancer_agent.")
     parser.add_argument(
         "--agent-max-iterations",

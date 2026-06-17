@@ -1,15 +1,14 @@
 """Provider-aware chat calls for Ollama and Copilot/OpenAI-compatible models."""
 from __future__ import annotations
 
-from concurrent.futures import ThreadPoolExecutor
-from concurrent.futures import TimeoutError as FuturesTimeoutError
 from dataclasses import dataclass
 from typing import Any
 
+import httpx
 import ollama
 
 from src.common.config import MODEL_REQUEST_TIMEOUT_S, OLLAMA_OPTIONS, normalize_provider, validate_chat_model
-from src.common.llm_clients import get_copilot_client
+from src.common.llm_clients import get_copilot_client, get_mlx_client
 
 
 @dataclass
@@ -81,18 +80,13 @@ def call_chat_model(
         options = dict(OLLAMA_OPTIONS)
         options["temperature"] = temperature
         options["num_predict"] = max_tokens
-        if timeout is None:
-            response = ollama.chat(model=model, messages=messages, options=options)
-        else:
-            executor = ThreadPoolExecutor(max_workers=1)
-            future = executor.submit(ollama.chat, model=model, messages=messages, options=options)
-            try:
-                response = future.result(timeout=timeout)
-            except FuturesTimeoutError as exc:
-                future.cancel()
-                raise TimeoutError(f"Ollama chat timeout after {timeout}s for model {model}") from exc
-            finally:
-                executor.shutdown(wait=False, cancel_futures=True)
+        # Bound the call via the client's own (httpx) timeout so a slow request
+        # actually terminates — rather than leaving a background thread running.
+        client = ollama.Client(timeout=timeout) if timeout is not None else ollama.Client()
+        try:
+            response = client.chat(model=model, messages=messages, options=options)
+        except httpx.TimeoutException as exc:
+            raise TimeoutError(f"Ollama chat timeout after {timeout}s for model {model}") from exc
         prompt_tokens, completion_tokens = _extract_ollama_token_usage(response)
         return ChatModelResponse(
             text=_extract_ollama_text(response),
@@ -101,7 +95,8 @@ def call_chat_model(
             raw=response,
         )
 
-    client = get_copilot_client()
+    # OpenAI-compatible providers: Copilot proxy or the local MLX server.
+    client = get_mlx_client() if provider == "mlx" else get_copilot_client()
     kwargs: dict[str, Any] = {
         "model": model,
         "messages": messages,
