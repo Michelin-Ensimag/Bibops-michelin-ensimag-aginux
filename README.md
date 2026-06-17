@@ -1,4 +1,4 @@
-# BibOps
+# Aginux [bibops-ensimag]
 
 > A reproducible evaluation harness for LLM-based IT support — pitting a **zero-shot assistant** against a **tool-using ReAct agent**, scoring both on quality, safety, cost, latency and carbon, and stress-testing them in a live **multi-agent Racing Arena**.
 
